@@ -18,7 +18,6 @@ package compute.disks;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
-import static org.junit.Assert.assertNotNull;
 
 import com.google.cloud.compute.v1.AttachedDisk;
 import com.google.cloud.compute.v1.AttachedDiskInitializeParams;
@@ -171,6 +170,7 @@ public class DisksIT {
     DeleteDisk.deleteDisk(PROJECT_ID, ZONE, EMPTY_DISK_NAME);
     DeleteDisk.deleteDisk(PROJECT_ID, ZONE, ZONAL_BLANK_DISK);
     RegionalDelete.deleteRegionalDisk(PROJECT_ID, REGION, REGIONAL_BLANK_DISK);
+    DeleteDisk.deleteDisk(PROJECT_ID, "us-central1-c", SECONDARY_DISK);
 
     stdOut.close();
     System.setOut(out);
@@ -303,18 +303,14 @@ public class DisksIT {
   }
 
   @Test
-  public void testCreateDiskSecondary()
+  public void testCreateDiskSecondaryZonal()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     String diskType =  String.format(
         "projects/%s/zones/%s/diskTypes/pd-ssd", PROJECT_ID, ZONE);
-    Disk disk = CreateDiskSecondary.createDiskSecondary(
+    Operation.Status status = CreateDiskSecondaryZonal.createDiskSecondaryZonal(
         PROJECT_ID, PROJECT_ID, EMPTY_DISK_NAME, SECONDARY_DISK, ZONE,
         "us-central1-c", DISK_SIZE,  diskType);
 
-    // Verify that the secondary disk was created.
-    assertNotNull(disk);
-    assertThat(disk.getAsyncPrimaryDisk().getDisk().contains(EMPTY_DISK_NAME));
-
-    DeleteDisk.deleteDisk(PROJECT_ID, "us-central1-c", SECONDARY_DISK);
+    assertThat(status).isEqualTo(Operation.Status.DONE);
   }
 }

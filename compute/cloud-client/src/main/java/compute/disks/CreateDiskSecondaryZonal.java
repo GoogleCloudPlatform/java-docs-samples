@@ -26,7 +26,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class CreateDiskSecondary {
+public class CreateDiskSecondaryZonal {
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
@@ -52,14 +52,14 @@ public class CreateDiskSecondary {
     String diskType = String.format(
         "projects/%s/zones/%s/diskTypes/pd-balanced", secondaryProjectId, secondaryDiskZone);
 
-    createDiskSecondary(primaryProjectId, secondaryProjectId, primaryDiskName, secondaryDiskName,
-        primaryDiskZone, secondaryDiskZone, diskSizeGb,  diskType);
+    createDiskSecondaryZonal(primaryProjectId, secondaryProjectId, primaryDiskName,
+        secondaryDiskName, primaryDiskZone, secondaryDiskZone, diskSizeGb,  diskType);
   }
 
   // Creates a secondary disk in a specified zone.
-  public static Disk createDiskSecondary(String primaryProjectId, String secondaryProjectId,
-      String primaryDiskName, String secondaryDiskName, String primaryDiskZone,
-      String secondaryDiskZone, long diskSizeGb,  String diskType)
+  public static Operation.Status createDiskSecondaryZonal(String primaryProjectId,
+       String secondaryProjectId, String primaryDiskName, String secondaryDiskName,
+       String primaryDiskZone, String secondaryDiskZone, long diskSizeGb, String diskType)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     String primaryDiskSource = String.format("projects/%s/zones/%s/disks/%s",
         primaryProjectId, primaryDiskZone, primaryDiskName);
@@ -79,14 +79,13 @@ public class CreateDiskSecondary {
           .setAsyncPrimaryDisk(asyncReplication)
           .build();
 
-      // Wait for the create disk operation to complete.
       Operation response = disksClient.insertAsync(secondaryProjectId, secondaryDiskZone, disk)
           .get(3, TimeUnit.MINUTES);
 
       if (response.hasError()) {
-        return null;
+        throw new Error("Error creating secondary disks! " + response.getError());
       }
-      return disksClient.get(secondaryProjectId, secondaryDiskZone, secondaryDiskName);
+      return response.getStatus();
     }
   }
 }
