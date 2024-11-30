@@ -58,7 +58,7 @@ public class CreateDiskInStoragePool {
   public static Disk createDiskInStoragePool(String projectId, String zone, String diskName,
                                              String storagePoolName, String diskType,
                                              long diskSizeGb, long iops, long throughput)
-          throws IOException, ExecutionException, InterruptedException{
+          throws IOException, ExecutionException, InterruptedException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (DisksClient client = DisksClient.create()) {
