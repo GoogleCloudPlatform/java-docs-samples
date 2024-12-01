@@ -16,25 +16,27 @@
 
 package management.api;
 
-// [START securitycenter_delete_security_health_analytics_custom_module]
-import com.google.cloud.securitycentermanagement.v1.DeleteSecurityHealthAnalyticsCustomModuleRequest;
+// [START securitycenter_get_effective_security_health_analytics_custom_module]
+import com.google.cloud.securitycentermanagement.v1.EffectiveSecurityHealthAnalyticsCustomModule;
+import com.google.cloud.securitycentermanagement.v1.GetEffectiveSecurityHealthAnalyticsCustomModuleRequest;
 import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient;
 import java.io.IOException;
 
-public class DeleteSecurityHealthAnalyticsCustomModule {
+public class GetEffectiveSecurityHealthAnalyticsCustomModule {
 
   public static void main(String[] args) throws IOException {
-    // https://cloud.google.com/security-command-center/docs/reference/security-center-management/rest/v1/organizations.locations.securityHealthAnalyticsCustomModules/delete
+    // https://cloud.google.com/security-command-center/docs/reference/security-center-management/rest/v1/organizations.locations.effectiveSecurityHealthAnalyticsCustomModules/get
     // TODO: Developer should replace project_id with a real project ID before running this code
     String projectId = "project_id";
 
     String customModuleId = "custom_module_id";
 
-    deleteSecurityHealthAnalyticsCustomModule(projectId, customModuleId);
+    getEffectiveSecurityHealthAnalyticsCustomModule(projectId, customModuleId);
   }
 
-  public static boolean deleteSecurityHealthAnalyticsCustomModule(
-      String projectId, String customModuleId) throws IOException {
+  public static EffectiveSecurityHealthAnalyticsCustomModule
+      getEffectiveSecurityHealthAnalyticsCustomModule(String projectId, String customModuleId)
+          throws IOException {
 
     // Initialize client that will be used to send requests. This client only needs
     // to be created
@@ -43,16 +45,17 @@ public class DeleteSecurityHealthAnalyticsCustomModule {
 
       String name =
           String.format(
-              "projects/%s/locations/global/securityHealthAnalyticsCustomModules/%s",
+              "projects/%s/locations/global/effectiveSecurityHealthAnalyticsCustomModules/%s",
               projectId, customModuleId);
 
-      DeleteSecurityHealthAnalyticsCustomModuleRequest request =
-          DeleteSecurityHealthAnalyticsCustomModuleRequest.newBuilder().setName(name).build();
+      GetEffectiveSecurityHealthAnalyticsCustomModuleRequest request =
+          GetEffectiveSecurityHealthAnalyticsCustomModuleRequest.newBuilder().setName(name).build();
 
-      client.deleteSecurityHealthAnalyticsCustomModule(request);
+      EffectiveSecurityHealthAnalyticsCustomModule response =
+          client.getEffectiveSecurityHealthAnalyticsCustomModule(request);
 
-      return true;
+      return response;
     }
   }
 }
-// [END securitycenter_delete_security_health_analytics_custom_module]
+// [END securitycenter_get_effective_security_health_analytics_custom_module]

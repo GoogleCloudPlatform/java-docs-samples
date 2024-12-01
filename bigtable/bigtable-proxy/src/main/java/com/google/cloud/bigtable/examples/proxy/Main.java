@@ -17,8 +17,7 @@
 package com.google.cloud.bigtable.examples.proxy;
 
 import com.google.cloud.bigtable.examples.proxy.commands.Serve;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.google.cloud.bigtable.examples.proxy.commands.Verify;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
@@ -27,10 +26,10 @@ import picocli.CommandLine.Command;
  * Main entry point for proxy commands under {@link
  * com.google.cloud.bigtable.examples.proxy.commands}.
  */
-@Command(subcommands = {Serve.class}, name = "bigtable-proxy")
+@Command(
+    subcommands = {Serve.class, Verify.class},
+    name = "bigtable-proxy")
 public final class Main {
-  private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
-
   public static void main(String[] args) {
     SLF4JBridgeHandler.install();
     new CommandLine(new Main()).execute(args);
