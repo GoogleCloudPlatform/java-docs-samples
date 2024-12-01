@@ -55,7 +55,7 @@ public class CreateReplicatedDisk {
   }
 
   // Create a disk for synchronous data replication between two zones in the same region
-  public static Disk createReplicatedDisk(String projectId, String region,
+  public static Operation.Status createReplicatedDisk(String projectId, String region,
         List<String> replicaZones, String diskName, int diskSizeGb, String diskType)
         throws IOException, InterruptedException, ExecutionException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
@@ -78,10 +78,9 @@ public class CreateReplicatedDisk {
                .get(3, TimeUnit.MINUTES);
 
       if (response.hasError()) {
-        System.out.println("Failed to create regional replicated disk.");
-        return null;
+        throw new Error("Error creating disk! " + response.getError());
       }
-      return regionDisksClient.get(projectId, region, diskName);
+      return response.getStatus();
     }
   }
 }

@@ -172,6 +172,7 @@ public class DisksIT {
     DeleteDisk.deleteDisk(PROJECT_ID, ZONE, EMPTY_DISK_NAME);
     DeleteDisk.deleteDisk(PROJECT_ID, ZONE, ZONAL_BLANK_DISK);
     RegionalDelete.deleteRegionalDisk(PROJECT_ID, REGION, REGIONAL_BLANK_DISK);
+    RegionalDelete.deleteRegionalDisk(PROJECT_ID, REGION, REGIONAL_REPLICATED_DISK);
 
     stdOut.close();
     System.setOut(out);
@@ -304,11 +305,9 @@ public class DisksIT {
   @Test
   public void testCreateReplicatedDisk()
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    Disk disk = CreateReplicatedDisk.createReplicatedDisk(PROJECT_ID, REGION, replicaZones,
-            REGIONAL_REPLICATED_DISK, 100, DISK_TYPE);
+    Operation.Status status = CreateReplicatedDisk.createReplicatedDisk(PROJECT_ID, REGION,
+            replicaZones, REGIONAL_REPLICATED_DISK, 100, DISK_TYPE);
 
-    assertThat(disk).isNotNull();
-    assertThat(disk.getName()).isEqualTo(REGIONAL_REPLICATED_DISK);
-    assertThat(disk.getReplicaZonesList()).hasSize(2);
+    assertThat(status).isEqualTo(Operation.Status.DONE);
   }
 }
