@@ -177,6 +177,7 @@ public class DisksIT {
     DeleteDisk.deleteDisk(PROJECT_ID, ZONE, EMPTY_DISK_NAME);
     DeleteDisk.deleteDisk(PROJECT_ID, ZONE, ZONAL_BLANK_DISK);
     RegionalDelete.deleteRegionalDisk(PROJECT_ID, REGION, REGIONAL_BLANK_DISK);
+    RegionalDelete.deleteRegionalDisk(PROJECT_ID, "us-central1", SECONDARY_REGIONAL_DISK);
 
     stdOut.close();
     System.setOut(out);
@@ -316,6 +317,5 @@ public class DisksIT {
         REGION, "us-central1", DISK_SIZE,  diskType);
 
     assertThat(status).isEqualTo(Operation.Status.DONE);
-
   }
 }
