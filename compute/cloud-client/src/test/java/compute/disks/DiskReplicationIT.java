@@ -62,7 +62,7 @@ public class DiskReplicationIT {
       when(operation.getStatus()).thenReturn(Operation.Status.DONE);
 
       Operation.Status status = StartDiskReplication.startDiskAsyncReplication(
-              PROJECT_ID,  PRIMARY_DISK_NAME, PRIMARY_REGION, SECONDARY_DISK_NAME, SECONDARY_REGION);
+          PROJECT_ID,  PRIMARY_DISK_NAME, PRIMARY_REGION, SECONDARY_DISK_NAME, SECONDARY_REGION);
 
       verify(mockClient, times(1))
               .startAsyncReplicationAsync(any(StartAsyncReplicationRegionDiskRequest.class));

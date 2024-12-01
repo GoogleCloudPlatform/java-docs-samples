@@ -53,7 +53,7 @@ public class StartDiskReplication {
 
   // Starts asynchronous replication for the specified disk.
   public static Operation.Status startDiskAsyncReplication(String projectId, String primaryDiskName,
-                                                           String primaryDiskLocation, String secondaryDiskName, String secondaryDiskLocation)
+         String primaryDiskLocation, String secondaryDiskName, String secondaryDiskLocation)
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
     Operation response;
     if (Character.isDigit(primaryDiskLocation.charAt(primaryDiskLocation.length() - 1))) {
