@@ -259,12 +259,11 @@ public class InstanceOperationsIT {
   @Test
   public void testCreateInstanceWithRegionalDiskFromSnapshot()
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    Instance instance =
-        CreateInstanceWithRegionalDiskFromSnapshot.createInstanceWithRegionalDiskFromSnapshot(
-        PROJECT_ID, ZONE, INSTANCE_NAME, REPLICATED_DISK_NAME,
-                DISK_TYPE, DISK_SNAPSHOT_LINK, REPLICA_ZONES);
+    Operation.Status status = CreateInstanceWithRegionalDiskFromSnapshot
+                  .createInstanceWithRegionalDiskFromSnapshot(
+          PROJECT_ID, ZONE, INSTANCE_NAME, REPLICATED_DISK_NAME,
+                  DISK_TYPE, DISK_SNAPSHOT_LINK, REPLICA_ZONES);
 
-    assertThat(instance).isNotNull();
-    assertThat(instance.getName()).isEqualTo(INSTANCE_NAME);
+    assertThat(status).isEqualTo(Operation.Status.DONE);
   }
 }

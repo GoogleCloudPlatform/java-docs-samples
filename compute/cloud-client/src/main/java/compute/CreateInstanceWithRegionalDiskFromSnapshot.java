@@ -62,7 +62,7 @@ public class CreateInstanceWithRegionalDiskFromSnapshot {
   }
 
   // Creates a new VM instance with regional disk from a snapshot and specifies replica zones.
-  public static Instance createInstanceWithRegionalDiskFromSnapshot(
+  public static Operation.Status createInstanceWithRegionalDiskFromSnapshot(
       String projectId, String zone, String instanceName, String diskName,
       String diskType, String snapshotLink, List<String> replicaZones)
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
@@ -97,14 +97,13 @@ public class CreateInstanceWithRegionalDiskFromSnapshot {
               .addNetworkInterfaces(networkInterface)
               .build();
 
-      Operation operation = instancesClient.insertAsync(projectId, zone, instanceResource).get(3,
+      Operation response = instancesClient.insertAsync(projectId, zone, instanceResource).get(3,
               TimeUnit.MINUTES);
 
-      if (operation.hasError()) {
-        return null;
+      if (response.hasError()) {
+        throw new Error("Error creating instance! " + response.getError());
       }
-
-      return instancesClient.get(projectId, zone, instanceName);
+      return response.getStatus();
     }
   }
 }
