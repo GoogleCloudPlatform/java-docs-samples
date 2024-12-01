@@ -45,7 +45,7 @@ public class CreateReplicatedDisk {
     // Name of the disk you want to create.
     String diskName = "YOUR_DISK_NAME";
     // Size of the new disk in gigabytes.
-    int diskSizeGb = 200;
+    int diskSizeGb = 100;
     // The type of replicated disk. This value uses the following format:
     // "regions/{region}/diskTypes/(pd-standard|pd-ssd|pd-balanced|pd-extreme)".
     // For example: "regions/us-west3/diskTypes/pd-ssd"
