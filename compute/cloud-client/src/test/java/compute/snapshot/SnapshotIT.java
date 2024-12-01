@@ -20,9 +20,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
 import com.google.cloud.compute.v1.Operation;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -63,16 +61,11 @@ public class SnapshotIT {
   @AfterAll
   public static void cleanup()
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(stdOut));
-
     // Delete snapshot schedule created for testing.
-    DeleteSnapshotSchedule.deleteSnapshotSchedule(PROJECT_ID, REGION, SCHEDULE_NAME);
+    Operation.Status status = DeleteSnapshotSchedule
+            .deleteSnapshotSchedule(PROJECT_ID, REGION, SCHEDULE_NAME);
 
-    assertThat(stdOut.toString())
-            .contains("Snapshot schedule deleted successfully: " + SCHEDULE_NAME);
-
-    stdOut.close();
+    assertThat(status).isEqualTo(Operation.Status.DONE);
   }
 
   @Test
@@ -81,6 +74,7 @@ public class SnapshotIT {
     Operation.Status status = CreateSnapshotSchedule.createSnapshotSchedule(
             PROJECT_ID, REGION, SCHEDULE_NAME, SCHEDULE_DESCRIPTION,
             MAX_RETENTION_DAYS, STORAGE_LOCATION, ON_SOURCE_DISK_DELETE);
+
     assertThat(status).isEqualTo(Operation.Status.DONE);
   }
 }
