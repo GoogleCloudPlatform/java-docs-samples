@@ -16,6 +16,7 @@
 
 package com.google.cloud.bigtable.examples.proxy.metrics;
 
+import com.google.cloud.bigtable.examples.proxy.core.CallLabels;
 import io.grpc.Status;
 import java.time.Duration;
 

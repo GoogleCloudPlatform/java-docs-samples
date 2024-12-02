@@ -19,7 +19,7 @@ package com.google.cloud.bigtable.examples.proxy.channelpool;
 import com.google.bigtable.v2.BigtableGrpc;
 import com.google.bigtable.v2.PingAndWarmRequest;
 import com.google.bigtable.v2.PingAndWarmResponse;
-import com.google.cloud.bigtable.examples.proxy.metrics.CallLabels;
+import com.google.cloud.bigtable.examples.proxy.core.CallLabels;
 import com.google.cloud.bigtable.examples.proxy.metrics.Metrics;
 import com.google.cloud.bigtable.examples.proxy.metrics.Tracer;
 import com.google.common.util.concurrent.ListenableFuture;
