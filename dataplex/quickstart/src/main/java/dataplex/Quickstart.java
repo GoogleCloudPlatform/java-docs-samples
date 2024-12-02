@@ -146,8 +146,8 @@ public class Quickstart {
       System.out.println("Step 3: Created entry group -> " + createdEntryGroup.getName());
 
       // 4) Create Entry
-      // Wait 10 second to allow previously created resources to propagate
-      Thread.sleep(10000);
+      // Wait 30 second to allow previously created resources to propagate
+      Thread.sleep(30000);
       String aspectKey = String.format("%s.global.%s", projectId, aspectTypeId);
       Entry entry =
           Entry.newBuilder()
