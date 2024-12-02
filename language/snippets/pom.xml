@@ -24,6 +24,10 @@
   </properties>
 
   <dependencies>
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-language</artifactId>
+    </dependency>
      <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
