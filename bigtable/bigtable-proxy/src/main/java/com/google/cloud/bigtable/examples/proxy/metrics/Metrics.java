@@ -48,5 +48,7 @@ public interface Metrics {
 
   void recordChannelStateChange(ConnectivityState prevState, ConnectivityState newState);
 
+  void recordDownstreamLatency(MetricsAttributes attrs, Duration latency);
+
   interface MetricsAttributes {}
 }

@@ -95,6 +95,7 @@ public class MetricsImpl implements Closeable, Metrics {
   private final DoubleHistogram clientQueueLatencies;
   private final DoubleHistogram clientCallLatencies;
   private final DoubleHistogram clientCallFirstByteLatencies;
+  private final DoubleHistogram downstreamLatencies;
   private final LongCounter serverCallsStarted;
   private final LongHistogram requestSizes;
   private final LongHistogram responseSizes;
@@ -208,6 +209,15 @@ public class MetricsImpl implements Closeable, Metrics {
         meter
             .histogramBuilder(METRIC_PREFIX + "client.first_byte.duration")
             .setDescription("Latency from start of request until first response is received")
+            .setUnit("ms")
+            .build();
+
+    downstreamLatencies =
+        meter
+            .histogramBuilder(METRIC_PREFIX + "server.write_wait.duration")
+            .setDescription(
+                "Total amount of time spent waiting for the downstream client to be"
+                    + " ready for data")
             .setUnit("ms")
             .build();
 
@@ -350,6 +360,11 @@ public class MetricsImpl implements Closeable, Metrics {
                 Optional.ofNullable(newState).map(Enum::name).orElse("<null>"))
             .build();
     channelStateChangeCounter.add(1, attributes);
+  }
+
+  @Override
+  public void recordDownstreamLatency(MetricsAttributes attrs, Duration latency) {
+    downstreamLatencies.record(toMs(latency), unwrap(attrs));
   }
 
   private static double toMs(Duration duration) {

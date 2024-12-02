@@ -51,6 +51,7 @@ public class Tracer extends ClientStreamTracer {
   private final Stopwatch stopwatch;
   private volatile Optional<Duration> grpcQueueDuration = Optional.empty();
   private final AtomicLong responseSize = new AtomicLong();
+  private volatile Duration downstreamLatency;
 
   public Tracer(Metrics metrics, CallLabels callLabels) {
     this.metrics = metrics;
@@ -116,6 +117,7 @@ public class Tracer extends ClientStreamTracer {
 
   public void onCallFinished(Status status) {
     grpcQueueDuration.ifPresent(d -> metrics.recordQueueLatency(attrs, d));
+    metrics.recordDownstreamLatency(attrs, downstreamLatency);
     metrics.recordResponseSize(attrs, responseSize.get());
     metrics.recordCallLatency(
         attrs, status, Duration.ofMillis(stopwatch.elapsed(TimeUnit.MILLISECONDS)));
@@ -127,5 +129,9 @@ public class Tracer extends ClientStreamTracer {
 
   public CallLabels getCallLabels() {
     return callLabels;
+  }
+
+  public void onDownstreamLatency(Duration latency) {
+    downstreamLatency = downstreamLatency.plus(latency);
   }
 }
