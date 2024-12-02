@@ -33,6 +33,7 @@ import com.google.bigtable.v2.CheckAndMutateRowResponse;
 import com.google.cloud.bigtable.examples.proxy.core.CallLabels;
 import com.google.cloud.bigtable.examples.proxy.metrics.Metrics;
 import com.google.cloud.bigtable.examples.proxy.metrics.Metrics.MetricsAttributes;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import io.grpc.CallOptions;
 import io.grpc.Channel;
@@ -61,6 +62,7 @@ import java.net.URI;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
@@ -178,31 +180,15 @@ public class ServeMetricsTest {
     BigtableBlockingStub stub =
         BigtableGrpc.newBlockingStub(proxyChannel)
             .withInterceptors(
-                new ClientInterceptor() {
-                  @Override
-                  public <ReqT, RespT> ClientCall<ReqT, RespT> interceptCall(
-                      MethodDescriptor<ReqT, RespT> methodDescriptor,
-                      CallOptions callOptions,
-                      Channel channel) {
-                    return new SimpleForwardingClientCall<>(
-                        channel.newCall(methodDescriptor, callOptions)) {
-                      @Override
-                      public void start(Listener<RespT> responseListener, Metadata headers) {
-                        // inject call labels
-                        headers.put(
-                            Key.of("x-goog-request-params", Metadata.ASCII_STRING_MARSHALLER),
-                            String.format(
+                new OutgoingMetadataInterceptor(
+                    ImmutableMap.of(
+                        "x-goog-request-params",
+                        String.format(
                                 "table_name=projects/%s/instances/%s/tables/%s&app_profile_id=%s",
-                                "fake-project", "fake-instance", "fake-table", "fake-app-profile"));
-                        headers.put(
-                            Key.of("x-goog-api-client", Metadata.ASCII_STRING_MARSHALLER),
-                            "fake-client");
-
-                        super.start(responseListener, headers);
-                      }
-                    };
-                  }
-                });
+                                "fake-project", "fake-instance", "fake-table", "fake-profile")
+                            .replaceAll("/", "%2F"),
+                        "x-goog-api-client",
+                        "fake-client")));
 
     MetricsAttributes fakeAttrs = new MetricsAttributes() {};
 
@@ -234,9 +220,15 @@ public class ServeMetricsTest {
             eq(
                 CallLabels.create(
                     BigtableGrpc.getCheckAndMutateRowMethod(),
-                    Optional.of("fake-client"),
-                    Optional.of("projects/fake-project/instances/fake-instance/tables/fake-table"),
-                    Optional.of("fake-app-profile"))));
+                    Optional.of(
+                        String.format(
+                                "table_name=projects/%s/instances/%s/tables/%s&app_profile_id=%s",
+                                "fake-project", "fake-instance", "fake-table", "fake-profile")
+                            .replaceAll("/", "%2F")),
+                    Optional.empty(),
+                    Optional.empty(),
+                    Optional.empty(),
+                    Optional.of("fake-client"))));
 
     verify(mockMetrics).recordCallStarted(eq(fakeAttrs));
     verify(mockMetrics).recordCredLatency(eq(fakeAttrs), eq(Status.OK), geq(Duration.ofMillis(10)));
@@ -252,31 +244,15 @@ public class ServeMetricsTest {
     BigtableBlockingStub stub =
         BigtableGrpc.newBlockingStub(proxyChannel)
             .withInterceptors(
-                new ClientInterceptor() {
-                  @Override
-                  public <ReqT, RespT> ClientCall<ReqT, RespT> interceptCall(
-                      MethodDescriptor<ReqT, RespT> methodDescriptor,
-                      CallOptions callOptions,
-                      Channel channel) {
-                    return new SimpleForwardingClientCall<>(
-                        channel.newCall(methodDescriptor, callOptions)) {
-                      @Override
-                      public void start(Listener<RespT> responseListener, Metadata headers) {
-                        // inject call labels
-                        headers.put(
-                            Key.of("x-goog-request-params", Metadata.ASCII_STRING_MARSHALLER),
-                            String.format(
+                new OutgoingMetadataInterceptor(
+                    ImmutableMap.of(
+                        "x-goog-request-params",
+                        String.format(
                                 "table_name=projects/%s/instances/%s/tables/%s&app_profile_id=%s",
-                                "fake-project", "fake-instance", "fake-table", "fake-app-profile"));
-                        headers.put(
-                            Key.of("x-goog-api-client", Metadata.ASCII_STRING_MARSHALLER),
-                            "fake-client");
-
-                        super.start(responseListener, headers);
-                      }
-                    };
-                  }
-                });
+                                "fake-project", "fake-instance", "fake-table", "fake-profile")
+                            .replaceAll("/", "%2F"),
+                        "x-goog-api-client",
+                        "fake-client")));
 
     MetricsAttributes fakeAttrs = new MetricsAttributes() {};
     doReturn(fakeAttrs).when(mockMetrics).createAttributes(any());
@@ -292,9 +268,15 @@ public class ServeMetricsTest {
             eq(
                 CallLabels.create(
                     BigtableGrpc.getCheckAndMutateRowMethod(),
-                    Optional.of("fake-client"),
-                    Optional.of("projects/fake-project/instances/fake-instance/tables/fake-table"),
-                    Optional.of("fake-app-profile"))));
+                    Optional.of(
+                        String.format(
+                                "table_name=projects/%s/instances/%s/tables/%s&app_profile_id=%s",
+                                "fake-project", "fake-instance", "fake-table", "fake-profile")
+                            .replaceAll("/", "%2F")),
+                    Optional.empty(),
+                    Optional.empty(),
+                    Optional.empty(),
+                    Optional.of("fake-client"))));
 
     verify(mockMetrics).recordGfeHeaderMissing(eq(fakeAttrs));
   }
@@ -304,31 +286,15 @@ public class ServeMetricsTest {
     final BigtableBlockingStub stub =
         BigtableGrpc.newBlockingStub(proxyChannel)
             .withInterceptors(
-                new ClientInterceptor() {
-                  @Override
-                  public <ReqT, RespT> ClientCall<ReqT, RespT> interceptCall(
-                      MethodDescriptor<ReqT, RespT> methodDescriptor,
-                      CallOptions callOptions,
-                      Channel channel) {
-                    return new SimpleForwardingClientCall<>(
-                        channel.newCall(methodDescriptor, callOptions)) {
-                      @Override
-                      public void start(Listener<RespT> responseListener, Metadata headers) {
-                        // inject call labels
-                        headers.put(
-                            Key.of("x-goog-request-params", Metadata.ASCII_STRING_MARSHALLER),
-                            String.format(
+                new OutgoingMetadataInterceptor(
+                    ImmutableMap.of(
+                        "x-goog-request-params",
+                        String.format(
                                 "table_name=projects/%s/instances/%s/tables/%s&app_profile_id=%s",
-                                "fake-project", "fake-instance", "fake-table", "fake-app-profile"));
-                        headers.put(
-                            Key.of("x-goog-api-client", Metadata.ASCII_STRING_MARSHALLER),
-                            "fake-client");
-
-                        super.start(responseListener, headers);
-                      }
-                    };
-                  }
-                });
+                                "fake-project", "fake-instance", "fake-table", "fake-profile")
+                            .replaceAll("/", "%2F"),
+                        "x-goog-api-client",
+                        "fake-client")));
 
     doAnswer(
             invocation -> {
@@ -363,9 +329,15 @@ public class ServeMetricsTest {
             eq(
                 CallLabels.create(
                     BigtableGrpc.getCheckAndMutateRowMethod(),
-                    Optional.of("fake-client"),
-                    Optional.of("projects/fake-project/instances/fake-instance/tables/fake-table"),
-                    Optional.of("fake-app-profile"))));
+                    Optional.of(
+                        String.format(
+                                "table_name=projects/%s/instances/%s/tables/%s&app_profile_id=%s",
+                                "fake-project", "fake-instance", "fake-table", "fake-profile")
+                            .replaceAll("/", "%2F")),
+                    Optional.empty(),
+                    Optional.empty(),
+                    Optional.empty(),
+                    Optional.of("fake-client"))));
 
     verify(mockMetrics).recordCallStarted(eq(fakeAttrs));
     verify(mockMetrics).recordCredLatency(eq(fakeAttrs), eq(Status.OK), geq(Duration.ofMillis(10)));
@@ -442,6 +414,28 @@ public class ServeMetricsTest {
     @Override
     public void refresh() throws IOException {
       // noop
+    }
+  }
+
+  private static class OutgoingMetadataInterceptor implements ClientInterceptor {
+    private final Map<String, String> metadata;
+
+    private OutgoingMetadataInterceptor(Map<String, String> metadata) {
+      this.metadata = metadata;
+    }
+
+    @Override
+    public <ReqT, RespT> ClientCall<ReqT, RespT> interceptCall(
+        MethodDescriptor<ReqT, RespT> methodDescriptor, CallOptions callOptions, Channel channel) {
+      return new SimpleForwardingClientCall<>(channel.newCall(methodDescriptor, callOptions)) {
+        @Override
+        public void start(Listener<RespT> responseListener, Metadata headers) {
+          for (Entry<String, String> entry : metadata.entrySet()) {
+            headers.put(Key.of(entry.getKey(), Metadata.ASCII_STRING_MARSHALLER), entry.getValue());
+          }
+          super.start(responseListener, headers);
+        }
+      };
     }
   }
 }
