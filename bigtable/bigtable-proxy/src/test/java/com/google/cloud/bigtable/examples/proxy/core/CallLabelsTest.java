@@ -21,11 +21,9 @@ import static com.google.common.truth.Truth.assertThat;
 
 import com.google.bigtable.v2.BigtableGrpc;
 import com.google.common.truth.FailureMetadata;
-import com.google.common.truth.MapSubject;
 import com.google.common.truth.Subject;
 import io.grpc.Metadata;
 import io.grpc.Metadata.Key;
-import io.opentelemetry.api.common.AttributeKey;
 import java.util.Optional;
 import org.jspecify.annotations.Nullable;
 import org.junit.Test;
@@ -50,14 +48,6 @@ public class CallLabelsTest {
     assertThat(callLabels.getAppProfileId()).isEqualTo(Optional.of("a"));
     assertThat(callLabels.getResourceName())
         .isEqualTo(Optional.of("projects/p/instances/i/tables/t"));
-
-    CallLabelsSubject.assertThat(callLabels)
-        .hasOtelAttributesThat()
-        .containsAtLeast(
-            AttributeKey.stringKey("api_client"), "some-client",
-            AttributeKey.stringKey("resource"), "projects/p/instances/i/tables/t",
-            AttributeKey.stringKey("app_profile"), "a",
-            AttributeKey.stringKey("method"), "google.bigtable.v2.Bigtable/MutateRow");
   }
 
   @Test
@@ -68,9 +58,6 @@ public class CallLabelsTest {
 
     assertThat(callLabels.getResourceName())
         .isEqualTo(Optional.of("projects/p/instances/i/tables/t"));
-    CallLabelsSubject.assertThat(callLabels)
-        .hasOtelAttributesThat()
-        .containsAtLeast(AttributeKey.stringKey("resource"), "projects/p/instances/i/tables/t");
   }
 
   @Test
@@ -79,13 +66,6 @@ public class CallLabelsTest {
     CallLabels callLabels = CallLabels.create(BigtableGrpc.getMutateRowMethod(), md);
 
     assertThat(callLabels.getResourceName()).isEqualTo(Optional.empty());
-    CallLabelsSubject.assertThat(callLabels)
-        .hasOtelAttributesThat()
-        .containsAtLeast(
-            AttributeKey.stringKey("api_client"), "<missing>",
-            AttributeKey.stringKey("resource"), "<missing>",
-            AttributeKey.stringKey("app_profile"), "<missing>",
-            AttributeKey.stringKey("method"), "google.bigtable.v2.Bigtable/MutateRow");
   }
 
   @Test
@@ -95,9 +75,6 @@ public class CallLabelsTest {
     CallLabels callLabels = CallLabels.create(BigtableGrpc.getMutateRowMethod(), md);
 
     assertThat(callLabels.getResourceName()).isEqualTo(Optional.empty());
-    CallLabelsSubject.assertThat(callLabels)
-        .hasOtelAttributesThat()
-        .containsAtLeast(AttributeKey.stringKey("resource"), "<missing>");
   }
 
   @Test
@@ -107,9 +84,6 @@ public class CallLabelsTest {
     CallLabels callLabels = CallLabels.create(BigtableGrpc.getMutateRowMethod(), md);
 
     assertThat(callLabels.getResourceName()).isEqualTo(Optional.empty());
-    CallLabelsSubject.assertThat(callLabels)
-        .hasOtelAttributesThat()
-        .containsAtLeast(AttributeKey.stringKey("resource"), "<missing>");
   }
 
   @Test
@@ -119,9 +93,6 @@ public class CallLabelsTest {
     CallLabels callLabels = CallLabels.create(BigtableGrpc.getMutateRowMethod(), md);
 
     assertThat(callLabels.getResourceName()).isEqualTo(Optional.empty());
-    CallLabelsSubject.assertThat(callLabels)
-        .hasOtelAttributesThat()
-        .containsAtLeast(AttributeKey.stringKey("resource"), "<missing>");
   }
 
   private static class CallLabelsSubject extends Subject {
@@ -138,10 +109,6 @@ public class CallLabelsTest {
 
     public static CallLabelsSubject assertThat(CallLabels callLabels) {
       return assertAbout(callLabels()).that(callLabels);
-    }
-
-    public MapSubject hasOtelAttributesThat() {
-      return check("getOtelAttributes()").that(actual.getOtelAttributes().asMap());
     }
 
     public void hasMethodName(String method) {

@@ -23,28 +23,33 @@ import java.time.Duration;
 public class NoopMetrics implements Metrics {
 
   @Override
-  public void recordCallStarted(CallLabels labels) {}
+  public MetricsAttributes createAttributes(CallLabels callLabels) {
+    return null;
+  }
 
   @Override
-  public void recordCredLatency(CallLabels labels, Status status, Duration duration) {}
+  public void recordCallStarted(MetricsAttributes attrs) {}
 
   @Override
-  public void recordQueueLatency(CallLabels labels, Duration duration) {}
+  public void recordCredLatency(MetricsAttributes attrs, Status status, Duration duration) {}
 
   @Override
-  public void recordRequestSize(CallLabels labels, long size) {}
+  public void recordQueueLatency(MetricsAttributes attrs, Duration duration) {}
 
   @Override
-  public void recordResponseSize(CallLabels labels, long size) {}
+  public void recordRequestSize(MetricsAttributes attrs, long size) {}
 
   @Override
-  public void recordGfeLatency(CallLabels labels, Duration duration) {}
+  public void recordResponseSize(MetricsAttributes attrs, long size) {}
 
   @Override
-  public void recordGfeHeaderMissing(CallLabels labels) {}
+  public void recordGfeLatency(MetricsAttributes attrs, Duration duration) {}
 
   @Override
-  public void recordCallLatency(CallLabels labels, Status status, Duration duration) {}
+  public void recordGfeHeaderMissing(MetricsAttributes attrs) {}
+
+  @Override
+  public void recordCallLatency(MetricsAttributes attrs, Status status, Duration duration) {}
 
   @Override
   public void updateChannelCount(int delta) {}

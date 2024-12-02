@@ -17,26 +17,30 @@
 package com.google.cloud.bigtable.examples.proxy.metrics;
 
 import com.google.cloud.bigtable.examples.proxy.core.CallLabels;
+import com.google.cloud.bigtable.examples.proxy.metrics.Metrics.MetricsAttributes;
 import io.grpc.Status;
 import java.time.Duration;
 
 public interface Metrics {
+  MetricsAttributes createAttributes(CallLabels callLabels);
 
-  void recordCallStarted(CallLabels labels);
+  void recordCallStarted(MetricsAttributes attrs);
 
-  void recordCredLatency(CallLabels labels, Status status, Duration duration);
+  void recordCredLatency(MetricsAttributes attrs, Status status, Duration duration);
 
-  void recordQueueLatency(CallLabels labels, Duration duration);
+  void recordQueueLatency(MetricsAttributes attrs, Duration duration);
 
-  void recordRequestSize(CallLabels labels, long size);
+  void recordRequestSize(MetricsAttributes attrs, long size);
 
-  void recordResponseSize(CallLabels labels, long size);
+  void recordResponseSize(MetricsAttributes attrs, long size);
 
-  void recordGfeLatency(CallLabels labels, Duration duration);
+  void recordGfeLatency(MetricsAttributes attrs, Duration duration);
 
-  void recordGfeHeaderMissing(CallLabels labels);
+  void recordGfeHeaderMissing(MetricsAttributes attrs);
 
-  void recordCallLatency(CallLabels labels, Status status, Duration duration);
+  void recordCallLatency(MetricsAttributes attrs, Status status, Duration duration);
 
   void updateChannelCount(int delta);
+
+  interface MetricsAttributes {}
 }
