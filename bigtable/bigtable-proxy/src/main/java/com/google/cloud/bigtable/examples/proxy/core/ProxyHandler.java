@@ -16,7 +16,6 @@
 
 package com.google.cloud.bigtable.examples.proxy.core;
 
-import com.google.cloud.bigtable.examples.proxy.metrics.CallLabels;
 import com.google.cloud.bigtable.examples.proxy.metrics.Metrics;
 import com.google.cloud.bigtable.examples.proxy.metrics.Tracer;
 import io.grpc.CallCredentials;

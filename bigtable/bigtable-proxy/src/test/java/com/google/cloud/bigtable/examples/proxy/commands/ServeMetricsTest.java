@@ -29,7 +29,7 @@ import com.google.bigtable.v2.BigtableGrpc.BigtableBlockingStub;
 import com.google.bigtable.v2.BigtableGrpc.BigtableImplBase;
 import com.google.bigtable.v2.CheckAndMutateRowRequest;
 import com.google.bigtable.v2.CheckAndMutateRowResponse;
-import com.google.cloud.bigtable.examples.proxy.metrics.CallLabels;
+import com.google.cloud.bigtable.examples.proxy.core.CallLabels;
 import com.google.cloud.bigtable.examples.proxy.metrics.Metrics;
 import com.google.common.collect.Lists;
 import io.grpc.CallOptions;

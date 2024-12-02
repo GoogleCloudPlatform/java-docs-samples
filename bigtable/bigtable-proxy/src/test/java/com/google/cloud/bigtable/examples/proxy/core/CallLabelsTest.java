@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.cloud.bigtable.examples.proxy.metrics;
+package com.google.cloud.bigtable.examples.proxy.core;
 
 import static com.google.common.truth.Truth.assertAbout;
 import static com.google.common.truth.Truth.assertThat;

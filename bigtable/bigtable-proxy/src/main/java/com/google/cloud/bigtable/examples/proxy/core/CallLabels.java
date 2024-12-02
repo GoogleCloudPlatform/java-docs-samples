@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package com.google.cloud.bigtable.examples.proxy.metrics;
+package com.google.cloud.bigtable.examples.proxy.core;
 
 import com.google.auto.value.AutoValue;
+import com.google.cloud.bigtable.examples.proxy.metrics.MetricsImpl;
 import io.grpc.Metadata;
 import io.grpc.Metadata.Key;
 import io.grpc.MethodDescriptor;

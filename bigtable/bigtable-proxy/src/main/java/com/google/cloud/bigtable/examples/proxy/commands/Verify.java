@@ -58,7 +58,6 @@ import io.opentelemetry.sdk.metrics.internal.data.ImmutableGaugeData;
 import io.opentelemetry.sdk.metrics.internal.data.ImmutableLongPointData;
 import io.opentelemetry.sdk.metrics.internal.data.ImmutableMetricData;
 import io.opentelemetry.sdk.resources.Resource;
-import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -189,7 +188,6 @@ public class Verify implements Callable<Void> {
   void checkMetrics(Credentials creds) {
     Instant end = Instant.now().truncatedTo(ChronoUnit.MINUTES);
     Instant start = end.minus(Duration.ofMinutes(1));
-
 
     GCPResourceProvider resourceProvider = new GCPResourceProvider();
     Resource resource = Resource.create(resourceProvider.getAttributes());
