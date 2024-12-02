@@ -31,22 +31,23 @@ public class GetSnapshotSchedule {
     // Name of the region in which your snapshot schedule is located.
     String region = "us-central1";
     // Name of your snapshot schedule.
-    String scheduleName = "YOUR_SCHEDULE_NAME";
+    String snapshotScheduleName = "YOUR_SCHEDULE_NAME";
 
-    getSnapshotSchedule(projectId, region, scheduleName);
+    getSnapshotSchedule(projectId, region, snapshotScheduleName);
   }
 
   // Retrieves the details of a snapshot schedule.
   public static ResourcePolicy getSnapshotSchedule(
-        String projectId, String region, String scheduleName) throws IOException {
+        String projectId, String region, String snapshotScheduleName) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (ResourcePoliciesClient resourcePoliciesClient = ResourcePoliciesClient.create()) {
       GetResourcePolicyRequest request = GetResourcePolicyRequest.newBuilder()
               .setProject(projectId)
               .setRegion(region)
-              .setResourcePolicy(scheduleName)
+              .setResourcePolicy(snapshotScheduleName)
               .build();
+
       return resourcePoliciesClient.get(request);
     }
   }
