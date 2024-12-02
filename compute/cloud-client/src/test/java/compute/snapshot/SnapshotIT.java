@@ -18,22 +18,27 @@ package compute.snapshot;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.google.cloud.compute.v1.Operation;
+import com.google.cloud.compute.v1.ResourcePolicy;
 import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 @Timeout(value = 6, unit = TimeUnit.MINUTES)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class SnapshotIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String ZONE = "asia-south1-a";
@@ -58,22 +63,33 @@ public class SnapshotIT {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
   }
 
-  @AfterAll
-  public static void cleanup()
-          throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    // Delete snapshot schedule created for testing.
-    Operation.Status status = DeleteSnapshotSchedule
-            .deleteSnapshotSchedule(PROJECT_ID, REGION, SCHEDULE_NAME);
-
-    assertThat(status).isEqualTo(Operation.Status.DONE);
-  }
-
   @Test
+  @Order(1)
   public void testCreateSnapshotScheduleHourly()
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
     Operation.Status status = CreateSnapshotSchedule.createSnapshotSchedule(
             PROJECT_ID, REGION, SCHEDULE_NAME, SCHEDULE_DESCRIPTION,
             MAX_RETENTION_DAYS, STORAGE_LOCATION, ON_SOURCE_DISK_DELETE);
+
+    assertThat(status).isEqualTo(Operation.Status.DONE);
+  }
+
+  @Test
+  @Order(2)
+  public void testGetSnapshotSchedule() throws IOException {
+
+    ResourcePolicy resourcePolicy = GetSnapshotSchedule.getSnapshotSchedule(
+            PROJECT_ID, REGION, SCHEDULE_NAME);
+    assertNotNull(resourcePolicy);
+    assertThat(resourcePolicy.getName()).isEqualTo(SCHEDULE_NAME);
+  }
+
+  @Test
+  @Order(3)
+  public void testDeleteSnapshotSchedule()
+          throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    Operation.Status status = DeleteSnapshotSchedule
+            .deleteSnapshotSchedule(PROJECT_ID, REGION, SCHEDULE_NAME);
 
     assertThat(status).isEqualTo(Operation.Status.DONE);
   }
