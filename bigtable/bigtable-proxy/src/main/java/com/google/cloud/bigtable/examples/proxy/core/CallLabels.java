@@ -41,6 +41,10 @@ import org.slf4j.LoggerFactory;
  *
  * <ul>
  *   <li>{@code x-goog-request-params} - contains the resource and app profile id
+ *   <li>{@code google-cloud-resource-prefix} - the previous version of {@code
+ *       x-goog-request-params}, used as a fallback
+ *   <li>{@code x-goog-cbt-cookie-routing} - an opaque blob used to routing RPCs on the serverside
+ *   <li>{@code bigtable-features} - the client's available features
  *   <li>{@code x-goog-api-client} - contains the client info of the downstream client
  * </ul>
  */
@@ -111,6 +115,7 @@ public abstract class CallLabels {
         method, requestParams, legacyResourcePrefix, routingCookie, encodedFeatures, apiClient);
   }
 
+  @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
   @VisibleForTesting
   public static CallLabels create(
       MethodDescriptor<?, ?> method,
@@ -129,6 +134,12 @@ public abstract class CallLabels {
         apiClient);
   }
 
+  /**
+   * Extracts the resource name, will use {@link #getRequestParams()} if present, otherwise falls
+   * back on {@link #getLegacyResourcePrefix()}. If neither is present, {@link Optional#empty()} is
+   * returned. If there was an issue extracting, a {@link ParsingException} is thrown. In the
+   * primary case, the value will be url decoded.
+   */
   public Optional<String> extractResourceName() throws ParsingException {
     if (getRequestParams().isEmpty()) {
       return getLegacyResourcePrefix();
@@ -167,17 +178,19 @@ public abstract class CallLabels {
     return resourceName.map(ResourceName::getValue);
   }
 
-  private static Optional<ResourceNameType> findType(String encodedKey) throws ParsingException {
-    String decodedKey = percentDecode(encodedKey);
-
+  private static Optional<ResourceNameType> findType(String key) {
     for (ResourceNameType type : ResourceNameType.values()) {
-      if (type.name.equals(decodedKey)) {
+      if (type.name.equals(key)) {
         return Optional.of(type);
       }
     }
     return Optional.empty();
   }
 
+  /**
+   * Extracts the app profile id from {@link #getRequestParams()}. Returns {@link Optional#empty()}
+   * if the key is missing. The value will be url decoded.
+   */
   public Optional<String> extractAppProfileId() throws ParsingException {
     String requestParams = getRequestParams().orElse("");
 
@@ -200,13 +213,17 @@ public abstract class CallLabels {
     }
   }
 
+  /**
+   * Can be derived from {@link CallLabels} to create a priming request to keep the channel active
+   * for future RPCs.
+   */
   @AutoValue
   public abstract static class PrimingKey {
-    abstract Map<String, String> getMetadata();
+    protected abstract Map<String, String> getMetadata();
 
-    abstract String getName();
+    protected abstract String getName();
 
-    abstract Optional<String> getAppProfileId();
+    protected abstract Optional<String> getAppProfileId();
 
     public static Optional<PrimingKey> from(CallLabels labels) throws ParsingException {
       final ImmutableMap.Builder<String, String> md = ImmutableMap.builder();

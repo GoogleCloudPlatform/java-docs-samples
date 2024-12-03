@@ -37,7 +37,7 @@ public class ResourceCollector {
     try {
       PrimingKey.from(labels).ifPresent(k -> primingKeys.put(k, true));
     } catch (ParsingException e) {
-      LOG.atWarn().log("Failed to collect priming request for {}", labels, e);
+      LOG.warn("Failed to collect priming request for {}", labels, e);
     }
   }
 

@@ -32,6 +32,12 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * RPC lifecycle tracer.
+ *
+ * <p>It hooks into both gRPC RPC lifecycle and this application. It combines the extracted {@link
+ * CallLabels} with {@link Metrics} recording.
+ */
 public class Tracer extends ClientStreamTracer {
   private static final Key<Tracer> CALL_OPTION_KEY = Key.create("bigtable-proxy-tracer");
 

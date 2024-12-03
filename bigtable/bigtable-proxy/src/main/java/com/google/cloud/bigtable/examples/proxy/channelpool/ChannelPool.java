@@ -47,7 +47,7 @@ import javax.annotation.Nullable;
  * A {@link ManagedChannel} that will send requests round-robin via a set of channels.
  *
  * <p>In addition to spreading requests over a set of child connections, the pool will also actively
- * manage the lifecycle of the channels. Currently lifecycle management is limited to pre-emptively
+ * manage the lifecycle of the channels. Currently, lifecycle management is limited to pre-emptively
  * replacing channels every hour. In the future it will dynamically size the pool based on number of
  * outstanding requests.
  *

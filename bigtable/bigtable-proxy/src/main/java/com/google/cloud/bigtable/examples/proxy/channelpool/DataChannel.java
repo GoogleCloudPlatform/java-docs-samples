@@ -49,6 +49,10 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Decorator for a Bigtable data plane connection to add channel warming via PingAndWarm. Channel
+ * warming will happen on creation and then every 3 minutes.
+ */
 public class DataChannel extends ManagedChannel {
   private static final Logger LOGGER = LoggerFactory.getLogger(DataChannel.class);
 
@@ -110,6 +114,8 @@ public class DataChannel extends ManagedChannel {
     if (primingKeys.isEmpty()) {
       return;
     }
+
+    LOGGER.debug("Warming channel {} with: {}", inner, primingKeys);
 
     List<ListenableFuture<PingAndWarmResponse>> futures =
         primingKeys.stream().map(this::sendPingAndWarm).collect(Collectors.toList());
