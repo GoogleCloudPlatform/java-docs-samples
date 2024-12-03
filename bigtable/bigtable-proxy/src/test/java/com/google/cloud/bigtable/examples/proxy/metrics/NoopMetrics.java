@@ -17,6 +17,7 @@
 package com.google.cloud.bigtable.examples.proxy.metrics;
 
 import com.google.cloud.bigtable.examples.proxy.core.CallLabels;
+import io.grpc.ConnectivityState;
 import io.grpc.Status;
 import java.time.Duration;
 
@@ -56,4 +57,7 @@ public class NoopMetrics implements Metrics {
 
   @Override
   public void updateChannelCount(int delta) {}
+
+  @Override
+  public void recordChannelStateChange(ConnectivityState prevState, ConnectivityState newState) {}
 }
