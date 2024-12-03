@@ -87,6 +87,7 @@ public class MetricsImpl implements Closeable, Metrics {
   private final DoubleHistogram clientCredLatencies;
   private final DoubleHistogram clientQueueLatencies;
   private final DoubleHistogram clientCallLatencies;
+  private final DoubleHistogram clientCallFirstByteLatencies;
   private final LongCounter serverCallsStarted;
   private final LongHistogram requestSizes;
   private final LongHistogram responseSizes;
@@ -192,6 +193,13 @@ public class MetricsImpl implements Closeable, Metrics {
         meter
             .histogramBuilder(METRIC_PREFIX + "client.call.duration")
             .setDescription("Total duration of how long the outbound call took")
+            .setUnit("ms")
+            .build();
+
+    clientCallFirstByteLatencies =
+        meter
+            .histogramBuilder(METRIC_PREFIX + "client.first_byte.duration")
+            .setDescription("Latency from start of request until first response is received")
             .setUnit("ms")
             .build();
 
@@ -304,6 +312,11 @@ public class MetricsImpl implements Closeable, Metrics {
 
     clientCallLatencies.record(duration.toMillis(), attributes);
     numOutstandingRpcs.decrementAndGet();
+  }
+
+  @Override
+  public void recordFirstByteLatency(MetricsAttributes attrs, Duration duration) {
+    clientCallFirstByteLatencies.record(duration.toMillis(), unwrap(attrs));
   }
 
   @Override
