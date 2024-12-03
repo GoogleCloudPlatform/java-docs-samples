@@ -292,12 +292,12 @@ public class MetricsImpl implements Closeable, Metrics {
   public void recordCredLatency(MetricsAttributes attrs, Status status, Duration duration) {
     Attributes attributes =
         unwrap(attrs).toBuilder().put(STATUS_KEY, status.getCode().name()).build();
-    clientCredLatencies.record(duration.toMillis(), attributes);
+    clientCredLatencies.record(toMs(duration), attributes);
   }
 
   @Override
   public void recordQueueLatency(MetricsAttributes attrs, Duration duration) {
-    clientQueueLatencies.record(duration.toMillis(), unwrap(attrs));
+    clientQueueLatencies.record(toMs(duration), unwrap(attrs));
   }
 
   @Override
@@ -312,7 +312,7 @@ public class MetricsImpl implements Closeable, Metrics {
 
   @Override
   public void recordGfeLatency(MetricsAttributes attrs, Duration duration) {
-    gfeLatency.record(duration.toMillis(), unwrap(attrs));
+    gfeLatency.record(toMs(duration), unwrap(attrs));
   }
 
   @Override
@@ -325,13 +325,13 @@ public class MetricsImpl implements Closeable, Metrics {
     Attributes attributes =
         unwrap(attrs).toBuilder().put(STATUS_KEY, status.getCode().name()).build();
 
-    clientCallLatencies.record(duration.toMillis(), attributes);
+    clientCallLatencies.record(toMs(duration), attributes);
     numOutstandingRpcs.decrementAndGet();
   }
 
   @Override
   public void recordFirstByteLatency(MetricsAttributes attrs, Duration duration) {
-    clientCallFirstByteLatencies.record(duration.toMillis(), unwrap(attrs));
+    clientCallFirstByteLatencies.record(toMs(duration), unwrap(attrs));
   }
 
   @Override
@@ -350,6 +350,10 @@ public class MetricsImpl implements Closeable, Metrics {
                 Optional.ofNullable(newState).map(Enum::name).orElse("<null>"))
             .build();
     channelStateChangeCounter.add(1, attributes);
+  }
+
+  private static double toMs(Duration duration) {
+    return duration.toNanos() / 1_000_000.0;
   }
 
   private static Attributes unwrap(MetricsAttributes wrapped) {
