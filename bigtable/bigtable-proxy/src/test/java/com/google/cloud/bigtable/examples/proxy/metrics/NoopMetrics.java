@@ -56,6 +56,9 @@ public class NoopMetrics implements Metrics {
   public void recordFirstByteLatency(MetricsAttributes attrs, Duration duration) {}
 
   @Override
+  public void recordDownstreamLatency(MetricsAttributes attrs, Duration latency) {}
+
+  @Override
   public void updateChannelCount(int delta) {}
 
   @Override
