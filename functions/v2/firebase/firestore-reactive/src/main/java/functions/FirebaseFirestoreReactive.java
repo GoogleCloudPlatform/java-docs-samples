@@ -59,8 +59,15 @@ public class FirebaseFirestoreReactive implements CloudEventsFunction {
       return;
     }
 
-    DocumentEventData firestoreEventData = DocumentEventData
-        .parseFrom(event.getData().toBytes());
+    DocumentEventData.Builder builder = DocumentEventData.newBuilder();
+    String json = new String(event.getData().toBytes());
+
+    // If you do not ignore unknown fields, then JsonFormat.Parser returns an
+    // error when encountering a new or unknown field. Note that you might lose
+    // some event data in the unmarshaling process by ignoring unknown fields.
+    JsonFormat.Parser parser = JsonFormat.parser().ignoringUnknownFields();
+    parser.merge(json, builder);
+    DocumentEventData firestoreEventData = builder.build();
 
     // Get the fields from the post-operation document snapshot
     // https://firebase.google.com/docs/firestore/reference/rest/v1/projects.databases.documents#Document
