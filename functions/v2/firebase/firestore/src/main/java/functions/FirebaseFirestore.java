@@ -21,7 +21,6 @@ import com.google.cloud.functions.CloudEventsFunction;
 import com.google.events.cloud.firestore.v1.DocumentEventData;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.util.JsonFormat;
-
 import io.cloudevents.CloudEvent;
 import java.util.logging.Logger;
 
