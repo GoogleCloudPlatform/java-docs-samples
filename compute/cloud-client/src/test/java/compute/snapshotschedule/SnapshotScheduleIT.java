@@ -22,9 +22,6 @@ import static com.google.common.truth.Truth.assertWithMessage;
 import com.google.cloud.compute.v1.Operation;
 import compute.disks.CreateEmptyDisk;
 import compute.disks.DeleteDisk;
-import compute.snapshot.AttachSnapshotScheduleToDisk;
-import compute.snapshot.CreateSnapshotSchedule;
-import compute.snapshot.DeleteSnapshotSchedule;
 import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
@@ -105,6 +102,16 @@ public class SnapshotScheduleIT {
 
   @Test
   @Order(3)
+  public void testRemoveSnapshotScheduleFromDisk()
+          throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    Operation.Status status = RemoveSnapshotScheduleFromDisk.removeSnapshotScheduleFromDisk(
+            PROJECT_ID, ZONE, DISK_NAME, REGION, SCHEDULE_FOR_DISK);
+
+    assertThat(status).isEqualTo(Operation.Status.DONE);
+  }
+
+  @Test
+  @Order(4)
   public void testDeleteSnapshotSchedule()
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
     Operation.Status status = DeleteSnapshotSchedule
