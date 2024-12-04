@@ -44,10 +44,10 @@ public class EditSnapshotSchedule {
     // Name of the snapshot schedule you want to update.
     String snapshotScheduleName = "YOUR_SCHEDULE_NAME";
 
-    editSnapshotScheduleAsync(projectId, region, snapshotScheduleName);
+    editSnapshotSchedule(projectId, region, snapshotScheduleName);
   }
 
-  public static Operation.Status editSnapshotScheduleAsync(
+  public static Operation.Status editSnapshotSchedule(
           String projectId, String region, String snapshotScheduleName)
           throws IOException, InterruptedException, ExecutionException, TimeoutException {
     String description = "Updated description11";
@@ -57,20 +57,21 @@ public class EditSnapshotSchedule {
               .setDay("Tuesday")
               .setStartTime("09:00")
               .build();
-      ResourcePolicyWeeklyCycle weeklySchedule = ResourcePolicyWeeklyCycle.newBuilder()
-              .addDayOfWeeks(dayOfWeek)
-              .build();
+    ResourcePolicyWeeklyCycle weeklySchedule = ResourcePolicyWeeklyCycle.newBuilder()
+            .addDayOfWeeks(dayOfWeek)
+            .build();
     String onSourceDiskDelete = "apply-retention-policy";
     int maxRetentionDays = 3;
 
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (ResourcePoliciesClient resourcePoliciesClient = ResourcePoliciesClient.create()) {
-       ResourcePolicy existingSchedule = resourcePoliciesClient.get(projectId, region, snapshotScheduleName);
+      ResourcePolicy existingSchedule = resourcePoliciesClient
+              .get(projectId, region, snapshotScheduleName);
 
       ResourcePolicySnapshotSchedulePolicySnapshotProperties.Builder snapshotProperties =
               existingSchedule.getSnapshotSchedulePolicy().getSnapshotProperties().toBuilder();
-        snapshotProperties.putAllLabels(snapshotLabels);
+      snapshotProperties.putAllLabels(snapshotLabels);
 
       ResourcePolicySnapshotSchedulePolicySchedule.Builder scheduler =
               existingSchedule.getSnapshotSchedulePolicy().getSchedule().toBuilder();
@@ -102,11 +103,11 @@ public class EditSnapshotSchedule {
 
       Operation response = resourcePoliciesClient.patchAsync(request).get(3, TimeUnit.MINUTES);
 
-        if (response.hasError()) {
-          System.err.printf("Snapshot schedule update failed: %s%n", response.getError());
-          return null;
-        }
-        return response.getStatus();
+      if (response.hasError()) {
+        System.err.printf("Snapshot schedule update failed: %s%n", response.getError());
+        return null;
+      }
+      return response.getStatus();
     }
   }
 }
