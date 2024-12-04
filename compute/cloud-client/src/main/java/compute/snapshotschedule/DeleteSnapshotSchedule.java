@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package compute.snapshot;
+package compute.snapshotschedule;
 
 // [START compute_snapshot_schedule_delete]
 import com.google.cloud.compute.v1.Operation;
