@@ -21,7 +21,6 @@ There are two versions of Cloud Run functions:
 * [Slack](slack/)
 * [OCR tutorial](v2/ocr/)
 * [ImageMagick](v2/imagemagick/)
-* [CI/CD setup](ci_cd/)
 
 ## Running Functions Locally
 The [Java Functions Framework](https://github.com/GoogleCloudPlatform/functions-framework-java)

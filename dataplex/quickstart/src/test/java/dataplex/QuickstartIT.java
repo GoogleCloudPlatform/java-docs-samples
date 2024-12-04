@@ -109,9 +109,7 @@ public class QuickstartIT {
                 "Step 5: Retrieved entry -> projects/%s/locations/%s/entryGroups/%s/entries/%s",
                 PROJECT_ID, LOCATION, ENTRY_GROUP_ID, ENTRY_ID),
             // Step 6 - result from Search
-            String.format(
-                "projects/%s/locations/%s/entryGroups/%s/entries/%s",
-                PROJECT_ID, LOCATION, ENTRY_GROUP_ID, ENTRY_ID),
+            "Entries found in Search:",
             "Step 7: Successfully cleaned up resources");
 
     Quickstart.quickstart(
