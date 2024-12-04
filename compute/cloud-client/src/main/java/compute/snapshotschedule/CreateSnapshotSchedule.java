@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package compute.snapshot;
+package compute.snapshotschedule;
 
 // [START compute_snapshot_schedule_create]
 import com.google.cloud.compute.v1.Operation;
@@ -39,7 +39,7 @@ public class CreateSnapshotSchedule {
     // Name of the region in which you want to create the snapshot schedule.
     String region = "us-central1";
     // Name of the snapshot schedule you want to create.
-    String scheduleName = "YOUR_SCHEDULE_NAME";
+    String snapshotScheduleName = "YOUR_SCHEDULE_NAME";
     // Description of the snapshot schedule.
     String scheduleDescription = "YOUR_SCHEDULE_DESCRIPTION";
     // Maximum number of days to retain snapshots.
@@ -51,13 +51,13 @@ public class CreateSnapshotSchedule {
     // Determines what happens to your snapshots if the source disk is deleted.
     String onSourceDiskDelete = "KEEP_AUTO_SNAPSHOTS";
 
-    createSnapshotSchedule(projectId, region, scheduleName, scheduleDescription, maxRetentionDays,
-            storageLocation, onSourceDiskDelete);
+    createSnapshotSchedule(projectId, region, snapshotScheduleName, scheduleDescription,
+            maxRetentionDays, storageLocation, onSourceDiskDelete);
   }
 
   // Creates a snapshot schedule policy.
   public static Operation.Status createSnapshotSchedule(String projectId, String region,
-        String scheduleName, String scheduleDescription, int maxRetentionDays,
+        String snapshotScheduleName, String scheduleDescription, int maxRetentionDays,
         String storageLocation, String onSourceDiskDelete)
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
     String startTime = "08:00";
@@ -112,7 +112,7 @@ public class CreateSnapshotSchedule {
                     .build();
 
     ResourcePolicy resourcePolicy = ResourcePolicy.newBuilder()
-            .setName(scheduleName)
+            .setName(snapshotScheduleName)
             .setDescription(scheduleDescription)
             .setSnapshotSchedulePolicy(snapshotSchedulePolicy)
             .build();
@@ -125,8 +125,7 @@ public class CreateSnapshotSchedule {
               .get(3, TimeUnit.MINUTES);
 
       if (response.hasError()) {
-        System.out.printf("Snapshot schedule creation failed: %s%n", response.getError());
-        return null;
+        throw new Error("Snapshot schedule creation failed! " + response.getError());
       }
       return response.getStatus();
     }

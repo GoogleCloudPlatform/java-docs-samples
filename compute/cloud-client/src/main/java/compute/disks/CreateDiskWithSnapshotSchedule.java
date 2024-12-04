@@ -37,20 +37,20 @@ public class CreateDiskWithSnapshotSchedule {
     // Name of the disk you want to create.
     String diskName = "YOUR_DISK_NAME";
     // Name of the schedule you want to link to the disk.
-    String scheduleName = "YOUR_SCHEDULE_NAME";
+    String snapshotScheduleName = "YOUR_SCHEDULE_NAME";
 
-    createDiskWithSnapshotSchedule(projectId, zone, diskName, scheduleName);
+    createDiskWithSnapshotSchedule(projectId, zone, diskName, snapshotScheduleName);
   }
 
   // Creates disk with linked snapshot schedule.
   public static Operation.Status createDiskWithSnapshotSchedule(
-      String projectId, String zone, String diskName, String scheduleName)
+      String projectId, String zone, String diskName, String snapshotScheduleName)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     try (DisksClient disksClient = DisksClient.create()) {
 
       // Get the resource policy to link to the disk
       String resourcePolicyLink = String.format("projects/%s/regions/%s/resourcePolicies/%s",
-              projectId, zone.substring(0, zone.lastIndexOf('-')), scheduleName);
+              projectId, zone.substring(0, zone.lastIndexOf('-')), snapshotScheduleName);
 
       Disk disk = Disk.newBuilder()
               .setName(diskName)
@@ -61,8 +61,7 @@ public class CreateDiskWithSnapshotSchedule {
       Operation response = disksClient.insertAsync(projectId, zone, disk).get(3, TimeUnit.MINUTES);
 
       if (response.hasError()) {
-        System.out.printf("Disk creation failed: %s%n", response.getError());
-        return null;
+        throw new Error("Disk creation failed! " + response.getError());
       }
       return response.getStatus();
     }

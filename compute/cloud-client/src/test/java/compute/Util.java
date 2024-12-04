@@ -16,8 +16,6 @@
 
 package compute;
 
-import static compute.snapshot.DeleteSnapshotSchedule.deleteSnapshotSchedule;
-
 import com.google.cloud.compute.v1.DeleteStoragePoolRequest;
 import com.google.cloud.compute.v1.Disk;
 import com.google.cloud.compute.v1.DisksClient;
@@ -42,6 +40,7 @@ import compute.deleteprotection.SetDeleteProtection;
 import compute.disks.DeleteDisk;
 import compute.disks.DeleteSnapshot;
 import compute.reservation.DeleteReservation;
+import compute.snapshotschedule.DeleteSnapshotSchedule;
 import java.io.IOException;
 import java.lang.Error;
 import java.nio.charset.StandardCharsets;
@@ -280,7 +279,7 @@ public abstract class Util {
       for (ResourcePolicy resource : resourcePoliciesClient.list(projectId, region).iterateAll()) {
         if (containPrefixToDeleteAndZone(resource, prefixToDelete, region)
                 && isCreatedBeforeThresholdTime(resource.getCreationTimestamp())) {
-          deleteSnapshotSchedule(projectId, region, resource.getName());
+          DeleteSnapshotSchedule.deleteSnapshotSchedule(projectId, region, resource.getName());
         }
       }
     }
