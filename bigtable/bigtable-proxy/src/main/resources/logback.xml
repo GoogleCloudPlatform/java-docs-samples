@@ -8,6 +8,13 @@
     </encoder>
   </appender>
 
+  <!-- Channel priming -->
+  <!-- <logger name="com.google.cloud.bigtable.examples.proxy.channelpool.DataChannel" level="DEBUG" />-->
+  <!-- Channel pool resizing -->
+  <!-- <logger name="com.google.cloud.bigtable.examples.proxy.channelpool.ChannelPool" level="DEBUG" /> -->
+  <!-- Credential refresh delays -->
+  <!-- <logger name="com.google.cloud.bigtable.examples.proxy.metrics.InstrumentedCallCredentials" level="DEBUG" />-->
+
   <root level="INFO">
     <appender-ref ref="STDOUT" />
   </root>
