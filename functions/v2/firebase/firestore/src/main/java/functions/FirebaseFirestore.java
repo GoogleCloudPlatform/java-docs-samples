@@ -20,7 +20,6 @@ package functions;
 import com.google.cloud.functions.CloudEventsFunction;
 import com.google.events.cloud.firestore.v1.DocumentEventData;
 import com.google.protobuf.InvalidProtocolBufferException;
-import com.google.protobuf.util.JsonFormat;
 import io.cloudevents.CloudEvent;
 import java.util.logging.Logger;
 
@@ -29,15 +28,8 @@ public class FirebaseFirestore implements CloudEventsFunction {
 
   @Override
   public void accept(CloudEvent event) throws InvalidProtocolBufferException {
-    DocumentEventData.Builder builder = DocumentEventData.newBuilder();
-    String json = new String(event.getData().toBytes());
-
-    // If you do not ignore unknown fields, then JsonFormat.Parser returns an
-    // error when encountering a new or unknown field. Note that you might lose
-    // some event data in the unmarshaling process by ignoring unknown fields.
-    JsonFormat.Parser parser = JsonFormat.parser().ignoringUnknownFields();
-    parser.merge(json, builder);
-    DocumentEventData firestoreEventData = builder.build();
+    DocumentEventData firestoreEventData = DocumentEventData
+        .parseFrom(event.getData().toBytes());
 
     logger.info("Function triggered by event on: " + event.getSource());
     logger.info("Event type: " + event.getType());
