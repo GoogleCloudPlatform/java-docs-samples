@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package compute.snapshot;
+package compute.snapshotschedule;
 
 // [START compute_snapshot_schedule_create]
 import com.google.cloud.compute.v1.Operation;
@@ -125,8 +125,7 @@ public class CreateSnapshotSchedule {
               .get(3, TimeUnit.MINUTES);
 
       if (response.hasError()) {
-        System.out.printf("Snapshot schedule creation failed: %s%n", response.getError());
-        return null;
+        throw new Error("Snapshot schedule creation failed! " + response.getError());
       }
       return response.getStatus();
     }

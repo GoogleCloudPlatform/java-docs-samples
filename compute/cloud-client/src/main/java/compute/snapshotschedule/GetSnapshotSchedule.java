@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package compute.snapshot;
+package compute.snapshotschedule;
 
 // [START compute_snapshot_schedule_get]
 import com.google.cloud.compute.v1.GetResourcePolicyRequest;

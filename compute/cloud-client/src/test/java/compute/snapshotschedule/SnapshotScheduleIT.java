@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package compute.snapshot;
+package compute.snapshotschedule;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
@@ -39,12 +39,11 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 @Timeout(value = 6, unit = TimeUnit.MINUTES)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class SnapshotIT {
+public class SnapshotScheduleIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String ZONE = "asia-south1-a";
   private static final String REGION = ZONE.substring(0, ZONE.lastIndexOf('-'));
-  static String templateUUID = UUID.randomUUID().toString();
-  private static final String SCHEDULE_NAME = "test-schedule-" + templateUUID;
+  private static final String SCHEDULE_NAME = "test-schedule-" + UUID.randomUUID();
   private static final  String SCHEDULE_DESCRIPTION = "Test hourly snapshot schedule";
   private static final int MAX_RETENTION_DAYS = 2;
   private static final String STORAGE_LOCATION = "US";
@@ -77,11 +76,21 @@ public class SnapshotIT {
   @Test
   @Order(2)
   public void testGetSnapshotSchedule() throws IOException {
-
     ResourcePolicy resourcePolicy = GetSnapshotSchedule.getSnapshotSchedule(
             PROJECT_ID, REGION, SCHEDULE_NAME);
+
     assertNotNull(resourcePolicy);
     assertThat(resourcePolicy.getName()).isEqualTo(SCHEDULE_NAME);
+  }
+
+  @Test
+  @Order(2)
+  public void testEditSnapshotSchedule()
+          throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    Operation.Status status = EditSnapshotSchedule.editSnapshotSchedule(
+            PROJECT_ID, REGION, SCHEDULE_NAME);
+
+    assertThat(status).isEqualTo(Operation.Status.DONE);
   }
 
   @Test

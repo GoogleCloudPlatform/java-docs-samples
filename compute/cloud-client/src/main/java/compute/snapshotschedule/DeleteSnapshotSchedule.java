@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package compute.snapshot;
+package compute.snapshotschedule;
 
 // [START compute_snapshot_schedule_delete]
 import com.google.cloud.compute.v1.Operation;
@@ -49,8 +49,7 @@ public class DeleteSnapshotSchedule {
               .get(3, TimeUnit.MINUTES);
 
       if (response.hasError()) {
-        System.out.printf("Snapshot schedule deletion failed: %s%n", response.getError());
-        return null;
+        throw new Error("Snapshot schedule deletion failed! " + response.getError());
       }
       return response.getStatus();
     }
