@@ -23,8 +23,6 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
-
-  <!-- [START language_install_with_bom] -->
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -42,8 +40,6 @@
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-language</artifactId>
     </dependency>
-    <!-- [END language_install_with_bom] -->
-
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
