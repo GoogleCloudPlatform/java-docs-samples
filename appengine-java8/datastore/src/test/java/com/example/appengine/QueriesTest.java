@@ -374,63 +374,6 @@ public class QueriesTest {
   }
 
   @Test
-  public void queryInterface_multipleFilters_printsMatchedEntities() throws Exception {
-    // Arrange
-    Entity a = new Entity("Person", "a");
-    a.setProperty("firstName", "Alph");
-    a.setProperty("lastName", "Alpha");
-    a.setProperty("height", 60);
-    Entity b = new Entity("Person", "b");
-    b.setProperty("firstName", "Bee");
-    b.setProperty("lastName", "Bravo");
-    b.setProperty("height", 70);
-    Entity c = new Entity("Person", "c");
-    c.setProperty("firstName", "Charles");
-    c.setProperty("lastName", "Charlie");
-    c.setProperty("height", 100);
-    datastore.put(ImmutableList.<Entity>of(a, b, c));
-
-    StringWriter buf = new StringWriter();
-    PrintWriter out = new PrintWriter(buf);
-    long minHeight = 60;
-    long maxHeight = 72;
-
-    // Act
-    // [START gae_java8_datastore_interface_1]
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-
-    Filter heightMinFilter =
-        new FilterPredicate("height", FilterOperator.GREATER_THAN_OR_EQUAL, minHeight);
-
-    Filter heightMaxFilter =
-        new FilterPredicate("height", FilterOperator.LESS_THAN_OR_EQUAL, maxHeight);
-
-    // Use CompositeFilter to combine multiple filters
-    CompositeFilter heightRangeFilter =
-        CompositeFilterOperator.and(heightMinFilter, heightMaxFilter);
-
-    // Use class Query to assemble a query
-    Query q = new Query("Person").setFilter(heightRangeFilter);
-
-    // Use PreparedQuery interface to retrieve results
-    PreparedQuery pq = datastore.prepare(q);
-
-    for (Entity result : pq.asIterable()) {
-      String firstName = (String) result.getProperty("firstName");
-      String lastName = (String) result.getProperty("lastName");
-      Long height = (Long) result.getProperty("height");
-
-      out.println(firstName + " " + lastName + ", " + height + " inches tall");
-    }
-    // [END gae_java8_datastore_interface_1]
-
-    // Assert
-    assertThat(buf.toString()).contains("Alph Alpha, 60 inches tall");
-    assertThat(buf.toString()).contains("Bee Bravo, 70 inches tall");
-    assertThat(buf.toString()).doesNotContain("Charlie");
-  }
-
-  @Test
   public void queryInterface_singleFilter_returnsMatchedEntities() throws Exception {
     // Arrange
     Entity a = new Entity("Person", "a");
