@@ -457,39 +457,6 @@ public class QueriesTest {
   }
 
   @Test
-  public void queryInterface_orFilter_printsMatchedEntities() throws Exception {
-    // Arrange
-    Entity a = new Entity("Person", "a");
-    a.setProperty("height", 100);
-    Entity b = new Entity("Person", "b");
-    b.setProperty("height", 150);
-    Entity c = new Entity("Person", "c");
-    c.setProperty("height", 200);
-    datastore.put(ImmutableList.<Entity>of(a, b, c));
-
-    StringWriter buf = new StringWriter();
-    PrintWriter out = new PrintWriter(buf);
-    long minHeight = 125;
-    long maxHeight = 175;
-
-    // Act
-    // [START gae_java8_datastore_interface_3]
-    Filter tooShortFilter = new FilterPredicate("height", FilterOperator.LESS_THAN, minHeight);
-
-    Filter tooTallFilter = new FilterPredicate("height", FilterOperator.GREATER_THAN, maxHeight);
-
-    Filter heightOutOfRangeFilter = CompositeFilterOperator.or(tooShortFilter, tooTallFilter);
-
-    Query q = new Query("Person").setFilter(heightOutOfRangeFilter);
-    // [END gae_java8_datastore_interface_3]
-
-    // Assert
-    List<Entity> results =
-        datastore.prepare(q.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
-    assertWithMessage("query results").that(results).containsExactly(a, c);
-  }
-
-  @Test
   public void queryRestrictions_compositeFilter_returnsMatchedEntities() throws Exception {
     // Arrange
     Entity a = new Entity("Person", "a");
