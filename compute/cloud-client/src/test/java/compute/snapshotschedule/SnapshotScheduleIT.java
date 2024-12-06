@@ -96,14 +96,15 @@ public class SnapshotScheduleIT {
 
   @Test
   @Order(2)
-  public void testListSnapshotSchedules() throws IOException, ExecutionException, InterruptedException, TimeoutException {
+  public void testListSnapshotSchedules()
+          throws IOException, ExecutionException, InterruptedException, TimeoutException {
     List<ResourcePolicy> list = ListSnapshotSchedules.listSnapshotSchedules(
             PROJECT_ID, REGION);
 
     assertThat(list.size()).isEqualTo(1);
     assertThat(list.get(0).getName()).isEqualTo(SCHEDULE_NAME);
-    for ( ResourcePolicy item: list) {
-        DeleteSnapshotSchedule.deleteSnapshotSchedule(PROJECT_ID, REGION, item.getName());
+    for (ResourcePolicy item : list) {
+      DeleteSnapshotSchedule.deleteSnapshotSchedule(PROJECT_ID, REGION, item.getName());
     }
   }
 
