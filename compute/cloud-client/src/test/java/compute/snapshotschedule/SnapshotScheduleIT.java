@@ -22,7 +22,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.ResourcePolicy;
-import compute.disks.RegionalDelete;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
@@ -30,7 +29,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -62,16 +60,8 @@ public class SnapshotScheduleIT {
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
-    RegionalDelete.deleteRegionalDisk(PROJECT_ID, REGION, "test-disk-for-consistency-727ee5d7");
-
-    List<ResourcePolicy> list = ListSnapshotSchedules.listSnapshotSchedules(
-            PROJECT_ID, REGION);
-    for (ResourcePolicy item : list) {
-      DeleteSnapshotSchedule.deleteSnapshotSchedule(PROJECT_ID, REGION, item.getName());
-    }
   }
 
-  @Disabled
   @Test
   @Order(1)
   public void testCreateSnapshotScheduleHourly()
@@ -83,7 +73,6 @@ public class SnapshotScheduleIT {
     assertThat(status).isEqualTo(Operation.Status.DONE);
   }
 
-  @Disabled
   @Test
   @Order(2)
   public void testGetSnapshotSchedule() throws IOException {
@@ -94,7 +83,6 @@ public class SnapshotScheduleIT {
     assertThat(resourcePolicy.getName()).isEqualTo(SCHEDULE_NAME);
   }
 
-  @Disabled
   @Test
   @Order(2)
   public void testEditSnapshotSchedule()
@@ -105,7 +93,6 @@ public class SnapshotScheduleIT {
     assertThat(status).isEqualTo(Operation.Status.DONE);
   }
 
-  @Disabled
   @Test
   @Order(2)
   public void testListSnapshotSchedules() throws IOException {
@@ -116,7 +103,6 @@ public class SnapshotScheduleIT {
     assertThat(list.get(0).getName()).isEqualTo(SCHEDULE_NAME);
   }
 
-  @Disabled
   @Test
   @Order(3)
   public void testDeleteSnapshotSchedule()
