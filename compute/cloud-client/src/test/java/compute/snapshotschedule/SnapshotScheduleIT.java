@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.ResourcePolicy;
+import compute.disks.RegionalDelete;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
@@ -61,6 +62,8 @@ public class SnapshotScheduleIT {
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
+    RegionalDelete.deleteRegionalDisk(PROJECT_ID, REGION, "test-disk-for-consistency-727ee5d7");
+
     List<ResourcePolicy> list = ListSnapshotSchedules.listSnapshotSchedules(
             PROJECT_ID, REGION);
     for (ResourcePolicy item : list) {
