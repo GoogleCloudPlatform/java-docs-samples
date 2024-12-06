@@ -37,6 +37,7 @@ import com.google.cloud.compute.v1.StoragePoolsClient;
 import compute.deleteprotection.SetDeleteProtection;
 import compute.disks.DeleteDisk;
 import compute.disks.DeleteSnapshot;
+import compute.disks.RegionalDelete;
 import compute.reservation.DeleteReservation;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -212,6 +213,20 @@ public abstract class Util {
         if (containPrefixToDeleteAndZone(disk, prefixToDelete, zone)
             && isCreatedBeforeThresholdTime(disk.getCreationTimestamp())) {
           DeleteDisk.deleteDisk(projectId, zone, disk.getName());
+        }
+      }
+    }
+  }
+
+  public static void cleanUpExistingRegionalDisks(
+          String prefixToDelete, String projectId, String region)
+          throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    try (RegionDisksClient disksClient = RegionDisksClient.create()) {
+      for (Disk disk : disksClient.list(projectId, region).iterateAll()) {
+        if (disk.getName().contains(prefixToDelete)
+                && disk.getRegion().contains(region)
+                && isCreatedBeforeThresholdTime(disk.getCreationTimestamp())) {
+          RegionalDelete.deleteRegionalDisk(projectId, region, disk.getName());
         }
       }
     }
