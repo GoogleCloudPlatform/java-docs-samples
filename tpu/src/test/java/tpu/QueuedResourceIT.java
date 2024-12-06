@@ -114,6 +114,26 @@ public class QueuedResourceIT {
   }
 
   @Test
+  public void testDeleteQueuedResource()
+          throws IOException, ExecutionException, InterruptedException {
+    try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
+      TpuClient mockTpuClient = mock(TpuClient.class);
+      OperationFuture mockFuture = mock(OperationFuture.class);
+
+      mockedTpuClient.when(() -> TpuClient.create(any(TpuSettings.class)))
+              .thenReturn(mockTpuClient);
+      when(mockTpuClient.deleteQueuedResourceAsync(any(DeleteQueuedResourceRequest.class)))
+              .thenReturn(mockFuture);
+      when(mockFuture.get()).thenReturn(null);
+
+      DeleteQueuedResource.deleteQueuedResource(PROJECT_ID, ZONE, QUEUED_RESOURCE_NAME);
+
+      verify(mockTpuClient, times(1))
+              .deleteQueuedResourceAsync(any(DeleteQueuedResourceRequest.class));
+    }
+  }
+
+  @Test
   public void testCreateQueuedResourceWithStartupScript() throws Exception {
     try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
       QueuedResource mockQueuedResource = mock(QueuedResource.class);
