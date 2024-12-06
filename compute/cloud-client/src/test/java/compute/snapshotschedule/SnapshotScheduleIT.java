@@ -62,7 +62,7 @@ public class SnapshotScheduleIT {
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
-    RegionalDelete.deleteRegionalDisk(PROJECT_ID, REGION, "test-disk-for-consistency-40c43b87");
+    RegionalDelete.deleteRegionalDisk(PROJECT_ID, REGION, "test-disk-for-consistency-652dadc0");
 
     List<ResourcePolicy> list = ListSnapshotSchedules.listSnapshotSchedules(
             PROJECT_ID, REGION);
