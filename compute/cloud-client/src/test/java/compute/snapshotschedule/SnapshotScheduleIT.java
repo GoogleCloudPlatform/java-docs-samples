@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.ResourcePolicy;
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -41,8 +42,7 @@ import org.junit.runners.JUnit4;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class SnapshotScheduleIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = "asia-south1-a";
-  private static final String REGION = ZONE.substring(0, ZONE.lastIndexOf('-'));
+  private static final String REGION = "us-central1";
   private static final String SCHEDULE_NAME = "test-schedule-" + UUID.randomUUID();
   private static final  String SCHEDULE_DESCRIPTION = "Test hourly snapshot schedule";
   private static final int MAX_RETENTION_DAYS = 2;
@@ -91,6 +91,16 @@ public class SnapshotScheduleIT {
             PROJECT_ID, REGION, SCHEDULE_NAME);
 
     assertThat(status).isEqualTo(Operation.Status.DONE);
+  }
+
+  @Test
+  @Order(2)
+  public void testListSnapshotSchedules() throws IOException {
+    List<ResourcePolicy> list = ListSnapshotSchedules.listSnapshotSchedules(
+            PROJECT_ID, REGION);
+
+    assertThat(list.size()).isEqualTo(1);
+    assertThat(list.get(0).getName()).isEqualTo(SCHEDULE_NAME);
   }
 
   @Test
