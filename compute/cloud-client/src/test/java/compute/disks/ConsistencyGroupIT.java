@@ -27,7 +27,9 @@ import static org.mockito.Mockito.when;
 
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.compute.v1.AddResourcePoliciesRegionDiskRequest;
+import com.google.cloud.compute.v1.DisksClient;
 import com.google.cloud.compute.v1.InsertResourcePolicyRequest;
+import com.google.cloud.compute.v1.ListDisksRequest;
 import com.google.cloud.compute.v1.ListRegionDisksRequest;
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.RegionDisksClient;
@@ -36,7 +38,8 @@ import com.google.cloud.compute.v1.ResourcePoliciesClient;
 import compute.disks.consistencygroup.AddDiskToConsistencyGroup;
 import compute.disks.consistencygroup.CreateConsistencyGroup;
 import compute.disks.consistencygroup.DeleteConsistencyGroup;
-import compute.disks.consistencygroup.ListDisksInConsistencyGroup;
+import compute.disks.consistencygroup.ListRegionalDisksInConsistencyGroup;
+import compute.disks.consistencygroup.ListZonalDisksInConsistencyGroup;
 import compute.disks.consistencygroup.RemoveDiskFromConsistencyGroup;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
@@ -149,7 +152,7 @@ public class ConsistencyGroupIT {
   }
 
   @Test
-  public void testListDisksInConsistencyGroup() throws Exception {
+  public void testListRegionalDisksInConsistencyGroup() throws Exception {
     try (MockedStatic<RegionDisksClient> mockedRegionDisksClient =
                  mockStatic(RegionDisksClient.class)) {
       RegionDisksClient mockClient = mock(RegionDisksClient.class);
@@ -160,11 +163,32 @@ public class ConsistencyGroupIT {
       when(mockClient.list(any(ListRegionDisksRequest.class)))
               .thenReturn(mockResponse);
 
-      ListDisksInConsistencyGroup.listDisksInConsistencyGroup(
+      ListRegionalDisksInConsistencyGroup.listRegionalDisksInConsistencyGroup(
               PROJECT_ID, CONSISTENCY_GROUP_NAME, REGION, REGION);
 
       verify(mockClient, times(1))
               .list(any(ListRegionDisksRequest.class));
+      verify(mockResponse, times(1)).iterateAll();
+    }
+  }
+
+  @Test
+  public void testListZonalDisksInConsistencyGroup() throws Exception {
+    try (MockedStatic<DisksClient> mockedRegionDisksClient =
+                 mockStatic(DisksClient.class)) {
+      DisksClient mockClient = mock(DisksClient.class);
+      DisksClient.ListPagedResponse mockResponse =
+              mock(DisksClient.ListPagedResponse.class);
+
+      mockedRegionDisksClient.when(DisksClient::create).thenReturn(mockClient);
+      when(mockClient.list(any(ListDisksRequest.class)))
+              .thenReturn(mockResponse);
+
+      ListZonalDisksInConsistencyGroup.listZonalDisksInConsistencyGroup(
+              PROJECT_ID, CONSISTENCY_GROUP_NAME, REGION, REGION);
+
+      verify(mockClient, times(1))
+              .list(any(ListDisksRequest.class));
       verify(mockResponse, times(1)).iterateAll();
     }
   }
