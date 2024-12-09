@@ -30,6 +30,7 @@ import com.google.cloud.tpu.v2.AcceleratorConfig;
 import com.google.cloud.tpu.v2.CreateNodeRequest;
 import com.google.cloud.tpu.v2.DeleteNodeRequest;
 import com.google.cloud.tpu.v2.GetNodeRequest;
+import com.google.cloud.tpu.v2.ListNodesRequest;
 import com.google.cloud.tpu.v2.Node;
 import com.google.cloud.tpu.v2.StartNodeRequest;
 import com.google.cloud.tpu.v2.StopNodeRequest;
@@ -38,6 +39,8 @@ import com.google.cloud.tpu.v2.TpuSettings;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -140,6 +143,29 @@ public class TpuVmIT {
           .createNodeAsync(any(CreateNodeRequest.class));
       verify(mockFuture, times(1)).get();
       assertEquals(returnedNode, mockNode);
+    }
+  }
+
+  @Test
+  public void testListTpuVm() throws IOException {
+    try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
+      Node mockNode1 = mock(Node.class);
+      Node mockNode2 = mock(Node.class);
+      List<Node> mockListNodes = Arrays.asList(mockNode1, mockNode2);
+      TpuClient mockTpuClient = mock(TpuClient.class);
+      TpuClient.ListNodesPagedResponse mockListNodesResponse =
+          mock(TpuClient.ListNodesPagedResponse.class);
+      TpuClient.ListNodesPage mockListNodesPage = mock(TpuClient.ListNodesPage.class);
+
+      mockedTpuClient.when(TpuClient::create).thenReturn(mockTpuClient);
+      when(mockTpuClient.listNodes(any(ListNodesRequest.class))).thenReturn(mockListNodesResponse);
+      when(mockListNodesResponse.getPage()).thenReturn(mockListNodesPage);
+      when(mockListNodesPage.getValues()).thenReturn(mockListNodes);
+
+      TpuClient.ListNodesPage returnedListNodes = ListTpuVms.listTpuVms(PROJECT_ID, ZONE);
+
+      assertThat(returnedListNodes.getValues()).isEqualTo(mockListNodes);
+      verify(mockTpuClient, times(1)).listNodes(any(ListNodesRequest.class));
     }
   }
 

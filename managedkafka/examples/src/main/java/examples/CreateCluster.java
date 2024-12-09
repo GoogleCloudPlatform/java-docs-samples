@@ -17,7 +17,13 @@
 package examples;
 
 // [START managedkafka_create_cluster]
+
 import com.google.api.gax.longrunning.OperationFuture;
+import com.google.api.gax.longrunning.OperationSnapshot;
+import com.google.api.gax.longrunning.OperationTimedPollAlgorithm;
+import com.google.api.gax.retrying.RetrySettings;
+import com.google.api.gax.retrying.RetryingFuture;
+import com.google.api.gax.retrying.TimedRetryAlgorithm;
 import com.google.cloud.managedkafka.v1.AccessConfig;
 import com.google.cloud.managedkafka.v1.CapacityConfig;
 import com.google.cloud.managedkafka.v1.Cluster;
@@ -25,9 +31,11 @@ import com.google.cloud.managedkafka.v1.CreateClusterRequest;
 import com.google.cloud.managedkafka.v1.GcpConfig;
 import com.google.cloud.managedkafka.v1.LocationName;
 import com.google.cloud.managedkafka.v1.ManagedKafkaClient;
+import com.google.cloud.managedkafka.v1.ManagedKafkaSettings;
 import com.google.cloud.managedkafka.v1.NetworkConfig;
 import com.google.cloud.managedkafka.v1.OperationMetadata;
 import com.google.cloud.managedkafka.v1.RebalanceConfig;
+import java.time.Duration;
 import java.util.concurrent.ExecutionException;
 
 public class CreateCluster {
@@ -64,17 +72,47 @@ public class CreateCluster {
             .setRebalanceConfig(rebalanceConfig)
             .build();
 
-    try (ManagedKafkaClient managedKafkaClient = ManagedKafkaClient.create()) {
+    // Create the settings to configure the timeout for polling operations
+    ManagedKafkaSettings.Builder settingsBuilder = ManagedKafkaSettings.newBuilder();
+    TimedRetryAlgorithm timedRetryAlgorithm = OperationTimedPollAlgorithm.create(
+        RetrySettings.newBuilder()
+            .setTotalTimeoutDuration(Duration.ofHours(1L))
+            .build());
+    settingsBuilder.createClusterOperationSettings()
+        .setPollingAlgorithm(timedRetryAlgorithm);
+
+    try (ManagedKafkaClient managedKafkaClient = ManagedKafkaClient.create(
+        settingsBuilder.build())) {
+
       CreateClusterRequest request =
           CreateClusterRequest.newBuilder()
               .setParent(LocationName.of(projectId, region).toString())
               .setClusterId(clusterId)
               .setCluster(cluster)
               .build();
+
       // The duration of this operation can vary considerably, typically taking between 10-40
       // minutes.
       OperationFuture<Cluster, OperationMetadata> future =
           managedKafkaClient.createClusterOperationCallable().futureCall(request);
+
+      // Get the initial LRO and print details.
+      OperationSnapshot operation = future.getInitialFuture().get();
+      System.out.printf("Cluster creation started. Operation name: %s\nDone: %s\nMetadata: %s\n",
+          operation.getName(),
+          operation.isDone(),
+          future.getMetadata().get().toString());
+
+      while (!future.isDone()) {
+        // The pollingFuture gives us the most recent status of the operation
+        RetryingFuture<OperationSnapshot> pollingFuture = future.getPollingFuture();
+        OperationSnapshot currentOp = pollingFuture.getAttemptResult().get();
+        System.out.printf("Polling Operation:\nName: %s\n Done: %s\n",
+            currentOp.getName(),
+            currentOp.isDone());
+      }
+
+      // NOTE: future.get() blocks completion until the operation is complete (isDone =  True)
       Cluster response = future.get();
       System.out.printf("Created cluster: %s\n", response.getName());
     } catch (ExecutionException e) {
