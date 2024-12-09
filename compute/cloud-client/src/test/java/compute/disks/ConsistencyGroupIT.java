@@ -32,10 +32,12 @@ import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.RegionDisksClient;
 import com.google.cloud.compute.v1.RemoveResourcePoliciesRegionDiskRequest;
 import com.google.cloud.compute.v1.ResourcePoliciesClient;
+import com.google.cloud.compute.v1.StopGroupAsyncReplicationRegionDiskRequest;
 import compute.disks.consistencygroup.AddDiskToConsistencyGroup;
 import compute.disks.consistencygroup.CreateConsistencyGroup;
 import compute.disks.consistencygroup.DeleteConsistencyGroup;
 import compute.disks.consistencygroup.RemoveDiskFromConsistencyGroup;
+import compute.disks.consistencygroup.StopDiskReplicationConsistencyGroup;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -141,6 +143,31 @@ public class ConsistencyGroupIT {
 
       verify(mockClient, times(1))
               .deleteAsync(PROJECT_ID, REGION, CONSISTENCY_GROUP_NAME);
+      verify(mockFuture, times(1)).get(anyLong(), any(TimeUnit.class));
+      assertEquals(Operation.Status.DONE, status);
+    }
+  }
+
+  @Test
+  public void testStopDiskReplicationConsistencyGroup() throws Exception {
+    try (MockedStatic<RegionDisksClient> mockedRegionDisksClient =
+                 mockStatic(RegionDisksClient.class)) {
+      Operation operation = mock(Operation.class);
+      RegionDisksClient mockClient = mock(RegionDisksClient.class);
+      OperationFuture mockFuture = mock(OperationFuture.class);
+
+      mockedRegionDisksClient.when(RegionDisksClient::create).thenReturn(mockClient);
+      when(mockClient.stopGroupAsyncReplicationAsync(
+              any(StopGroupAsyncReplicationRegionDiskRequest.class))).thenReturn(mockFuture);
+      when(mockFuture.get(anyLong(), any(TimeUnit.class))).thenReturn(operation);
+      when(operation.getStatus()).thenReturn(Operation.Status.DONE);
+
+      Operation.Status status =
+              StopDiskReplicationConsistencyGroup.stopDiskReplicationConsistencyGroup(
+              PROJECT_ID, REGION, CONSISTENCY_GROUP_NAME, REGION);
+
+      verify(mockClient, times(1)).stopGroupAsyncReplicationAsync(
+              any(StopGroupAsyncReplicationRegionDiskRequest.class));
       verify(mockFuture, times(1)).get(anyLong(), any(TimeUnit.class));
       assertEquals(Operation.Status.DONE, status);
     }
