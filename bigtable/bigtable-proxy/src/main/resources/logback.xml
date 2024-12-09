@@ -1,0 +1,21 @@
+<configuration>
+  <!-- optimize the SLF4JBridgeHandler so that level changes in logback are synced to JUL -->
+  <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator"/>
+
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <!-- Channel priming -->
+  <!-- <logger name="com.google.cloud.bigtable.examples.proxy.channelpool.DataChannel" level="DEBUG" />-->
+  <!-- Channel pool resizing -->
+  <!-- <logger name="com.google.cloud.bigtable.examples.proxy.channelpool.ChannelPool" level="DEBUG" /> -->
+  <!-- Credential refresh delays -->
+  <!-- <logger name="com.google.cloud.bigtable.examples.proxy.metrics.InstrumentedCallCredentials" level="DEBUG" />-->
+
+  <root level="INFO">
+    <appender-ref ref="STDOUT" />
+  </root>
+</configuration>
