@@ -16,7 +16,6 @@
 
 package compute;
 
-import com.google.cloud.compute.v1.DeleteStoragePoolRequest;
 import com.google.cloud.compute.v1.Disk;
 import com.google.cloud.compute.v1.DisksClient;
 import com.google.cloud.compute.v1.Instance;
@@ -25,18 +24,16 @@ import com.google.cloud.compute.v1.InstanceTemplatesClient;
 import com.google.cloud.compute.v1.InstanceTemplatesClient.ListPagedResponse;
 import com.google.cloud.compute.v1.InstancesClient;
 import com.google.cloud.compute.v1.ListRegionInstanceTemplatesRequest;
-import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.RegionDisksClient;
 import com.google.cloud.compute.v1.RegionInstanceTemplatesClient;
 import com.google.cloud.compute.v1.Reservation;
 import com.google.cloud.compute.v1.ReservationsClient;
 import com.google.cloud.compute.v1.Snapshot;
 import com.google.cloud.compute.v1.SnapshotsClient;
-import com.google.cloud.compute.v1.StoragePool;
-import com.google.cloud.compute.v1.StoragePoolsClient;
 import compute.deleteprotection.SetDeleteProtection;
 import compute.disks.DeleteDisk;
 import compute.disks.DeleteSnapshot;
+import compute.disks.RegionalDelete;
 import compute.reservation.DeleteReservation;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -47,7 +44,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.Base64;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.IntStream;
 
@@ -231,38 +227,19 @@ public abstract class Util {
     }
   }
 
-  // Delete storagePools which starts with the given prefixToDelete and
+  // Delete disks which starts with the given prefixToDelete and
   // has creation timestamp >24 hours.
-  public static void cleanUpExistingStoragePool(
-      String prefixToDelete, String projectId, String zone)
-      throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    try (StoragePoolsClient storagePoolsClient = StoragePoolsClient.create()) {
-      for (StoragePool storagePool : storagePoolsClient.list(projectId, zone).iterateAll()) {
-        if (containPrefixToDeleteAndZone(storagePool, prefixToDelete, zone)
-            && isCreatedBeforeThresholdTime(storagePool.getCreationTimestamp())) {
-          deleteStoragePool(projectId, zone, storagePool.getName());
+  public static void cleanUpExistingRegionalDisks(
+          String prefixToDelete, String projectId, String region)
+          throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    try (RegionDisksClient disksClient = RegionDisksClient.create()) {
+      for (Disk disk : disksClient.list(projectId, region).iterateAll()) {
+        if (disk.getName().contains(prefixToDelete)
+                && disk.getRegion().equals(region)
+                && isCreatedBeforeThresholdTime(disk.getCreationTimestamp())) {
+          RegionalDelete.deleteRegionalDisk(projectId, region, disk.getName());
         }
       }
-    }
-  }
-
-  public static void deleteStoragePool(String project, String zone, String storagePoolName)
-      throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    try (StoragePoolsClient storagePoolsClient = StoragePoolsClient.create()) {
-      DeleteStoragePoolRequest request =
-          DeleteStoragePoolRequest.newBuilder()
-              .setProject(project)
-              .setZone(zone)
-              .setStoragePool(storagePoolName)
-              .build();
-      Operation operation = storagePoolsClient.deleteAsync(request).get(3, TimeUnit.MINUTES);
-      if (operation.hasError()) {
-        System.out.println("StoragePool deletion failed!");
-        throw new Error(operation.getError().toString());
-      }
-      // Wait for server update
-      TimeUnit.SECONDS.sleep(50);
-      System.out.println("Deleted storage pool: " + storagePoolName);
     }
   }
 
@@ -286,10 +263,6 @@ public abstract class Util {
       if (resource instanceof Disk) {
         containPrefixAndZone = ((Disk) resource).getName().contains(prefixToDelete)
             && ((Disk) resource).getZone().contains(zone);
-      }
-      if (resource instanceof StoragePool) {
-        containPrefixAndZone = ((StoragePool) resource).getName().contains(prefixToDelete)
-            && ((StoragePool) resource).getZone().contains(zone);
       }
     } catch (NullPointerException e) {
       System.out.println("Resource not found, skipping deletion:");

@@ -27,12 +27,14 @@ import static org.mockito.Mockito.when;
 
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.compute.v1.AddResourcePoliciesRegionDiskRequest;
+import com.google.cloud.compute.v1.BulkInsertRegionDiskRequest;
 import com.google.cloud.compute.v1.InsertResourcePolicyRequest;
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.RegionDisksClient;
 import com.google.cloud.compute.v1.RemoveResourcePoliciesRegionDiskRequest;
 import com.google.cloud.compute.v1.ResourcePoliciesClient;
 import compute.disks.consistencygroup.AddDiskToConsistencyGroup;
+import compute.disks.consistencygroup.CloneDisksFromConsistencyGroup;
 import compute.disks.consistencygroup.CreateConsistencyGroup;
 import compute.disks.consistencygroup.DeleteConsistencyGroup;
 import compute.disks.consistencygroup.RemoveDiskFromConsistencyGroup;
@@ -141,6 +143,30 @@ public class ConsistencyGroupIT {
 
       verify(mockClient, times(1))
               .deleteAsync(PROJECT_ID, REGION, CONSISTENCY_GROUP_NAME);
+      verify(mockFuture, times(1)).get(anyLong(), any(TimeUnit.class));
+      assertEquals(Operation.Status.DONE, status);
+    }
+  }
+
+  @Test
+  public void testCloneDisksFromConsistencyGroup() throws Exception {
+    try (MockedStatic<RegionDisksClient> mockedRegionDisksClient =
+                 mockStatic(RegionDisksClient.class)) {
+      Operation operation = mock(Operation.class);
+      RegionDisksClient mockClient = mock(RegionDisksClient.class);
+      OperationFuture mockFuture = mock(OperationFuture.class);
+
+      mockedRegionDisksClient.when(RegionDisksClient::create).thenReturn(mockClient);
+      when(mockClient.bulkInsertAsync(any(BulkInsertRegionDiskRequest.class)))
+              .thenReturn(mockFuture);
+      when(mockFuture.get(anyLong(), any(TimeUnit.class))).thenReturn(operation);
+      when(operation.getStatus()).thenReturn(Operation.Status.DONE);
+
+      Operation.Status status = CloneDisksFromConsistencyGroup.cloneDisksFromConsistencyGroup(
+              PROJECT_ID, REGION, CONSISTENCY_GROUP_NAME, REGION);
+
+      verify(mockClient, times(1))
+              .bulkInsertAsync(any(BulkInsertRegionDiskRequest.class));
       verify(mockFuture, times(1)).get(anyLong(), any(TimeUnit.class));
       assertEquals(Operation.Status.DONE, status);
     }
