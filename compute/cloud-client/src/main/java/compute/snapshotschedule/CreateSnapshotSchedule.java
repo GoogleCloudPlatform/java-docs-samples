@@ -17,6 +17,7 @@
 package compute.snapshotschedule;
 
 // [START compute_snapshot_schedule_create]
+import com.google.cloud.compute.v1.InsertResourcePolicyRequest;
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.ResourcePoliciesClient;
 import com.google.cloud.compute.v1.ResourcePolicy;
@@ -120,8 +121,13 @@ public class CreateSnapshotSchedule {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (ResourcePoliciesClient resourcePoliciesClient = ResourcePoliciesClient.create()) {
+      InsertResourcePolicyRequest request = InsertResourcePolicyRequest.newBuilder()
+              .setProject(projectId)
+              .setRegion(region)
+              .setResourcePolicyResource(resourcePolicy)
+              .build();
 
-      Operation response = resourcePoliciesClient.insertAsync(projectId, region, resourcePolicy)
+      Operation response = resourcePoliciesClient.insertAsync(request)
               .get(3, TimeUnit.MINUTES);
 
       if (response.hasError()) {

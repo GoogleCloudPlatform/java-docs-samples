@@ -32,15 +32,16 @@ public class ListSnapshotSchedules {
     String projectId = "YOUR_PROJECT_ID";
     // Name of the region you want to list snapshot schedules from.
     String region = "us-central1";
+    // Name of the snapshot schedule you want to list.
+    String snapshotScheduleName = "YOUR_SCHEDULE_NAME";
 
-    listSnapshotSchedules(projectId, region);
+    listSnapshotSchedules(projectId, region, snapshotScheduleName);
   }
 
   // Lists snapshot schedules in a specified region, optionally filtered.
   public static List<ResourcePolicy> listSnapshotSchedules(
-          String projectId, String region) throws IOException {
-    String filter = String.format(
-            "https://www.googleapis.com/compute/v1/projects/%s/regions/%s", projectId, region);
+          String projectId, String region, String snapshotScheduleName) throws IOException {
+    String filter = String.format("name = %s", snapshotScheduleName);
     List<ResourcePolicy> list = new ArrayList<>();
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
@@ -49,16 +50,14 @@ public class ListSnapshotSchedules {
       ListResourcePoliciesRequest request = ListResourcePoliciesRequest.newBuilder()
               .setProject(projectId)
               .setRegion(region)
+              .setFilter(filter)
               .build();
-      // Filtering must be done manually for now, since list filtering
-      // inside resourcePoliciesClient.list is not supported yet.
+
       for (ResourcePolicy resourcePolicy : resourcePoliciesClient.list(request).iterateAll()) {
-        if (resourcePolicy.getRegion().equals(filter)) {
-          list.add(resourcePolicy);
-        }
+        list.add(resourcePolicy);
       }
-      return list;
     }
+    return list;
   }
 }
 // [END compute_snapshot_schedule_list]

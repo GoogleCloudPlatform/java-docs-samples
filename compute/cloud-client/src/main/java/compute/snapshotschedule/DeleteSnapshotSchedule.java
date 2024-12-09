@@ -17,6 +17,7 @@
 package compute.snapshotschedule;
 
 // [START compute_snapshot_schedule_delete]
+import com.google.cloud.compute.v1.DeleteResourcePolicyRequest;
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.ResourcePoliciesClient;
 import java.io.IOException;
@@ -45,9 +46,12 @@ public class DeleteSnapshotSchedule {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (ResourcePoliciesClient resourcePoliciesClient = ResourcePoliciesClient.create()) {
-      Operation response =  resourcePoliciesClient
-              .deleteAsync(projectId, region, snapshotScheduleName)
-              .get(3, TimeUnit.MINUTES);
+      DeleteResourcePolicyRequest request = DeleteResourcePolicyRequest.newBuilder()
+              .setProject(projectId)
+              .setRegion(region)
+              .setResourcePolicy(snapshotScheduleName)
+              .build();
+      Operation response = resourcePoliciesClient.deleteAsync(request).get(3, TimeUnit.MINUTES);
 
       if (response.hasError()) {
         throw new Error("Snapshot schedule deletion failed! " + response.getError());
