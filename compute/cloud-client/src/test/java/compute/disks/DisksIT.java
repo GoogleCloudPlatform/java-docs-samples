@@ -69,11 +69,10 @@ public class DisksIT {
   private static String EMPTY_DISK_NAME;
   private static String SNAPSHOT_NAME;
   private static String DISK_TYPE;
-
   private static String ZONAL_BLANK_DISK;
-
   private static String REGIONAL_BLANK_DISK;
-
+  private static String SECONDARY_DISK;
+  private static final long DISK_SIZE = 10L;
   private ByteArrayOutputStream stdOut;
 
   // Check if the required environment variables are set.
@@ -101,6 +100,7 @@ public class DisksIT {
     DISK_TYPE = String.format("zones/%s/diskTypes/pd-ssd", ZONE);
     ZONAL_BLANK_DISK = "gcloud-test-disk-zattach-" + uuid;
     REGIONAL_BLANK_DISK = "gcloud-test-disk-rattach-" + uuid;
+    SECONDARY_DISK = "gcloud-test-disk-secondary-" + uuid;
 
     // Cleanup existing stale instances.
     Util.cleanUpExistingInstances("test-disks", PROJECT_ID, ZONE);
@@ -112,24 +112,24 @@ public class DisksIT {
     try (ImagesClient imagesClient = ImagesClient.create()) {
       debianImage = imagesClient.getFromFamily("debian-cloud", "debian-11");
     }
-    CreateDiskFromImage.createDiskFromImage(PROJECT_ID, ZONE, DISK_NAME, DISK_TYPE, 10,
+    CreateDiskFromImage.createDiskFromImage(PROJECT_ID, ZONE, DISK_NAME, DISK_TYPE, DISK_SIZE,
         debianImage.getSelfLink());
     assertThat(stdOut.toString()).contains("Disk created from image.");
 
     // Create disk from snapshot.
-    CreateDiskFromImage.createDiskFromImage(PROJECT_ID, ZONE, DISK_NAME_DUMMY, DISK_TYPE, 10,
+    CreateDiskFromImage.createDiskFromImage(PROJECT_ID, ZONE, DISK_NAME_DUMMY, DISK_TYPE, DISK_SIZE,
         debianImage.getSelfLink());
     TimeUnit.SECONDS.sleep(10);
     createDiskSnapshot(PROJECT_ID, ZONE, DISK_NAME_DUMMY, SNAPSHOT_NAME);
     String diskSnapshotLink = String.format("projects/%s/global/snapshots/%s", PROJECT_ID,
         SNAPSHOT_NAME);
     TimeUnit.SECONDS.sleep(5);
-    CreateDiskFromSnapshot.createDiskFromSnapshot(PROJECT_ID, ZONE, DISK_NAME_2, DISK_TYPE, 10,
-        diskSnapshotLink);
+    CreateDiskFromSnapshot.createDiskFromSnapshot(PROJECT_ID, ZONE, DISK_NAME_2, DISK_TYPE,
+        DISK_SIZE, diskSnapshotLink);
     assertThat(stdOut.toString()).contains("Disk created.");
 
     // Create empty disk.
-    CreateEmptyDisk.createEmptyDisk(PROJECT_ID, ZONE, EMPTY_DISK_NAME, DISK_TYPE, 10);
+    CreateEmptyDisk.createEmptyDisk(PROJECT_ID, ZONE, EMPTY_DISK_NAME, DISK_TYPE, DISK_SIZE);
     assertThat(stdOut.toString()).contains("Empty disk created.");
 
     // Set Disk autodelete.
@@ -170,6 +170,7 @@ public class DisksIT {
     DeleteDisk.deleteDisk(PROJECT_ID, ZONE, EMPTY_DISK_NAME);
     DeleteDisk.deleteDisk(PROJECT_ID, ZONE, ZONAL_BLANK_DISK);
     RegionalDelete.deleteRegionalDisk(PROJECT_ID, REGION, REGIONAL_BLANK_DISK);
+    DeleteDisk.deleteDisk(PROJECT_ID, "us-central1-c", SECONDARY_DISK);
 
     stdOut.close();
     System.setOut(out);
@@ -210,7 +211,7 @@ public class DisksIT {
               .setAutoDelete(false)
               .setBoot(true)
               .setInitializeParams(AttachedDiskInitializeParams.newBuilder()
-                  .setDiskSizeGb(10)
+                  .setDiskSizeGb(DISK_SIZE)
                   .setSourceImage(sourceImage)
                   .setDiskName(diskName)
                   .build())
@@ -239,7 +240,7 @@ public class DisksIT {
   public static void createZonalDisk()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     String diskType = String.format("zones/%s/diskTypes/pd-standard", ZONE);
-    CreateEmptyDisk.createEmptyDisk(PROJECT_ID, ZONE, ZONAL_BLANK_DISK, diskType, 12);
+    CreateEmptyDisk.createEmptyDisk(PROJECT_ID, ZONE, ZONAL_BLANK_DISK, diskType, DISK_SIZE);
   }
 
   public static void createRegionalDisk()
@@ -301,4 +302,15 @@ public class DisksIT {
         Util.getRegionalDisk(PROJECT_ID, REGION, REGIONAL_BLANK_DISK).getSizeGb());
   }
 
+  @Test
+  public void testCreateDiskSecondaryZonal()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    String diskType =  String.format(
+        "projects/%s/zones/%s/diskTypes/pd-ssd", PROJECT_ID, ZONE);
+    Operation.Status status = CreateDiskSecondaryZonal.createDiskSecondaryZonal(
+        PROJECT_ID, PROJECT_ID, EMPTY_DISK_NAME, SECONDARY_DISK, ZONE,
+        "us-central1-c", DISK_SIZE,  diskType);
+
+    assertThat(status).isEqualTo(Operation.Status.DONE);
+  }
 }
