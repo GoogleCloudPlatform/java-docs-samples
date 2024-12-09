@@ -16,41 +16,43 @@
 
 package tpu;
 
-//[START tpu_vm_get]
-import com.google.cloud.tpu.v2.GetNodeRequest;
+//[START tpu_vm_start]
 import com.google.cloud.tpu.v2.Node;
 import com.google.cloud.tpu.v2.NodeName;
+import com.google.cloud.tpu.v2.StartNodeRequest;
 import com.google.cloud.tpu.v2.TpuClient;
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
-public class GetTpuVm {
+public class StartTpuVm {
 
-  public static void main(String[] args) throws IOException {
+  public static void main(String[] args)
+      throws IOException, ExecutionException, InterruptedException {
     // TODO(developer): Replace these variables before running the sample.
     // Project ID or project number of the Google Cloud project you want to use.
     String projectId = "YOUR_PROJECT_ID";
-    // The zone in which to create the TPU.
+    // The zone where the TPU is located.
     // For more information about supported TPU types for specific zones,
     // see https://cloud.google.com/tpu/docs/regions-zones
-    String zone = "europe-west4-a";
+    String zone = "us-central1-f";
     // The name for your TPU.
     String nodeName = "YOUR_TPU_NAME";
 
-    getTpuVm(projectId, zone, nodeName);
+    startTpuVm(projectId, zone, nodeName);
   }
 
-  // Describes a TPU VM with the specified name in the given project and zone.
-  public static Node getTpuVm(String projectId, String zone, String nodeName)
-      throws IOException {
+  // Starts a TPU VM with the specified name in the given project and zone.
+  public static Node startTpuVm(String projectId, String zone, String nodeName)
+      throws IOException, ExecutionException, InterruptedException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (TpuClient tpuClient = TpuClient.create()) {
       String name = NodeName.of(projectId, zone, nodeName).toString();
 
-      GetNodeRequest request = GetNodeRequest.newBuilder().setName(name).build();
+      StartNodeRequest request = StartNodeRequest.newBuilder().setName(name).build();
 
-      return tpuClient.getNode(request);
+      return tpuClient.startNodeAsync(request).get();
     }
   }
 }
-//[END tpu_vm_get]
+//[END tpu_vm_start]
