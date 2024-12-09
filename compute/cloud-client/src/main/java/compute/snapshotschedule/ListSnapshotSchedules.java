@@ -50,7 +50,8 @@ public class ListSnapshotSchedules {
               .setProject(projectId)
               .setRegion(region)
               .build();
-
+      // Filtering must be done manually for now, since list filtering
+      // inside resourcePoliciesClient.list is not supported yet.
       for (ResourcePolicy resourcePolicy : resourcePoliciesClient.list(request).iterateAll()) {
         if (resourcePolicy.getRegion().equals(filter)) {
           list.add(resourcePolicy);
