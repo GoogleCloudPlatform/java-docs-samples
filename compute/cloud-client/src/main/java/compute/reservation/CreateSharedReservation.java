@@ -18,6 +18,7 @@ package compute.reservation;
 
 // [START compute_reservation_create_shared]
 import com.google.cloud.compute.v1.AllocationSpecificSKUReservation;
+import com.google.cloud.compute.v1.InsertReservationRequest;
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.Reservation;
 import com.google.cloud.compute.v1.ReservationsClient;
@@ -29,12 +30,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public class CreateSharedReservation {
-  private final ReservationsClient reservationsClient;
-
-  // Constructor to inject the ReservationsClient
-  public CreateSharedReservation(ReservationsClient reservationsClient) {
-    this.reservationsClient = reservationsClient;
-  }
 
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
@@ -48,7 +43,7 @@ public class CreateSharedReservation {
     // For more information visit this page:
     // https://cloud.google.com/compute/docs/instances/reservations-shared#shared_reservation_constraint
     String projectId = "YOUR_PROJECT_ID";
-    // Zone in which the reservation resides.
+    // Zone in which to reserve resources.
     String zone = "us-central1-a";
     // Name of the reservation to be created.
     String reservationName = "YOUR_RESERVATION_NAME";
@@ -57,53 +52,57 @@ public class CreateSharedReservation {
         "projects/%s/global/instanceTemplates/YOUR_INSTANCE_TEMPLATE_NAME", projectId);
     // Number of instances for which capacity needs to be reserved.
     int vmCount = 3;
-    // In your main method, create ReservationsClient
-    ReservationsClient client = ReservationsClient.create();
-    // Create an instance of your class, passing in the client
-    CreateSharedReservation creator = new CreateSharedReservation(client);
 
-    creator.createSharedReservation(projectId, zone, reservationName, instanceTemplateUri, vmCount);
+    createSharedReservation(projectId, zone, reservationName, instanceTemplateUri, vmCount);
   }
 
   // Creates a shared reservation with the given name in the given zone.
-  public void createSharedReservation(
-      String projectId, String zone,
-      String reservationName, String instanceTemplateUri, int vmCount)
-      throws ExecutionException, InterruptedException, TimeoutException {
+  public static Operation.Status createSharedReservation(
+          String projectId, String zone,
+          String reservationName, String instanceTemplateUri, int vmCount)
+          throws ExecutionException, InterruptedException, TimeoutException, IOException {
 
     ShareSettings shareSettings = ShareSettings.newBuilder()
-        .setShareType(String.valueOf(ShareSettings.ShareType.SPECIFIC_PROJECTS))
-        // The IDs of projects that can consume this reservation. You can include up to 100
-        // consumer projects. These projects must be in the same organization as
-        // the owner project. Don't include the owner project. By default, it is already allowed
-        // to consume the reservation.
-        .putProjectMap("CONSUMER_PROJECT_ID_1", ShareSettingsProjectConfig.newBuilder().build())
-        .putProjectMap("CONSUMER_PROJECT_ID_2", ShareSettingsProjectConfig.newBuilder().build())
-        .build();
-
-    // Create the reservation.
-    Reservation reservation =
-        Reservation.newBuilder()
-            .setName(reservationName)
-            .setZone(zone)
-            .setSpecificReservationRequired(true)
-            .setShareSettings(shareSettings)
-            .setSpecificReservation(
-                AllocationSpecificSKUReservation.newBuilder()
-                    .setCount(vmCount)
-                    .setSourceInstanceTemplate(instanceTemplateUri)
-                    .build())
+            .setShareType(String.valueOf(ShareSettings.ShareType.SPECIFIC_PROJECTS))
+            // The IDs of projects that can consume this reservation. You can include up to 100
+            // consumer projects. These projects must be in the same organization as
+            // the owner project. Don't include the owner project. By default, it is already allowed
+            // to consume the reservation.
+            .putProjectMap("CONSUMER_PROJECT_ID_1", ShareSettingsProjectConfig.newBuilder().build())
+            .putProjectMap("CONSUMER_PROJECT_ID_2", ShareSettingsProjectConfig.newBuilder().build())
             .build();
 
-    // Wait for the create reservation operation to complete.
-    Operation response =
-        this.reservationsClient.insertAsync(projectId, zone, reservation).get(3, TimeUnit.MINUTES);
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests.
+    try (ReservationsClient reservationsClient = ReservationsClient.create()) {
+      Reservation reservationResource =
+              Reservation.newBuilder()
+                      .setName(reservationName)
+                      .setZone(zone)
+                      .setSpecificReservationRequired(true)
+                      .setShareSettings(shareSettings)
+                      .setSpecificReservation(
+                              AllocationSpecificSKUReservation.newBuilder()
+                                      .setCount(vmCount)
+                                      .setSourceInstanceTemplate(instanceTemplateUri)
+                                      .build())
+                      .build();
 
-    if (response.hasError()) {
-      System.out.println("Reservation creation failed!" + response);
-      return;
+      InsertReservationRequest request =
+              InsertReservationRequest.newBuilder()
+                      .setProject(projectId)
+                      .setZone(zone)
+                      .setReservationResource(reservationResource)
+                      .build();
+
+      Operation response = reservationsClient.insertAsync(request)
+              .get(3, TimeUnit.MINUTES);
+
+      if (response.hasError()) {
+        throw new Error("Reservation creation failed!!" + response);
+      }
+      return response.getStatus();
     }
-    System.out.println("Reservation created. Operation Status: " + response.getStatus());
   }
 }
 // [END compute_reservation_create_shared]
