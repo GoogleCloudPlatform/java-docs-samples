@@ -16,43 +16,44 @@
 
 package compute.disks.consistencygroup;
 
-// [START compute_consistency_group_clone]
+// [START compute_consistency_group_clone_zonal_disk]
+import com.google.cloud.compute.v1.BulkInsertDiskRequest;
 import com.google.cloud.compute.v1.BulkInsertDiskResource;
-import com.google.cloud.compute.v1.BulkInsertRegionDiskRequest;
+import com.google.cloud.compute.v1.DisksClient;
 import com.google.cloud.compute.v1.Operation;
-import com.google.cloud.compute.v1.RegionDisksClient;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class CloneDisksFromConsistencyGroup {
-
+public class CloneZonalDisksFromConsistencyGroup {
   public static void main(String[] args)
-      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+          throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
     // Project ID or project number of the Cloud project you want to use.
     String project = "YOUR_PROJECT_ID";
-    // Region in which your disk and consistency group are located.
-    String region = "us-central1";
+    // Zone in which your disk is located.
+    String disksLocation = "us-central1-a";
     // Name of the consistency group you want to clone disks from.
     String consistencyGroupName = "YOUR_CONSISTENCY_GROUP_NAME";
 
-    cloneDisksFromConsistencyGroup(project, region, consistencyGroupName);
+    cloneZonalDisksFromConsistencyGroup(project, disksLocation, consistencyGroupName);
   }
 
-  // Clones disks with regional location from a consistency group.
-  public static Operation.Status cloneDisksFromConsistencyGroup(
-          String project, String region, String consistencyGroupName)
-      throws IOException, InterruptedException, ExecutionException, TimeoutException {
+  // Clones disks with zonal location from a consistency group.
+  public static Operation.Status cloneZonalDisksFromConsistencyGroup(
+          String project, String zone, String consistencyGroupName)
+          throws IOException, InterruptedException, ExecutionException, TimeoutException {
+    String region = zone.substring(0, zone.lastIndexOf('-'));
     String sourceConsistencyGroupPolicy = String.format(
             "projects/%s/regions/%s/resourcePolicies/%s", project, region, consistencyGroupName);
+
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
-    try (RegionDisksClient disksClient = RegionDisksClient.create()) {
-      BulkInsertRegionDiskRequest request = BulkInsertRegionDiskRequest.newBuilder()
+    try (DisksClient disksClient = DisksClient.create()) {
+      BulkInsertDiskRequest request = BulkInsertDiskRequest.newBuilder()
               .setProject(project)
-              .setRegion(region)
+              .setZone(zone)
               .setBulkInsertDiskResourceResource(
                       BulkInsertDiskResource.newBuilder()
                               .setSourceConsistencyGroupPolicy(sourceConsistencyGroupPolicy)
@@ -68,4 +69,4 @@ public class CloneDisksFromConsistencyGroup {
     }
   }
 }
-// [END compute_consistency_group_clone]
+// [END compute_consistency_group_clone_zonal_disk]
