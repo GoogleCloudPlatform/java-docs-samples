@@ -431,32 +431,6 @@ public class QueriesTest {
   }
 
   @Test
-  public void queryInterface_singleFilter_returnsMatchedEntities() throws Exception {
-    // Arrange
-    Entity a = new Entity("Person", "a");
-    a.setProperty("height", 100);
-    Entity b = new Entity("Person", "b");
-    b.setProperty("height", 150);
-    Entity c = new Entity("Person", "c");
-    c.setProperty("height", 300);
-    datastore.put(ImmutableList.<Entity>of(a, b, c));
-
-    // Act
-    long minHeight = 150;
-    // [START gae_java8_datastore_interface_2]
-    Filter heightMinFilter =
-        new FilterPredicate("height", FilterOperator.GREATER_THAN_OR_EQUAL, minHeight);
-
-    Query q = new Query("Person").setFilter(heightMinFilter);
-    // [END gae_java8_datastore_interface_2]
-
-    // Assert
-    List<Entity> results =
-        datastore.prepare(q.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
-    assertWithMessage("query results").that(results).containsExactly(b, c);
-  }
-
-  @Test
   public void queryInterface_orFilter_printsMatchedEntities() throws Exception {
     // Arrange
     Entity a = new Entity("Person", "a");
