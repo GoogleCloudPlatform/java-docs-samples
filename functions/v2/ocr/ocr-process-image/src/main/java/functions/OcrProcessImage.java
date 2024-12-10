@@ -71,7 +71,12 @@ public class OcrProcessImage implements CloudEventsFunction {
     // Unmarshal data from CloudEvent
     String cloudEventData = new String(event.getData().toBytes(), StandardCharsets.UTF_8);
     StorageObjectData.Builder builder = StorageObjectData.newBuilder();
-    JsonFormat.parser().merge(cloudEventData, builder);
+    
+    // If you do not ignore unknown fields, then JsonFormat.Parser returns an
+    // error when encountering a new or unknown field. Note that you might lose
+    // some event data in the unmarshaling process by ignoring unknown fields.
+    JsonFormat.Parser parser = JsonFormat.parser().ignoringUnknownFields();
+    parser.merge(cloudEventData, builder);
     StorageObjectData gcsEvent = builder.build();
 
     String bucket = gcsEvent.getBucket();
