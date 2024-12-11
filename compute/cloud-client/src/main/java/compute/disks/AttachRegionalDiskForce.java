@@ -46,10 +46,11 @@ public class AttachRegionalDiskForce {
 
   // Attaches a regional disk to the instance,
   // forcing the attachment even if other VMs are using the disk.
-  public static Operation.Status attachRegionalDiskForce(
-          String projectId, String instanceLocation, String instanceName, String diskLocation, String diskName)
+  public static Operation.Status attachRegionalDiskForce(String projectId,
+         String instanceLocation, String instanceName, String diskLocation, String diskName)
           throws IOException, InterruptedException, ExecutionException, TimeoutException {
-    String diskLink = String.format("projects/%s/regions/%s/disks/%s", projectId, diskLocation, diskName);
+    String diskLink = String.format("projects/%s/regions/%s/disks/%s",
+            projectId, diskLocation, diskName);
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (InstancesClient instancesClient = InstancesClient.create()) {

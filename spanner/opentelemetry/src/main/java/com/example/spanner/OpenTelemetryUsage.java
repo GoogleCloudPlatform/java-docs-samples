@@ -77,14 +77,16 @@ public class OpenTelemetryUsage {
         .build();
     Spanner spanner = options.getService();
 
-    // [END spanner_opentelemetry_usage]
     DatabaseClient dbClient = spanner
         .getDatabaseClient(DatabaseId.of(projectId, instanceId, databaseId));
 
     captureGfeMetric(dbClient);
     captureQueryStatsMetric(openTelemetry, dbClient);
-    sdkMeterProvider.forceFlush();
-    sdkTracerProvider.forceFlush();
+
+    // Close the providers to free up the resources and export the data. */
+    sdkMeterProvider.close();
+    sdkTracerProvider.close();
+    // [END spanner_opentelemetry_usage]
   }
 
 
