@@ -126,6 +126,7 @@ public final class BasicCompanySample {
   }
   // [END update_company]
 
+  // [START job_update_company_with_field_mask]
   // [START update_company_with_field_mask]
 
   /** Updates a company. */
@@ -151,6 +152,7 @@ public final class BasicCompanySample {
     }
   }
   // [END update_company_with_field_mask]
+  // [END job_update_company_with_field_mask]
 
   // [START delete_company]
 
