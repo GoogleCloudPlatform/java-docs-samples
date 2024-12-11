@@ -33,23 +33,23 @@ public class AttachRegionalDiskForce {
     // Project ID or project number of the Cloud project you want to use.
     String projectId = "YOUR_PROJECT_ID";
     // Name of the zone of your compute instance.
-    String zone = "us-central1-a";
+    String instanceLocation = "us-central1-a";
     // The name of the compute instance where you are adding the replicated disk.
     String instanceName = "YOUR_INSTANCE_NAME";
     // The region where your replicated disk is located.
-    String region = "us-central1";
+    String diskLocation = "us-central1";
     // The name of the replicated disk.
     String diskName = "YOUR_DISK_NAME";
 
-    attachRegionalDiskForce(projectId, zone, instanceName, region, diskName);
+    attachRegionalDiskForce(projectId, instanceLocation, instanceName, diskLocation, diskName);
   }
 
   // Attaches a regional disk to the instance,
   // forcing the attachment even if other VMs are using the disk.
   public static Operation.Status attachRegionalDiskForce(
-          String projectId, String zone, String instanceName, String region, String diskName)
+          String projectId, String instanceLocation, String instanceName, String diskLocation, String diskName)
           throws IOException, InterruptedException, ExecutionException, TimeoutException {
-    String diskLink = String.format("projects/%s/regions/%s/disks/%s", projectId, region, diskName);
+    String diskLink = String.format("projects/%s/regions/%s/disks/%s", projectId, diskLocation, diskName);
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (InstancesClient instancesClient = InstancesClient.create()) {
@@ -60,7 +60,7 @@ public class AttachRegionalDiskForce {
 
       AttachDiskInstanceRequest attachDiskRequest = AttachDiskInstanceRequest.newBuilder()
               .setProject(projectId)
-              .setZone(zone)
+              .setZone(instanceLocation)
               .setInstance(instanceName)
               .setAttachedDiskResource(attachedDisk)
               .setForceAttach(true) //Force the attachment
