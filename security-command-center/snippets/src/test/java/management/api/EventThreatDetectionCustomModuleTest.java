@@ -81,15 +81,24 @@ public class EventThreatDetectionCustomModuleTest {
       // Iterate over the response and delete custom module one by one which start with
       // java_sample_custom_module
       for (EventThreatDetectionCustomModule module : response.iterateAll()) {
-        if (module.getDisplayName().startsWith("java_sample_custom_module")) {
-          String customModuleId = extractCustomModuleId(module.getName());
-          deleteCustomModule(PROJECT_ID, customModuleId);
+        try {
+          if (module.getDisplayName().startsWith("java_sample_custom_module")) {
+            String customModuleId = extractCustomModuleId(module.getName());
+            deleteCustomModule(PROJECT_ID, customModuleId);
+          }
+        } catch (Exception e) {
+          System.err.println("Failed to delete module: " + module.getDisplayName());
+          e.printStackTrace();
         }
       }
+    } catch (Exception e) {
+      System.err.println("Failed to process cleanupExistingCustomModules.");
+      e.printStackTrace();
     }
   }
 
-  // extractCustomModuleID extracts the custom module Id from the full name
+  // extractCustomModuleID extracts the custom module Id from the full name and below regex will
+  // parses suffix after the last slash character.
   private static String extractCustomModuleId(String customModuleFullName) {
     if (!Strings.isNullOrEmpty(customModuleFullName)) {
       Pattern pattern = Pattern.compile(".*/([^/]+)$");

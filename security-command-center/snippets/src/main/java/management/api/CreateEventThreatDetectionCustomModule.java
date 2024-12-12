@@ -25,6 +25,8 @@ import com.google.protobuf.ListValue;
 import com.google.protobuf.Struct;
 import com.google.protobuf.Value;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CreateEventThreatDetectionCustomModule {
 
@@ -52,17 +54,16 @@ public class CreateEventThreatDetectionCustomModule {
               projectId, "custom_module");
 
       // define the metadata and other config parameters severity, description,
-      // recommendation below
-      Struct metadataStruct =
-          Struct.newBuilder()
-              .putFields("severity", Value.newBuilder().setStringValue("MEDIUM").build())
-              .putFields(
-                  "description",
-                  Value.newBuilder().setStringValue("add your description here").build())
-              .putFields(
-                  "recommendation",
-                  Value.newBuilder().setStringValue("add your recommendation here").build())
-              .build();
+      // recommendation and ips below
+      Map<String, Value> metadata = new HashMap<>();
+      metadata.put("severity", Value.newBuilder().setStringValue("MEDIUM").build());
+      metadata.put(
+          "description", Value.newBuilder().setStringValue("add your description here").build());
+      metadata.put(
+          "recommendation",
+          Value.newBuilder().setStringValue("add your recommendation here").build());
+      Struct metadataStruct = Struct.newBuilder().putAllFields(metadata).build();
+
       Struct configStruct =
           Struct.newBuilder()
               .putFields("metadata", Value.newBuilder().setStructValue(metadataStruct).build())
