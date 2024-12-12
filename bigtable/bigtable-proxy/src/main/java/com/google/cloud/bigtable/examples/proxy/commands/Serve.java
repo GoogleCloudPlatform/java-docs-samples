@@ -115,12 +115,12 @@ public class Serve implements Callable<Void> {
     ResourceCollector resourceCollector = new ResourceCollector();
     refreshExecutor = Executors.newSingleThreadScheduledExecutor();
 
-    // From
-    // https://github.com/googleapis/java-bigtable/blob/e0ce2fe3c1207731d15e56faec66ba099652b87c/google-cloud-bigtable/src/main/java/com/google/cloud/bigtable/data/v2/stub/EnhancedBigtableStubSettings.java#L406-L410
     ChannelPoolSettings poolSettings =
         ChannelPoolSettings.builder()
             .setInitialChannelCount(10)
-            .setMinRpcsPerChannel(1)
+            .setMinChannelCount(2)
+            .setMaxChannelCount(20)
+            .setMinRpcsPerChannel(5)
             .setMaxRpcsPerChannel(50)
             .setPreemptiveRefreshEnabled(true)
             .build();

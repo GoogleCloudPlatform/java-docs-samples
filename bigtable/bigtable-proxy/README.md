@@ -45,7 +45,11 @@ in a project your choosing. The metrics will be published under the namespace
   Cloud Bigtable service.
 * `bigtableproxy.client.gfe.duration_missing.count` Count of calls missing gfe response headers
 * `bigtableproxy.client.call.duration` Total duration of how long the outbound call took
+* `bigtableproxy.server.write_wait.duration` Total amount of time spent waiting for the downstream
+  client to be ready for data.
 * `bigtableproxy.client.channel.count` Number of open channels
+* `bigtableproxy.client.channel_change_count` Number of channel transitions by previous and next
+  states.
 * `bigtableproxy.client.call.max_outstanding_count` Maximum number of concurrent RPCs in a single
   minute window
 * `bigtableproxy.presence` Counts number of proxy processes (emit 1 per process).

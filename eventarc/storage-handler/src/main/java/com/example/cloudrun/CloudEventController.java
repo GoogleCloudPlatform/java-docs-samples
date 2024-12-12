@@ -46,7 +46,12 @@ public class CloudEventController {
 
     String json = new String(cloudEvent.getData().toBytes());
     StorageObjectData.Builder builder = StorageObjectData.newBuilder();
-    JsonFormat.parser().merge(json, builder);
+
+    // If you do not ignore unknown fields, then JsonFormat.Parser returns an
+    // error when encountering a new or unknown field. Note that you might lose
+    // some event data in the unmarshaling process by ignoring unknown fields.
+    JsonFormat.Parser parser = JsonFormat.parser().ignoringUnknownFields();
+    parser.merge(json, builder);
     StorageObjectData data = builder.build();
 
     // Convert protobuf timestamp to java Instant
@@ -54,7 +59,7 @@ public class CloudEventController {
     Instant updated = Instant.ofEpochSecond(ts.getSeconds(), ts.getNanos());
     String msg =
         String.format(
-            "Cloud Storage object changed: %s/%s modified at %s\n",
+            "Cloud Storage object changed: %s/%s modified at %s%n",
             data.getBucket(), data.getName(), updated);
 
     System.out.println(msg);

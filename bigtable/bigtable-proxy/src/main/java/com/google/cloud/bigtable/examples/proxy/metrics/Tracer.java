@@ -16,6 +16,8 @@
 
 package com.google.cloud.bigtable.examples.proxy.metrics;
 
+import com.google.cloud.bigtable.examples.proxy.core.CallLabels;
+import com.google.cloud.bigtable.examples.proxy.metrics.Metrics.MetricsAttributes;
 import com.google.common.base.Stopwatch;
 import io.grpc.CallOptions;
 import io.grpc.CallOptions.Key;
@@ -30,6 +32,12 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * RPC lifecycle tracer.
+ *
+ * <p>It hooks into both gRPC RPC lifecycle and this application. It combines the extracted {@link
+ * CallLabels} with {@link Metrics} recording.
+ */
 public class Tracer extends ClientStreamTracer {
   private static final Key<Tracer> CALL_OPTION_KEY = Key.create("bigtable-proxy-tracer");
 
@@ -39,17 +47,20 @@ public class Tracer extends ClientStreamTracer {
 
   private final Metrics metrics;
   private final CallLabels callLabels;
+  private final MetricsAttributes attrs;
   private final Stopwatch stopwatch;
   private volatile Optional<Duration> grpcQueueDuration = Optional.empty();
   private final AtomicLong responseSize = new AtomicLong();
+  private volatile Duration downstreamLatency;
 
   public Tracer(Metrics metrics, CallLabels callLabels) {
     this.metrics = metrics;
     this.callLabels = callLabels;
+    this.attrs = metrics.createAttributes(callLabels);
 
     stopwatch = Stopwatch.createStarted();
 
-    metrics.recordCallStarted(callLabels);
+    metrics.recordCallStarted(attrs);
   }
 
   public CallOptions injectIntoCallOptions(CallOptions callOptions) {
@@ -76,7 +87,7 @@ public class Tracer extends ClientStreamTracer {
 
   @Override
   public void outboundUncompressedSize(long bytes) {
-    metrics.recordRequestSize(callLabels, bytes);
+    metrics.recordRequestSize(attrs, bytes);
   }
 
   @Override
@@ -93,22 +104,34 @@ public class Tracer extends ClientStreamTracer {
         .map(Long::parseLong)
         .map(Duration::ofMillis)
         .ifPresentOrElse(
-            d -> metrics.recordGfeLatency(callLabels, d),
-            () -> metrics.recordGfeHeaderMissing(callLabels));
+            d -> metrics.recordGfeLatency(attrs, d), () -> metrics.recordGfeHeaderMissing(attrs));
+  }
+
+  @Override
+  public void inboundMessage(int seqNo) {
+    if (seqNo == 0) {
+      metrics.recordFirstByteLatency(
+          attrs, Duration.ofMillis(stopwatch.elapsed(TimeUnit.MILLISECONDS)));
+    }
   }
 
   public void onCallFinished(Status status) {
-    grpcQueueDuration.ifPresent(d -> metrics.recordQueueLatency(callLabels, d));
-    metrics.recordResponseSize(callLabels, responseSize.get());
+    grpcQueueDuration.ifPresent(d -> metrics.recordQueueLatency(attrs, d));
+    metrics.recordDownstreamLatency(attrs, downstreamLatency);
+    metrics.recordResponseSize(attrs, responseSize.get());
     metrics.recordCallLatency(
-        callLabels, status, Duration.ofMillis(stopwatch.elapsed(TimeUnit.MILLISECONDS)));
+        attrs, status, Duration.ofMillis(stopwatch.elapsed(TimeUnit.MILLISECONDS)));
   }
 
   public void onCredentialsFetch(Status status, Duration duration) {
-    metrics.recordCredLatency(callLabels, status, duration);
+    metrics.recordCredLatency(attrs, status, duration);
   }
 
   public CallLabels getCallLabels() {
     return callLabels;
+  }
+
+  public void onDownstreamLatency(Duration latency) {
+    downstreamLatency = downstreamLatency.plus(latency);
   }
 }
