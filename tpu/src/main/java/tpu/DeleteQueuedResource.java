@@ -66,11 +66,6 @@ public class DeleteQueuedResource {
     // once, and can be reused for multiple requests.
     try (TpuClient tpuClient = TpuClient.create(clientSettings.build())) {
       // Before deleting the queued resource it is required to delete the TPU VM.
-      // Uncomment these lines to retrieve node name
-      //GetQueuedResourceRequest getRequest =
-      //    GetQueuedResourceRequest.newBuilder().setName(name).build();
-      //QueuedResource queuedResource = tpuClient.getQueuedResource(getRequest);
-      //String nodeName = queuedResource.getTpu().getNodeSpec(0).getNode().getName();
       // For more information about deleting TPU
       // see https://cloud.google.com/tpu/docs/managing-tpus-tpu-vm
 

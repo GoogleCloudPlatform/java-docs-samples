@@ -25,11 +25,13 @@ import com.google.cloud.tpu.v2alpha1.TpuClient;
 import com.google.cloud.tpu.v2alpha1.TpuSettings;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import org.threeten.bp.Duration;
 
 public class CreateQueuedResource {
   public static void main(String[] args)
-      throws IOException, ExecutionException, InterruptedException {
+          throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
     // Project ID or project number of the Google Cloud project you want to create a node.
     String projectId = "YOUR_PROJECT_ID";
@@ -56,7 +58,7 @@ public class CreateQueuedResource {
   // Creates a Queued Resource
   public static QueuedResource createQueuedResource(String projectId, String zone,
       String queuedResourceId, String nodeName, String tpuType, String tpuSoftwareVersion)
-      throws IOException, ExecutionException, InterruptedException {
+          throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // With these settings the client library handles the Operation's polling mechanism
     // and prevent CancellationException error
     TpuSettings.Builder clientSettings =
@@ -72,6 +74,8 @@ public class CreateQueuedResource {
                 .setMaxRetryDelay(Duration.ofMillis(45000L))
                 .setTotalTimeout(Duration.ofHours(24L))
                 .build());
+    String resource = String.format("projects/%s/locations/%s/queuedResources/%s",
+            projectId, zone, queuedResourceId);
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (TpuClient tpuClient = TpuClient.create(clientSettings.build())) {
@@ -81,10 +85,7 @@ public class CreateQueuedResource {
               .setName(nodeName)
               .setAcceleratorType(tpuType)
               .setRuntimeVersion(tpuSoftwareVersion)
-              .setQueuedResource(
-                  String.format(
-                      "projects/%s/locations/%s/queuedResources/%s",
-                      projectId, zone, queuedResourceId))
+              .setQueuedResource(resource)
               .build();
 
       QueuedResource queuedResource =
@@ -111,10 +112,7 @@ public class CreateQueuedResource {
               .setQueuedResource(queuedResource)
               .build();
 
-      // You can wait until TPU Node is READY,
-      // and check its status using getTpuVm() from "tpu_vm_get" sample.
-
-      return tpuClient.createQueuedResourceAsync(request).get();
+      return tpuClient.createQueuedResourceAsync(request).get(1, TimeUnit.MINUTES);
     }
   }
 }
