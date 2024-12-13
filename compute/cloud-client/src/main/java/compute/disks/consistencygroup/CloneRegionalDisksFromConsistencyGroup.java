@@ -16,7 +16,7 @@
 
 package compute.disks.consistencygroup;
 
-// [START compute_consistency_group_clone]
+// [START compute_consistency_group_clone_regional_disk]
 import com.google.cloud.compute.v1.BulkInsertDiskResource;
 import com.google.cloud.compute.v1.BulkInsertRegionDiskRequest;
 import com.google.cloud.compute.v1.Operation;
@@ -26,27 +26,28 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class CloneDisksFromConsistencyGroup {
+public class CloneRegionalDisksFromConsistencyGroup {
 
   public static void main(String[] args)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
     // Project ID or project number of the Cloud project you want to use.
     String project = "YOUR_PROJECT_ID";
-    // Region in which your disk and consistency group are located.
+    // Region in which your disks and consistency group are located.
     String region = "us-central1";
     // Name of the consistency group you want to clone disks from.
     String consistencyGroupName = "YOUR_CONSISTENCY_GROUP_NAME";
 
-    cloneDisksFromConsistencyGroup(project, region, consistencyGroupName);
+    cloneRegionalDisksFromConsistencyGroup(project, region, consistencyGroupName);
   }
 
-  // Clones disks with regional location from a consistency group.
-  public static Operation.Status cloneDisksFromConsistencyGroup(
+  // Clones regional disks from a consistency group.
+  public static Operation.Status cloneRegionalDisksFromConsistencyGroup(
           String project, String region, String consistencyGroupName)
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
     String sourceConsistencyGroupPolicy = String.format(
             "projects/%s/regions/%s/resourcePolicies/%s", project, region, consistencyGroupName);
+
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (RegionDisksClient disksClient = RegionDisksClient.create()) {
@@ -62,10 +63,10 @@ public class CloneDisksFromConsistencyGroup {
       Operation response = disksClient.bulkInsertAsync(request).get(3, TimeUnit.MINUTES);
 
       if (response.hasError()) {
-        throw new Error("Error cloning disks! " + response.getError());
+        throw new Error("Error cloning regional disks! " + response.getError());
       }
       return response.getStatus();
     }
   }
 }
-// [END compute_consistency_group_clone]
+// [END compute_consistency_group_clone_regional_disk]

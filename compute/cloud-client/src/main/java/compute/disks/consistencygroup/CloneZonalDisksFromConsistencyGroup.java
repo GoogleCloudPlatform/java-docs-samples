@@ -32,7 +32,7 @@ public class CloneZonalDisksFromConsistencyGroup {
     // TODO(developer): Replace these variables before running the sample.
     // Project ID or project number of the Cloud project you want to use.
     String project = "YOUR_PROJECT_ID";
-    // Zone in which your disk is located.
+    // Zone in which your disks are located.
     String disksLocation = "us-central1-a";
     // Name of the consistency group you want to clone disks from.
     String consistencyGroupName = "YOUR_CONSISTENCY_GROUP_NAME";
@@ -40,7 +40,7 @@ public class CloneZonalDisksFromConsistencyGroup {
     cloneZonalDisksFromConsistencyGroup(project, disksLocation, consistencyGroupName);
   }
 
-  // Clones disks with zonal location from a consistency group.
+  // Clones zonal disks from a consistency group.
   public static Operation.Status cloneZonalDisksFromConsistencyGroup(
           String project, String zone, String consistencyGroupName)
           throws IOException, InterruptedException, ExecutionException, TimeoutException {
@@ -63,7 +63,7 @@ public class CloneZonalDisksFromConsistencyGroup {
       Operation response = disksClient.bulkInsertAsync(request).get(3, TimeUnit.MINUTES);
 
       if (response.hasError()) {
-        throw new Error("Error cloning disks! " + response.getError());
+        throw new Error("Error cloning zonal disks! " + response.getError());
       }
       return response.getStatus();
     }
