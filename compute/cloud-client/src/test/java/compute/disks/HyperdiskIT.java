@@ -19,6 +19,7 @@ package compute.disks;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.times;
@@ -41,7 +42,6 @@ import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 
 @RunWith(JUnit4.class)
 @Timeout(value = 5, unit = TimeUnit.MINUTES)
@@ -71,8 +71,8 @@ public class HyperdiskIT {
                  mockStatic(StoragePoolsClient.class)) {
       StoragePoolsClient mockClient = mock(StoragePoolsClient.class);
       OperationFuture<Operation, Operation> mockFuture =
-              mock(OperationFuture.class, Mockito.RETURNS_DEEP_STUBS);
-      Operation operation = mock(Operation.class, Mockito.RETURNS_DEEP_STUBS);
+              mock(OperationFuture.class, RETURNS_DEEP_STUBS);
+      Operation operation = mock(Operation.class, RETURNS_DEEP_STUBS);
 
       mockedStoragePoolsClient.when(StoragePoolsClient::create).thenReturn(mockClient);
       when(mockClient.insertAsync(any(InsertStoragePoolRequest.class)))
@@ -110,8 +110,8 @@ public class HyperdiskIT {
     try (MockedStatic<DisksClient> mockedDisksClient = mockStatic(DisksClient.class)) {
       DisksClient mockClient = mock(DisksClient.class);
       OperationFuture<Operation, Operation> mockFuture =
-              mock(OperationFuture.class, Mockito.RETURNS_DEEP_STUBS);
-      Operation operation = mock(Operation.class, Mockito.RETURNS_DEEP_STUBS);
+              mock(OperationFuture.class, RETURNS_DEEP_STUBS);
+      Operation operation = mock(Operation.class, RETURNS_DEEP_STUBS);
 
       mockedDisksClient.when(DisksClient::create).thenReturn(mockClient);
       when(mockClient.insertAsync(any(InsertDiskRequest.class))).thenReturn(mockFuture);
