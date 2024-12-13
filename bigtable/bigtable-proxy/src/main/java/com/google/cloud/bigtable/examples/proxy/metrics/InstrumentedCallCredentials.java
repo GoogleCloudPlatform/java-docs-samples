@@ -16,18 +16,40 @@
 
 package com.google.cloud.bigtable.examples.proxy.metrics;
 
+import com.google.cloud.bigtable.examples.proxy.channelpool.DataChannel;
+import com.google.cloud.bigtable.examples.proxy.core.CallLabels.PrimingKey;
+import com.google.cloud.bigtable.examples.proxy.core.ProxyHandler;
 import com.google.common.base.Stopwatch;
 import io.grpc.CallCredentials;
+import io.grpc.CallOptions;
 import io.grpc.InternalMayRequireSpecificExecutor;
 import io.grpc.Metadata;
+import io.grpc.ServerCall;
 import io.grpc.Status;
 import java.time.Duration;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+/**
+ * {@link CallCredentials} decorator that tracks latency for fetching credentials.
+ *
+ * <p>This expects that all RPCs that use these credentials embed a {@link Tracer} in the {@link
+ * io.grpc.CallOptions} using {@link Tracer#injectIntoCallOptions(CallOptions)}.
+ *
+ * <p>Known callers:
+ *
+ * <ul>
+ *   <li>{@link DataChannel#sendPingAndWarm(PrimingKey)}
+ *   <li>{@link ProxyHandler#startCall(ServerCall, Metadata)}
+ * </ul>
+ */
 public class InstrumentedCallCredentials extends CallCredentials
     implements InternalMayRequireSpecificExecutor {
+  private static final Logger LOG = LoggerFactory.getLogger(InstrumentedCallCredentials.class);
+
   private final CallCredentials inner;
   private final boolean specificExecutorRequired;
 
@@ -56,15 +78,21 @@ public class InstrumentedCallCredentials extends CallCredentials
         new MetadataApplier() {
           @Override
           public void apply(Metadata headers) {
-            tracer.onCredentialsFetch(
-                Status.OK, Duration.ofMillis(stopwatch.elapsed(TimeUnit.MILLISECONDS)));
+            Duration latency = Duration.ofMillis(stopwatch.elapsed(TimeUnit.MILLISECONDS));
+            // Most credentials fetches should very fast because they are cached
+            if (latency.compareTo(Duration.ofMillis(1)) >= 1) {
+              LOG.debug("Fetching Credentials took {}", latency);
+            }
+            tracer.onCredentialsFetch(Status.OK, latency);
             applier.apply(headers);
           }
 
           @Override
           public void fail(Status status) {
-            tracer.onCredentialsFetch(
-                status, Duration.ofMillis(stopwatch.elapsed(TimeUnit.MILLISECONDS)));
+            Duration latency = Duration.ofMillis(stopwatch.elapsed(TimeUnit.MILLISECONDS));
+
+            LOG.warn("Failed to fetch Credentials after {}: {}", latency, status);
+            tracer.onCredentialsFetch(status, latency);
             applier.fail(status);
           }
         });
