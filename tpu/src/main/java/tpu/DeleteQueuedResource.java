@@ -24,9 +24,6 @@ import com.google.cloud.tpu.v2alpha1.TpuSettings;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import org.threeten.bp.Duration;
-// Uncomment this imports for getting node name
-//import com.google.cloud.tpu.v2alpha1.GetQueuedResourceRequest;
-//import com.google.cloud.tpu.v2alpha1.QueuedResource;
 
 public class DeleteQueuedResource {
   public static void main(String[] args)
