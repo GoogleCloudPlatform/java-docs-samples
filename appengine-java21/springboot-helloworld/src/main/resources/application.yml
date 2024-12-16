@@ -1,0 +1,37 @@
+spring:
+  application:
+    name: appengine-spring-boot
+  # JSON formatting options
+  jackson:
+    serialization:
+      indent_output: true
+      write-dates-as-timestamps: false
+  mvc:
+    # In order to use JSPs
+    view:
+      prefix: /WEB-INF/jsp/
+      suffix: .jsp
+
+  # Set up security credentials...
+  security:
+    user:
+      name: administrator
+      password: M4rSuP1aL-EsTh3T1qUE
+      roles: ADMIN
+
+management:
+  # ... only for the management endpoints (actuator)
+  security:
+    enabled: true
+  # No disk space on GAE, threshold must be set to 0
+  # otherwise the default value will tell the app is DOWN
+  health:
+    diskspace:
+      threshold: 0
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: ALWAYS
