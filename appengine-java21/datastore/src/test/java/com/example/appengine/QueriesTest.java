@@ -16,17 +16,9 @@
 
 package com.example.appengine;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.Arrays;
-import java.util.List;
-
-import org.junit.After;
+import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 import static org.junit.Assert.fail;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -45,21 +37,28 @@ import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.common.collect.ImmutableList;
-import static com.google.common.truth.Truth.assertThat;
-import static com.google.common.truth.Truth.assertWithMessage;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.Arrays;
+import java.util.List;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 /** Unit tests to demonstrate App Engine Datastore queries. */
 @RunWith(JUnit4.class)
 public class QueriesTest {
 
   private final LocalServiceTestHelper helper =
-          new LocalServiceTestHelper(
-                  // Set no eventual consistency, that way queries return all results.
-                  // https://cloud.google
-                  // .com/appengine/docs/java/tools/localunittesting
-                  // #Java_Writing_High_Replication_Datastore_tests
-                  new LocalDatastoreServiceTestConfig()
-                          .setDefaultHighRepJobPolicyUnappliedJobPercentage(0));
+      new LocalServiceTestHelper(
+          // Set no eventual consistency, that way queries return all results.
+          // https://cloud.google
+          // .com/appengine/docs/java/tools/localunittesting
+          // #Java_Writing_High_Replication_Datastore_tests
+          new LocalDatastoreServiceTestConfig()
+              .setDefaultHighRepJobPolicyUnappliedJobPercentage(0));
 
   private DatastoreService datastore;
 
@@ -89,13 +88,13 @@ public class QueriesTest {
     long minHeight = 160;
     // [START gae_java8_datastore_property_filter]
     Filter propertyFilter =
-            new FilterPredicate("height", FilterOperator.GREATER_THAN_OR_EQUAL, minHeight);
+        new FilterPredicate("height", FilterOperator.GREATER_THAN_OR_EQUAL, minHeight);
     Query q = new Query("Person").setFilter(propertyFilter);
     // [END gae_java8_datastore_property_filter]
 
     // Assert
     List<Entity> results =
-            datastore.prepare(q.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
+        datastore.prepare(q.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
     assertWithMessage("query results").that(results).containsExactly(p2, p3);
   }
 
@@ -115,19 +114,19 @@ public class QueriesTest {
     Key lastSeenKey = bb.getKey();
     // [START gae_java8_datastore_key_filter]
     Filter keyFilter =
-            new FilterPredicate(Entity.KEY_RESERVED_PROPERTY, FilterOperator.GREATER_THAN, lastSeenKey);
+        new FilterPredicate(Entity.KEY_RESERVED_PROPERTY, FilterOperator.GREATER_THAN, lastSeenKey);
     Query q = new Query("Person").setFilter(keyFilter);
     // [END gae_java8_datastore_key_filter]
 
     // Assert
     List<Entity> results =
-            datastore.prepare(q.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
+        datastore.prepare(q.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
     assertWithMessage("query results")
-            .that(results)
-            .containsExactly(
-                    aaa, // Ancestor path "b/bb/aaa" is greater than "b/bb".
-                    bbb, // Ancestor path "b/bb/bbb" is greater than "b/bb".
-                    c); // Key name identifier "c" is greater than b.
+        .that(results)
+        .containsExactly(
+            aaa, // Ancestor path "b/bb/aaa" is greater than "b/bb".
+            bbb, // Ancestor path "b/bb/bbb" is greater than "b/bb".
+            c); // Key name identifier "c" is greater than b.
   }
 
   @Test
@@ -148,20 +147,20 @@ public class QueriesTest {
     Key lastSeenKey = bb.getKey();
     // [START gae_java8_datastore_kindless_query]
     Filter keyFilter =
-            new FilterPredicate(Entity.KEY_RESERVED_PROPERTY, FilterOperator.GREATER_THAN, lastSeenKey);
+        new FilterPredicate(Entity.KEY_RESERVED_PROPERTY, FilterOperator.GREATER_THAN, lastSeenKey);
     Query q = new Query().setFilter(keyFilter);
     // [END gae_java8_datastore_kindless_query]
 
     // Assert
     List<Entity> results =
-            datastore.prepare(q.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
+        datastore.prepare(q.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
     assertWithMessage("query results")
-            .that(results)
-            .containsExactly(
-                    aaa, // Ancestor path "b/bb/aaa" is greater than "b/bb".
-                    bbb, // Ancestor path "b/bb/bbb" is greater than "b/bb".
-                    zooAnimal, // Kind "ZooAnimal" is greater than "Child"
-                    c); // Key name identifier "c" is greater than b.
+        .that(results)
+        .containsExactly(
+            aaa, // Ancestor path "b/bb/aaa" is greater than "b/bb".
+            bbb, // Ancestor path "b/bb/bbb" is greater than "b/bb".
+            zooAnimal, // Kind "ZooAnimal" is greater than "Child"
+            c); // Key name identifier "c" is greater than b.
   }
 
   @Test
@@ -180,7 +179,7 @@ public class QueriesTest {
 
     // Assert
     List<Entity> results =
-            datastore.prepare(q.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
+        datastore.prepare(q.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
     assertWithMessage("query results").that(results).containsExactly(a, aa, ab);
   }
 
@@ -213,12 +212,12 @@ public class QueriesTest {
     // This returns weddingPhoto, babyPhoto, and dancePhoto,
     // but not campingPhoto, because tom is not an ancestor
     List<Entity> results =
-            datastore.prepare(photoQuery).asList(FetchOptions.Builder.withDefaults());
+        datastore.prepare(photoQuery).asList(FetchOptions.Builder.withDefaults());
     // [END gae_java8_datastore_ancestor_query]
 
     assertWithMessage("query results")
-            .that(results)
-            .containsExactly(weddingPhoto, babyPhoto, dancePhoto);
+        .that(results)
+        .containsExactly(weddingPhoto, babyPhoto, dancePhoto);
   }
 
   @Test
@@ -241,19 +240,19 @@ public class QueriesTest {
     Key lastSeenKey = bb.getKey();
     // [START gae_java8_datastore_kindless_ancestor_key_query]
     Filter keyFilter =
-            new FilterPredicate(Entity.KEY_RESERVED_PROPERTY, FilterOperator.GREATER_THAN, lastSeenKey);
+        new FilterPredicate(Entity.KEY_RESERVED_PROPERTY, FilterOperator.GREATER_THAN, lastSeenKey);
     Query q = new Query().setAncestor(ancestorKey).setFilter(keyFilter);
     // [END gae_java8_datastore_kindless_ancestor_key_query]
 
     // Assert
     List<Entity> results =
-            datastore.prepare(q.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
+        datastore.prepare(q.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
     assertWithMessage("query results").that(results).containsExactly(bc, bbb);
   }
 
   @Test
   public void ancestorQueryExample_kindlessKeyFilterFull_returnsMatchingEntities()
-          throws Exception {
+      throws Exception {
     // [START gae_java8_datastore_kindless_ancestor_query]
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
@@ -273,19 +272,19 @@ public class QueriesTest {
     // By default, ancestor queries include the specified ancestor itself.
     // The following filter excludes the ancestor from the query results.
     Filter keyFilter =
-            new FilterPredicate(Entity.KEY_RESERVED_PROPERTY, FilterOperator.GREATER_THAN, tomKey);
+        new FilterPredicate(Entity.KEY_RESERVED_PROPERTY, FilterOperator.GREATER_THAN, tomKey);
 
     Query mediaQuery = new Query().setAncestor(tomKey).setFilter(keyFilter);
 
     // Returns both weddingPhoto and weddingVideo,
     // even though they are of different entity kinds
     List<Entity> results =
-            datastore.prepare(mediaQuery).asList(FetchOptions.Builder.withDefaults());
+        datastore.prepare(mediaQuery).asList(FetchOptions.Builder.withDefaults());
     // [END gae_java8_datastore_kindless_ancestor_query]
 
     assertWithMessage("query result keys")
-            .that(results)
-            .containsExactly(weddingPhoto, weddingVideo);
+        .that(results)
+        .containsExactly(weddingPhoto, weddingVideo);
   }
 
   @Test
@@ -330,17 +329,17 @@ public class QueriesTest {
 
     // Assert
     List<Entity> lastNameResults =
-            datastore.prepare(q1.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
+        datastore.prepare(q1.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
     assertWithMessage("last name query results")
-            .that(lastNameResults)
-            .containsExactly(a, b, c)
-            .inOrder();
+        .that(lastNameResults)
+        .containsExactly(a, b, c)
+        .inOrder();
     List<Entity> heightResults =
-            datastore.prepare(q2.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
+        datastore.prepare(q2.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
     assertWithMessage("height query results")
-            .that(heightResults)
-            .containsExactly(c, b, a)
-            .inOrder();
+        .that(heightResults)
+        .containsExactly(c, b, a)
+        .inOrder();
   }
 
   @Test
@@ -363,14 +362,14 @@ public class QueriesTest {
     // Act
     // [START gae_java8_datastore_multiple_sort_orders]
     Query q =
-            new Query("Person")
-                    .addSort("lastName", SortDirection.ASCENDING)
-                    .addSort("height", SortDirection.DESCENDING);
+        new Query("Person")
+            .addSort("lastName", SortDirection.ASCENDING)
+            .addSort("height", SortDirection.DESCENDING);
     // [END gae_java8_datastore_multiple_sort_orders]
 
     // Assert
     List<Entity> results =
-            datastore.prepare(q.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
+        datastore.prepare(q.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
     assertWithMessage("query results").that(results).containsExactly(a, b2, b1, c).inOrder();
   }
 
@@ -401,14 +400,14 @@ public class QueriesTest {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
     Filter heightMinFilter =
-            new FilterPredicate("height", FilterOperator.GREATER_THAN_OR_EQUAL, minHeight);
+        new FilterPredicate("height", FilterOperator.GREATER_THAN_OR_EQUAL, minHeight);
 
     Filter heightMaxFilter =
-            new FilterPredicate("height", FilterOperator.LESS_THAN_OR_EQUAL, maxHeight);
+        new FilterPredicate("height", FilterOperator.LESS_THAN_OR_EQUAL, maxHeight);
 
     // Use CompositeFilter to combine multiple filters
     CompositeFilter heightRangeFilter =
-            CompositeFilterOperator.and(heightMinFilter, heightMaxFilter);
+        CompositeFilterOperator.and(heightMinFilter, heightMaxFilter);
 
     // Use class Query to assemble a query
     Query q = new Query("Person").setFilter(heightRangeFilter);
@@ -460,7 +459,7 @@ public class QueriesTest {
 
     // Assert
     List<Entity> results =
-            datastore.prepare(q.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
+        datastore.prepare(q.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
     assertWithMessage("query results").that(results).containsExactly(a, c);
   }
 
@@ -480,20 +479,20 @@ public class QueriesTest {
     long maxBirthYear = 1980;
     // [START gae_java8_datastore_inequality_filters_one_property_valid_1]
     Filter birthYearMinFilter =
-            new FilterPredicate("birthYear", FilterOperator.GREATER_THAN_OR_EQUAL, minBirthYear);
+        new FilterPredicate("birthYear", FilterOperator.GREATER_THAN_OR_EQUAL, minBirthYear);
 
     Filter birthYearMaxFilter =
-            new FilterPredicate("birthYear", FilterOperator.LESS_THAN_OR_EQUAL, maxBirthYear);
+        new FilterPredicate("birthYear", FilterOperator.LESS_THAN_OR_EQUAL, maxBirthYear);
 
     Filter birthYearRangeFilter =
-            CompositeFilterOperator.and(birthYearMinFilter, birthYearMaxFilter);
+        CompositeFilterOperator.and(birthYearMinFilter, birthYearMaxFilter);
 
     Query q = new Query("Person").setFilter(birthYearRangeFilter);
     // [END gae_java8_datastore_inequality_filters_one_property_valid_1]
 
     // Assert
     List<Entity> results =
-            datastore.prepare(q.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
+        datastore.prepare(q.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
     assertWithMessage("query results").that(results).containsExactly(b);
   }
 
@@ -503,10 +502,10 @@ public class QueriesTest {
     long maxHeight = 200;
     // [START gae_java8_datastore_inequality_filters_one_property_invalid]
     Filter birthYearMinFilter =
-            new FilterPredicate("birthYear", FilterOperator.GREATER_THAN_OR_EQUAL, minBirthYear);
+        new FilterPredicate("birthYear", FilterOperator.GREATER_THAN_OR_EQUAL, minBirthYear);
 
     Filter heightMaxFilter =
-            new FilterPredicate("height", FilterOperator.LESS_THAN_OR_EQUAL, maxHeight);
+        new FilterPredicate("height", FilterOperator.LESS_THAN_OR_EQUAL, maxHeight);
 
     Filter invalidFilter = CompositeFilterOperator.and(birthYearMinFilter, heightMaxFilter);
 
@@ -554,21 +553,21 @@ public class QueriesTest {
     Filter cityFilter = new FilterPredicate("city", FilterOperator.EQUAL, targetCity);
 
     Filter birthYearMinFilter =
-            new FilterPredicate("birthYear", FilterOperator.GREATER_THAN_OR_EQUAL, minBirthYear);
+        new FilterPredicate("birthYear", FilterOperator.GREATER_THAN_OR_EQUAL, minBirthYear);
 
     Filter birthYearMaxFilter =
-            new FilterPredicate("birthYear", FilterOperator.LESS_THAN_OR_EQUAL, maxBirthYear);
+        new FilterPredicate("birthYear", FilterOperator.LESS_THAN_OR_EQUAL, maxBirthYear);
 
     Filter validFilter =
-            CompositeFilterOperator.and(
-                    lastNameFilter, cityFilter, birthYearMinFilter, birthYearMaxFilter);
+        CompositeFilterOperator.and(
+            lastNameFilter, cityFilter, birthYearMinFilter, birthYearMaxFilter);
 
     Query q = new Query("Person").setFilter(validFilter);
     // [END gae_java8_datastore_inequality_filters_one_property_valid_2]
 
     // Assert
     List<Entity> results =
-            datastore.prepare(q.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
+        datastore.prepare(q.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
     assertWithMessage("query results").that(results).containsExactly(b);
   }
 
@@ -591,17 +590,17 @@ public class QueriesTest {
     long minBirthYear = 1940;
 
     Filter birthYearMinFilter =
-            new FilterPredicate("birthYear", FilterOperator.GREATER_THAN_OR_EQUAL, minBirthYear);
+        new FilterPredicate("birthYear", FilterOperator.GREATER_THAN_OR_EQUAL, minBirthYear);
 
     Query q =
-            new Query("Person")
-                    .setFilter(birthYearMinFilter)
-                    .addSort("birthYear", SortDirection.ASCENDING)
-                    .addSort("lastName", SortDirection.ASCENDING);
+        new Query("Person")
+            .setFilter(birthYearMinFilter)
+            .addSort("birthYear", SortDirection.ASCENDING)
+            .addSort("lastName", SortDirection.ASCENDING);
 
     // Assert
     List<Entity> results =
-            datastore.prepare(q.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
+        datastore.prepare(q.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
     assertWithMessage("query results").that(results).containsExactly(c, d, b).inOrder();
   }
 
@@ -610,13 +609,13 @@ public class QueriesTest {
     long minBirthYear = 1940;
     // [START gae_java8_datastore_inequality_filters_sort_orders_invalid_1]
     Filter birthYearMinFilter =
-            new FilterPredicate("birthYear", FilterOperator.GREATER_THAN_OR_EQUAL, minBirthYear);
+        new FilterPredicate("birthYear", FilterOperator.GREATER_THAN_OR_EQUAL, minBirthYear);
 
     // Not valid. Missing sort on birthYear.
     Query q =
-            new Query("Person")
-                    .setFilter(birthYearMinFilter)
-                    .addSort("lastName", SortDirection.ASCENDING);
+        new Query("Person")
+            .setFilter(birthYearMinFilter)
+            .addSort("lastName", SortDirection.ASCENDING);
     // [END gae_java8_datastore_inequality_filters_sort_orders_invalid_1]
 
     // Note: The local devserver behavior is different than the production
@@ -630,14 +629,14 @@ public class QueriesTest {
     long minBirthYear = 1940;
     // [START gae_java8_datastore_inequality_filters_sort_orders_invalid_2]
     Filter birthYearMinFilter =
-            new FilterPredicate("birthYear", FilterOperator.GREATER_THAN_OR_EQUAL, minBirthYear);
+        new FilterPredicate("birthYear", FilterOperator.GREATER_THAN_OR_EQUAL, minBirthYear);
 
     // Not valid. Sort on birthYear needs to be first.
     Query q =
-            new Query("Person")
-                    .setFilter(birthYearMinFilter)
-                    .addSort("lastName", SortDirection.ASCENDING)
-                    .addSort("birthYear", SortDirection.ASCENDING);
+        new Query("Person")
+            .setFilter(birthYearMinFilter)
+            .addSort("lastName", SortDirection.ASCENDING)
+            .addSort("birthYear", SortDirection.ASCENDING);
     // [END gae_java8_datastore_inequality_filters_sort_orders_invalid_2]
 
     // Note: The local devserver behavior is different than the production
@@ -648,7 +647,7 @@ public class QueriesTest {
 
   @Test
   public void queryRestrictions_surprisingMultipleValuesAllMustMatch_returnsNoEntities()
-          throws Exception {
+      throws Exception {
     Entity a = new Entity("Widget", "a");
     List<Long> xs = Arrays.asList(1L, 2L);
     a.setProperty("x", xs);
@@ -656,11 +655,11 @@ public class QueriesTest {
 
     // [START gae_java8_datastore_surprising_behavior_1]
     Query q =
-            new Query("Widget")
-                    .setFilter(
-                            CompositeFilterOperator.and(
-                                    new FilterPredicate("x", FilterOperator.GREATER_THAN, 1),
-                                    new FilterPredicate("x", FilterOperator.LESS_THAN, 2)));
+        new Query("Widget")
+            .setFilter(
+                CompositeFilterOperator.and(
+                    new FilterPredicate("x", FilterOperator.GREATER_THAN, 1),
+                    new FilterPredicate("x", FilterOperator.LESS_THAN, 2)));
     // [END gae_java8_datastore_surprising_behavior_1]
 
     // Entity "a" will not match because no individual value matches all filters.
@@ -668,13 +667,13 @@ public class QueriesTest {
     // https://cloud.google.com/appengine/docs/java/datastore/query-restrictions
     // #properties_with_multiple_values_can_behave_in_surprising_ways
     List<Entity> results =
-            datastore.prepare(q.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
+        datastore.prepare(q.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
     assertWithMessage("query results").that(results).isEmpty();
   }
 
   @Test
   public void queryRestrictions_surprisingMultipleValuesEquals_returnsMatchedEntities()
-          throws Exception {
+      throws Exception {
     Entity a = new Entity("Widget", "a");
     a.setProperty("x", ImmutableList.<Long>of(1L, 2L));
     Entity b = new Entity("Widget", "b");
@@ -689,11 +688,11 @@ public class QueriesTest {
 
     // [START gae_java8_datastore_surprising_behavior_2]
     Query q =
-            new Query("Widget")
-                    .setFilter(
-                            CompositeFilterOperator.and(
-                                    new FilterPredicate("x", FilterOperator.EQUAL, 1),
-                                    new FilterPredicate("x", FilterOperator.EQUAL, 2)));
+        new Query("Widget")
+            .setFilter(
+                CompositeFilterOperator.and(
+                    new FilterPredicate("x", FilterOperator.EQUAL, 1),
+                    new FilterPredicate("x", FilterOperator.EQUAL, 2)));
     // [END gae_java8_datastore_surprising_behavior_2]
 
     // Only "a" and "e" have both 1 and 2 in the "x" array-valued property.
@@ -701,13 +700,13 @@ public class QueriesTest {
     // https://cloud.google.com/appengine/docs/java/datastore/query-restrictions
     // #properties_with_multiple_values_can_behave_in_surprising_ways
     List<Entity> results =
-            datastore.prepare(q.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
+        datastore.prepare(q.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
     assertWithMessage("query results").that(results).containsExactly(a, e);
   }
 
   @Test
   public void queryRestrictions_surprisingMultipleValuesNotEquals_returnsMatchedEntities()
-          throws Exception {
+      throws Exception {
     Entity a = new Entity("Widget", "a");
     a.setProperty("x", ImmutableList.<Long>of(1L, 2L));
     Entity b = new Entity("Widget", "b");
@@ -729,13 +728,13 @@ public class QueriesTest {
     // https://cloud.google.com/appengine/docs/java/datastore/query-restrictions
     // #properties_with_multiple_values_can_behave_in_surprising_ways
     List<Entity> results =
-            datastore.prepare(q.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
+        datastore.prepare(q.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
     assertWithMessage("query results").that(results).containsExactly(a, b, c, d);
   }
 
   @Test
   public void queryRestrictions_surprisingMultipleValuesTwoNotEquals_returnsMatchedEntities()
-          throws Exception {
+      throws Exception {
     Entity a = new Entity("Widget", "a");
     a.setProperty("x", ImmutableList.<Long>of(1L, 2L));
     Entity b = new Entity("Widget", "b");
@@ -744,11 +743,11 @@ public class QueriesTest {
 
     // [START gae_java8_datastore_surprising_behavior_4]
     Query q =
-            new Query("Widget")
-                    .setFilter(
-                            CompositeFilterOperator.and(
-                                    new FilterPredicate("x", FilterOperator.NOT_EQUAL, 1),
-                                    new FilterPredicate("x", FilterOperator.NOT_EQUAL, 2)));
+        new Query("Widget")
+            .setFilter(
+                CompositeFilterOperator.and(
+                    new FilterPredicate("x", FilterOperator.NOT_EQUAL, 1),
+                    new FilterPredicate("x", FilterOperator.NOT_EQUAL, 2)));
     // [END gae_java8_datastore_surprising_behavior_4]
 
     // The two NOT_EQUAL filters in the query become like the combination of queries:
@@ -760,15 +759,15 @@ public class QueriesTest {
     // https://cloud.google.com/appengine/docs/java/datastore/query-restrictions
     // #properties_with_multiple_values_can_behave_in_surprising_ways
     List<Entity> results =
-            datastore.prepare(q.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
+        datastore.prepare(q.setKeysOnly()).asList(FetchOptions.Builder.withDefaults());
     assertWithMessage("query results").that(results).containsExactly(b);
   }
 
   private Entity retrievePersonWithLastName(String targetLastName) {
     // [START gae_java8_datastore_single_retrieval]
     Query q =
-            new Query("Person")
-                    .setFilter(new FilterPredicate("lastName", FilterOperator.EQUAL, targetLastName));
+        new Query("Person")
+            .setFilter(new FilterPredicate("lastName", FilterOperator.EQUAL, targetLastName));
 
     PreparedQuery pq = datastore.prepare(q);
     Entity result = pq.asSingleEntity();
@@ -787,8 +786,8 @@ public class QueriesTest {
     Entity result = retrievePersonWithLastName("Johnson");
 
     assertWithMessage("result")
-            .that(result)
-            .isEqualTo(a); // Note: Entity.equals() only checks the Key.
+        .that(result)
+        .isEqualTo(a); // Note: Entity.equals() only checks the Key.
   }
 
   @Test
