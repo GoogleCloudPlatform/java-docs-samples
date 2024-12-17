@@ -40,10 +40,18 @@
     </dependencyManagement>
 
     <dependencies>
-
         <dependency>
             <groupId>com.google.cloud</groupId>
             <artifactId>google-cloud-talent</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.apis</groupId>
+            <artifactId>google-api-services-jobs</artifactId>
+            <version>v4-rev20240614-2.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.http-client</groupId>
+            <artifactId>google-http-client-jackson2</artifactId>
         </dependency>
         
         <!-- Test dependencies -->
