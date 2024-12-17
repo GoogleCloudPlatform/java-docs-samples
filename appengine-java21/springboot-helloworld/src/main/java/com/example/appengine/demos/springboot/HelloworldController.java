@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.example.appengine.demos.springboot;
 
 import java.security.Principal;
@@ -42,27 +41,29 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  *
- * @author ludo
+ * Simple controller.
  */
 @Controller
 @Slf4j
 public class HelloworldController {
 
-    /** Do something with the app engine datastore... */
-    private final DatastoreService datastoreService;
+    /**
+     * Do something with the app engine datastore...
+     */
+    private final DatastoreService ds;
 
     /**
      *
-     * @param datastoreService
+     * @param datastoreService injected appengine service.
      */
     @Autowired
     public HelloworldController(DatastoreService datastoreService) {
-        this.datastoreService = Objects.requireNonNull(datastoreService);
+        this.ds = Objects.requireNonNull(datastoreService);
     }
 
     /**
-     * Home page -> {@literal /WEB-INF/jsp/index.jsp}
-     * 
+     * Home page -> {@literal /WEB-INF/jsp/index.jsp}.
+     *
      * @return home page view.
      */
     @RequestMapping("/")
@@ -73,7 +74,7 @@ public class HelloworldController {
 
     /**
      * Sample JSON/HTTP service.
-     * 
+     *
      * @return a list of aliens.
      */
     @RequestMapping(value = "/aliens", method = RequestMethod.GET)
@@ -84,9 +85,10 @@ public class HelloworldController {
     }
 
     /**
-     * /admin endpoint handler
-     * @param request Servlet request
-     * @return
+     * /admin endpoint handler.
+     *
+     * @param request servlet request.
+     * @return the endpoint content.
      */
     @RequestMapping(value = "/admin", method = RequestMethod.GET)
     @ResponseBody
@@ -94,13 +96,14 @@ public class HelloworldController {
         LOGGER.info("Returning the admin info...");
         Principal userPrincipal = request.getUserPrincipal();
         return AliensResponse.of(
-            Collections.singletonList(Alien.of("userPrincipal", userPrincipal == null ? "null" : userPrincipal.toString()))
+                Collections.singletonList(Alien.of("userPrincipal", userPrincipal == null ? "null" : userPrincipal.toString()))
         );
     }
 
     @Data
     @AllArgsConstructor(staticName = "of")
     static class AliensResponse {
+
         @NonNull
         private final List<Alien> aliens;
     }
@@ -110,6 +113,7 @@ public class HelloworldController {
     // Only used by Jackson through reflection
     @NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
     static class Alien {
+
         @NonNull
         @NotEmpty
         private final String name;

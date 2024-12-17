@@ -30,5 +30,4 @@ public class ServletInitializer extends SpringBootServletInitializer {
   protected SpringApplicationBuilder configure(final SpringApplicationBuilder application) {
     return application.sources(SpringBootExampleApplication.class);
   }
-
 }
