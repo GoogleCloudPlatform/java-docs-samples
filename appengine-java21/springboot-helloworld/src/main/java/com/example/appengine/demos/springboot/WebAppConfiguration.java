@@ -27,11 +27,22 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 
+/**
+ *
+ * Secure the /admin endpoints.
+ */
 @Configuration
 @EnableWebSecurity
 public class WebAppConfiguration {
+
+    /**
+     * Security filter
+     * @param http the filter HttpSecurity.
+     * @return the next SecurityFilterChain
+     * @throws Exception
+     */
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(final HttpSecurity http) throws Exception {
         http.authorizeHttpRequests((auth) -> auth
             .requestMatchers(new AntPathRequestMatcher("/admin/**")).hasRole("ADMIN")
             .anyRequest().permitAll()
@@ -44,6 +55,11 @@ public class WebAppConfiguration {
         return http.build();
     }
 
+    /**
+     *
+     * initializer of the configuration.
+     * @return the initializer
+     */
     @Bean
     public ServletContextInitializer initializer() {
         return servletContext -> {

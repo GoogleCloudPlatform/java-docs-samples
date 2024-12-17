@@ -19,10 +19,19 @@ package com.example.appengine.demos.springboot;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+/**
+ *
+ * Main class for the application.
+ */
 @SpringBootApplication
 public class SpringBootExampleApplication {
 
-  public static void main(String[] args) {
+    /**
+     *
+     * Main.
+     * @param args for main.
+     */
+    public static void main(final String[] args) {
     SpringApplication.run(SpringBootExampleApplication.class, args);
   }
 }

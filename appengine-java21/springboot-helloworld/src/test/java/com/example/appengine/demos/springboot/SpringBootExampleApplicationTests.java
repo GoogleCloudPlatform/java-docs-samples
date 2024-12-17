@@ -35,7 +35,7 @@ import io.restassured.RestAssured;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = SpringBootExampleApplication.class, webEnvironment = WebEnvironment.RANDOM_PORT)
 
-public class SpringBootExampleApplicationTests {
+class SpringBootExampleApplicationTests {
 
  
 
@@ -45,6 +45,10 @@ public class SpringBootExampleApplicationTests {
     @Autowired
     private AbstractServletWebServerFactory container;
 
+    /**
+     * 
+     * Make sure Jetty is used instead of Tomcat for SpringBoot.
+     */
     @Test
     public void applicationShouldStartWithEmbeddedJetty() {
         Assertions.assertThat(container).isInstanceOf(JettyServletWebServerFactory.class);

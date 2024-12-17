@@ -19,10 +19,15 @@ package com.example.appengine.demos.springboot;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
+/**
+ *
+ * Initialize the SpringBoot application.
+ * 
+ */
 public class ServletInitializer extends SpringBootServletInitializer {
 
   @Override
-  protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+  protected SpringApplicationBuilder configure(final SpringApplicationBuilder application) {
     return application.sources(SpringBootExampleApplication.class);
   }
 

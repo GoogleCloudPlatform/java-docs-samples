@@ -40,6 +40,10 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ *
+ * @author ludo
+ */
 @Controller
 @Slf4j
 public class HelloworldController {
@@ -47,6 +51,10 @@ public class HelloworldController {
     /** Do something with the app engine datastore... */
     private final DatastoreService datastoreService;
 
+    /**
+     *
+     * @param datastoreService
+     */
     @Autowired
     public HelloworldController(DatastoreService datastoreService) {
         this.datastoreService = Objects.requireNonNull(datastoreService);
@@ -75,9 +83,14 @@ public class HelloworldController {
         return AliensResponse.of(Arrays.asList(Alien.of("E.T.", "Home"), Alien.of("Marvin the Martian", "Mars")));
     }
 
+    /**
+     * /admin endpoint handler
+     * @param request Servlet request
+     * @return
+     */
     @RequestMapping(value = "/admin", method = RequestMethod.GET)
     @ResponseBody
-    public AliensResponse admin(HttpServletRequest request) {
+    public AliensResponse admin(final HttpServletRequest request) {
         LOGGER.info("Returning the admin info...");
         Principal userPrincipal = request.getUserPrincipal();
         return AliensResponse.of(
@@ -87,7 +100,7 @@ public class HelloworldController {
 
     @Data
     @AllArgsConstructor(staticName = "of")
-    public static class AliensResponse {
+    static class AliensResponse {
         @NonNull
         private final List<Alien> aliens;
     }
@@ -96,7 +109,7 @@ public class HelloworldController {
     @AllArgsConstructor(staticName = "of")
     // Only used by Jackson through reflection
     @NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
-    public static class Alien {
+    static class Alien {
         @NonNull
         @NotEmpty
         private final String name;

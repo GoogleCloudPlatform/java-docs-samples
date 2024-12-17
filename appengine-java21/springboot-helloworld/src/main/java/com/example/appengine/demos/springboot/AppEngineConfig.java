@@ -25,11 +25,14 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 /**
  * Declare App Engine services as Spring beans to inject them around.
  * 
- * @author michaeltecourt
  */
 @Configuration
-public class AppEngineConfig {
+public final class AppEngineConfig {
 
+    /**
+     * Bean for DatastoreService.
+     * @return an Appengine DatastoreService service.
+     */
     @Bean
     @ConditionalOnMissingBean
     public DatastoreService datastoreService() {
