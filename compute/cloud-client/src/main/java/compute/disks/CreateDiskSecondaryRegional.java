@@ -66,9 +66,6 @@ public class CreateDiskSecondaryRegional {
        String secondaryProjectId, String primaryDiskName, String secondaryDiskName,
        String primaryDiskRegion, String secondaryDiskRegion, long diskSizeGb, String diskType)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    // An iterable collection of zone names in which you want to keep
-    // the new disks' replicas. One of the replica zones of the clone must match
-    // the zone of the source disk.
     List<String> replicaZones = Arrays.asList(
         String.format("projects/%s/zones/%s-c", secondaryProjectId, secondaryDiskRegion),
         String.format("projects/%s/zones/%s-b", secondaryProjectId, secondaryDiskRegion));
@@ -76,13 +73,12 @@ public class CreateDiskSecondaryRegional {
     String primaryDiskSource = String.format("projects/%s/regions/%s/disks/%s",
         projectId, primaryDiskRegion, primaryDiskName);
 
-    DiskAsyncReplication asyncReplication = DiskAsyncReplication.newBuilder()
-        .setDisk(primaryDiskSource)
-        .build();
-
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (RegionDisksClient disksClient = RegionDisksClient.create()) {
+    DiskAsyncReplication asyncReplication = DiskAsyncReplication.newBuilder()
+        .setDisk(primaryDiskSource)
+        .build();
 
       Disk disk = Disk.newBuilder()
           .addAllReplicaZones(replicaZones)
