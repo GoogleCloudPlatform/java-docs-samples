@@ -43,6 +43,8 @@ import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
+import compute.Util;
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
@@ -93,6 +95,7 @@ public class ReservationIT {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
     stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
+    Util.cleanUpExistingReservations("test-reservation-", PROJECT_ID, ZONE);
 
     // Create instance template with GLOBAL location.
     CreateInstanceTemplate.createInstanceTemplate(PROJECT_ID, GLOBAL_INSTANCE_TEMPLATE_NAME);
