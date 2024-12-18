@@ -72,7 +72,7 @@ public class DisksIT {
   private static String ZONAL_BLANK_DISK;
   private static String REGIONAL_BLANK_DISK;
   private static String REGIONAL_REPLICATED_DISK;
-  static List<String> replicaZones = Arrays.asList(
+  private static final List<String> replicaZones = Arrays.asList(
           String.format("projects/%s/zones/%s-a", PROJECT_ID, REGION),
           String.format("projects/%s/zones/%s-b", PROJECT_ID, REGION));
   private ByteArrayOutputStream stdOut;
