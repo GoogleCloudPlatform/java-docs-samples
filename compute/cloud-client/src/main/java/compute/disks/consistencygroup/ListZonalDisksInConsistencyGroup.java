@@ -16,7 +16,7 @@
 
 package compute.disks.consistencygroup;
 
-// [START compute_consistency_group_list_disks_zonal]
+// [START compute_consistency_group_list_zonal_disks]
 import com.google.cloud.compute.v1.Disk;
 import com.google.cloud.compute.v1.DisksClient;
 import com.google.cloud.compute.v1.ListDisksRequest;
@@ -33,23 +33,21 @@ public class ListZonalDisksInConsistencyGroup {
     String project = "YOUR_PROJECT_ID";
     // Name of the consistency group.
     String consistencyGroupName = "CONSISTENCY_GROUP_ID";
-    // Zone of the disk.
+    // Zone in which your disks are located.
     String disksLocation = "us-central1-a";
-    // Region of the consistency group.
-    String consistencyGroupLocation = "us-central1";
 
-    listZonalDisksInConsistencyGroup(
-            project, consistencyGroupName, consistencyGroupLocation, disksLocation);
+    listZonalDisksInConsistencyGroup(project, consistencyGroupName, disksLocation);
   }
 
   // Lists disks in a consistency group.
-  public static List<Disk> listZonalDisksInConsistencyGroup(String project,
-      String consistencyGroupName, String consistencyGroupLocation, String disksLocation)
-          throws IOException {
+  public static List<Disk> listZonalDisksInConsistencyGroup(
+          String project, String consistencyGroupName, String disksLocation) throws IOException {
+    String region = disksLocation.substring(0, disksLocation.lastIndexOf('-'));
     String filter = String
             .format("https://www.googleapis.com/compute/v1/projects/%s/regions/%s/resourcePolicies/%s",
-                    project, consistencyGroupLocation, consistencyGroupName);
+                    project, region, consistencyGroupName);
     List<Disk> disksList = new ArrayList<>();
+
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (DisksClient disksClient = DisksClient.create()) {
@@ -70,4 +68,4 @@ public class ListZonalDisksInConsistencyGroup {
     return disksList;
   }
 }
-// [END compute_consistency_group_list_disks_zonal]
+// [END compute_consistency_group_list_zonal_disks]

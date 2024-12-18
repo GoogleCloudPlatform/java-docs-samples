@@ -20,6 +20,7 @@ package compute.disks;
 import com.google.cloud.compute.v1.Disk;
 import com.google.cloud.compute.v1.InsertRegionDiskRequest;
 import com.google.cloud.compute.v1.Operation;
+import com.google.cloud.compute.v1.Operation.Status;
 import com.google.cloud.compute.v1.RegionDisksClient;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -55,7 +56,7 @@ public class CreateReplicatedDisk {
   }
 
   // Create a disk for synchronous data replication between two zones in the same region
-  public static Operation.Status createReplicatedDisk(String projectId, String region,
+  public static Status createReplicatedDisk(String projectId, String region,
         List<String> replicaZones, String diskName, int diskSizeGb, String diskType)
         throws IOException, InterruptedException, ExecutionException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created

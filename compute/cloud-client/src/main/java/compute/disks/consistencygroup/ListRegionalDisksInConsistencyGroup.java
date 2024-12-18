@@ -16,7 +16,7 @@
 
 package compute.disks.consistencygroup;
 
-// [START compute_consistency_group_list_disks_regional]
+// [START compute_consistency_group_list_regional_disks]
 import com.google.cloud.compute.v1.Disk;
 import com.google.cloud.compute.v1.ListRegionDisksRequest;
 import com.google.cloud.compute.v1.RegionDisksClient;
@@ -33,22 +33,19 @@ public class ListRegionalDisksInConsistencyGroup {
     String project = "YOUR_PROJECT_ID";
     // Name of the consistency group.
     String consistencyGroupName = "CONSISTENCY_GROUP_ID";
-    // Region of the disk.
-    String disksLocation = "us-central1";
-    // Region of the consistency group.
-    String consistencyGroupLocation = "us-central1";
+    // Region in which your disks and consistency group are located.
+    String region = "us-central1";
 
     listRegionalDisksInConsistencyGroup(
-            project, consistencyGroupName, consistencyGroupLocation, disksLocation);
+            project, consistencyGroupName, region);
   }
 
   // Lists disks in a consistency group.
-  public static List<Disk> listRegionalDisksInConsistencyGroup(String project,
-      String consistencyGroupName, String consistencyGroupLocation, String disksLocation)
-          throws IOException {
+  public static List<Disk> listRegionalDisksInConsistencyGroup(
+          String project, String consistencyGroupName, String region) throws IOException {
     String filter = String
             .format("https://www.googleapis.com/compute/v1/projects/%s/regions/%s/resourcePolicies/%s",
-                    project, consistencyGroupLocation, consistencyGroupName);
+                    project, region, consistencyGroupName);
     List<Disk> disksList = new ArrayList<>();
 
     // Initialize client that will be used to send requests. This client only needs to be created
@@ -57,7 +54,7 @@ public class ListRegionalDisksInConsistencyGroup {
       ListRegionDisksRequest request =
               ListRegionDisksRequest.newBuilder()
                       .setProject(project)
-                      .setRegion(disksLocation)
+                      .setRegion(region)
                       .build();
 
       RegionDisksClient.ListPagedResponse response = disksClient.list(request);
@@ -71,4 +68,4 @@ public class ListRegionalDisksInConsistencyGroup {
     return disksList;
   }
 }
-// [END compute_consistency_group_list_disks_regional]
+// [END compute_consistency_group_list_regional_disks]
