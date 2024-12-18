@@ -23,6 +23,7 @@ import com.google.cloud.compute.v1.Instance;
 import com.google.cloud.compute.v1.InstancesClient;
 import com.google.cloud.compute.v1.NetworkInterface;
 import com.google.cloud.compute.v1.Operation;
+import com.google.cloud.compute.v1.Operation.Status;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +61,7 @@ public class CreateInstanceWithRegionalDiskFromSnapshot {
   }
 
   // Creates a new VM instance with regional disk from a snapshot and specifies replica zones.
-  public static Operation.Status createInstanceWithRegionalDiskFromSnapshot(
+  public static Status createInstanceWithRegionalDiskFromSnapshot(
       String projectId, String zone, String instanceName, String diskName,
       String diskType, String snapshotLink, List<String> replicaZones)
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
