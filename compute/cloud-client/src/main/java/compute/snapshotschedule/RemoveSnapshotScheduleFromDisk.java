@@ -20,6 +20,7 @@ package compute.snapshotschedule;
 import com.google.cloud.compute.v1.DisksClient;
 import com.google.cloud.compute.v1.DisksRemoveResourcePoliciesRequest;
 import com.google.cloud.compute.v1.Operation;
+import com.google.cloud.compute.v1.Operation.Status;
 import com.google.cloud.compute.v1.RemoveResourcePoliciesDiskRequest;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
@@ -45,7 +46,7 @@ public class RemoveSnapshotScheduleFromDisk {
   }
 
   // Removes snapshot schedule from a zonal disk.
-  public static Operation.Status removeSnapshotScheduleFromDisk(
+  public static Status removeSnapshotScheduleFromDisk(
           String project, String zone, String diskName, String region, String snapshotScheduleName)
           throws IOException, InterruptedException, ExecutionException, TimeoutException {
     String snapshotSchedulePath = String.format("projects/%s/regions/%s/resourcePolicies/%s",

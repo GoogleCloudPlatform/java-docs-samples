@@ -21,6 +21,7 @@ import com.google.cloud.compute.v1.AddResourcePoliciesDiskRequest;
 import com.google.cloud.compute.v1.DisksAddResourcePoliciesRequest;
 import com.google.cloud.compute.v1.DisksClient;
 import com.google.cloud.compute.v1.Operation;
+import com.google.cloud.compute.v1.Operation.Status;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -44,7 +45,7 @@ public class AttachSnapshotScheduleToDisk {
   }
 
   // Attaches a snapshot schedule to a disk.
-  public static Operation.Status attachSnapshotScheduleToDisk(
+  public static Status attachSnapshotScheduleToDisk(
         String projectId, String zone, String diskName, String snapshotScheduleName, String region)
         throws IOException, ExecutionException, InterruptedException, TimeoutException {
 

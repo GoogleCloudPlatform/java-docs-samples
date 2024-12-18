@@ -19,7 +19,7 @@ package compute.snapshotschedule;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
-import com.google.cloud.compute.v1.Operation;
+import com.google.cloud.compute.v1.Operation.Status;
 import compute.disks.CreateEmptyDisk;
 import compute.disks.DeleteDisk;
 import java.io.IOException;
@@ -83,40 +83,40 @@ public class SnapshotScheduleIT {
   @Order(1)
   public void testCreateSnapshotScheduleHourly()
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    Operation.Status status = CreateSnapshotSchedule.createSnapshotSchedule(
+    Status status = CreateSnapshotSchedule.createSnapshotSchedule(
             PROJECT_ID, REGION, SCHEDULE_NAME, SCHEDULE_DESCRIPTION,
             MAX_RETENTION_DAYS, STORAGE_LOCATION, ON_SOURCE_DISK_DELETE);
 
-    assertThat(status).isEqualTo(Operation.Status.DONE);
+    assertThat(status).isEqualTo(Status.DONE);
   }
 
   @Test
   @Order(2)
   public void testAttachSnapshotScheduleToDisk()
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    Operation.Status status = AttachSnapshotScheduleToDisk.attachSnapshotScheduleToDisk(
+    Status status = AttachSnapshotScheduleToDisk.attachSnapshotScheduleToDisk(
             PROJECT_ID, ZONE, DISK_NAME, SCHEDULE_FOR_DISK, REGION);
 
-    assertThat(status).isEqualTo(Operation.Status.DONE);
+    assertThat(status).isEqualTo(Status.DONE);
   }
 
   @Test
   @Order(3)
   public void testRemoveSnapshotScheduleFromDisk()
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    Operation.Status status = RemoveSnapshotScheduleFromDisk.removeSnapshotScheduleFromDisk(
+    Status status = RemoveSnapshotScheduleFromDisk.removeSnapshotScheduleFromDisk(
             PROJECT_ID, ZONE, DISK_NAME, REGION, SCHEDULE_FOR_DISK);
 
-    assertThat(status).isEqualTo(Operation.Status.DONE);
+    assertThat(status).isEqualTo(Status.DONE);
   }
 
   @Test
   @Order(4)
   public void testDeleteSnapshotSchedule()
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    Operation.Status status = DeleteSnapshotSchedule
+    Status status = DeleteSnapshotSchedule
             .deleteSnapshotSchedule(PROJECT_ID, REGION, SCHEDULE_NAME);
 
-    assertThat(status).isEqualTo(Operation.Status.DONE);
+    assertThat(status).isEqualTo(Status.DONE);
   }
 }
