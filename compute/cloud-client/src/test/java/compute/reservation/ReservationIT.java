@@ -36,7 +36,6 @@ import compute.CreateInstanceTemplate;
 import compute.CreateRegionalInstanceTemplate;
 import compute.DeleteInstanceTemplate;
 import compute.DeleteRegionalInstanceTemplate;
-import compute.Util;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -94,7 +93,6 @@ public class ReservationIT {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
     stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
-    Util.cleanUpExistingReservations("test-reservation-", PROJECT_ID, ZONE);
 
     // Create instance template with GLOBAL location.
     CreateInstanceTemplate.createInstanceTemplate(PROJECT_ID, GLOBAL_INSTANCE_TEMPLATE_NAME);
