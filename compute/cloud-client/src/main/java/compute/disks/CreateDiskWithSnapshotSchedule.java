@@ -20,6 +20,7 @@ package compute.disks;
 import com.google.cloud.compute.v1.Disk;
 import com.google.cloud.compute.v1.DisksClient;
 import com.google.cloud.compute.v1.Operation;
+import com.google.cloud.compute.v1.Operation.Status;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -43,7 +44,7 @@ public class CreateDiskWithSnapshotSchedule {
   }
 
   // Creates disk with linked snapshot schedule.
-  public static Operation.Status createDiskWithSnapshotSchedule(
+  public static Status createDiskWithSnapshotSchedule(
       String projectId, String zone, String diskName, String snapshotScheduleName)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     try (DisksClient disksClient = DisksClient.create()) {
