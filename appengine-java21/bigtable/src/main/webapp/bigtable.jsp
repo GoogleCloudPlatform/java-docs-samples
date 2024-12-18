@@ -3,7 +3,7 @@
 <%@ page import="com.example.bigtable.BigtableHelloWorld" %>
 <!-- [START_EXCLUDE] -->
 <%--
-  ~ Copyright 2024 Google Inc.
+  ~ Copyright 2024 Google LLC
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License"); you
   ~ may not use this file except in compliance with the License. You may
