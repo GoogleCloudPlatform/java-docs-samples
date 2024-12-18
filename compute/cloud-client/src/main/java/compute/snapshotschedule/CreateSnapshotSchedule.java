@@ -19,6 +19,7 @@ package compute.snapshotschedule;
 // [START compute_snapshot_schedule_create]
 import com.google.cloud.compute.v1.InsertResourcePolicyRequest;
 import com.google.cloud.compute.v1.Operation;
+import com.google.cloud.compute.v1.Operation.Status;
 import com.google.cloud.compute.v1.ResourcePoliciesClient;
 import com.google.cloud.compute.v1.ResourcePolicy;
 import com.google.cloud.compute.v1.ResourcePolicyHourlyCycle;
@@ -57,7 +58,7 @@ public class CreateSnapshotSchedule {
   }
 
   // Creates a snapshot schedule policy.
-  public static Operation.Status createSnapshotSchedule(String projectId, String region,
+  public static Status createSnapshotSchedule(String projectId, String region,
             String snapshotScheduleName, String scheduleDescription, int maxRetentionDays,
             String storageLocation, String onSourceDiskDelete)
           throws IOException, ExecutionException, InterruptedException, TimeoutException {

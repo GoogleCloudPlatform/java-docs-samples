@@ -18,6 +18,7 @@ package compute.snapshotschedule;
 
 // [START compute_snapshot_schedule_edit]
 import com.google.cloud.compute.v1.Operation;
+import com.google.cloud.compute.v1.Operation.Status;
 import com.google.cloud.compute.v1.PatchResourcePolicyRequest;
 import com.google.cloud.compute.v1.ResourcePoliciesClient;
 import com.google.cloud.compute.v1.ResourcePolicy;
@@ -47,7 +48,7 @@ public class EditSnapshotSchedule {
     editSnapshotSchedule(projectId, region, snapshotScheduleName);
   }
 
-  public static Operation.Status editSnapshotSchedule(
+  public static Status editSnapshotSchedule(
           String projectId, String region, String snapshotScheduleName)
           throws IOException, InterruptedException, ExecutionException, TimeoutException {
     String description = "Updated description11";

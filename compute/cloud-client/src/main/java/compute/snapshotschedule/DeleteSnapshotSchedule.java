@@ -19,6 +19,7 @@ package compute.snapshotschedule;
 // [START compute_snapshot_schedule_delete]
 import com.google.cloud.compute.v1.DeleteResourcePolicyRequest;
 import com.google.cloud.compute.v1.Operation;
+import com.google.cloud.compute.v1.Operation.Status;
 import com.google.cloud.compute.v1.ResourcePoliciesClient;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
@@ -40,7 +41,7 @@ public class DeleteSnapshotSchedule {
   }
 
   // Deletes a snapshot schedule policy.
-  public static Operation.Status deleteSnapshotSchedule(
+  public static Status deleteSnapshotSchedule(
           String projectId, String region, String snapshotScheduleName)
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created

@@ -32,6 +32,7 @@ import com.google.cloud.compute.v1.DeleteResourcePolicyRequest;
 import com.google.cloud.compute.v1.GetResourcePolicyRequest;
 import com.google.cloud.compute.v1.InsertResourcePolicyRequest;
 import com.google.cloud.compute.v1.Operation;
+import com.google.cloud.compute.v1.Operation.Status;
 import com.google.cloud.compute.v1.ResourcePoliciesClient;
 import com.google.cloud.compute.v1.ResourcePolicy;
 import java.io.IOException;
@@ -84,10 +85,10 @@ public class SnapshotScheduleIT {
   @Test
   public void testEditSnapshotSchedule()
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    Operation.Status status = EditSnapshotSchedule.editSnapshotSchedule(
+    Status status = EditSnapshotSchedule.editSnapshotSchedule(
             PROJECT_ID, REGION, SCHEDULE_NAME);
 
-    assertThat(status).isEqualTo(Operation.Status.DONE);
+    assertThat(status).isEqualTo(Status.DONE);
   }
 
   @Test
@@ -112,16 +113,16 @@ public class SnapshotScheduleIT {
       when(mockClient.insertAsync(any(InsertResourcePolicyRequest.class)))
               .thenReturn(mockFuture);
       when(mockFuture.get(anyLong(), any(TimeUnit.class))).thenReturn(operation);
-      when(operation.getStatus()).thenReturn(Operation.Status.DONE);
+      when(operation.getStatus()).thenReturn(Status.DONE);
 
-      Operation.Status status = CreateSnapshotSchedule.createSnapshotSchedule(
+      Status status = CreateSnapshotSchedule.createSnapshotSchedule(
               PROJECT_ID, REGION, SCHEDULE_NAME, SCHEDULE_DESCRIPTION,
               MAX_RETENTION_DAYS, STORAGE_LOCATION, ON_SOURCE_DISK_DELETE);
 
       verify(mockClient, times(1))
               .insertAsync(any(InsertResourcePolicyRequest.class));
       verify(mockFuture, times(1)).get(anyLong(), any(TimeUnit.class));
-      assertEquals(Operation.Status.DONE, status);
+      assertEquals(Status.DONE, status);
     }
   }
 
@@ -159,15 +160,15 @@ public class SnapshotScheduleIT {
       when(mockClient.deleteAsync(any(DeleteResourcePolicyRequest.class)))
               .thenReturn(mockFuture);
       when(mockFuture.get(anyLong(), any(TimeUnit.class))).thenReturn(operation);
-      when(operation.getStatus()).thenReturn(Operation.Status.DONE);
+      when(operation.getStatus()).thenReturn(Status.DONE);
 
-      Operation.Status status = DeleteSnapshotSchedule
+      Status status = DeleteSnapshotSchedule
               .deleteSnapshotSchedule(PROJECT_ID, REGION, SCHEDULE_NAME);
 
       verify(mockClient, times(1))
               .deleteAsync(any(DeleteResourcePolicyRequest.class));
       verify(mockFuture, times(1)).get(anyLong(), any(TimeUnit.class));
-      assertEquals(Operation.Status.DONE, status);
+      assertEquals(Status.DONE, status);
     }
   }
 }
