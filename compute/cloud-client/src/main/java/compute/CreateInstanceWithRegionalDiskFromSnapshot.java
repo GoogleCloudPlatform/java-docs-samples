@@ -48,8 +48,6 @@ public class CreateInstanceWithRegionalDiskFromSnapshot {
     String diskType = String.format(
             "projects/%s/regions/%s/diskTypes/pd-standard", projectId, region);
     // The full path and name of the snapshot that you want to use as the source for the new disk.
-    // This value uses the following format:
-    // "projects/{projectName}/global/snapshots/{snapshotName}"
     String snapshotLink = String.format("projects/%s/global/snapshots/%s", projectId,
             "SNAPSHOT_NAME");
     // An iterable collection of zone names in which you want to keep

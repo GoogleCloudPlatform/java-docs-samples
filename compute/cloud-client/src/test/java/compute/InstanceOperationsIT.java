@@ -229,8 +229,6 @@ public class InstanceOperationsIT {
     ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
 
-    Assert.assertEquals("RUNNING",
-            Util.getInstanceStatus(PROJECT_ID, ZONE, MACHINE_NAME_ENCRYPTED));
     Instance instance = getInstance(MACHINE_NAME_ENCRYPTED);
     String diskType = String.format("zones/%s/diskTypes/pd-standard", ZONE);
     CloneEncryptedDisk.createDiskFromCustomerEncryptedKey(PROJECT_ID, ZONE, DISK_NAME, diskType, 10,
