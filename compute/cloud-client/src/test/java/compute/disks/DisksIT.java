@@ -31,6 +31,7 @@ import com.google.cloud.compute.v1.Instance;
 import com.google.cloud.compute.v1.InstancesClient;
 import com.google.cloud.compute.v1.NetworkInterface;
 import com.google.cloud.compute.v1.Operation;
+import com.google.cloud.compute.v1.Operation.Status;
 import com.google.cloud.compute.v1.Snapshot;
 import com.google.cloud.compute.v1.SnapshotsClient;
 import compute.DeleteInstance;
@@ -316,7 +317,7 @@ public class DisksIT {
   @Test
   public void testCreateReplicatedDisk()
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    Operation.Status status = CreateReplicatedDisk.createReplicatedDisk(PROJECT_ID, REGION,
+    Status status = CreateReplicatedDisk.createReplicatedDisk(PROJECT_ID, REGION,
             replicaZones, REGIONAL_REPLICATED_DISK, 100, DISK_TYPE);
 
     assertThat(status).isEqualTo(Operation.Status.DONE);
@@ -325,7 +326,7 @@ public class DisksIT {
   @Test
   void testCreateDiskWithSnapshotSchedule()
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    Operation.Status status = CreateDiskWithSnapshotSchedule.createDiskWithSnapshotSchedule(
+    Status status = CreateDiskWithSnapshotSchedule.createDiskWithSnapshotSchedule(
             PROJECT_ID, ZONE, DISK_WITH_SNAPSHOT_SCHEDULE, SNAPSHOT_SCHEDULE);
 
     Assert.assertNotNull(Util.getDisk(PROJECT_ID, ZONE, DISK_WITH_SNAPSHOT_SCHEDULE));
