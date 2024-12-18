@@ -218,21 +218,6 @@ public abstract class Util {
     }
   }
 
-  // Delete snapshots which starts with the given prefixToDelete and
-  // has creation timestamp >24 hours.
-  public static void cleanUpExistingSnapshots(String prefixToDelete, String projectId)
-      throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    try (SnapshotsClient snapshotsClient = SnapshotsClient.create()) {
-      for (Snapshot snapshot : snapshotsClient.list(projectId).iterateAll()) {
-        if (containPrefixToDelete(snapshot, prefixToDelete)
-            && isCreatedBeforeThresholdTime(snapshot.getCreationTimestamp())) {
-          DeleteSnapshot.deleteSnapshot(projectId, snapshot.getName());
-        }
-      }
-    }
-  }
-
-
   // Delete regional disks which starts with the given prefixToDelete and
   // has creation timestamp >24 hours.
   public static void cleanUpExistingRegionalDisks(
@@ -244,6 +229,20 @@ public abstract class Util {
                 && disk.getRegion().equals(region)
                 && isCreatedBeforeThresholdTime(disk.getCreationTimestamp())) {
           RegionalDelete.deleteRegionalDisk(projectId, region, disk.getName());
+        }
+      }
+    }
+  }
+
+  // Delete snapshots which starts with the given prefixToDelete and
+  // has creation timestamp >24 hours.
+  public static void cleanUpExistingSnapshots(String prefixToDelete, String projectId)
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    try (SnapshotsClient snapshotsClient = SnapshotsClient.create()) {
+      for (Snapshot snapshot : snapshotsClient.list(projectId).iterateAll()) {
+        if (containPrefixToDelete(snapshot, prefixToDelete)
+            && isCreatedBeforeThresholdTime(snapshot.getCreationTimestamp())) {
+          DeleteSnapshot.deleteSnapshot(projectId, snapshot.getName());
         }
       }
     }

@@ -16,41 +16,37 @@
 
 package tpu;
 
-//[START tpu_vm_get]
-import com.google.cloud.tpu.v2.GetNodeRequest;
-import com.google.cloud.tpu.v2.Node;
-import com.google.cloud.tpu.v2.NodeName;
+//[START tpu_vm_list]
+import com.google.cloud.tpu.v2.ListNodesRequest;
 import com.google.cloud.tpu.v2.TpuClient;
 import java.io.IOException;
 
-public class GetTpuVm {
+public class ListTpuVms {
 
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     // Project ID or project number of the Google Cloud project you want to use.
     String projectId = "YOUR_PROJECT_ID";
-    // The zone in which to create the TPU.
+    // The zone where the TPUs are located.
     // For more information about supported TPU types for specific zones,
     // see https://cloud.google.com/tpu/docs/regions-zones
-    String zone = "europe-west4-a";
-    // The name for your TPU.
-    String nodeName = "YOUR_TPU_NAME";
+    String zone = "us-central1-f";
 
-    getTpuVm(projectId, zone, nodeName);
+    listTpuVms(projectId, zone);
   }
 
-  // Describes a TPU VM with the specified name in the given project and zone.
-  public static Node getTpuVm(String projectId, String zone, String nodeName)
+  // Lists TPU VMs in the specified zone.
+  public static TpuClient.ListNodesPage listTpuVms(String projectId, String zone)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (TpuClient tpuClient = TpuClient.create()) {
-      String name = NodeName.of(projectId, zone, nodeName).toString();
+      String parent = String.format("projects/%s/locations/%s", projectId, zone);
 
-      GetNodeRequest request = GetNodeRequest.newBuilder().setName(name).build();
+      ListNodesRequest request = ListNodesRequest.newBuilder().setParent(parent).build();
 
-      return tpuClient.getNode(request);
+      return tpuClient.listNodes(request).getPage();
     }
   }
 }
-//[END tpu_vm_get]
+//[END tpu_vm_list]

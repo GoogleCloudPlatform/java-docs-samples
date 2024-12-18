@@ -71,8 +71,11 @@ public class DisksIT {
   private static String DISK_TYPE;
   private static String ZONAL_BLANK_DISK;
   private static String REGIONAL_BLANK_DISK;
+  private static String REGIONAL_REPLICATED_DISK;
+  private static final List<String> replicaZones = Arrays.asList(
+          String.format("projects/%s/zones/%s-a", PROJECT_ID, REGION),
+          String.format("projects/%s/zones/%s-b", PROJECT_ID, REGION));
   private static String SECONDARY_REGIONAL_DISK;
-  private static List<String> replicaZones;
   private static final long DISK_SIZE = 10L;
   private ByteArrayOutputStream stdOut;
 
@@ -101,10 +104,8 @@ public class DisksIT {
     DISK_TYPE = String.format("zones/%s/diskTypes/pd-ssd", ZONE);
     ZONAL_BLANK_DISK = "gcloud-test-disk-zattach-" + uuid;
     REGIONAL_BLANK_DISK = "gcloud-test-disk-rattach-" + uuid;
+    REGIONAL_REPLICATED_DISK = "gcloud-test-disk-replicated-" + uuid;
     SECONDARY_REGIONAL_DISK = "gcloud-test-disk-secondary-regional-" + uuid;
-    replicaZones = Arrays.asList(
-        String.format("projects/%s/zones/%s-a", PROJECT_ID, REGION),
-        String.format("projects/%s/zones/%s-b", PROJECT_ID, REGION));
 
     // Cleanup existing stale resources.
     Util.cleanUpExistingInstances("test-disks", PROJECT_ID, ZONE);
@@ -112,7 +113,7 @@ public class DisksIT {
     Util.cleanUpExistingRegionalDisks("gcloud-test-disk-secondary-regional-", PROJECT_ID, REGION);
     Util.cleanUpExistingRegionalDisks("gcloud-test-disk-rattach-", PROJECT_ID, REGION);
     Util.cleanUpExistingSnapshots("gcloud-test-snapshot-", PROJECT_ID);
-
+    Util.cleanUpExistingRegionalDisks("gcloud-test-disk-", PROJECT_ID, REGION);
     // Create disk from image.
     Image debianImage = null;
     try (ImagesClient imagesClient = ImagesClient.create()) {
@@ -177,6 +178,7 @@ public class DisksIT {
     DeleteDisk.deleteDisk(PROJECT_ID, ZONE, EMPTY_DISK_NAME);
     DeleteDisk.deleteDisk(PROJECT_ID, ZONE, ZONAL_BLANK_DISK);
     RegionalDelete.deleteRegionalDisk(PROJECT_ID, REGION, REGIONAL_BLANK_DISK);
+    RegionalDelete.deleteRegionalDisk(PROJECT_ID, REGION, REGIONAL_REPLICATED_DISK);
     RegionalDelete.deleteRegionalDisk(PROJECT_ID, "us-central1", SECONDARY_REGIONAL_DISK);
 
     stdOut.close();
@@ -305,6 +307,15 @@ public class DisksIT {
     Assert.assertEquals(22, Util.getDisk(PROJECT_ID, ZONE, ZONAL_BLANK_DISK).getSizeGb());
     Assert.assertEquals(23,
         Util.getRegionalDisk(PROJECT_ID, REGION, REGIONAL_BLANK_DISK).getSizeGb());
+  }
+
+  @Test
+  public void testCreateReplicatedDisk()
+          throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    Operation.Status status = CreateReplicatedDisk.createReplicatedDisk(PROJECT_ID, REGION,
+            replicaZones, REGIONAL_REPLICATED_DISK, 100, DISK_TYPE);
+
+    assertThat(status).isEqualTo(Operation.Status.DONE);
   }
 
   @Test
