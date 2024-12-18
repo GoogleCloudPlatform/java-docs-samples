@@ -20,6 +20,7 @@ package compute.reservation;
 import com.google.cloud.compute.v1.AllocationSpecificSKUReservation;
 import com.google.cloud.compute.v1.InsertReservationRequest;
 import com.google.cloud.compute.v1.Operation;
+import com.google.cloud.compute.v1.Operation.Status;
 import com.google.cloud.compute.v1.Reservation;
 import com.google.cloud.compute.v1.ReservationsClient;
 import com.google.cloud.compute.v1.ShareSettings;
@@ -49,7 +50,7 @@ public class CreateSharedReservation {
     String reservationName = "YOUR_RESERVATION_NAME";
     // The URI of the global instance template to be used for creating the reservation.
     String instanceTemplateUri = String.format(
-        "projects/%s/global/instanceTemplates/YOUR_INSTANCE_TEMPLATE_NAME", projectId);
+        "projects/%s/global/instanceTemplates/%s", projectId, "YOUR_INSTANCE_TEMPLATE_NAME");
     // Number of instances for which capacity needs to be reserved.
     int vmCount = 3;
 
@@ -57,24 +58,24 @@ public class CreateSharedReservation {
   }
 
   // Creates a shared reservation with the given name in the given zone.
-  public static Operation.Status createSharedReservation(
+  public static Status createSharedReservation(
           String projectId, String zone,
           String reservationName, String instanceTemplateUri, int vmCount)
           throws ExecutionException, InterruptedException, TimeoutException, IOException {
 
-    ShareSettings shareSettings = ShareSettings.newBuilder()
-            .setShareType(String.valueOf(ShareSettings.ShareType.SPECIFIC_PROJECTS))
-            // The IDs of projects that can consume this reservation. You can include up to 100
-            // consumer projects. These projects must be in the same organization as
-            // the owner project. Don't include the owner project. By default, it is already allowed
-            // to consume the reservation.
-            .putProjectMap("CONSUMER_PROJECT_ID_1", ShareSettingsProjectConfig.newBuilder().build())
-            .putProjectMap("CONSUMER_PROJECT_ID_2", ShareSettingsProjectConfig.newBuilder().build())
-            .build();
-
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (ReservationsClient reservationsClient = ReservationsClient.create()) {
+      ShareSettings shareSettings = ShareSettings.newBuilder()
+              .setShareType(String.valueOf(ShareSettings.ShareType.SPECIFIC_PROJECTS))
+              // The IDs of projects that can consume this reservation. You can include up to
+              // 100 consumer projects. These projects must be in the same organization as
+              // the owner project. Don't include the owner project.
+              // By default, it is already allowed to consume the reservation.
+              .putProjectMap("CONSUMER_PROJECT_1", ShareSettingsProjectConfig.newBuilder().build())
+              .putProjectMap("CONSUMER_PROJECT_2", ShareSettingsProjectConfig.newBuilder().build())
+              .build();
+
       Reservation reservationResource =
               Reservation.newBuilder()
                       .setName(reservationName)
