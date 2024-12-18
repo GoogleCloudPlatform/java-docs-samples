@@ -213,22 +213,6 @@ public abstract class Util {
     }
   }
 
-  // Delete regional disks which starts with the given prefixToDelete and
-  // has creation timestamp >24 hours.
-  public static void cleanUpExistingRegionalDisks(
-          String prefixToDelete, String projectId, String region)
-          throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    try (RegionDisksClient disksClient = RegionDisksClient.create()) {
-      for (Disk disk : disksClient.list(projectId, region).iterateAll()) {
-        if (disk.getName().contains(prefixToDelete)
-                && disk.getRegion().equals(region)
-                && isCreatedBeforeThresholdTime(disk.getCreationTimestamp())) {
-          RegionalDelete.deleteRegionalDisk(projectId, region, disk.getName());
-        }
-      }
-    }
-  }
-
   // Delete snapshots which starts with the given prefixToDelete and
   // has creation timestamp >24 hours.
   public static void cleanUpExistingSnapshots(String prefixToDelete, String projectId)
