@@ -20,6 +20,7 @@ package compute.disks.consistencygroup;
 import com.google.cloud.compute.v1.DisksClient;
 import com.google.cloud.compute.v1.DisksRemoveResourcePoliciesRequest;
 import com.google.cloud.compute.v1.Operation;
+import com.google.cloud.compute.v1.Operation.Status;
 import com.google.cloud.compute.v1.RegionDisksClient;
 import com.google.cloud.compute.v1.RegionDisksRemoveResourcePoliciesRequest;
 import com.google.cloud.compute.v1.RemoveResourcePoliciesDiskRequest;
@@ -51,7 +52,7 @@ public class RemoveDiskFromConsistencyGroup {
   }
 
   // Removes a disk from a consistency group.
-  public static Operation.Status removeDiskFromConsistencyGroup(
+  public static Status removeDiskFromConsistencyGroup(
       String project, String location, String diskName,
       String consistencyGroupName, String consistencyGroupLocation)
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
