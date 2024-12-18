@@ -29,16 +29,19 @@ import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.compute.v1.AttachDiskInstanceRequest;
 import com.google.cloud.compute.v1.InstancesClient;
 import com.google.cloud.compute.v1.Operation;
+import com.google.cloud.compute.v1.Operation.Status;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.MockedStatic;
 
 @RunWith(JUnit4.class)
+@Timeout(value = 3)
 public class InstanceAttachDiskIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String ZONE = "us-west1-a";
@@ -59,14 +62,14 @@ public class InstanceAttachDiskIT {
       when(mockClient.attachDiskAsync(any(AttachDiskInstanceRequest.class)))
               .thenReturn(mockFuture);
       when(mockFuture.get(anyLong(), any(TimeUnit.class))).thenReturn(operation);
-      when(operation.getStatus()).thenReturn(Operation.Status.DONE);
+      when(operation.getStatus()).thenReturn(Status.DONE);
 
-      Operation.Status status = AttachRegionalDiskForce
+      Status status = AttachRegionalDiskForce
               .attachRegionalDiskForce(PROJECT_ID, ZONE, INSTANCE_NAME, REGION, ATTACHED_DISK);
 
       verify(mockClient, times(1)).attachDiskAsync(any(AttachDiskInstanceRequest.class));
       verify(mockFuture, times(1)).get(anyLong(), any(TimeUnit.class));
-      assertEquals(Operation.Status.DONE, status);
+      assertEquals(Status.DONE, status);
     }
   }
 }

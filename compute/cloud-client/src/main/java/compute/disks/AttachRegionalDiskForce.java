@@ -21,6 +21,7 @@ import com.google.cloud.compute.v1.AttachDiskInstanceRequest;
 import com.google.cloud.compute.v1.AttachedDisk;
 import com.google.cloud.compute.v1.InstancesClient;
 import com.google.cloud.compute.v1.Operation;
+import com.google.cloud.compute.v1.Operation.Status;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -46,7 +47,7 @@ public class AttachRegionalDiskForce {
 
   // Attaches a regional disk to the instance,
   // forcing the attachment even if other VMs are using the disk.
-  public static Operation.Status attachRegionalDiskForce(String projectId,
+  public static Status attachRegionalDiskForce(String projectId,
          String instanceLocation, String instanceName, String diskLocation, String diskName)
           throws IOException, InterruptedException, ExecutionException, TimeoutException {
     String diskLink = String.format("projects/%s/regions/%s/disks/%s",
