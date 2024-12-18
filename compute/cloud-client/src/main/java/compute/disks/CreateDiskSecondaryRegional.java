@@ -20,6 +20,7 @@ package compute.disks;
 import com.google.cloud.compute.v1.Disk;
 import com.google.cloud.compute.v1.DiskAsyncReplication;
 import com.google.cloud.compute.v1.Operation;
+import com.google.cloud.compute.v1.Operation.Status;
 import com.google.cloud.compute.v1.RegionDisksClient;
 import java.io.IOException;
 import java.util.Arrays;
@@ -61,7 +62,7 @@ public class CreateDiskSecondaryRegional {
   }
 
   // Creates a secondary disk in a specified region.
-  public static Operation.Status createDiskSecondaryRegional(String projectId,
+  public static Status createDiskSecondaryRegional(String projectId,
        String secondaryProjectId, String primaryDiskName, String secondaryDiskName,
        String primaryDiskRegion, String secondaryDiskRegion, long diskSizeGb, String diskType)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
