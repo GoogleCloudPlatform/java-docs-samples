@@ -22,14 +22,17 @@
 package com.example;
 
 // [START routeoptimization_v1_OptimizeTours_sync]
+
 import com.google.maps.routeoptimization.v1.OptimizeToursRequest;
 import com.google.maps.routeoptimization.v1.OptimizeToursResponse;
 import com.google.maps.routeoptimization.v1.RouteOptimizationClient;
+import com.google.maps.routeoptimization.v1.RouteOptimizationSettings;
 import com.google.maps.routeoptimization.v1.Shipment;
 import com.google.maps.routeoptimization.v1.Shipment.VisitRequest;
 import com.google.maps.routeoptimization.v1.ShipmentModel;
 import com.google.maps.routeoptimization.v1.Vehicle;
 import com.google.type.LatLng;
+import java.time.Duration;
 
 public class OptimizeTours {
   // [END routeoptimization_v1_OptimizeTours_sync]
@@ -41,7 +44,16 @@ public class OptimizeTours {
 
   // [START routeoptimization_v1_OptimizeTours_sync]
   public static OptimizeToursResponse optimizeTours(String projectId) throws Exception {
-    RouteOptimizationClient client = RouteOptimizationClient.create();
+    // Optional: method calls that last tens of minutes may be interrupted
+    // without enabling a short keep-alive interval.
+    RouteOptimizationSettings clientSettings = RouteOptimizationSettings
+        .newBuilder()
+        .setTransportChannelProvider(RouteOptimizationSettings
+            .defaultGrpcTransportProviderBuilder()
+            .setKeepAliveTimeDuration(Duration.ofSeconds(30))
+            .build()).build();
+
+    RouteOptimizationClient client = RouteOptimizationClient.create(clientSettings);
     OptimizeToursRequest request =
         OptimizeToursRequest.newBuilder()
             .setParent("projects/" + projectId)
