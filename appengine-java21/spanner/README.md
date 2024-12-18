@@ -11,7 +11,7 @@ from [Google App Engine standard environment][ae-docs].
 
 
 ## Setup
-- Install the [Google Cloud SDK](https://cloud.google.com/sdk/) and run:
+- Install the [Google Cloud CLI](https://cloud.google.com/sdk/) and run:
 ```
    gcloud init
 ```

@@ -10,11 +10,11 @@ detailed instructions.
 
 * [Java 21](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
 * [Maven](https://maven.apache.org/download.cgi) (at least 3.5)
-* [Google Cloud SDK](https://cloud.google.com/sdk/) (aka gcloud command line tool)
+* [Google Cloud CLI](https://cloud.google.com/sdk/) (aka gcloud command line tool)
 
 ## Setup
 
-* Download and initialize the [Cloud SDK](https://cloud.google.com/sdk/)
+* Download and initialize the [Cloud CLI](https://cloud.google.com/sdk/)
 
 ```
 gcloud init

@@ -15,7 +15,7 @@ Engine][ae-docs].
 
 ## Running locally
 This example uses the
-[Cloud SDK based maven plugin](https://cloud.google.com/appengine/docs/java/tools/using-maven).
+[Cloud CLI based maven plugin](https://cloud.google.com/appengine/docs/java/tools/using-maven).
 To run this sample locally:
 
     mvn appengine:run

@@ -12,7 +12,7 @@ detailed instructions.
 
 ## Modify the app
 
-Using the [Google Cloud SDK](https://cloud.google.com/sdk/) create a bucket
+Using the [Google Cloud CLI](https://cloud.google.com/sdk/) create a bucket
 
     $ gsutil mb YOUR-PROJECT-ID.appspot.com
 

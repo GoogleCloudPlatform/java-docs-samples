@@ -13,7 +13,7 @@ for realtime notifications when the board changes.
 ## Prerequisites
 
 * Install [Apache Maven][maven] 3.5.0 or later
-* Install the [Google Cloud SDK][sdk]
+* Install the [Google Cloud CLI][sdk]
 * Create a project in the [Firebase Console][fb-console]
 * In the [Overview section][fb-overview] of the Firebase console, click 'Add
   Firebase to your web app' and replace the contents of the file
@@ -36,9 +36,9 @@ mvn appengine:run
 
 ## Troubleshooting
 
-* If you see the error `Google Cloud SDK path was not provided ...`:
-    * Make sure you've installed the [Google Cloud SDK][sdk]
-    * Make sure the Google Cloud SDK's `bin/` directory is in your `PATH`. If
+* If you see the error `Google Cloud CLI path was not provided ...`:
+    * Make sure you've installed the [Google Cloud CLI][sdk]
+    * Make sure the Google Cloud CLI's `bin/` directory is in your `PATH`. If
       you prefer it not to be, you can also set the environment variable
       `GOOGLE_CLOUD_SDK_HOME` to point to where you installed the SDK:
 

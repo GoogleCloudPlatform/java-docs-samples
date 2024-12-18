@@ -19,13 +19,13 @@ App Engine task attempts.
  * Set up a Google Cloud Project and enable billing.
  * Enable the
  [Cloud Tasks API](https://console.cloud.google.com/launcher/details/google/cloudtasks.googleapis.com).
- * Download and install the [Cloud SDK](https://cloud.google.com/sdk).
+ * Download and install the [Cloud CLI](https://cloud.google.com/sdk).
  * Download and install [Maven](http://maven.apache.org/install.html).
  * Set up [Google Application Credentials](https://cloud.google.com/docs/authentication/getting-started).
 
 ## Creating a queue
 
-To create a queue using the Cloud SDK, use the following gcloud command:
+To create a queue using the Cloud CLI, use the following gcloud command:
 
 ```
 gcloud tasks queues create my-appengine-queue
