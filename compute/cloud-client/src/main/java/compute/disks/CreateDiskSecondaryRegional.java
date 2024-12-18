@@ -76,9 +76,9 @@ public class CreateDiskSecondaryRegional {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (RegionDisksClient disksClient = RegionDisksClient.create()) {
-    DiskAsyncReplication asyncReplication = DiskAsyncReplication.newBuilder()
-        .setDisk(primaryDiskSource)
-        .build();
+      DiskAsyncReplication asyncReplication = DiskAsyncReplication.newBuilder()
+          .setDisk(primaryDiskSource)
+          .build();
 
       Disk disk = Disk.newBuilder()
           .addAllReplicaZones(replicaZones)
