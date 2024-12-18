@@ -16,44 +16,36 @@
 
 package com.google.cloud.bigtable.examples.proxy.channelpool;
 
-import com.google.bigtable.v2.PingAndWarmRequest;
 import com.google.cloud.bigtable.examples.proxy.core.CallLabels;
+import com.google.cloud.bigtable.examples.proxy.core.CallLabels.ParsingException;
+import com.google.cloud.bigtable.examples.proxy.core.CallLabels.PrimingKey;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
 import java.time.Duration;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ResourceCollector {
-  private final Cache<PingAndWarmRequest, Boolean> warmingRequests =
+  private static final Logger LOG = LoggerFactory.getLogger(ResourceCollector.class);
+
+  private final Cache<PrimingKey, Boolean> primingKeys =
       CacheBuilder.newBuilder().expireAfterWrite(Duration.ofHours(1)).maximumSize(100).build();
 
   public void collect(CallLabels labels) {
-    String[] splits = labels.getResourceName().orElse("").split("/", 5);
-    if (splits.length <= 4) {
-      return;
+    try {
+      PrimingKey.from(labels).ifPresent(k -> primingKeys.put(k, true));
+    } catch (ParsingException e) {
+      LOG.warn("Failed to collect priming request for {}", labels, e);
     }
-    if (!"projects".equals(splits[0])) {
-      return;
-    }
-    if (!"instances".equals(splits[2])) {
-      return;
-    }
-    String appProfile = labels.getAppProfileId().orElse("");
-
-    PingAndWarmRequest req =
-        PingAndWarmRequest.newBuilder()
-            .setName("projects/" + splits[1] + "/instances/" + splits[3])
-            .setAppProfileId(appProfile)
-            .build();
-    warmingRequests.put(req, true);
   }
 
-  public List<PingAndWarmRequest> getRequests() {
-    return ImmutableList.copyOf(warmingRequests.asMap().keySet());
+  public List<PrimingKey> getPrimingKeys() {
+    return ImmutableList.copyOf(primingKeys.asMap().keySet());
   }
 
-  public void evict(PingAndWarmRequest request) {
-    warmingRequests.invalidate(request);
+  public void evict(PrimingKey request) {
+    primingKeys.invalidate(request);
   }
 }

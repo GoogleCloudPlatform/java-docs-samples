@@ -17,14 +17,21 @@
 package com.google.cloud.bigtable.examples.proxy.core;
 
 import com.google.auto.value.AutoValue;
-import com.google.cloud.bigtable.examples.proxy.metrics.MetricsImpl;
+import com.google.bigtable.v2.PingAndWarmRequest;
+import com.google.bigtable.v2.PingAndWarmRequest.Builder;
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.ImmutableMap;
 import io.grpc.Metadata;
 import io.grpc.Metadata.Key;
 import io.grpc.MethodDescriptor;
-import io.opentelemetry.api.common.Attributes;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A value class to encapsulate call identity.
@@ -34,14 +41,27 @@ import java.util.Optional;
  *
  * <ul>
  *   <li>{@code x-goog-request-params} - contains the resource and app profile id
+ *   <li>{@code google-cloud-resource-prefix} - the previous version of {@code
+ *       x-goog-request-params}, used as a fallback
+ *   <li>{@code x-goog-cbt-cookie-routing} - an opaque blob used to routing RPCs on the serverside
+ *   <li>{@code bigtable-features} - the client's available features
  *   <li>{@code x-goog-api-client} - contains the client info of the downstream client
  * </ul>
  */
 @AutoValue
 public abstract class CallLabels {
-  public static final Key<String> REQUEST_PARAMS =
+  private static final Logger LOG = LoggerFactory.getLogger(CallLabels.class);
+
+  // All RLS headers
+  static final Key<String> REQUEST_PARAMS =
       Key.of("x-goog-request-params", Metadata.ASCII_STRING_MARSHALLER);
-  private static final Key<String> API_CLIENT =
+  static final Key<String> LEGACY_RESOURCE_PREFIX =
+      Key.of("google-cloud-resource-prefix", Metadata.ASCII_STRING_MARSHALLER);
+  static final Key<String> ROUTING_COOKIE =
+      Key.of("x-goog-cbt-cookie-routing", Metadata.ASCII_STRING_MARSHALLER);
+  static final Key<String> FEATURE_FLAGS =
+      Key.of("bigtable-features", Metadata.ASCII_STRING_MARSHALLER);
+  static final Key<String> API_CLIENT =
       Key.of("x-goog-api-client", Metadata.ASCII_STRING_MARSHALLER);
 
   enum ResourceNameType {
@@ -70,44 +90,63 @@ public abstract class CallLabels {
     }
   }
 
-  abstract Optional<String> getApiClient();
+  public abstract String getMethodName();
 
-  public abstract Optional<String> getResourceName();
+  abstract Optional<String> getRequestParams();
 
-  public abstract Optional<String> getAppProfileId();
+  abstract Optional<String> getLegacyResourcePrefix();
 
-  abstract String getMethodName();
+  abstract Optional<String> getRoutingCookie();
 
-  public abstract Attributes getOtelAttributes();
+  abstract Optional<String> getEncodedFeatures();
+
+  public abstract Optional<String> getApiClient();
 
   public static CallLabels create(MethodDescriptor<?, ?> method, Metadata headers) {
     Optional<String> apiClient = Optional.ofNullable(headers.get(API_CLIENT));
 
-    String requestParams = Optional.ofNullable(headers.get(REQUEST_PARAMS)).orElse("");
-    String[] encodedKvPairs = requestParams.split("&");
-    Optional<String> resourceName = extractResourceName(encodedKvPairs).map(ResourceName::getValue);
-    Optional<String> appProfile = extractAppProfileId(encodedKvPairs);
+    Optional<String> requestParams = Optional.ofNullable(headers.get(REQUEST_PARAMS));
+    Optional<String> legacyResourcePrefix =
+        Optional.ofNullable(headers.get(LEGACY_RESOURCE_PREFIX));
+    Optional<String> routingCookie = Optional.ofNullable(headers.get(ROUTING_COOKIE));
+    Optional<String> encodedFeatures = Optional.ofNullable(headers.get(FEATURE_FLAGS));
 
-    return create(method, apiClient, resourceName, appProfile);
+    return create(
+        method, requestParams, legacyResourcePrefix, routingCookie, encodedFeatures, apiClient);
   }
 
+  @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+  @VisibleForTesting
   public static CallLabels create(
       MethodDescriptor<?, ?> method,
-      Optional<String> apiClient,
-      Optional<String> resourceName,
-      Optional<String> appProfile) {
-    Attributes otelAttrs =
-        Attributes.builder()
-            .put(MetricsImpl.API_CLIENT_KEY, apiClient.orElse("<missing>"))
-            .put(MetricsImpl.RESOURCE_KEY, resourceName.orElse("<missing>"))
-            .put(MetricsImpl.APP_PROFILE_KEY, appProfile.orElse("<missing>"))
-            .put(MetricsImpl.METHOD_KEY, method.getFullMethodName())
-            .build();
+      Optional<String> requestParams,
+      Optional<String> legacyResourcePrefix,
+      Optional<String> routingCookie,
+      Optional<String> encodedFeatures,
+      Optional<String> apiClient) {
+
     return new AutoValue_CallLabels(
-        apiClient, resourceName, appProfile, method.getFullMethodName(), otelAttrs);
+        method.getFullMethodName(),
+        requestParams,
+        legacyResourcePrefix,
+        routingCookie,
+        encodedFeatures,
+        apiClient);
   }
 
-  private static Optional<ResourceName> extractResourceName(String[] encodedKvPairs) {
+  /**
+   * Extracts the resource name, will use {@link #getRequestParams()} if present, otherwise falls
+   * back on {@link #getLegacyResourcePrefix()}. If neither is present, {@link Optional#empty()} is
+   * returned. If there was an issue extracting, a {@link ParsingException} is thrown. In the
+   * primary case, the value will be url decoded.
+   */
+  public Optional<String> extractResourceName() throws ParsingException {
+    if (getRequestParams().isEmpty()) {
+      return getLegacyResourcePrefix();
+    }
+
+    String requestParams = getRequestParams().orElse("");
+    String[] encodedKvPairs = requestParams.split("&");
     Optional<ResourceName> resourceName = Optional.empty();
 
     for (String encodedKv : encodedKvPairs) {
@@ -136,22 +175,26 @@ public abstract class CallLabels {
 
       resourceName = Optional.of(ResourceName.create(newType.get(), decodedValue));
     }
-    return resourceName;
+    return resourceName.map(ResourceName::getValue);
   }
 
-  private static Optional<ResourceNameType> findType(String encodedKey) {
-    String decodedKey = percentDecode(encodedKey);
-
+  private static Optional<ResourceNameType> findType(String key) {
     for (ResourceNameType type : ResourceNameType.values()) {
-      if (type.name.equals(decodedKey)) {
+      if (type.name.equals(key)) {
         return Optional.of(type);
       }
     }
     return Optional.empty();
   }
 
-  private static Optional<String> extractAppProfileId(String[] encodedKvPairs) {
-    for (String encodedPair : encodedKvPairs) {
+  /**
+   * Extracts the app profile id from {@link #getRequestParams()}. Returns {@link Optional#empty()}
+   * if the key is missing. The value will be url decoded.
+   */
+  public Optional<String> extractAppProfileId() throws ParsingException {
+    String requestParams = getRequestParams().orElse("");
+
+    for (String encodedPair : requestParams.split("&")) {
       if (!encodedPair.startsWith("app_profile_id=")) {
         continue;
       }
@@ -162,7 +205,87 @@ public abstract class CallLabels {
     return Optional.empty();
   }
 
-  private static String percentDecode(String s) {
-    return URLDecoder.decode(s, StandardCharsets.UTF_8);
+  private static String percentDecode(String s) throws ParsingException {
+    try {
+      return URLDecoder.decode(s, StandardCharsets.UTF_8);
+    } catch (RuntimeException e) {
+      throw new ParsingException("Failed to url decode " + s, e);
+    }
+  }
+
+  /**
+   * Can be derived from {@link CallLabels} to create a priming request to keep the channel active
+   * for future RPCs.
+   */
+  @AutoValue
+  public abstract static class PrimingKey {
+    protected abstract Map<String, String> getMetadata();
+
+    protected abstract String getName();
+
+    protected abstract Optional<String> getAppProfileId();
+
+    public static Optional<PrimingKey> from(CallLabels labels) throws ParsingException {
+      final ImmutableMap.Builder<String, String> md = ImmutableMap.builder();
+
+      Optional<String> resourceName = labels.extractResourceName();
+      if (resourceName.isEmpty()) {
+        return Optional.empty();
+      }
+      String[] resourceNameParts = resourceName.get().split("/", 5);
+      if (resourceNameParts.length < 4
+          || !resourceNameParts[0].equals("projects")
+          || !resourceNameParts[2].equals("instances")) {
+        return Optional.empty();
+      }
+      String instanceName =
+          "projects/" + resourceNameParts[1] + "/instances/" + resourceNameParts[3];
+      StringBuilder reqParams =
+          new StringBuilder()
+              .append("name=")
+              .append(URLEncoder.encode(instanceName, StandardCharsets.UTF_8));
+
+      Optional<String> appProfileId = labels.extractAppProfileId();
+      appProfileId.ifPresent(val -> reqParams.append("&app_profile_id=").append(val));
+      md.put(REQUEST_PARAMS.name(), reqParams.toString());
+
+      labels
+          .getLegacyResourcePrefix()
+          .ifPresent(ignored -> md.put(LEGACY_RESOURCE_PREFIX.name(), instanceName));
+
+      labels.getRoutingCookie().ifPresent(c -> md.put(ROUTING_COOKIE.name(), c));
+
+      labels.getEncodedFeatures().ifPresent(c -> md.put(FEATURE_FLAGS.name(), c));
+
+      labels.getApiClient().ifPresent(c -> md.put(API_CLIENT.name(), c));
+
+      return Optional.of(
+          new AutoValue_CallLabels_PrimingKey(md.build(), instanceName, appProfileId));
+    }
+
+    public Metadata composeMetadata() {
+      Metadata md = new Metadata();
+      for (Entry<String, String> e : getMetadata().entrySet()) {
+        md.put(Key.of(e.getKey(), Metadata.ASCII_STRING_MARSHALLER), e.getValue());
+      }
+      return md;
+    }
+
+    public PingAndWarmRequest composeProto() {
+      Builder builder = PingAndWarmRequest.newBuilder().setName(getName());
+      getAppProfileId().ifPresent(builder::setAppProfileId);
+      return builder.build();
+    }
+  }
+
+  public static class ParsingException extends Exception {
+
+    public ParsingException(String message) {
+      super(message);
+    }
+
+    public ParsingException(String message, Throwable cause) {
+      super(message, cause);
+    }
   }
 }

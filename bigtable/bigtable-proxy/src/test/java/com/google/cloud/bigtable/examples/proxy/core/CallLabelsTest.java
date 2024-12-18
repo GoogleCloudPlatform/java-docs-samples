@@ -16,142 +16,154 @@
 
 package com.google.cloud.bigtable.examples.proxy.core;
 
-import static com.google.common.truth.Truth.assertAbout;
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.Assert.assertThrows;
 
 import com.google.bigtable.v2.BigtableGrpc;
-import com.google.common.truth.FailureMetadata;
-import com.google.common.truth.MapSubject;
-import com.google.common.truth.Subject;
+import com.google.bigtable.v2.PingAndWarmRequest;
+import com.google.cloud.bigtable.examples.proxy.core.CallLabels.ParsingException;
+import com.google.cloud.bigtable.examples.proxy.core.CallLabels.PrimingKey;
 import io.grpc.Metadata;
-import io.grpc.Metadata.Key;
-import io.opentelemetry.api.common.AttributeKey;
 import java.util.Optional;
-import org.jspecify.annotations.Nullable;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 public class CallLabelsTest {
-  private static final Key<String> REQUEST_PARAMS =
-      Key.of("x-goog-request-params", Metadata.ASCII_STRING_MARSHALLER);
-  private static final Key<String> API_CLIENT =
-      Key.of("x-goog-api-client", Metadata.ASCII_STRING_MARSHALLER);
-
   @Test
-  public void testAllBasic() {
+  public void testAllBasic() throws ParsingException {
     Metadata md = new Metadata();
-    md.put(REQUEST_PARAMS, "table_name=projects/p/instances/i/tables/t&app_profile_id=a");
-    md.put(API_CLIENT, "some-client");
+    md.put(
+        CallLabels.REQUEST_PARAMS,
+        "table_name=projects/p/instances/i/tables/t&app_profile_id=a".replaceAll("/", "%2F"));
+    md.put(CallLabels.LEGACY_RESOURCE_PREFIX, "projects/p/instances/i/tables/t");
+    md.put(CallLabels.ROUTING_COOKIE, "some-opaque-string");
+    md.put(CallLabels.FEATURE_FLAGS, "some-serialized-features-string");
+    md.put(CallLabels.API_CLIENT, "some-client");
     CallLabels callLabels = CallLabels.create(BigtableGrpc.getMutateRowMethod(), md);
 
+    assertThat(callLabels.getRequestParams())
+        .isEqualTo(
+            Optional.of("table_name=projects%2Fp%2Finstances%2Fi%2Ftables%2Ft&app_profile_id=a"));
+    assertThat(callLabels.getLegacyResourcePrefix())
+        .isEqualTo(Optional.of("projects/p/instances/i/tables/t"));
+    assertThat(callLabels.getRoutingCookie()).isEqualTo(Optional.of("some-opaque-string"));
+    assertThat(callLabels.getEncodedFeatures())
+        .isEqualTo(Optional.of("some-serialized-features-string"));
     assertThat(callLabels.getApiClient()).isEqualTo(Optional.of("some-client"));
-    assertThat(callLabels.getAppProfileId()).isEqualTo(Optional.of("a"));
-    assertThat(callLabels.getResourceName())
+
+    assertThat(callLabels.extractAppProfileId()).isEqualTo(Optional.of("a"));
+    assertThat(callLabels.extractResourceName())
         .isEqualTo(Optional.of("projects/p/instances/i/tables/t"));
-
-    CallLabelsSubject.assertThat(callLabels)
-        .hasOtelAttributesThat()
-        .containsAtLeast(
-            AttributeKey.stringKey("api_client"), "some-client",
-            AttributeKey.stringKey("resource"), "projects/p/instances/i/tables/t",
-            AttributeKey.stringKey("app_profile"), "a",
-            AttributeKey.stringKey("method"), "google.bigtable.v2.Bigtable/MutateRow");
   }
 
   @Test
-  public void testResourceEscaped() {
+  public void testResourceEscaped() throws ParsingException {
     Metadata md = new Metadata();
-    md.put(REQUEST_PARAMS, "table_name=projects/p/instances/i/tables/t".replace("/", "%2F"));
+    md.put(
+        CallLabels.REQUEST_PARAMS,
+        "table_name=projects/p/instances/i/tables/t".replace("/", "%2F"));
     CallLabels callLabels = CallLabels.create(BigtableGrpc.getMutateRowMethod(), md);
 
-    assertThat(callLabels.getResourceName())
+    assertThat(callLabels.extractResourceName())
         .isEqualTo(Optional.of("projects/p/instances/i/tables/t"));
-    CallLabelsSubject.assertThat(callLabels)
-        .hasOtelAttributesThat()
-        .containsAtLeast(AttributeKey.stringKey("resource"), "projects/p/instances/i/tables/t");
   }
 
   @Test
-  public void testEmpty() {
+  public void testEmpty() throws ParsingException {
     Metadata md = new Metadata();
     CallLabels callLabels = CallLabels.create(BigtableGrpc.getMutateRowMethod(), md);
 
-    assertThat(callLabels.getResourceName()).isEqualTo(Optional.empty());
-    CallLabelsSubject.assertThat(callLabels)
-        .hasOtelAttributesThat()
-        .containsAtLeast(
-            AttributeKey.stringKey("api_client"), "<missing>",
-            AttributeKey.stringKey("resource"), "<missing>",
-            AttributeKey.stringKey("app_profile"), "<missing>",
-            AttributeKey.stringKey("method"), "google.bigtable.v2.Bigtable/MutateRow");
+    assertThat(callLabels.extractResourceName()).isEqualTo(Optional.empty());
+    assertThat(callLabels.extractAppProfileId()).isEqualTo(Optional.empty());
   }
 
   @Test
-  public void testMalformed1() {
+  public void testLegacyFallback() throws ParsingException {
     Metadata md = new Metadata();
-    md.put(REQUEST_PARAMS, "table_name=");
+    md.put(CallLabels.LEGACY_RESOURCE_PREFIX, "projects/p/instances/i/tables/t");
     CallLabels callLabels = CallLabels.create(BigtableGrpc.getMutateRowMethod(), md);
 
-    assertThat(callLabels.getResourceName()).isEqualTo(Optional.empty());
-    CallLabelsSubject.assertThat(callLabels)
-        .hasOtelAttributesThat()
-        .containsAtLeast(AttributeKey.stringKey("resource"), "<missing>");
+    assertThat(callLabels.extractResourceName())
+        .isEqualTo(Optional.of("projects/p/instances/i/tables/t"));
   }
 
   @Test
-  public void testMalformed2() {
+  public void testMalformed1() throws ParsingException {
     Metadata md = new Metadata();
-    md.put(REQUEST_PARAMS, "&");
+    md.put(CallLabels.REQUEST_PARAMS, "table_name=");
     CallLabels callLabels = CallLabels.create(BigtableGrpc.getMutateRowMethod(), md);
 
-    assertThat(callLabels.getResourceName()).isEqualTo(Optional.empty());
-    CallLabelsSubject.assertThat(callLabels)
-        .hasOtelAttributesThat()
-        .containsAtLeast(AttributeKey.stringKey("resource"), "<missing>");
+    assertThat(callLabels.extractResourceName()).isEqualTo(Optional.empty());
   }
 
   @Test
-  public void testMalformed3() {
+  public void testMalformed2() throws ParsingException {
     Metadata md = new Metadata();
-    md.put(REQUEST_PARAMS, "table_name=&");
+    md.put(CallLabels.REQUEST_PARAMS, "&");
     CallLabels callLabels = CallLabels.create(BigtableGrpc.getMutateRowMethod(), md);
 
-    assertThat(callLabels.getResourceName()).isEqualTo(Optional.empty());
-    CallLabelsSubject.assertThat(callLabels)
-        .hasOtelAttributesThat()
-        .containsAtLeast(AttributeKey.stringKey("resource"), "<missing>");
+    assertThat(callLabels.extractResourceName()).isEqualTo(Optional.empty());
   }
 
-  private static class CallLabelsSubject extends Subject {
-    private final CallLabels actual;
+  @Test
+  public void testMalformed3() throws ParsingException {
+    Metadata md = new Metadata();
+    md.put(CallLabels.REQUEST_PARAMS, "table_name=&");
+    CallLabels callLabels = CallLabels.create(BigtableGrpc.getMutateRowMethod(), md);
 
-    public CallLabelsSubject(FailureMetadata metadata, @Nullable CallLabels actual) {
-      super(metadata, actual);
-      this.actual = actual;
-    }
+    assertThat(callLabels.extractResourceName()).isEqualTo(Optional.empty());
+  }
 
-    public static Factory<CallLabelsSubject, CallLabels> callLabels() {
-      return CallLabelsSubject::new;
-    }
+  @Test
+  public void testMalformed4() throws ParsingException {
+    Metadata md = new Metadata();
+    md.put(CallLabels.REQUEST_PARAMS, "table_name=%s");
+    CallLabels callLabels = CallLabels.create(BigtableGrpc.getMutateRowMethod(), md);
 
-    public static CallLabelsSubject assertThat(CallLabels callLabels) {
-      return assertAbout(callLabels()).that(callLabels);
-    }
+    assertThrows(ParsingException.class, callLabels::extractResourceName);
+  }
 
-    public MapSubject hasOtelAttributesThat() {
-      return check("getOtelAttributes()").that(actual.getOtelAttributes().asMap());
-    }
+  @Test
+  public void testPrimingKey() throws ParsingException {
+    final String tableName = "projects/myp/instances/myi/tables/myt";
+    final String encodedTableName = "projects%2Fmyp%2Finstances%2Fmyi%2Ftables%2Fmyt";
+    final String instanceName = "projects/myp/instances/myi";
+    final String encodedInstanceName = "projects%2Fmyp%2Finstances%2Fmyi";
+    final String appProfileId = "mya";
 
-    public void hasMethodName(String method) {
-      check("getMethodName()").that(actual.getMethodName()).isEqualTo(method);
-    }
+    CallLabels callLabels =
+        CallLabels.create(
+            BigtableGrpc.getMutateRowMethod(),
+            Optional.of(
+                String.format("table_name=%s&app_profile_id=%s", encodedTableName, appProfileId)),
+            Optional.of(tableName),
+            Optional.of("opaque-cookie"),
+            Optional.of("encoded-features"),
+            Optional.of("some-client"));
+    PrimingKey key = PrimingKey.from(callLabels).get();
 
-    public void hasResourceName(String resourceName) {
-      check("hasResourceName()")
-          .that(actual.getResourceName())
-          .isEqualTo(Optional.of(resourceName));
-    }
+    assertThat(key.getAppProfileId()).isEqualTo(Optional.of("mya"));
+    assertThat(key.getName()).isEqualTo(instanceName);
+
+    Metadata m = new Metadata();
+
+    m.put(
+        CallLabels.REQUEST_PARAMS,
+        String.format("name=%s&app_profile_id=%s", encodedInstanceName, appProfileId));
+    m.put(CallLabels.LEGACY_RESOURCE_PREFIX, instanceName);
+    m.put(CallLabels.ROUTING_COOKIE, "opaque-cookie");
+    m.put(CallLabels.FEATURE_FLAGS, "encoded-features");
+    m.put(CallLabels.API_CLIENT, "some-client");
+
+    assertThat(key.composeMetadata().toString()).isEqualTo(m.toString());
+
+    assertThat(key.composeProto())
+        .isEqualTo(
+            PingAndWarmRequest.newBuilder()
+                .setName(instanceName)
+                .setAppProfileId(appProfileId)
+                .build());
   }
 }
