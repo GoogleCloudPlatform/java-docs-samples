@@ -32,6 +32,8 @@ import com.google.cloud.tpu.v2.DeleteNodeRequest;
 import com.google.cloud.tpu.v2.GetNodeRequest;
 import com.google.cloud.tpu.v2.ListNodesRequest;
 import com.google.cloud.tpu.v2.Node;
+import com.google.cloud.tpu.v2.StartNodeRequest;
+import com.google.cloud.tpu.v2.StopNodeRequest;
 import com.google.cloud.tpu.v2.TpuClient;
 import com.google.cloud.tpu.v2.TpuSettings;
 import java.io.ByteArrayOutputStream;
@@ -164,6 +166,48 @@ public class TpuVmIT {
 
       assertThat(returnedListNodes.getValues()).isEqualTo(mockListNodes);
       verify(mockTpuClient, times(1)).listNodes(any(ListNodesRequest.class));
+    }
+  }
+
+  @Test
+  public void testStartTpuVm() throws IOException, ExecutionException, InterruptedException {
+    try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
+      TpuClient mockClient = mock(TpuClient.class);
+      Node mockNode = mock(Node.class);
+      OperationFuture mockFuture = mock(OperationFuture.class);
+
+      mockedTpuClient.when(TpuClient::create).thenReturn(mockClient);
+      when(mockClient.startNodeAsync(any(StartNodeRequest.class)))
+          .thenReturn(mockFuture);
+      when(mockFuture.get()).thenReturn(mockNode);
+
+      Node returnedNode = StartTpuVm.startTpuVm(PROJECT_ID, ZONE, NODE_NAME);
+
+      verify(mockClient, times(1))
+          .startNodeAsync(any(StartNodeRequest.class));
+      verify(mockFuture, times(1)).get();
+      assertEquals(returnedNode, mockNode);
+    }
+  }
+
+  @Test
+  public void testStopTpuVm() throws IOException, ExecutionException, InterruptedException {
+    try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
+      TpuClient mockClient = mock(TpuClient.class);
+      Node mockNode = mock(Node.class);
+      OperationFuture mockFuture = mock(OperationFuture.class);
+
+      mockedTpuClient.when(TpuClient::create).thenReturn(mockClient);
+      when(mockClient.stopNodeAsync(any(StopNodeRequest.class)))
+          .thenReturn(mockFuture);
+      when(mockFuture.get()).thenReturn(mockNode);
+
+      Node returnedNode = StopTpuVm.stopTpuVm(PROJECT_ID, ZONE, NODE_NAME);
+
+      verify(mockClient, times(1))
+          .stopNodeAsync(any(StopNodeRequest.class));
+      verify(mockFuture, times(1)).get();
+      assertEquals(returnedNode, mockNode);
     }
   }
 }
