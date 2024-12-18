@@ -21,6 +21,7 @@ import com.google.cloud.compute.v1.BulkInsertDiskRequest;
 import com.google.cloud.compute.v1.BulkInsertDiskResource;
 import com.google.cloud.compute.v1.DisksClient;
 import com.google.cloud.compute.v1.Operation;
+import com.google.cloud.compute.v1.Operation.Status;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -41,7 +42,7 @@ public class CloneZonalDisksFromConsistencyGroup {
   }
 
   // Clones zonal disks from a consistency group.
-  public static Operation.Status cloneZonalDisksFromConsistencyGroup(
+  public static Status cloneZonalDisksFromConsistencyGroup(
           String project, String zone, String consistencyGroupName)
           throws IOException, InterruptedException, ExecutionException, TimeoutException {
     String region = zone.substring(0, zone.lastIndexOf('-'));

@@ -20,6 +20,7 @@ package compute.disks.consistencygroup;
 import com.google.cloud.compute.v1.BulkInsertDiskResource;
 import com.google.cloud.compute.v1.BulkInsertRegionDiskRequest;
 import com.google.cloud.compute.v1.Operation;
+import com.google.cloud.compute.v1.Operation.Status;
 import com.google.cloud.compute.v1.RegionDisksClient;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
@@ -42,7 +43,7 @@ public class CloneRegionalDisksFromConsistencyGroup {
   }
 
   // Clones regional disks from a consistency group.
-  public static Operation.Status cloneRegionalDisksFromConsistencyGroup(
+  public static Status cloneRegionalDisksFromConsistencyGroup(
           String project, String region, String consistencyGroupName)
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
     String sourceConsistencyGroupPolicy = String.format(

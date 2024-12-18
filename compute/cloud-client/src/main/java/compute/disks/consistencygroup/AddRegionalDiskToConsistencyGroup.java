@@ -19,6 +19,7 @@ package compute.disks.consistencygroup;
 // [START compute_consistency_group_add_regional_disk]
 import com.google.cloud.compute.v1.AddResourcePoliciesRegionDiskRequest;
 import com.google.cloud.compute.v1.Operation;
+import com.google.cloud.compute.v1.Operation.Status;
 import com.google.cloud.compute.v1.RegionDisksAddResourcePoliciesRequest;
 import com.google.cloud.compute.v1.RegionDisksClient;
 import java.io.IOException;
@@ -44,7 +45,7 @@ public class AddRegionalDiskToConsistencyGroup {
   }
 
   // Adds regional disk to a consistency group.
-  public static Operation.Status addRegionalDiskToConsistencyGroup(
+  public static Status addRegionalDiskToConsistencyGroup(
       String project, String region, String diskName, String consistencyGroupName)
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
     String consistencyGroupUrl = String.format(

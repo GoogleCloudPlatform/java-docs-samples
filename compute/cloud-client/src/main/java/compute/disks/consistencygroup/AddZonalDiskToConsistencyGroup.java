@@ -21,6 +21,7 @@ import com.google.cloud.compute.v1.AddResourcePoliciesDiskRequest;
 import com.google.cloud.compute.v1.DisksAddResourcePoliciesRequest;
 import com.google.cloud.compute.v1.DisksClient;
 import com.google.cloud.compute.v1.Operation;
+import com.google.cloud.compute.v1.Operation.Status;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
@@ -45,7 +46,7 @@ public class AddZonalDiskToConsistencyGroup {
   }
 
   // Adds zonal disk to a consistency group.
-  public static Operation.Status addZonalDiskToConsistencyGroup(
+  public static Status addZonalDiskToConsistencyGroup(
           String project, String diskLocation, String diskName,
           String consistencyGroupName)
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
