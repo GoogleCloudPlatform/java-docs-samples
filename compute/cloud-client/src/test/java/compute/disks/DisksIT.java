@@ -110,7 +110,6 @@ public class DisksIT {
     Util.cleanUpExistingSnapshots("gcloud-test-snapshot-", PROJECT_ID);
     Util.cleanUpExistingRegionalDisks("gcloud-test-disk-", PROJECT_ID, REGION);
     Util.cleanUpExistingRegionalDisks("gcloud-test-disk-rattach-", PROJECT_ID, REGION);
-
     // Create disk from image.
     Image debianImage = null;
     try (ImagesClient imagesClient = ImagesClient.create()) {
@@ -248,7 +247,7 @@ public class DisksIT {
   }
 
   public static void createRegionalDisk()
-          throws IOException, ExecutionException, InterruptedException, TimeoutException {
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
     String diskType = String.format("regions/%s/diskTypes/pd-balanced", REGION);
 
     RegionalCreateFromSource.createRegionalDisk(PROJECT_ID, REGION, replicaZones,
