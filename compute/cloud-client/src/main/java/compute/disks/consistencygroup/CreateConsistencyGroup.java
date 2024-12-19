@@ -19,6 +19,7 @@ package compute.disks.consistencygroup;
 // [START compute_consistency_group_create]
 import com.google.cloud.compute.v1.InsertResourcePolicyRequest;
 import com.google.cloud.compute.v1.Operation;
+import com.google.cloud.compute.v1.Operation.Status;
 import com.google.cloud.compute.v1.ResourcePoliciesClient;
 import com.google.cloud.compute.v1.ResourcePolicy;
 import java.io.IOException;
@@ -42,7 +43,7 @@ public class CreateConsistencyGroup {
   }
 
   // Creates a new consistency group resource policy in the specified project and region.
-  public static Operation.Status createConsistencyGroup(
+  public static Status createConsistencyGroup(
       String project, String region, String consistencyGroupName)
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
