@@ -317,6 +317,7 @@ public class DisksIT {
             replicaZones, REGIONAL_REPLICATED_DISK, 100, DISK_TYPE);
 
     assertThat(status).isEqualTo(Status.DONE);
+    assertThat(status).isEqualTo(Status.DONE);
   }
 
   @Test
