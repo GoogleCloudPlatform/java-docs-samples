@@ -144,8 +144,6 @@ public class CreateTimeBoundQueuedResource {
               .setQueuedResourceId(queuedResourceName)
               .build();
 
-      // You can wait until TPU Node is READY,
-      // and check its status using getTpuVm() from "tpu_vm_get" sample.
       return tpuClient.createQueuedResourceAsync(request).get();
     }
   }
