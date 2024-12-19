@@ -110,7 +110,7 @@ public class DisksIT {
     Util.cleanUpExistingDisks("gcloud-test-", PROJECT_ID, ZONE);
     Util.cleanUpExistingSnapshots("gcloud-test-snapshot-", PROJECT_ID);
     Util.cleanUpExistingRegionalDisks("gcloud-test-disk-", PROJECT_ID, REGION);
-    Util.cleanUpExistingRegionalDisks("gcloud-test-disk-rattach-", PROJECT_ID, REGION);
+
     // Create disk from image.
     Image debianImage = null;
     try (ImagesClient imagesClient = ImagesClient.create()) {
