@@ -65,9 +65,8 @@ public class AttachRegionalDiskForce {
               .setZone(instanceLocation)
               .setInstance(instanceName)
               .setAttachedDiskResource(attachedDisk)
-              .setForceAttach(true) //Force the attachment
+              .setForceAttach(true) // Force the attachment
               .build();
-
 
       Operation response = instancesClient.attachDiskAsync(attachDiskRequest)
               .get(3, TimeUnit.MINUTES);
