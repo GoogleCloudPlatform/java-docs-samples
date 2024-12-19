@@ -22,8 +22,8 @@ version := "0.1"
 // https://cloud.google.com/dataproc/docs/concepts/versioning/dataproc-release-1.4
 scalaVersion := "2.11.12"
 val sparkVersion = "2.4.8"
-val bigtableVersion = "2.12.0"
-val hbaseVersion = "2.5.7-hadoop3"
+val bigtableVersion = "2.14.8"
+val hbaseVersion = "2.6.1-hadoop3"
 
 libraryDependencies ++= Seq(
   "org.apache.spark" %% "spark-sql" % sparkVersion % Provided,
