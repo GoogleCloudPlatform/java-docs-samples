@@ -41,6 +41,7 @@ public class StopZonalDiskReplicationConsistencyGroup {
     stopZonalDiskReplicationConsistencyGroup(project, zone, consistencyGroupName);
   }
 
+  // Stops replication for a consistency group for a project in a given zone.
   public static Status stopZonalDiskReplicationConsistencyGroup(
           String project, String zone, String consistencyGroupName)
           throws IOException, InterruptedException, ExecutionException, TimeoutException {
