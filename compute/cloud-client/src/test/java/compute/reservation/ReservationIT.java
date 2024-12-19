@@ -32,12 +32,14 @@ import com.google.api.gax.longrunning.OperationFuture;
 import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.compute.v1.InsertReservationRequest;
 import com.google.cloud.compute.v1.Operation;
+import com.google.cloud.compute.v1.Operation.Status;
 import com.google.cloud.compute.v1.Reservation;
 import com.google.cloud.compute.v1.ReservationsClient;
 import compute.CreateInstanceTemplate;
 import compute.CreateRegionalInstanceTemplate;
 import compute.DeleteInstanceTemplate;
 import compute.DeleteRegionalInstanceTemplate;
+import compute.Util;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -115,6 +117,8 @@ public class ReservationIT {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     final PrintStream out = System.out;
     System.setOut(new PrintStream(stdOut));
+
+    Util.cleanUpExistingReservations("test-reservation", PROJECT_ID, ZONE);
 
     // Delete instance template with GLOBAL location.
     DeleteInstanceTemplate.deleteInstanceTemplate(PROJECT_ID, GLOBAL_INSTANCE_TEMPLATE_NAME);
@@ -194,14 +198,14 @@ public class ReservationIT {
       when(mockClient.insertAsync(any(InsertReservationRequest.class)))
               .thenReturn(mockFuture);
       when(mockFuture.get(3, TimeUnit.MINUTES)).thenReturn(mockOperation);
-      when(mockOperation.getStatus()).thenReturn(Operation.Status.DONE);
+      when(mockOperation.getStatus()).thenReturn(Status.DONE);
 
-      Operation.Status status = CreateSharedReservation.createSharedReservation(PROJECT_ID, ZONE,
+      Status status = CreateSharedReservation.createSharedReservation(PROJECT_ID, ZONE,
               RESERVATION_NAME_SHARED, INSTANCE_TEMPLATE_SHARED_RESERV_URI, NUMBER_OF_VMS);
 
       verify(mockClient, times(1)).insertAsync(any(InsertReservationRequest.class));
       verify(mockFuture, times(1)).get(anyLong(), any(TimeUnit.class));
-      assertEquals(Operation.Status.DONE, status);
+      assertEquals(Status.DONE, status);
 
     }
   }

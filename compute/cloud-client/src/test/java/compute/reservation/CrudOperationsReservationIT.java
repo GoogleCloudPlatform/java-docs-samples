@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.compute.v1.Reservation;
+import compute.Util;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
@@ -63,6 +64,8 @@ public class CrudOperationsReservationIT {
   @AfterAll
   public static void cleanup()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    Util.cleanUpExistingReservations("test-reservation", PROJECT_ID, ZONE);
+
     DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME);
 
     // Test that reservation is deleted
