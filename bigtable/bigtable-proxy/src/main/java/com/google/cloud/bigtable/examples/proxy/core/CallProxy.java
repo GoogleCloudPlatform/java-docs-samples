@@ -17,6 +17,7 @@
 package com.google.cloud.bigtable.examples.proxy.core;
 
 import com.google.cloud.bigtable.examples.proxy.metrics.Tracer;
+import com.google.common.base.Stopwatch;
 import io.grpc.ClientCall;
 import io.grpc.Metadata;
 import io.grpc.ServerCall;
@@ -29,6 +30,8 @@ class CallProxy<ReqT, RespT> {
   private final Tracer tracer;
   final RequestProxy serverCallListener;
   final ResponseProxy clientCallListener;
+
+  private final Stopwatch downstreamStopwatch = Stopwatch.createUnstarted();
 
   /**
    * @param tracer a lifecycle observer to publish metrics.
@@ -157,6 +160,7 @@ class CallProxy<ReqT, RespT> {
           // The incoming call is not ready for more responses. Stop requesting additional data
           // and wait for it to catch up.
           needToRequest = true;
+          downstreamStopwatch.reset().start();
         }
       }
     }
@@ -169,6 +173,10 @@ class CallProxy<ReqT, RespT> {
     // Called from RequestProxy, which is a different thread than the ClientCall.Listener
     // callbacks.
     synchronized void onServerReady() {
+      if (downstreamStopwatch.isRunning()) {
+        tracer.onDownstreamLatency(downstreamStopwatch.elapsed());
+        downstreamStopwatch.stop();
+      }
       if (needToRequest) {
         serverCallListener.clientCall.request(1);
         needToRequest = false;
