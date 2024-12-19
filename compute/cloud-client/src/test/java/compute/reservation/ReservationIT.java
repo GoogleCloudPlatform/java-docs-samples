@@ -36,6 +36,7 @@ import compute.CreateInstanceTemplate;
 import compute.CreateRegionalInstanceTemplate;
 import compute.DeleteInstanceTemplate;
 import compute.DeleteRegionalInstanceTemplate;
+import compute.Util;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -112,6 +113,8 @@ public class ReservationIT {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     final PrintStream out = System.out;
     System.setOut(new PrintStream(stdOut));
+
+    Util.cleanUpExistingReservations("test-reservation", PROJECT_ID, ZONE);
 
     // Delete instance template with GLOBAL location.
     DeleteInstanceTemplate.deleteInstanceTemplate(PROJECT_ID, GLOBAL_INSTANCE_TEMPLATE_NAME);

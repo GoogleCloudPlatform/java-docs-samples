@@ -42,7 +42,7 @@ import org.junit.runners.JUnit4;
 import org.mockito.MockedStatic;
 
 @RunWith(JUnit4.class)
-@Timeout(value = 3, unit = TimeUnit.MINUTES)
+@Timeout(value = 5)
 public class DiskReplicationIT {
 
   private static final String PROJECT_ID = "project-id";
