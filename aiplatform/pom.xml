@@ -8,6 +8,18 @@
   <packaging>jar</packaging>
   <name>Google Cloud Vertex AI Snippets</name>
   <url>https://github.com/GoogleCloudPlatform/java-docs-samples/tree/main/aiplatform</url>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>15</source>
+          <target>15</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
   <!--
     The parent pom defines common style checks and testing strategies for our samples.
@@ -70,6 +82,10 @@
     </dependency>
     <dependency>
       <groupId>com.google.api.grpc</groupId>
+      <artifactId>grpc-google-cloud-aiplatform-v1</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.api.grpc</groupId>
       <artifactId>proto-google-cloud-aiplatform-v1beta1</artifactId>
     </dependency>
     <dependency>
@@ -87,6 +103,11 @@
       <groupId>io.github.resilience4j</groupId>
       <artifactId>resilience4j-retry</artifactId>
       <version>1.7.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-testing</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
