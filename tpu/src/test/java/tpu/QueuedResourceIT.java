@@ -59,8 +59,7 @@ public class QueuedResourceIT {
       TpuClient mockTpuClient = mock(TpuClient.class);
       OperationFuture mockFuture = mock(OperationFuture.class);
 
-      mockedTpuClient.when(() -> TpuClient.create(any(TpuSettings.class)))
-              .thenReturn(mockTpuClient);
+      mockedTpuClient.when(TpuClient::create).thenReturn(mockTpuClient);
       when(mockTpuClient.createQueuedResourceAsync(any(CreateQueuedResourceRequest.class)))
               .thenReturn(mockFuture);
       when(mockFuture.get(anyLong(), any(TimeUnit.class))).thenReturn(mockQueuedResource);
@@ -147,8 +146,7 @@ public class QueuedResourceIT {
       TpuClient mockTpuClient = mock(TpuClient.class);
       OperationFuture mockFuture = mock(OperationFuture.class);
 
-      mockedTpuClient.when(() -> TpuClient.create(any(TpuSettings.class)))
-              .thenReturn(mockTpuClient);
+      mockedTpuClient.when(TpuClient::create).thenReturn(mockTpuClient);
       when(mockTpuClient.deleteQueuedResourceAsync(any(DeleteQueuedResourceRequest.class)))
               .thenReturn(mockFuture);
       when(mockFuture.get()).thenReturn(null);

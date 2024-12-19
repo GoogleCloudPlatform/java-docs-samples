@@ -17,17 +17,14 @@
 package tpu;
 
 //[START tpu_queued_resources_create]
-import com.google.api.gax.retrying.RetrySettings;
 import com.google.cloud.tpu.v2alpha1.CreateQueuedResourceRequest;
 import com.google.cloud.tpu.v2alpha1.Node;
 import com.google.cloud.tpu.v2alpha1.QueuedResource;
 import com.google.cloud.tpu.v2alpha1.TpuClient;
-import com.google.cloud.tpu.v2alpha1.TpuSettings;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import org.threeten.bp.Duration;
 
 public class CreateQueuedResource {
   public static void main(String[] args)
@@ -59,26 +56,11 @@ public class CreateQueuedResource {
   public static QueuedResource createQueuedResource(String projectId, String zone,
       String queuedResourceId, String nodeName, String tpuType, String tpuSoftwareVersion)
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    // With these settings the client library handles the Operation's polling mechanism
-    // and prevent CancellationException error
-    TpuSettings.Builder clientSettings =
-        TpuSettings.newBuilder();
-    clientSettings
-        .createQueuedResourceSettings()
-        .setRetrySettings(
-            RetrySettings.newBuilder()
-                .setInitialRetryDelay(Duration.ofMillis(5000L))
-                .setRetryDelayMultiplier(2.0)
-                .setInitialRpcTimeout(Duration.ZERO)
-                .setRpcTimeoutMultiplier(1.0)
-                .setMaxRetryDelay(Duration.ofMillis(45000L))
-                .setTotalTimeout(Duration.ofHours(24L))
-                .build());
     String resource = String.format("projects/%s/locations/%s/queuedResources/%s",
             projectId, zone, queuedResourceId);
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
-    try (TpuClient tpuClient = TpuClient.create(clientSettings.build())) {
+    try (TpuClient tpuClient = TpuClient.create()) {
       String parent = String.format("projects/%s/locations/%s", projectId, zone);
       Node node =
           Node.newBuilder()
@@ -100,9 +82,6 @@ public class CreateQueuedResource {
                               .setNodeId(nodeName)
                               .build())
                       .build())
-              // You can request a queued resource using a reservation by specifying it in code
-              //.setReservationName(
-              // "projects/YOUR_PROJECT_ID/locations/YOUR_ZONE/reservations/YOUR_RESERVATION_NAME")
               .build();
 
       CreateQueuedResourceRequest request =

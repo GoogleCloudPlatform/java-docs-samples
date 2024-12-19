@@ -17,13 +17,10 @@
 package tpu;
 
 //[START tpu_queued_resources_delete]
-import com.google.api.gax.retrying.RetrySettings;
 import com.google.cloud.tpu.v2alpha1.DeleteQueuedResourceRequest;
 import com.google.cloud.tpu.v2alpha1.TpuClient;
-import com.google.cloud.tpu.v2alpha1.TpuSettings;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
-import org.threeten.bp.Duration;
 
 public class DeleteQueuedResource {
   public static void main(String[] args)
@@ -44,24 +41,9 @@ public class DeleteQueuedResource {
       throws ExecutionException, InterruptedException, IOException {
     String name = String.format("projects/%s/locations/%s/queuedResources/%s",
         projectId, zone, queuedResourceId);
-    // With these settings the client library handles the Operation's polling mechanism
-    // and prevent CancellationException error
-    TpuSettings.Builder clientSettings =
-        TpuSettings.newBuilder();
-    clientSettings
-        .deleteQueuedResourceSettings()
-        .setRetrySettings(
-            RetrySettings.newBuilder()
-                .setInitialRetryDelay(Duration.ofMillis(5000L))
-                .setRetryDelayMultiplier(2.0)
-                .setInitialRpcTimeout(Duration.ZERO)
-                .setRpcTimeoutMultiplier(1.0)
-                .setMaxRetryDelay(Duration.ofMillis(45000L))
-                .setTotalTimeout(Duration.ofHours(24L))
-                .build());
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
-    try (TpuClient tpuClient = TpuClient.create(clientSettings.build())) {
+    try (TpuClient tpuClient = TpuClient.create()) {
       // Before deleting the queued resource it is required to delete the TPU VM.
       // For more information about deleting TPU
       // see https://cloud.google.com/tpu/docs/managing-tpus-tpu-vm
@@ -69,11 +51,7 @@ public class DeleteQueuedResource {
       DeleteQueuedResourceRequest request =
               DeleteQueuedResourceRequest.newBuilder().setName(name).build();
 
-      // Waiting for updates in the library. Until then, the operation will complete successfully,
-      // but the user will receive an error message with UnknownException and IllegalStateException.
       tpuClient.deleteQueuedResourceAsync(request).get();
-
-      System.out.printf("Deleted Queued Resource: %s\n", name);
     }
   }
 }
