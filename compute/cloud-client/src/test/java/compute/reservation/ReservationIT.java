@@ -28,6 +28,7 @@ import com.google.api.gax.longrunning.OperationFuture;
 import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.compute.v1.AllocationSpecificSKUReservation;
 import com.google.cloud.compute.v1.Operation;
+import com.google.cloud.compute.v1.Operation.Status;
 import com.google.cloud.compute.v1.Reservation;
 import com.google.cloud.compute.v1.ReservationsClient;
 import com.google.cloud.compute.v1.ShareSettings;
@@ -217,7 +218,7 @@ public class ReservationIT {
     Operation mockOperation = mock(Operation.class);
     when(mockFuture.get(3, TimeUnit.MINUTES)).thenReturn(mockOperation);
     when(mockOperation.hasError()).thenReturn(false);
-    when(mockOperation.getStatus()).thenReturn(Operation.Status.DONE);
+    when(mockOperation.getStatus()).thenReturn(Status.DONE);
 
     // Create an instance, passing in the mock client
     CreateSharedReservation creator = new CreateSharedReservation(mockReservationsClient);
