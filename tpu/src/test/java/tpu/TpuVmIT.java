@@ -214,7 +214,12 @@ public class TpuVmIT {
   @Test
   public void testCreateTpuVmWithStartupScript() throws Exception {
     try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
-      Node mockNode = mock(Node.class);
+      Node mockNode = Node.newBuilder()
+              .setName("nodeName")
+              .setAcceleratorType("acceleratorType")
+              .setRuntimeVersion("runtimeVersion")
+              .build();
+
       TpuClient mockTpuClient = mock(TpuClient.class);
       OperationFuture mockFuture = mock(OperationFuture.class);
 
@@ -230,7 +235,9 @@ public class TpuVmIT {
       verify(mockTpuClient, times(1))
               .createNodeAsync(any(CreateNodeRequest.class));
       verify(mockFuture, times(1)).get();
-      assertEquals(returnedNode, mockNode);
+      assertEquals(returnedNode.getName(), mockNode.getName());
+      assertEquals(returnedNode.getAcceleratorType(), mockNode.getAcceleratorType());
+      assertEquals(returnedNode.getRuntimeVersion(), mockNode.getRuntimeVersion());
     }
   }
 }
