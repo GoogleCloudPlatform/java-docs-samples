@@ -97,8 +97,6 @@ public class CreateSpotQueuedResource {
               .setQueuedResource(queuedResource)
               .build();
 
-      // You can wait until TPU Node is READY,
-      // and check its status using getTpuVm() from "tpu_vm_get" sample.
       return tpuClient.createQueuedResourceAsync(request).get();
     }
   }

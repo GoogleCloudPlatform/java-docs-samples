@@ -140,7 +140,9 @@ public class QueuedResourceIT {
   @Test
   public void testCreateSpotQueuedResource() throws Exception {
     try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
-      QueuedResource mockQueuedResource = mock(QueuedResource.class);
+      QueuedResource mockQueuedResource =  QueuedResource.newBuilder()
+              .setName("QueuedResourceName")
+              .build();
       TpuClient mockTpuClient = mock(TpuClient.class);
       OperationFuture mockFuture = mock(OperationFuture.class);
 
@@ -157,7 +159,7 @@ public class QueuedResourceIT {
       verify(mockTpuClient, times(1))
           .createQueuedResourceAsync(any(CreateQueuedResourceRequest.class));
       verify(mockFuture, times(1)).get();
-      assertEquals(returnedQueuedResource, mockQueuedResource);
+      assertEquals(returnedQueuedResource.getName(), mockQueuedResource.getName());
     }
   }
 }
