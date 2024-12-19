@@ -33,7 +33,6 @@ import com.google.cloud.bigtable.examples.proxy.metrics.MetricsImpl;
 import com.google.cloud.opentelemetry.metric.GoogleCloudMetricExporter;
 import com.google.cloud.opentelemetry.metric.MetricConfiguration;
 import com.google.common.collect.ImmutableList;
-import com.google.common.net.PercentEscaper;
 import com.google.protobuf.ByteString;
 import io.grpc.CallCredentials;
 import io.grpc.CallOptions;
@@ -49,18 +48,13 @@ import io.grpc.Metadata.Key;
 import io.grpc.MethodDescriptor;
 import io.grpc.StatusRuntimeException;
 import io.grpc.auth.MoreCallCredentials;
-import io.opentelemetry.api.common.Attributes;
 import io.opentelemetry.contrib.gcp.resource.GCPResourceProvider;
 import io.opentelemetry.sdk.common.CompletableResultCode;
 import io.opentelemetry.sdk.metrics.data.MetricData;
 import io.opentelemetry.sdk.metrics.export.MetricExporter;
-import io.opentelemetry.sdk.metrics.internal.data.ImmutableGaugeData;
-import io.opentelemetry.sdk.metrics.internal.data.ImmutableLongPointData;
-import io.opentelemetry.sdk.metrics.internal.data.ImmutableMetricData;
 import io.opentelemetry.sdk.resources.Resource;
-import java.io.IOException;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
@@ -123,10 +117,12 @@ public class Verify implements Callable<Void> {
 
     try {
       Metadata md = new Metadata();
-      PercentEscaper escaper = new PercentEscaper("", true);
+
       md.put(
           Key.of("x-goog-request-params", Metadata.ASCII_STRING_MARSHALLER),
-          String.format("table_name=%s&app_profile_id=%s", escaper.escape(tableName), ""));
+          String.format(
+              "table_name=%s&app_profile_id=%s",
+              URLEncoder.encode(tableName, StandardCharsets.UTF_8), ""));
 
       BigtableBlockingStub stub =
           BigtableGrpc.newBlockingStub(channel)
@@ -185,44 +181,29 @@ public class Verify implements Callable<Void> {
     }
   }
 
-  void checkMetrics(Credentials creds) throws IOException {
-    Instant now = Instant.now().truncatedTo(ChronoUnit.MINUTES);
-    Instant end = Instant.now().truncatedTo(ChronoUnit.MINUTES);
+  void checkMetrics(Credentials creds) {
+    MetricConfiguration config =
+        MetricConfiguration.builder()
+            .setCredentials(creds)
+            .setProjectId(metricsProjectId)
+            .setInstrumentationLibraryLabelsEnabled(false)
+            .build();
 
     GCPResourceProvider resourceProvider = new GCPResourceProvider();
     Resource resource = Resource.create(resourceProvider.getAttributes());
-
-    MetricExporter exporter =
-        GoogleCloudMetricExporter.createWithConfiguration(
-            MetricConfiguration.builder()
-                .setCredentials(creds)
-                .setProjectId(metricsProjectId)
-                .setInstrumentationLibraryLabelsEnabled(false)
-                .build());
-
     ImmutableList<MetricData> metricData =
-        ImmutableList.of(
-            ImmutableMetricData.createLongGauge(
-                resource,
-                MetricsImpl.INSTRUMENTATION_SCOPE_INFO,
-                MetricsImpl.METRIC_PRESENCE_NAME,
-                MetricsImpl.METRIC_PRESENCE_DESC,
-                MetricsImpl.METRIC_PRESENCE_UNIT,
-                ImmutableGaugeData.create(
-                    ImmutableList.of(
-                        ImmutableLongPointData.create(
-                            TimeUnit.MILLISECONDS.toNanos(now.toEpochMilli()),
-                            TimeUnit.MILLISECONDS.toNanos(end.toEpochMilli()),
-                            Attributes.empty(),
-                            1L)))));
-    CompletableResultCode result = exporter.export(metricData);
-    result.join(1, TimeUnit.MINUTES);
+        ImmutableList.of(MetricsImpl.generateTestPresenceMeasurement(resource));
 
-    System.out.println("Metrics resource: " + resource);
-    if (result.isSuccess()) {
-      System.out.println("Metrics write: OK");
-    } else {
-      System.out.println("Metrics write: FAILED: " + result.getFailureThrowable().getMessage());
+    try (MetricExporter exporter = GoogleCloudMetricExporter.createWithConfiguration(config)) {
+      CompletableResultCode result = exporter.export(metricData);
+      result.join(1, TimeUnit.MINUTES);
+
+      System.out.println("Metrics resource: " + resource);
+      if (result.isSuccess()) {
+        System.out.println("Metrics write: OK");
+      } else {
+        System.out.println("Metrics write: FAILED: " + result.getFailureThrowable().getMessage());
+      }
     }
   }
 

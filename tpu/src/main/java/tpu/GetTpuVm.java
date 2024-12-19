@@ -27,7 +27,7 @@ public class GetTpuVm {
 
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
-    // Project ID or project number of the Google Cloud project you want to create a node.
+    // Project ID or project number of the Google Cloud project you want to use.
     String projectId = "YOUR_PROJECT_ID";
     // The zone in which to create the TPU.
     // For more information about supported TPU types for specific zones,

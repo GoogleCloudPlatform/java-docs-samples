@@ -31,6 +31,7 @@ import com.google.cloud.compute.v1.Instance;
 import com.google.cloud.compute.v1.InstancesClient;
 import com.google.cloud.compute.v1.NetworkInterface;
 import com.google.cloud.compute.v1.Operation;
+import com.google.cloud.compute.v1.Operation.Status;
 import com.google.cloud.compute.v1.Snapshot;
 import com.google.cloud.compute.v1.SnapshotsClient;
 import compute.DeleteInstance;
@@ -69,11 +70,12 @@ public class DisksIT {
   private static String EMPTY_DISK_NAME;
   private static String SNAPSHOT_NAME;
   private static String DISK_TYPE;
-
   private static String ZONAL_BLANK_DISK;
-
   private static String REGIONAL_BLANK_DISK;
-
+  private static String REGIONAL_REPLICATED_DISK;
+  private static final List<String> replicaZones = Arrays.asList(
+          String.format("projects/%s/zones/%s-a", PROJECT_ID, REGION),
+          String.format("projects/%s/zones/%s-b", PROJECT_ID, REGION));
   private ByteArrayOutputStream stdOut;
 
   // Check if the required environment variables are set.
@@ -101,12 +103,13 @@ public class DisksIT {
     DISK_TYPE = String.format("zones/%s/diskTypes/pd-ssd", ZONE);
     ZONAL_BLANK_DISK = "gcloud-test-disk-zattach-" + uuid;
     REGIONAL_BLANK_DISK = "gcloud-test-disk-rattach-" + uuid;
+    REGIONAL_REPLICATED_DISK = "gcloud-test-disk-replicated-" + uuid;
 
     // Cleanup existing stale instances.
     Util.cleanUpExistingInstances("test-disks", PROJECT_ID, ZONE);
     Util.cleanUpExistingDisks("gcloud-test-", PROJECT_ID, ZONE);
     Util.cleanUpExistingSnapshots("gcloud-test-snapshot-", PROJECT_ID);
-
+    Util.cleanUpExistingRegionalDisks("gcloud-test-disk-", PROJECT_ID, REGION);
     // Create disk from image.
     Image debianImage = null;
     try (ImagesClient imagesClient = ImagesClient.create()) {
@@ -170,6 +173,7 @@ public class DisksIT {
     DeleteDisk.deleteDisk(PROJECT_ID, ZONE, EMPTY_DISK_NAME);
     DeleteDisk.deleteDisk(PROJECT_ID, ZONE, ZONAL_BLANK_DISK);
     RegionalDelete.deleteRegionalDisk(PROJECT_ID, REGION, REGIONAL_BLANK_DISK);
+    RegionalDelete.deleteRegionalDisk(PROJECT_ID, REGION, REGIONAL_REPLICATED_DISK);
 
     stdOut.close();
     System.setOut(out);
@@ -245,9 +249,7 @@ public class DisksIT {
   public static void createRegionalDisk()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     String diskType = String.format("regions/%s/diskTypes/pd-balanced", REGION);
-    List<String> replicaZones = Arrays.asList(
-        String.format("projects/%s/zones/%s-a", PROJECT_ID, REGION),
-        String.format("projects/%s/zones/%s-b", PROJECT_ID, REGION));
+
     RegionalCreateFromSource.createRegionalDisk(PROJECT_ID, REGION, replicaZones,
         REGIONAL_BLANK_DISK, diskType, 11, Optional.empty(), Optional.empty());
   }
@@ -301,4 +303,12 @@ public class DisksIT {
         Util.getRegionalDisk(PROJECT_ID, REGION, REGIONAL_BLANK_DISK).getSizeGb());
   }
 
+  @Test
+  public void testCreateReplicatedDisk()
+          throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    Status status = CreateReplicatedDisk.createReplicatedDisk(PROJECT_ID, REGION,
+            replicaZones, REGIONAL_REPLICATED_DISK, 100, DISK_TYPE);
+
+    assertThat(status).isEqualTo(Status.DONE);
+  }
 }
