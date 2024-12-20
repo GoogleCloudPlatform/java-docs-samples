@@ -143,11 +143,11 @@ public class QueuedResourceIT {
       QueuedResource mockQueuedResource =  QueuedResource.newBuilder()
               .setName("QueuedResourceName")
               .build();
-      TpuClient mockTpuClient = mock(TpuClient.class);
+      TpuClient mockedClientInstance = mock(TpuClient.class);
       OperationFuture mockFuture = mock(OperationFuture.class);
 
-      mockedTpuClient.when(TpuClient::create).thenReturn(mockTpuClient);
-      when(mockTpuClient.createQueuedResourceAsync(any(CreateQueuedResourceRequest.class)))
+      mockedTpuClient.when(TpuClient::create).thenReturn(mockedClientInstance);
+      when(mockedClientInstance.createQueuedResourceAsync(any(CreateQueuedResourceRequest.class)))
           .thenReturn(mockFuture);
       when(mockFuture.get()).thenReturn(mockQueuedResource);
 
@@ -156,7 +156,7 @@ public class QueuedResourceIT {
               PROJECT_ID, ZONE, QUEUED_RESOURCE_NAME, NODE_NAME,
               TPU_TYPE, TPU_SOFTWARE_VERSION);
 
-      verify(mockTpuClient, times(1))
+      verify(mockedClientInstance, times(1))
           .createQueuedResourceAsync(any(CreateQueuedResourceRequest.class));
       verify(mockFuture, times(1)).get();
       assertEquals(returnedQueuedResource.getName(), mockQueuedResource.getName());

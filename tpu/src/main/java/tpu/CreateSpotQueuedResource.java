@@ -60,6 +60,8 @@ public class CreateSpotQueuedResource {
     // once, and can be reused for multiple requests.
     try (TpuClient tpuClient = TpuClient.create()) {
       String parent = String.format("projects/%s/locations/%s", projectId, zone);
+      String resourceName = String.format("projects/%s/locations/%s/queuedResources/%s",
+              projectId, zone, queuedResourceId);
       SchedulingConfig schedulingConfig = SchedulingConfig.newBuilder()
           .setPreemptible(true)
           .build();
@@ -70,10 +72,7 @@ public class CreateSpotQueuedResource {
               .setAcceleratorType(tpuType)
               .setRuntimeVersion(tpuSoftwareVersion)
               .setSchedulingConfig(schedulingConfig)
-              .setQueuedResource(
-                  String.format(
-                      "projects/%s/locations/%s/queuedResources/%s",
-                      projectId, zone, queuedResourceId))
+              .setQueuedResource(resourceName)
               .build();
 
       QueuedResource queuedResource =
