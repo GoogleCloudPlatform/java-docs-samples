@@ -51,7 +51,7 @@ public class AddMember {
             .addAllBindings(newBindingsList)
             .build();
 
-    System.out.println("Added member: " + updatedPolicy.getBindingsList());
+    System.out.println("Added principal: " + updatedPolicy.getBindingsList());
 
     return updatedPolicy;
   }
