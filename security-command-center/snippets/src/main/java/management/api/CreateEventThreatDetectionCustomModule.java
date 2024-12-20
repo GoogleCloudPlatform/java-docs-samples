@@ -25,7 +25,9 @@ import com.google.protobuf.ListValue;
 import com.google.protobuf.Struct;
 import com.google.protobuf.Value;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class CreateEventThreatDetectionCustomModule {
@@ -57,20 +59,17 @@ public class CreateEventThreatDetectionCustomModule {
       metadata.put(
           "recommendation",
           Value.newBuilder().setStringValue("add your recommendation here").build());
-      Struct metadataStruct = Struct.newBuilder().putAllFields(metadata).build();
+      List<Value> ips = Arrays.asList(Value.newBuilder().setStringValue("0.0.0.0").build());
+      
+      Value metadataVal =
+          Value.newBuilder()
+              .setStructValue(Struct.newBuilder().putAllFields(metadata).build())
+              .build();
+      Value ipsValue =
+          Value.newBuilder().setListValue(ListValue.newBuilder().addAllValues(ips).build()).build();
 
       Struct configStruct =
-          Struct.newBuilder()
-              .putFields("metadata", Value.newBuilder().setStructValue(metadataStruct).build())
-              .putFields(
-                  "ips",
-                  Value.newBuilder()
-                      .setListValue(
-                          ListValue.newBuilder()
-                              .addValues(Value.newBuilder().setStringValue("0.0.0.0").build())
-                              .build())
-                      .build())
-              .build();
+          Struct.newBuilder().putFields("metadata", metadataVal).putFields("ips", ipsValue).build();
 
       // define the Event Threat Detection custom module configuration, update the EnablementState
       // below
