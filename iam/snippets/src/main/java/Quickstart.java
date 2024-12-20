@@ -74,7 +74,7 @@ public class Quickstart {
       }
 
       System.out.println("Role: " + binding.getRole());
-      System.out.print("Members: ");
+      System.out.print("Principals: ");
 
       for (String m : binding.getMembersList()) {
         System.out.print("[" + m + "] ");
