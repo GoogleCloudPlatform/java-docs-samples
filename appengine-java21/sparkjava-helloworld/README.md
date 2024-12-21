@@ -1,21 +1,20 @@
-HelloWorld for App Engine Standard (Java 21)
-============================
+App Engine SparkJava with java21
+===
 
-This sample demonstrates how to deploy an application on Google App Engine.
+## Sample written in SparkJava for use with App Engine java21 Standard.
 
 See the [Google App Engine standard environment documentation][ae-docs] for more
 detailed instructions.
 
 [ae-docs]: https://cloud.google.com/appengine/docs/java/
 
-
-* [Java 21](https://www.oracle.com/java/technologies/downloads/)
+* [Java 21](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
 * [Maven](https://maven.apache.org/download.cgi) (at least 3.5)
-* [Google Cloud CLI](https://cloud.google.com/sdk/) (aka gcloud)
+* [Google Cloud CLI](https://cloud.google.com/sdk/) (aka gcloud command line tool)
 
 ## Setup
 
-• Download and initialize the [Cloud CLI](https://cloud.google.com/sdk/)
+* Download and initialize the [Cloud CLI](https://cloud.google.com/sdk/)
 
 ```
 gcloud init
@@ -34,7 +33,7 @@ with your Google Cloud Project Id:
 <plugin>
   <groupId>com.google.cloud.tools</groupId>
   <artifactId>appengine-maven-plugin</artifactId>
-  <version>2.8.0</version>
+  <version>2.2.0</version>
   <configuration>
     <projectId>myProjectId</projectId>
     <version>GCLOUD_CONFIG</version>
@@ -47,19 +46,19 @@ version. Change this field to specify a specific version name.
 ## Maven
 ### Running locally
 
-    mvn package appengine:run
+`mvn package appengine:run`
 
-To use visit: http://localhost:8080/
+To use vist: http://localhost:8080/
 
 ### Deploying
 
-    mvn package appengine:deploy
+`mvn package appengine:deploy`
 
-To use visit:  https://YOUR-PROJECT-ID.appspot.com
+To use vist:  https://YOUR-PROJECT-ID.appspot.com
 
-### Testing
+## Testing
 
-    mvn verify
+`mvn verify`
 
 As you add / modify the source code (`src/main/java/...`) it's very useful to add [unit testing](https://cloud.google.com/appengine/docs/java/tools/localunittesting)
 to (`src/main/test/...`).  The following resources are quite useful:
@@ -68,14 +67,6 @@ to (`src/main/test/...`).  The following resources are quite useful:
 * [Mockito](http://mockito.org/)
 * [Truth](http://google.github.io/truth/)
 
-## Gradle
 
-### Running locally
-
-    ./gradlew appengineRun
-
-To use vist: http://localhost:8080/
-
-### Deploying
-
-    ./gradlew appengineDeploy
+For further information, consult the
+[Java App Engine](https://developers.google.com/appengine/docs/java/overview) documentation.
