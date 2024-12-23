@@ -36,6 +36,8 @@ import com.google.cloud.compute.v1.Snapshot;
 import com.google.cloud.compute.v1.SnapshotsClient;
 import compute.DeleteInstance;
 import compute.Util;
+import compute.snapshotschedule.CreateSnapshotSchedule;
+import compute.snapshotschedule.DeleteSnapshotSchedule;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -76,6 +78,8 @@ public class DisksIT {
   private static final List<String> replicaZones = Arrays.asList(
           String.format("projects/%s/zones/%s-a", PROJECT_ID, REGION),
           String.format("projects/%s/zones/%s-b", PROJECT_ID, REGION));
+  private static String DISK_WITH_SNAPSHOT_SCHEDULE;
+  private static String SNAPSHOT_SCHEDULE;
   private ByteArrayOutputStream stdOut;
 
   // Check if the required environment variables are set.
@@ -104,12 +108,16 @@ public class DisksIT {
     ZONAL_BLANK_DISK = "gcloud-test-disk-zattach-" + uuid;
     REGIONAL_BLANK_DISK = "gcloud-test-disk-rattach-" + uuid;
     REGIONAL_REPLICATED_DISK = "gcloud-test-disk-replicated-" + uuid;
+    DISK_WITH_SNAPSHOT_SCHEDULE = "gcloud-test-disk-shapshot-" + uuid;
+    SNAPSHOT_SCHEDULE = "gcloud-test-snapshot-schedule-" + uuid;
 
     // Cleanup existing stale instances.
     Util.cleanUpExistingInstances("test-disks", PROJECT_ID, ZONE);
     Util.cleanUpExistingDisks("gcloud-test-", PROJECT_ID, ZONE);
     Util.cleanUpExistingSnapshots("gcloud-test-snapshot-", PROJECT_ID);
     Util.cleanUpExistingRegionalDisks("gcloud-test-disk-", PROJECT_ID, REGION);
+    Util.cleanUpExistingSnapshotSchedule("gcloud-test-snapshot-schedule-", PROJECT_ID, REGION);
+
     // Create disk from image.
     Image debianImage = null;
     try (ImagesClient imagesClient = ImagesClient.create()) {
@@ -140,7 +148,8 @@ public class DisksIT {
     TimeUnit.SECONDS.sleep(10);
     SetDiskAutodelete.setDiskAutodelete(PROJECT_ID, ZONE, INSTANCE_NAME, DISK_NAME, true);
     assertThat(stdOut.toString()).contains("Disk autodelete field updated.");
-
+    CreateSnapshotSchedule.createSnapshotSchedule(PROJECT_ID, REGION, SNAPSHOT_SCHEDULE,
+            "description", 10, "US", "KEEP_AUTO_SNAPSHOTS");
     // Create zonal and regional blank disks for testing attach and resize.
     createZonalDisk();
     createRegionalDisk();
@@ -174,6 +183,8 @@ public class DisksIT {
     DeleteDisk.deleteDisk(PROJECT_ID, ZONE, ZONAL_BLANK_DISK);
     RegionalDelete.deleteRegionalDisk(PROJECT_ID, REGION, REGIONAL_BLANK_DISK);
     RegionalDelete.deleteRegionalDisk(PROJECT_ID, REGION, REGIONAL_REPLICATED_DISK);
+    DeleteDisk.deleteDisk(PROJECT_ID, ZONE, DISK_WITH_SNAPSHOT_SCHEDULE);
+    DeleteSnapshotSchedule.deleteSnapshotSchedule(PROJECT_ID, REGION, SNAPSHOT_SCHEDULE);
 
     stdOut.close();
     System.setOut(out);
@@ -310,5 +321,15 @@ public class DisksIT {
             replicaZones, REGIONAL_REPLICATED_DISK, 100, DISK_TYPE);
 
     assertThat(status).isEqualTo(Status.DONE);
+  }
+
+  @Test
+  void testCreateDiskWithSnapshotSchedule()
+          throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    Status status = CreateDiskWithSnapshotSchedule.createDiskWithSnapshotSchedule(
+            PROJECT_ID, ZONE, DISK_WITH_SNAPSHOT_SCHEDULE, SNAPSHOT_SCHEDULE);
+
+    Assert.assertNotNull(Util.getDisk(PROJECT_ID, ZONE, DISK_WITH_SNAPSHOT_SCHEDULE));
+    assertThat(status).isEqualTo(Operation.Status.DONE);
   }
 }
