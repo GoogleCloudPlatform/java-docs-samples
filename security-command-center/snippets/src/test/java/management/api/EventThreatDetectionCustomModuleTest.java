@@ -22,8 +22,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import com.google.cloud.securitycentermanagement.v1.EffectiveEventThreatDetectionCustomModule;
-import com.google.cloud.securitycentermanagement.v1.EventThreatDetectionCustomModule.EnablementState;
 import com.google.cloud.securitycentermanagement.v1.EventThreatDetectionCustomModule;
+import com.google.cloud.securitycentermanagement.v1.EventThreatDetectionCustomModule.EnablementState;
 import com.google.cloud.securitycentermanagement.v1.ListEventThreatDetectionCustomModulesRequest;
 import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient;
 import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient.ListDescendantEventThreatDetectionCustomModulesPagedResponse;
