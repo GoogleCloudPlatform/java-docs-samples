@@ -16,6 +16,7 @@
 
 package tpu;
 
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.any;
@@ -29,10 +30,15 @@ import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.tpu.v2alpha1.CreateQueuedResourceRequest;
 import com.google.cloud.tpu.v2alpha1.DeleteQueuedResourceRequest;
 import com.google.cloud.tpu.v2alpha1.GetQueuedResourceRequest;
+import com.google.cloud.tpu.v2alpha1.ListQueuedResourcesRequest;
 import com.google.cloud.tpu.v2alpha1.QueuedResource;
 import com.google.cloud.tpu.v2alpha1.TpuClient;
+import com.google.cloud.tpu.v2alpha1.TpuClient.ListQueuedResourcesPage;
+import com.google.cloud.tpu.v2alpha1.TpuClient.ListQueuedResourcesPagedResponse;
 import com.google.cloud.tpu.v2alpha1.TpuSettings;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
@@ -117,6 +123,33 @@ public class QueuedResourceIT {
       verify(mockClient, times(1))
           .getQueuedResource(any(GetQueuedResourceRequest.class));
       assertEquals(returnedQueuedResource, mockQueuedResource);
+    }
+  }
+
+  @Test
+  public void testListTpuVm() throws IOException {
+    try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
+      QueuedResource queuedResource1 = mock(QueuedResource.class);
+      QueuedResource queuedResource2 = mock(QueuedResource.class);
+      List<QueuedResource> mockListQueuedResources =
+          Arrays.asList(queuedResource1, queuedResource2);
+
+      TpuClient mockClient = mock(TpuClient.class);
+      mockedTpuClient.when(TpuClient::create).thenReturn(mockClient);
+      ListQueuedResourcesPagedResponse mockListQueuedResourcesResponse =
+          mock(ListQueuedResourcesPagedResponse.class);
+      when(mockClient.listQueuedResources(any(ListQueuedResourcesRequest.class)))
+          .thenReturn(mockListQueuedResourcesResponse);
+      ListQueuedResourcesPage mockQueuedResourcesPage =
+          mock(ListQueuedResourcesPage.class);
+      when(mockListQueuedResourcesResponse.getPage()).thenReturn(mockQueuedResourcesPage);
+      when(mockQueuedResourcesPage.getValues()).thenReturn(mockListQueuedResources);
+
+      ListQueuedResourcesPage returnedList =
+          ListQueuedResources.listQueuedResources(PROJECT_ID, ZONE);
+
+      assertThat(returnedList.getValues()).isEqualTo(mockListQueuedResources);
+      verify(mockClient, times(1)).listQueuedResources(any(ListQueuedResourcesRequest.class));
     }
   }
 
