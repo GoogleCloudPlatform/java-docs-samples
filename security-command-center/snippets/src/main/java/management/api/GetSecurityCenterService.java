@@ -26,12 +26,12 @@ public class GetSecurityCenterService {
 
   public static void main(String[] args) throws IOException {
     // https://cloud.google.com/security-command-center/docs/reference/security-center-management/rest/v1/organizations.locations.securityCenterServices/get
-    // TODO: Developer should replace project_id with a real project ID before running this code
-    String projectId = "project_id";
+    // TODO: Replace <project-id> with your project ID
+    String projectId = "<project_id>";
     // Replace service with one of the valid values:
     // container-threat-detection, event-threat-detection, security-health-analytics,
     // vm-threat-detection, web-security-scanner
-    String service = "service";
+    String service = "<service>";
 
     getSecurityCenterService(projectId, service);
   }
