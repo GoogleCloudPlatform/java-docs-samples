@@ -16,14 +16,15 @@
 
 package tpu;
 
-//[START tpu_queued_resources_get]
-import com.google.cloud.tpu.v2alpha1.GetQueuedResourceRequest;
-import com.google.cloud.tpu.v2alpha1.QueuedResource;
+//[START tpu_queued_resources_delete]
+import com.google.cloud.tpu.v2alpha1.DeleteQueuedResourceRequest;
 import com.google.cloud.tpu.v2alpha1.TpuClient;
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
-public class GetQueuedResource {
-  public static void main(String[] args) throws IOException {
+public class DeleteQueuedResource {
+  public static void main(String[] args)
+      throws IOException, ExecutionException, InterruptedException {
     // TODO(developer): Replace these variables before running the sample.
     // Project ID or project number of the Google Cloud project.
     String projectId = "YOUR_PROJECT_ID";
@@ -32,22 +33,26 @@ public class GetQueuedResource {
     // The name for your Queued Resource.
     String queuedResourceId = "QUEUED_RESOURCE_ID";
 
-    getQueuedResource(projectId, zone, queuedResourceId);
+    deleteQueuedResource(projectId, zone, queuedResourceId);
   }
 
-  // Get a Queued Resource.
-  public static QueuedResource getQueuedResource(
-      String projectId, String zone, String queuedResourceId) throws IOException {
+  // Deletes a Queued Resource asynchronously.
+  public static void deleteQueuedResource(String projectId, String zone, String queuedResourceId)
+      throws ExecutionException, InterruptedException, IOException {
     String name = String.format("projects/%s/locations/%s/queuedResources/%s",
         projectId, zone, queuedResourceId);
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (TpuClient tpuClient = TpuClient.create()) {
-      GetQueuedResourceRequest request =
-          GetQueuedResourceRequest.newBuilder().setName(name).build();
+      // Before deleting the queued resource it is required to delete the TPU VM.
+      // For more information about deleting TPU
+      // see https://cloud.google.com/tpu/docs/managing-tpus-tpu-vm
 
-      return tpuClient.getQueuedResource(request);
+      DeleteQueuedResourceRequest request =
+              DeleteQueuedResourceRequest.newBuilder().setName(name).build();
+
+      tpuClient.deleteQueuedResourceAsync(request).get();
     }
   }
 }
-//[END tpu_queued_resources_get]
+//[END tpu_queued_resources_delete]
