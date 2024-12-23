@@ -21,10 +21,15 @@ import static com.google.common.truth.Truth.assertWithMessage;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import com.google.cloud.securitycentermanagement.v1.EffectiveEventThreatDetectionCustomModule;
+import com.google.cloud.securitycentermanagement.v1.EventThreatDetectionCustomModule.EnablementState;
 import com.google.cloud.securitycentermanagement.v1.EventThreatDetectionCustomModule;
 import com.google.cloud.securitycentermanagement.v1.ListEventThreatDetectionCustomModulesRequest;
 import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient;
+import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient.ListDescendantEventThreatDetectionCustomModulesPagedResponse;
+import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient.ListEffectiveEventThreatDetectionCustomModulesPagedResponse;
 import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient.ListEventThreatDetectionCustomModulesPagedResponse;
+import com.google.cloud.securitycentermanagement.v1.ValidateEventThreatDetectionCustomModuleResponse;
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import com.google.common.base.Strings;
 import java.io.IOException;
@@ -164,5 +169,68 @@ public class EventThreatDetectionCustomModuleTest {
 
     assertThat(getCustomModuleResponse.getDisplayName()).isEqualTo(CUSTOM_MODULE_DISPLAY_NAME);
     assertThat(extractCustomModuleId(getCustomModuleResponse.getName())).isEqualTo(customModuleId);
+  }
+
+  @Test
+  public void testUpdateEventThreatDetectionCustomModule() throws IOException {
+    EventThreatDetectionCustomModule createCustomModuleResponse =
+        CreateEventThreatDetectionCustomModule.createEventThreatDetectionCustomModule(
+            PROJECT_ID, CUSTOM_MODULE_DISPLAY_NAME);
+    String customModuleId = extractCustomModuleId(createCustomModuleResponse.getName());
+    EventThreatDetectionCustomModule response =
+        UpdateEventThreatDetectionCustomModule.updateEventThreatDetectionCustomModule(
+            PROJECT_ID, customModuleId);
+    assertNotNull(response);
+    assertThat(response.getEnablementState().equals(EnablementState.DISABLED));
+  }
+
+  @Test
+  public void testGetEffectiveEventThreatDetectionCustomModule() throws IOException {
+    EventThreatDetectionCustomModule createCustomModuleResponse =
+        CreateEventThreatDetectionCustomModule.createEventThreatDetectionCustomModule(
+            PROJECT_ID, CUSTOM_MODULE_DISPLAY_NAME);
+    String customModuleId = extractCustomModuleId(createCustomModuleResponse.getName());
+    EffectiveEventThreatDetectionCustomModule getEffectiveCustomModuleResponse =
+        GetEffectiveEventThreatDetectionCustomModule.getEffectiveEventThreatDetectionCustomModule(
+            PROJECT_ID, customModuleId);
+
+    assertThat(getEffectiveCustomModuleResponse.getDisplayName())
+        .isEqualTo(CUSTOM_MODULE_DISPLAY_NAME);
+    assertThat(extractCustomModuleId(getEffectiveCustomModuleResponse.getName()))
+        .isEqualTo(customModuleId);
+  }
+
+  @Test
+  public void testListEffectiveEventThreatDetectionCustomModules() throws IOException {
+    CreateEventThreatDetectionCustomModule.createEventThreatDetectionCustomModule(
+        PROJECT_ID, CUSTOM_MODULE_DISPLAY_NAME);
+    ListEffectiveEventThreatDetectionCustomModulesPagedResponse response =
+        ListEffectiveEventThreatDetectionCustomModules
+            .listEffectiveEventThreatDetectionCustomModules(PROJECT_ID);
+    assertTrue(
+        StreamSupport.stream(response.iterateAll().spliterator(), false)
+            .anyMatch(module -> CUSTOM_MODULE_DISPLAY_NAME.equals(module.getDisplayName())));
+  }
+
+  @Test
+  public void testListDescendantEventThreatDetectionCustomModules() throws IOException {
+    CreateEventThreatDetectionCustomModule.createEventThreatDetectionCustomModule(
+        PROJECT_ID, CUSTOM_MODULE_DISPLAY_NAME);
+    ListDescendantEventThreatDetectionCustomModulesPagedResponse response =
+        ListDescendantEventThreatDetectionCustomModules
+            .listDescendantEventThreatDetectionCustomModules(PROJECT_ID);
+    assertTrue(
+        StreamSupport.stream(response.iterateAll().spliterator(), false)
+            .anyMatch(module -> CUSTOM_MODULE_DISPLAY_NAME.equals(module.getDisplayName())));
+  }
+
+  @Test
+  public void testValidateEventThreatDetectionCustomModule() throws IOException {
+
+    ValidateEventThreatDetectionCustomModuleResponse response =
+        ValidateEventThreatDetectionCustomModule.validateEventThreatDetectionCustomModule(
+            PROJECT_ID);
+    assertNotNull(response);
+    assertThat(response.getErrorsCount()).isEqualTo(0);
   }
 }
