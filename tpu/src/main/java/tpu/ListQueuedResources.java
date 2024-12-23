@@ -18,7 +18,9 @@ package tpu;
 
 //[START tpu_queued_resources_list]
 import com.google.cloud.tpu.v2alpha1.ListQueuedResourcesRequest;
+import com.google.cloud.tpu.v2alpha1.QueuedResource;
 import com.google.cloud.tpu.v2alpha1.TpuClient;
+import com.google.cloud.tpu.v2alpha1.TpuClient.ListQueuedResourcesPage;
 import java.io.IOException;
 
 public class ListQueuedResources {
@@ -33,7 +35,7 @@ public class ListQueuedResources {
   }
 
   // List Queued Resources.
-  public static TpuClient.ListQueuedResourcesPage listQueuedResources(
+  public static ListQueuedResourcesPage listQueuedResources(
       String projectId, String zone) throws IOException {
     String parent = String.format("projects/%s/locations/%s", projectId, zone);
     // Initialize client that will be used to send requests. This client only needs to be created
@@ -41,8 +43,12 @@ public class ListQueuedResources {
     try (TpuClient tpuClient = TpuClient.create()) {
       ListQueuedResourcesRequest request =
           ListQueuedResourcesRequest.newBuilder().setParent(parent).build();
+      ListQueuedResourcesPage response =  tpuClient.listQueuedResources(request).getPage();
 
-      return tpuClient.listQueuedResources(request).getPage();
+      for (QueuedResource queuedResource : response.iterateAll()) {
+        System.out.println(queuedResource.getName());
+      }
+      return response;
     }
   }
 }

@@ -33,6 +33,8 @@ import com.google.cloud.tpu.v2alpha1.GetQueuedResourceRequest;
 import com.google.cloud.tpu.v2alpha1.ListQueuedResourcesRequest;
 import com.google.cloud.tpu.v2alpha1.QueuedResource;
 import com.google.cloud.tpu.v2alpha1.TpuClient;
+import com.google.cloud.tpu.v2alpha1.TpuClient.ListQueuedResourcesPage;
+import com.google.cloud.tpu.v2alpha1.TpuClient.ListQueuedResourcesPagedResponse;
 import com.google.cloud.tpu.v2alpha1.TpuSettings;
 import java.io.IOException;
 import java.util.Arrays;
@@ -134,16 +136,16 @@ public class QueuedResourceIT {
 
       TpuClient mockClient = mock(TpuClient.class);
       mockedTpuClient.when(TpuClient::create).thenReturn(mockClient);
-      TpuClient.ListQueuedResourcesPagedResponse mockListQueuedResourcesResponse =
-          mock(TpuClient.ListQueuedResourcesPagedResponse.class);
+      ListQueuedResourcesPagedResponse mockListQueuedResourcesResponse =
+          mock(ListQueuedResourcesPagedResponse.class);
       when(mockClient.listQueuedResources(any(ListQueuedResourcesRequest.class)))
           .thenReturn(mockListQueuedResourcesResponse);
-      TpuClient.ListQueuedResourcesPage mockQueuedResourcesPage =
-          mock(TpuClient.ListQueuedResourcesPage.class);
+      ListQueuedResourcesPage mockQueuedResourcesPage =
+          mock(ListQueuedResourcesPage.class);
       when(mockListQueuedResourcesResponse.getPage()).thenReturn(mockQueuedResourcesPage);
       when(mockQueuedResourcesPage.getValues()).thenReturn(mockListQueuedResources);
 
-      TpuClient.ListQueuedResourcesPage returnedList =
+      ListQueuedResourcesPage returnedList =
           ListQueuedResources.listQueuedResources(PROJECT_ID, ZONE);
 
       assertThat(returnedList.getValues()).isEqualTo(mockListQueuedResources);
