@@ -28,6 +28,7 @@ import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClie
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import com.google.common.base.Strings;
 import java.io.IOException;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.StreamSupport;
@@ -42,7 +43,8 @@ import org.junit.runners.JUnit4;
 public class EventThreatDetectionCustomModuleTest {
   // TODO(Developer): Replace the below variable
   private static final String PROJECT_ID = System.getenv("SCC_PROJECT_ID");
-  private static final String CUSTOM_MODULE_DISPLAY_NAME = "etd_java_sample_custom_module_test";
+  private static final String CUSTOM_MODULE_DISPLAY_NAME =
+      "java_sample_etd_custom_module_test_" + UUID.randomUUID();
   private static final int MAX_ATTEMPT_COUNT = 3;
   private static final int INITIAL_BACKOFF_MILLIS = 120000; // 2 minutes
 
@@ -82,7 +84,7 @@ public class EventThreatDetectionCustomModuleTest {
       // java_sample_custom_module
       for (EventThreatDetectionCustomModule module : response.iterateAll()) {
         try {
-          if (module.getDisplayName().startsWith("etd_java_sample_custom_module")) {
+          if (module.getDisplayName().startsWith("java_sample_etd_custom_module")) {
             String customModuleId = extractCustomModuleId(module.getName());
             deleteCustomModule(PROJECT_ID, customModuleId);
           }
