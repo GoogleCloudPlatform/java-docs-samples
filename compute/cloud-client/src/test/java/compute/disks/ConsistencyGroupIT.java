@@ -38,6 +38,8 @@ import com.google.cloud.compute.v1.Operation.Status;
 import com.google.cloud.compute.v1.RegionDisksClient;
 import com.google.cloud.compute.v1.RemoveResourcePoliciesRegionDiskRequest;
 import com.google.cloud.compute.v1.ResourcePoliciesClient;
+import com.google.cloud.compute.v1.StopGroupAsyncReplicationDiskRequest;
+import com.google.cloud.compute.v1.StopGroupAsyncReplicationRegionDiskRequest;
 import compute.disks.consistencygroup.AddDiskToConsistencyGroup;
 import compute.disks.consistencygroup.CloneRegionalDisksFromConsistencyGroup;
 import compute.disks.consistencygroup.CloneZonalDisksFromConsistencyGroup;
@@ -46,6 +48,8 @@ import compute.disks.consistencygroup.DeleteConsistencyGroup;
 import compute.disks.consistencygroup.ListRegionalDisksInConsistencyGroup;
 import compute.disks.consistencygroup.ListZonalDisksInConsistencyGroup;
 import compute.disks.consistencygroup.RemoveDiskFromConsistencyGroup;
+import compute.disks.consistencygroup.StopRegionalDiskReplicationConsistencyGroup;
+import compute.disks.consistencygroup.StopZonalDiskReplicationConsistencyGroup;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -58,6 +62,7 @@ import org.mockito.MockedStatic;
 public class ConsistencyGroupIT {
   private static final String PROJECT_ID = "project-id";
   private static final String REGION = "asia-east1";
+  private static final String ZONE = "asia-east1-c";
   private static final String CONSISTENCY_GROUP_NAME = "consistency-group";
   private static final String DISK_NAME = "disk-for-consistency";
 
@@ -195,6 +200,56 @@ public class ConsistencyGroupIT {
       verify(mockClient, times(1))
               .list(any(ListDisksRequest.class));
       verify(mockResponse, times(1)).iterateAll();
+    }
+  }
+
+  @Test
+  public void testStopRegionalDiskReplicationConsistencyGroup() throws Exception {
+    try (MockedStatic<RegionDisksClient> mockedRegionDisksClient =
+                 mockStatic(RegionDisksClient.class)) {
+      Operation operation = mock(Operation.class);
+      RegionDisksClient mockClient = mock(RegionDisksClient.class);
+      OperationFuture mockFuture = mock(OperationFuture.class);
+
+      mockedRegionDisksClient.when(RegionDisksClient::create).thenReturn(mockClient);
+      when(mockClient.stopGroupAsyncReplicationAsync(
+              any(StopGroupAsyncReplicationRegionDiskRequest.class))).thenReturn(mockFuture);
+      when(mockFuture.get(anyLong(), any(TimeUnit.class))).thenReturn(operation);
+      when(operation.getStatus()).thenReturn(Status.DONE);
+
+      Status status = StopRegionalDiskReplicationConsistencyGroup
+              .stopRegionalDiskReplicationConsistencyGroup(
+                      PROJECT_ID, REGION, CONSISTENCY_GROUP_NAME);
+
+      verify(mockClient, times(1)).stopGroupAsyncReplicationAsync(
+              any(StopGroupAsyncReplicationRegionDiskRequest.class));
+      verify(mockFuture, times(1)).get(anyLong(), any(TimeUnit.class));
+      assertEquals(Status.DONE, status);
+    }
+  }
+
+  @Test
+  public void testStopZonalDiskReplicationConsistencyGroup() throws Exception {
+    try (MockedStatic<DisksClient> mockedDisksClient =
+                 mockStatic(DisksClient.class)) {
+      Operation operation = mock(Operation.class);
+      DisksClient mockClient = mock(DisksClient.class);
+      OperationFuture mockFuture = mock(OperationFuture.class);
+
+      mockedDisksClient.when(DisksClient::create).thenReturn(mockClient);
+      when(mockClient.stopGroupAsyncReplicationAsync(
+              any(StopGroupAsyncReplicationDiskRequest.class))).thenReturn(mockFuture);
+      when(mockFuture.get(anyLong(), any(TimeUnit.class))).thenReturn(operation);
+      when(operation.getStatus()).thenReturn(Status.DONE);
+
+      Status status = StopZonalDiskReplicationConsistencyGroup
+              .stopZonalDiskReplicationConsistencyGroup(
+                      PROJECT_ID, ZONE, CONSISTENCY_GROUP_NAME);
+
+      verify(mockClient, times(1)).stopGroupAsyncReplicationAsync(
+              any(StopGroupAsyncReplicationDiskRequest.class));
+      verify(mockFuture, times(1)).get(anyLong(), any(TimeUnit.class));
+      assertEquals(Status.DONE, status);
     }
   }
 
