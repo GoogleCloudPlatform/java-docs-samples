@@ -42,10 +42,10 @@ public class CreateSecret {
       // Build the parent name from the project.
       ProjectName projectName = ProjectName.of(projectId);
 
-// Optionally set a TTL for the secret. This demonstrates how to configure
-// a secret to be automatically deleted after a certain period. The TTL is
-// specified in seconds (e.g., 900 for 15 minutes). This can be useful
-// for managing sensitive data and reducing storage costs.
+      // Optionally set a TTL for the secret. This demonstrates how to configure
+      // a secret to be automatically deleted after a certain period. The TTL is
+      // specified in seconds (e.g., 900 for 15 minutes). This can be useful
+      // for managing sensitive data and reducing storage costs.
       Duration ttl = Duration.newBuilder().setSeconds(900).build();
 
       // Build the secret to create.
