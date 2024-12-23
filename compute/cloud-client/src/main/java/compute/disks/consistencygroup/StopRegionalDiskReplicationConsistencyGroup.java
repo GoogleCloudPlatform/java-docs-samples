@@ -42,7 +42,7 @@ public class StopRegionalDiskReplicationConsistencyGroup {
     stopRegionalDiskReplicationConsistencyGroup(project, region, consistencyGroupName);
   }
 
-  // Stops replication for a consistency group for a project in a given region.
+  // Stops replication of a consistency group for a project in a given region.
   public static Status stopRegionalDiskReplicationConsistencyGroup(
           String project, String region, String consistencyGroupName)
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
