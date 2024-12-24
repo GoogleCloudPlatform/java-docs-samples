@@ -22,9 +22,9 @@
 
     <!-- dep versions -->
     <!-- Overall -->
-    <libraries-bom.version>26.50.0</libraries-bom.version>
+    <libraries-bom.version>26.52.0</libraries-bom.version>
     <!-- OpenTelemetry -->
-    <otel.version>1.44.1</otel.version>
+    <otel.version>1.45.0</otel.version>
     <otel-contrib.version>1.41.0-alpha</otel-contrib.version>
     <shared-resourcemapping.version>0.33.0</shared-resourcemapping.version>
     <exporter-metrics.version>0.33.0</exporter-metrics.version>

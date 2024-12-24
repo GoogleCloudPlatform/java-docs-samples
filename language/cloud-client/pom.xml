@@ -27,7 +27,7 @@
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.2.0</version>
+    <version>1.2.2</version>
   </parent>
   <properties>
     <maven.compiler.target>1.8</maven.compiler.target>
@@ -42,7 +42,7 @@
         <groupId>com.google.cloud</groupId>
         <scope>import</scope>
         <type>pom</type>
-        <version>26.32.0</version>
+        <version>26.52.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -64,7 +64,7 @@
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>1.4.0</version>
+      <version>1.4.4</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

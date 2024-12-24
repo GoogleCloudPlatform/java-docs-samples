@@ -29,7 +29,7 @@
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.2.0</version>
+    <version>1.2.2</version>
   </parent>
 
   <properties>
@@ -45,7 +45,7 @@
         <groupId>com.google.cloud</groupId>
         <scope>import</scope>
         <type>pom</type>
-        <version>26.42.0</version>
+        <version>26.52.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -64,7 +64,7 @@
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
-      <version>1.18.30</version>
+      <version>1.18.36</version>
       <scope>provided</scope>
     </dependency>
 
@@ -78,7 +78,7 @@
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>1.4.0</version>
+      <version>1.4.4</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -88,7 +88,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.12.1</version>
+        <version>3.13.0</version>
         <configuration>
           <source>11</source> <!-- depending on your project -->
           <target>11</target> <!-- depending on your project -->
@@ -96,7 +96,7 @@
             <path>
               <groupId>org.projectlombok</groupId>
               <artifactId>lombok</artifactId>
-              <version>1.18.30</version>
+              <version>1.18.36</version>
             </path>
           </annotationProcessorPaths>
         </configuration>
