@@ -49,7 +49,6 @@ public final class LocationSearchSample {
       JobServiceQuickstart.getTalentSolutionClient();
 
   // [START job_basic_location_search]
-  // [START basic_location_search]
 
   /** Basic location Search */
   public static void basicLocationSearch(String companyName, String location, double distance)
@@ -80,11 +79,9 @@ public final class LocationSearchSample {
     System.out.printf("Basic location search results: %s", response);
 
   }
-  // [END basic_location_search]
   // [END job_basic_location_search]
 
   // [START job_keyword_location_search]
-  // [START keyword_location_search]
 
   /** Keyword location Search */
   public static void keywordLocationSearch(
@@ -116,11 +113,9 @@ public final class LocationSearchSample {
     Thread.sleep(1000);
     System.out.printf("Keyword location search results: %s", response);
   }
-  // [END keyword_location_search]
   // [END job_keyword_location_search]
 
   // [START job_city_location_search]
-  // [START city_location_search]
 
   /** City location Search */
   public static void cityLocationSearch(String companyName, String location)
@@ -149,11 +144,9 @@ public final class LocationSearchSample {
     Thread.sleep(1000);
     System.out.printf("City locations search results: %s", response);
   }
-  // [END city_location_search]
   // [END job_city_location_search]
 
   // [START job_multi_locations_search]
-  // [START multi_locations_search]
 
   /** Multiple locations Search */
   public static void multiLocationsSearch(
@@ -189,10 +182,8 @@ public final class LocationSearchSample {
 
   }
   // [END job_multi_locations_search]
-  // [END multi_locations_search]
 
   // [START job_broadening_location_search]
-  // [START broadening_location_search]
 
   /** Broadening location Search */
   public static void broadeningLocationsSearch(String companyName, String location)
@@ -222,7 +213,6 @@ public final class LocationSearchSample {
     Thread.sleep(1000);
     System.out.printf("Broadening locations search results: %s", response);
   }
-  // [END broadening_location_search]
   // [END job_broadening_location_search]
 
   public static void main(String... args) throws Exception {
