@@ -16,6 +16,7 @@
 
 package compute.snapshotschedule;
 
+import static com.google.cloud.compute.v1.ResourcePolicySnapshotSchedulePolicyRetentionPolicy.OnSourceDiskDelete.APPLY_RETENTION_POLICY;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 import static org.junit.Assert.assertEquals;
@@ -34,9 +35,9 @@ import com.google.cloud.compute.v1.InsertResourcePolicyRequest;
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.Operation.Status;
 import com.google.cloud.compute.v1.ResourcePoliciesClient;
+import com.google.cloud.compute.v1.ResourcePoliciesClient.ListPagedResponse;
 import com.google.cloud.compute.v1.ResourcePolicy;
 import java.io.IOException;
-import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -87,17 +88,24 @@ public class SnapshotScheduleIT {
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
     Status status = EditSnapshotSchedule.editSnapshotSchedule(
             PROJECT_ID, REGION, SCHEDULE_NAME);
-
+    ResourcePolicy resourcePolicy = GetSnapshotSchedule
+            .getSnapshotSchedule(PROJECT_ID, REGION, SCHEDULE_NAME);
+    assertThat(resourcePolicy.getDescription()).isEqualTo("Updated description");
+    assertThat(resourcePolicy.getSnapshotSchedulePolicy()
+            .getRetentionPolicy()
+            .getOnSourceDiskDelete())
+            .isEqualTo(APPLY_RETENTION_POLICY.toString());
     assertThat(status).isEqualTo(Status.DONE);
   }
 
   @Test
   public void testListSnapshotSchedules() throws IOException {
-    List<ResourcePolicy> list = ListSnapshotSchedules.listSnapshotSchedules(
+    ListPagedResponse listPagedResponse = ListSnapshotSchedules.listSnapshotSchedules(
             PROJECT_ID, REGION, SCHEDULE_NAME);
 
-    assertThat(list.size()).isEqualTo(1);
-    assertThat(list.get(0).getName()).isEqualTo(SCHEDULE_NAME);
+    assertThat(listPagedResponse.iterateAll()).hasSize(1);
+    ResourcePolicy firstPolicy = listPagedResponse.iterateAll().iterator().next();
+    assertEquals(SCHEDULE_NAME, firstPolicy.getName());
   }
 
   @Test
@@ -130,7 +138,6 @@ public class SnapshotScheduleIT {
   public void testGetSnapshotSchedule() throws IOException {
     try (MockedStatic<ResourcePoliciesClient> mockedResourcePoliciesClient =
                  mockStatic(ResourcePoliciesClient.class)) {
-      Operation operation = mock(Operation.class);
       ResourcePoliciesClient mockClient = mock(ResourcePoliciesClient.class);
       ResourcePolicy mockResourcePolicy = mock(ResourcePolicy.class);
 

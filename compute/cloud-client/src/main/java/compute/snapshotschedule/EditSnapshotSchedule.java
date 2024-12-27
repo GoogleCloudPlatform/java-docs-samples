@@ -17,11 +17,14 @@
 package compute.snapshotschedule;
 
 // [START compute_snapshot_schedule_edit]
+import static com.google.cloud.compute.v1.ResourcePolicySnapshotSchedulePolicyRetentionPolicy.OnSourceDiskDelete.APPLY_RETENTION_POLICY;
+
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.Operation.Status;
 import com.google.cloud.compute.v1.PatchResourcePolicyRequest;
 import com.google.cloud.compute.v1.ResourcePoliciesClient;
 import com.google.cloud.compute.v1.ResourcePolicy;
+import com.google.cloud.compute.v1.ResourcePolicySnapshotSchedulePolicy;
 import com.google.cloud.compute.v1.ResourcePolicySnapshotSchedulePolicyRetentionPolicy;
 import com.google.cloud.compute.v1.ResourcePolicySnapshotSchedulePolicySchedule;
 import com.google.cloud.compute.v1.ResourcePolicySnapshotSchedulePolicySnapshotProperties;
@@ -48,47 +51,49 @@ public class EditSnapshotSchedule {
     editSnapshotSchedule(projectId, region, snapshotScheduleName);
   }
 
+  // Edits a snapshot schedule.
   public static Status editSnapshotSchedule(
           String projectId, String region, String snapshotScheduleName)
           throws IOException, InterruptedException, ExecutionException, TimeoutException {
-    String description = "Updated description11";
-    Map<String, String> snapshotLabels = new HashMap<>();
-    snapshotLabels.put("key", "value");
-    ResourcePolicyWeeklyCycleDayOfWeek dayOfWeek = ResourcePolicyWeeklyCycleDayOfWeek.newBuilder()
-            .setDay("Tuesday")
-            .setStartTime("09:00")
-            .build();
-    ResourcePolicyWeeklyCycle weeklySchedule = ResourcePolicyWeeklyCycle.newBuilder()
-            .addDayOfWeeks(dayOfWeek)
-            .build();
-    String onSourceDiskDelete = "apply-retention-policy";
-    int maxRetentionDays = 3;
 
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (ResourcePoliciesClient resourcePoliciesClient = ResourcePoliciesClient.create()) {
-      ResourcePolicy existingSchedule = resourcePoliciesClient
-              .get(projectId, region, snapshotScheduleName);
+      Map<String, String> snapshotLabels = new HashMap<>();
+      snapshotLabels.put("key", "value");
 
       ResourcePolicySnapshotSchedulePolicySnapshotProperties.Builder snapshotProperties =
-              existingSchedule.getSnapshotSchedulePolicy().getSnapshotProperties().toBuilder();
+              ResourcePolicySnapshotSchedulePolicySnapshotProperties.newBuilder();
       snapshotProperties.putAllLabels(snapshotLabels);
 
+      ResourcePolicyWeeklyCycleDayOfWeek dayOfWeek = ResourcePolicyWeeklyCycleDayOfWeek.newBuilder()
+              .setDay("Tuesday")
+              .setStartTime("09:00")
+              .build();
+      ResourcePolicyWeeklyCycle weeklySchedule = ResourcePolicyWeeklyCycle.newBuilder()
+              .addDayOfWeeks(dayOfWeek)
+              .build();
+
       ResourcePolicySnapshotSchedulePolicySchedule.Builder scheduler =
-              existingSchedule.getSnapshotSchedulePolicy().getSchedule().toBuilder();
+              ResourcePolicySnapshotSchedulePolicySchedule.newBuilder();
       scheduler.clearDailySchedule().clearHourlySchedule();
       scheduler.setWeeklySchedule(weeklySchedule);
 
+      String onSourceDiskDelete = APPLY_RETENTION_POLICY.toString();
+      int maxRetentionDays = 3;
+
       ResourcePolicySnapshotSchedulePolicyRetentionPolicy.Builder retentionPolicy =
-              existingSchedule.getSnapshotSchedulePolicy().getRetentionPolicy().toBuilder();
+              ResourcePolicySnapshotSchedulePolicyRetentionPolicy.newBuilder();
       retentionPolicy.setOnSourceDiskDelete(onSourceDiskDelete);
       retentionPolicy.setMaxRetentionDays(maxRetentionDays);
 
+      String description = "Updated description";
+
       ResourcePolicy updatedSchedule = ResourcePolicy.newBuilder()
-              .setName(existingSchedule.getName())
+              .setName(snapshotScheduleName)
               .setDescription(description)
               .setSnapshotSchedulePolicy(
-                      existingSchedule.getSnapshotSchedulePolicy().toBuilder()
+                      ResourcePolicySnapshotSchedulePolicy.newBuilder()
                               .setSchedule(scheduler)
                               .setSnapshotProperties(snapshotProperties)
                               .setRetentionPolicy(retentionPolicy.build())

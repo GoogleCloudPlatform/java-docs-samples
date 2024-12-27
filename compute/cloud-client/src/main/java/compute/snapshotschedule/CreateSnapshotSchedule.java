@@ -17,6 +17,8 @@
 package compute.snapshotschedule;
 
 // [START compute_snapshot_schedule_create]
+import static com.google.cloud.compute.v1.ResourcePolicySnapshotSchedulePolicyRetentionPolicy.OnSourceDiskDelete.KEEP_AUTO_SNAPSHOTS;
+
 import com.google.cloud.compute.v1.InsertResourcePolicyRequest;
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.Operation.Status;
@@ -51,7 +53,7 @@ public class CreateSnapshotSchedule {
     // https://cloud.google.com/compute/docs/disks/snapshots?authuser=0#selecting_a_storage_location
     String storageLocation = "US";
     // Determines what happens to your snapshots if the source disk is deleted.
-    String onSourceDiskDelete = "KEEP_AUTO_SNAPSHOTS";
+    String onSourceDiskDelete = KEEP_AUTO_SNAPSHOTS.toString();
 
     createSnapshotSchedule(projectId, region, snapshotScheduleName, scheduleDescription,
             maxRetentionDays, storageLocation, onSourceDiskDelete);
@@ -62,66 +64,42 @@ public class CreateSnapshotSchedule {
             String snapshotScheduleName, String scheduleDescription, int maxRetentionDays,
             String storageLocation, String onSourceDiskDelete)
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    String startTime = "08:00";
-    ResourcePolicySnapshotSchedulePolicySnapshotProperties snapshotProperties =
-            ResourcePolicySnapshotSchedulePolicySnapshotProperties.newBuilder()
-                    .addStorageLocations(storageLocation)
-                    .build();
-
-    // Define the hourly schedule:
-    int snapshotInterval = 10; // Create a snapshot every 10 hours
-    ResourcePolicyHourlyCycle hourlyCycle = ResourcePolicyHourlyCycle.newBuilder()
-            .setHoursInCycle(snapshotInterval)
-            .setStartTime(startTime)
-            .build();
-
-    // Define the daily schedule.
-    // ResourcePolicyDailyCycle dailySchedule =
-    //         ResourcePolicyDailyCycle.newBuilder()
-    //                 .setDaysInCycle(1)  // Every day
-    //                 .setStartTime(startTime)
-    //                 .build();
-
-    // Define the weekly schedule.
-    // List<ResourcePolicyWeeklyCycleDayOfWeek> dayOfWeeks = new ArrayList<>();
-    // ResourcePolicyWeeklyCycleDayOfWeek tuesdaySchedule =
-    //         ResourcePolicyWeeklyCycleDayOfWeek.newBuilder()
-    //                 .setDay(ResourcePolicyWeeklyCycleDayOfWeek.Day.TUESDAY.toString())
-    //                 .setStartTime(startTime)
-    //                 .build();
-    // dayOfWeeks.add(tuesdaySchedule);
-    //
-    // ResourcePolicyWeeklyCycle weeklyCycle = ResourcePolicyWeeklyCycle.newBuilder()
-    //         .addAllDayOfWeeks(dayOfWeeks)
-    //         .build();
-
-    ResourcePolicySnapshotSchedulePolicyRetentionPolicy retentionPolicy =
-            ResourcePolicySnapshotSchedulePolicyRetentionPolicy.newBuilder()
-                    .setMaxRetentionDays(maxRetentionDays)
-                    .setOnSourceDiskDelete(onSourceDiskDelete)
-            .build();
-
-    ResourcePolicySnapshotSchedulePolicy snapshotSchedulePolicy =
-            ResourcePolicySnapshotSchedulePolicy.newBuilder()
-                    .setRetentionPolicy(retentionPolicy)
-                    .setSchedule(ResourcePolicySnapshotSchedulePolicySchedule.newBuilder()
-                             // You can set only one of the following options:
-                             .setHourlySchedule(hourlyCycle)  //Set Hourly Schedule
-                             // .setDailySchedule(dailySchedule) //Set Daily Schedule
-                             // .setWeeklySchedule(weeklyCycle)    // Set Weekly Schedule
-                             .build())
-                    .setSnapshotProperties(snapshotProperties)
-                    .build();
-
-    ResourcePolicy resourcePolicy = ResourcePolicy.newBuilder()
-            .setName(snapshotScheduleName)
-            .setDescription(scheduleDescription)
-            .setSnapshotSchedulePolicy(snapshotSchedulePolicy)
-            .build();
-
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (ResourcePoliciesClient resourcePoliciesClient = ResourcePoliciesClient.create()) {
+      String startTime = "08:00";
+      // Define the hourly schedule:
+      int snapshotInterval = 10; // Create a snapshot every 10 hours
+      ResourcePolicyHourlyCycle hourlyCycle = ResourcePolicyHourlyCycle.newBuilder()
+              .setHoursInCycle(snapshotInterval)
+              .setStartTime(startTime)
+              .build();
+
+      ResourcePolicySnapshotSchedulePolicyRetentionPolicy retentionPolicy =
+              ResourcePolicySnapshotSchedulePolicyRetentionPolicy.newBuilder()
+                      .setMaxRetentionDays(maxRetentionDays)
+                      .setOnSourceDiskDelete(onSourceDiskDelete)
+              .build();
+
+      ResourcePolicySnapshotSchedulePolicySnapshotProperties snapshotProperties =
+              ResourcePolicySnapshotSchedulePolicySnapshotProperties.newBuilder()
+                      .addStorageLocations(storageLocation)
+                      .build();
+
+      ResourcePolicySnapshotSchedulePolicy snapshotSchedulePolicy =
+              ResourcePolicySnapshotSchedulePolicy.newBuilder()
+                      .setRetentionPolicy(retentionPolicy)
+                      .setSchedule(ResourcePolicySnapshotSchedulePolicySchedule.newBuilder()
+                               .setHourlySchedule(hourlyCycle)
+                               .build())
+                      .setSnapshotProperties(snapshotProperties)
+                      .build();
+
+      ResourcePolicy resourcePolicy = ResourcePolicy.newBuilder()
+              .setName(snapshotScheduleName)
+              .setDescription(scheduleDescription)
+              .setSnapshotSchedulePolicy(snapshotSchedulePolicy)
+              .build();
       InsertResourcePolicyRequest request = InsertResourcePolicyRequest.newBuilder()
               .setProject(projectId)
               .setRegion(region)

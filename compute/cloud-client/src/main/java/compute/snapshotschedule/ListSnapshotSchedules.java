@@ -19,10 +19,9 @@ package compute.snapshotschedule;
 // [START compute_snapshot_schedule_list]
 import com.google.cloud.compute.v1.ListResourcePoliciesRequest;
 import com.google.cloud.compute.v1.ResourcePoliciesClient;
+import com.google.cloud.compute.v1.ResourcePoliciesClient.ListPagedResponse;
 import com.google.cloud.compute.v1.ResourcePolicy;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ListSnapshotSchedules {
 
@@ -39,10 +38,9 @@ public class ListSnapshotSchedules {
   }
 
   // Lists snapshot schedules in a specified region, optionally filtered.
-  public static List<ResourcePolicy> listSnapshotSchedules(
+  public static ListPagedResponse listSnapshotSchedules(
           String projectId, String region, String snapshotScheduleName) throws IOException {
     String filter = String.format("name = %s", snapshotScheduleName);
-    List<ResourcePolicy> list = new ArrayList<>();
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (ResourcePoliciesClient resourcePoliciesClient = ResourcePoliciesClient.create()) {
@@ -52,12 +50,12 @@ public class ListSnapshotSchedules {
               .setRegion(region)
               .setFilter(filter)
               .build();
-
-      for (ResourcePolicy resourcePolicy : resourcePoliciesClient.list(request).iterateAll()) {
-        list.add(resourcePolicy);
+      ListPagedResponse response = resourcePoliciesClient.list(request);
+      for (ResourcePolicy resourcePolicy : response.iterateAll()) {
+        System.out.println(resourcePolicy);
       }
+      return response;
     }
-    return list;
   }
 }
 // [END compute_snapshot_schedule_list]

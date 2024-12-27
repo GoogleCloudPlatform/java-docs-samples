@@ -47,8 +47,10 @@ public class GetSnapshotSchedule {
               .setRegion(region)
               .setResourcePolicy(snapshotScheduleName)
               .build();
+      ResourcePolicy resourcePolicy = resourcePoliciesClient.get(request);
+      System.out.println(resourcePolicy);
 
-      return resourcePoliciesClient.get(request);
+      return resourcePolicy;
     }
   }
 }
