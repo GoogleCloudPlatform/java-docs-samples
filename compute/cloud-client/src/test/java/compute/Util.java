@@ -287,7 +287,7 @@ public abstract class Util {
     }
   }
 
-  // Delete storagePools which starts with the given prefixToDelete and
+  // Delete snapshot schedule which starts with the given prefixToDelete and
   // has creation timestamp >24 hours.
   public static void cleanUpExistingSnapshotSchedule(
           String prefixToDelete, String projectId, String region)

@@ -124,7 +124,6 @@ public class DisksIT {
             "gcloud-test-disk-secondary-regional-", PROJECT_ID, "us-central1");
     Util.cleanUpExistingRegionalDisks("gcloud-test-disk-", PROJECT_ID, REGION);
     Util.cleanUpExistingSnapshots("gcloud-test-snapshot-", PROJECT_ID);
-
     Util.cleanUpExistingSnapshotSchedule("gcloud-test-snapshot-schedule-", PROJECT_ID, REGION);
 
     // Create disk from image.
