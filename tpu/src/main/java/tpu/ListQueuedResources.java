@@ -16,38 +16,40 @@
 
 package tpu;
 
-//[START tpu_queued_resources_get]
-import com.google.cloud.tpu.v2alpha1.GetQueuedResourceRequest;
+//[START tpu_queued_resources_list]
+import com.google.cloud.tpu.v2alpha1.ListQueuedResourcesRequest;
 import com.google.cloud.tpu.v2alpha1.QueuedResource;
 import com.google.cloud.tpu.v2alpha1.TpuClient;
+import com.google.cloud.tpu.v2alpha1.TpuClient.ListQueuedResourcesPage;
 import java.io.IOException;
 
-public class GetQueuedResource {
+public class ListQueuedResources {
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     // Project ID or project number of the Google Cloud project.
     String projectId = "YOUR_PROJECT_ID";
     // The zone in which the TPU was created.
-    String zone = "us-central1-f";
-    // The name for your Queued Resource.
-    String queuedResourceId = "QUEUED_RESOURCE_ID";
+    String zone = "us-central1-a";
 
-    getQueuedResource(projectId, zone, queuedResourceId);
+    listQueuedResources(projectId, zone);
   }
 
-  // Get a Queued Resource.
-  public static QueuedResource getQueuedResource(
-      String projectId, String zone, String queuedResourceId) throws IOException {
-    String name = String.format("projects/%s/locations/%s/queuedResources/%s",
-        projectId, zone, queuedResourceId);
+  // List Queued Resources.
+  public static ListQueuedResourcesPage listQueuedResources(
+      String projectId, String zone) throws IOException {
+    String parent = String.format("projects/%s/locations/%s", projectId, zone);
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (TpuClient tpuClient = TpuClient.create()) {
-      GetQueuedResourceRequest request =
-          GetQueuedResourceRequest.newBuilder().setName(name).build();
+      ListQueuedResourcesRequest request =
+          ListQueuedResourcesRequest.newBuilder().setParent(parent).build();
+      ListQueuedResourcesPage response =  tpuClient.listQueuedResources(request).getPage();
 
-      return tpuClient.getQueuedResource(request);
+      for (QueuedResource queuedResource : response.iterateAll()) {
+        System.out.println(queuedResource.getName());
+      }
+      return response;
     }
   }
 }
-//[END tpu_queued_resources_get]
+//[END tpu_queued_resources_list]
