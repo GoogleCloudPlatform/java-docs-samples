@@ -349,10 +349,10 @@ public class DisksIT {
   public void testCreateDiskSecondaryZonal()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     String diskType = String.format(
-            "projects/%s/zones/%s/diskTypes/pd-ssd", PROJECT_ID, ZONE);
+          "projects/%s/zones/%s/diskTypes/pd-ssd", PROJECT_ID, ZONE);
     Status status = CreateDiskSecondaryZonal.createDiskSecondaryZonal(
-            PROJECT_ID, PROJECT_ID, EMPTY_DISK_NAME, SECONDARY_DISK, ZONE,
-            "us-central1-c", DISK_SIZE, diskType);
+          PROJECT_ID, PROJECT_ID, EMPTY_DISK_NAME, SECONDARY_DISK, ZONE,
+          "us-central1-c", DISK_SIZE, diskType);
     Disk disk = Util.getDisk(PROJECT_ID, "us-central1-c", SECONDARY_DISK);
 
     assertThat(status).isEqualTo(Status.DONE);
