@@ -373,5 +373,6 @@ public class DisksIT {
     Disk disk = Util.getDisk(PROJECT_ID, ZONE, DISK_WITH_SNAPSHOT_SCHEDULE);
 
     assertThat(status).isEqualTo(Status.DONE);
-    assertEquals(DISK_WITH_SNAPSHOT_SCHEDULE, disk.getName());  }
+    assertEquals(DISK_WITH_SNAPSHOT_SCHEDULE, disk.getName());
+  }
 }
