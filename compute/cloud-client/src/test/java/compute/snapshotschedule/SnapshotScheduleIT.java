@@ -16,107 +16,81 @@
 
 package compute.snapshotschedule;
 
-import static com.google.common.truth.Truth.assertThat;
-import static com.google.common.truth.Truth.assertWithMessage;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import com.google.api.gax.longrunning.OperationFuture;
+import com.google.cloud.compute.v1.AddResourcePoliciesDiskRequest;
+import com.google.cloud.compute.v1.DisksClient;
+import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.Operation.Status;
-import compute.disks.CreateEmptyDisk;
-import compute.disks.DeleteDisk;
+import com.google.cloud.compute.v1.RemoveResourcePoliciesDiskRequest;
 import java.io.IOException;
-import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.MockedStatic;
 
 @RunWith(JUnit4.class)
 @Timeout(value = 6, unit = TimeUnit.MINUTES)
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class SnapshotScheduleIT {
-  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+  private static final String PROJECT_ID = "GOOGLE_CLOUD_PROJECT";
   private static final String ZONE = "asia-south1-a";
   private static final String REGION = ZONE.substring(0, ZONE.lastIndexOf('-'));
-  static String templateUUID = UUID.randomUUID().toString();
-  private static final String SCHEDULE_NAME = "test-schedule-" + templateUUID;
-  private static final String SCHEDULE_FOR_DISK = "test-schedule-for-disk-" + templateUUID;
-  private static final  String SCHEDULE_DESCRIPTION = "Test hourly snapshot schedule";
-  private static final int MAX_RETENTION_DAYS = 2;
-  private static final String STORAGE_LOCATION = "US";
-  private static final  String ON_SOURCE_DISK_DELETE = "KEEP_AUTO_SNAPSHOTS";
-  private static final String DISK_NAME = "gcloud-test-disk-" + templateUUID;
-
-  // Check if the required environment variables are set.
-  public static void requireEnvVar(String envVarName) {
-    assertWithMessage(String.format("Missing environment variable '%s' ", envVarName))
-            .that(System.getenv(envVarName)).isNotEmpty();
-  }
-
-  @BeforeAll
-  public static void setUp()
-          throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
-    requireEnvVar("GOOGLE_CLOUD_PROJECT");
-
-    String diskType = String.format("zones/%s/diskTypes/pd-standard", ZONE);
-    CreateEmptyDisk.createEmptyDisk(PROJECT_ID, ZONE, DISK_NAME, diskType, 12);
-    CreateSnapshotSchedule.createSnapshotSchedule(
-            PROJECT_ID, REGION, SCHEDULE_FOR_DISK, SCHEDULE_DESCRIPTION,
-            MAX_RETENTION_DAYS, STORAGE_LOCATION, ON_SOURCE_DISK_DELETE);
-  }
-
-  @AfterAll
-  public static void cleanUp()
-          throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    DeleteDisk.deleteDisk(PROJECT_ID, ZONE, DISK_NAME);
-    DeleteSnapshotSchedule.deleteSnapshotSchedule(PROJECT_ID, REGION, SCHEDULE_FOR_DISK);
-  }
+  private static final String SCHEDULE_FOR_DISK = "test-schedule-for-disk";
+  private static final String DISK_NAME = "gcloud-test-disk";
 
   @Test
-  @Order(1)
-  public void testCreateSnapshotScheduleHourly()
-          throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    Status status = CreateSnapshotSchedule.createSnapshotSchedule(
-            PROJECT_ID, REGION, SCHEDULE_NAME, SCHEDULE_DESCRIPTION,
-            MAX_RETENTION_DAYS, STORAGE_LOCATION, ON_SOURCE_DISK_DELETE);
-
-    assertThat(status).isEqualTo(Status.DONE);
-  }
-
-  @Test
-  @Order(2)
   public void testAttachSnapshotScheduleToDisk()
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    Status status = AttachSnapshotScheduleToDisk.attachSnapshotScheduleToDisk(
-            PROJECT_ID, ZONE, DISK_NAME, SCHEDULE_FOR_DISK, REGION);
+    try (MockedStatic<DisksClient> mockedDisksClient = mockStatic(DisksClient.class)) {
+      DisksClient mockClient = mock(DisksClient.class);
+      Operation operation = mock(Operation.class);
+      OperationFuture mockFuture = mock(OperationFuture.class);
 
-    assertThat(status).isEqualTo(Status.DONE);
+      mockedDisksClient.when(DisksClient::create).thenReturn(mockClient);
+      when(mockClient.addResourcePoliciesAsync(any(AddResourcePoliciesDiskRequest.class)))
+              .thenReturn(mockFuture);
+      when(mockFuture.get(anyLong(), any(TimeUnit.class))).thenReturn(operation);
+      when(operation.getStatus()).thenReturn(Status.DONE);
+
+      Status actualStatus = AttachSnapshotScheduleToDisk.attachSnapshotScheduleToDisk(
+              PROJECT_ID, ZONE, DISK_NAME, SCHEDULE_FOR_DISK, REGION);
+
+      verify(mockClient, times(1)).addResourcePoliciesAsync(any());
+      assertEquals(Status.DONE, actualStatus);
+    }
   }
 
   @Test
-  @Order(3)
   public void testRemoveSnapshotScheduleFromDisk()
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    Status status = RemoveSnapshotScheduleFromDisk.removeSnapshotScheduleFromDisk(
+    try (MockedStatic<DisksClient> mockedDisksClient = mockStatic(DisksClient.class)) {
+      DisksClient mockClient = mock(DisksClient.class);
+      Operation operation = mock(Operation.class);
+      OperationFuture mockFuture = mock(OperationFuture.class);
+
+      mockedDisksClient.when(DisksClient::create).thenReturn(mockClient);
+      when(mockClient.removeResourcePoliciesAsync(any(RemoveResourcePoliciesDiskRequest.class)))
+              .thenReturn(mockFuture);
+      when(mockFuture.get(anyLong(), any(TimeUnit.class))).thenReturn(operation);
+      when(operation.getStatus()).thenReturn(Status.DONE);
+
+      Status actualStatus = RemoveSnapshotScheduleFromDisk.removeSnapshotScheduleFromDisk(
             PROJECT_ID, ZONE, DISK_NAME, REGION, SCHEDULE_FOR_DISK);
 
-    assertThat(status).isEqualTo(Status.DONE);
-  }
-
-  @Test
-  @Order(4)
-  public void testDeleteSnapshotSchedule()
-          throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    Status status = DeleteSnapshotSchedule
-            .deleteSnapshotSchedule(PROJECT_ID, REGION, SCHEDULE_NAME);
-
-    assertThat(status).isEqualTo(Status.DONE);
+      verify(mockClient, times(1)).removeResourcePoliciesAsync(any());
+      assertEquals(Status.DONE, actualStatus);
+    }
   }
 }

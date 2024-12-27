@@ -39,7 +39,7 @@ public class RemoveSnapshotScheduleFromDisk {
     String diskName = "YOUR_DISK_NAME";
     // Name of the region where your snapshot schedule is located.
     String region = "us-central1";
-    // Name of the snapshot schedule you want to attach.
+    // Name of the snapshot schedule you want to remove.
     String snapshotScheduleName = "YOUR_SNAPSHOT_SCHEDULE_NAME";
 
     removeSnapshotScheduleFromDisk(projectId, zone, diskName, region, snapshotScheduleName);
@@ -62,10 +62,10 @@ public class RemoveSnapshotScheduleFromDisk {
 
       RemoveResourcePoliciesDiskRequest request =
               RemoveResourcePoliciesDiskRequest.newBuilder()
-                      .setDisk(diskName)
                       .setProject(project)
-                      .setDisksRemoveResourcePoliciesRequestResource(disksRequest)
                       .setZone(zone)
+                      .setDisk(diskName)
+                      .setDisksRemoveResourcePoliciesRequestResource(disksRequest)
                       .build();
 
       Operation response = disksClient.removeResourcePoliciesAsync(request)

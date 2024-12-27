@@ -51,19 +51,21 @@ public class AttachSnapshotScheduleToDisk {
 
     String resourcePolicyLink = String.format(
             "projects/%s/regions/%s/resourcePolicies/%s", projectId, region, snapshotScheduleName);
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests.
     try (DisksClient disksClient = DisksClient.create()) {
 
       AddResourcePoliciesDiskRequest request = AddResourcePoliciesDiskRequest.newBuilder()
+              .setProject(projectId)
+              .setZone(zone)
               .setDisk(diskName)
               .setDisksAddResourcePoliciesRequestResource(
                       DisksAddResourcePoliciesRequest.newBuilder()
                               .addResourcePolicies(resourcePolicyLink)
                               .build())
-              .setProject(projectId)
-              .setZone(zone)
               .build();
 
-      Operation response = disksClient.addResourcePoliciesAsync(request).get(1, TimeUnit.MINUTES);
+      Operation response = disksClient.addResourcePoliciesAsync(request).get(3, TimeUnit.MINUTES);
 
       if (response.hasError()) {
         throw new Error("Error attaching snapshot schedule to disk: " + response.getError());
