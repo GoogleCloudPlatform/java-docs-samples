@@ -32,6 +32,7 @@ import com.google.cloud.compute.v1.DisksClient;
 import com.google.cloud.compute.v1.InsertDiskRequest;
 import com.google.cloud.compute.v1.InsertStoragePoolRequest;
 import com.google.cloud.compute.v1.Operation;
+import com.google.cloud.compute.v1.Operation.Status;
 import com.google.cloud.compute.v1.StoragePool;
 import com.google.cloud.compute.v1.StoragePoolsClient;
 import compute.disks.storagepool.CreateDiskInStoragePool;
@@ -78,7 +79,7 @@ public class HyperdiskIT {
       when(mockClient.insertAsync(any(InsertStoragePoolRequest.class)))
               .thenReturn(mockFuture);
       when(mockFuture.get(anyLong(), any(TimeUnit.class))).thenReturn(operation);
-      when(operation.getStatus()).thenReturn(Operation.Status.DONE);
+      when(operation.getStatus()).thenReturn(Status.DONE);
       when(mockClient.get(PROJECT_ID, ZONE, STORAGE_POOL_NAME)).thenReturn(storagePool);
 
 
@@ -116,7 +117,7 @@ public class HyperdiskIT {
       mockedDisksClient.when(DisksClient::create).thenReturn(mockClient);
       when(mockClient.insertAsync(any(InsertDiskRequest.class))).thenReturn(mockFuture);
       when(mockFuture.get(anyLong(), any(TimeUnit.class))).thenReturn(operation);
-      when(operation.getStatus()).thenReturn(Operation.Status.DONE);
+      when(operation.getStatus()).thenReturn(Status.DONE);
       when(mockClient.get(PROJECT_ID, ZONE, HYPERDISK_IN_POOL_NAME)).thenReturn(expectedHyperdisk);
 
 
