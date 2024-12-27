@@ -21,6 +21,7 @@ import com.google.cloud.secretmanager.v1.ProjectName;
 import com.google.cloud.secretmanager.v1.Replication;
 import com.google.cloud.secretmanager.v1.Secret;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
+import com.google.protobuf.Duration;
 import java.io.IOException;
 
 public class CreateSecret {
@@ -41,6 +42,12 @@ public class CreateSecret {
       // Build the parent name from the project.
       ProjectName projectName = ProjectName.of(projectId);
 
+      // Optionally set a TTL for the secret. This demonstrates how to configure
+      // a secret to be automatically deleted after a certain period. The TTL is
+      // specified in seconds (e.g., 900 for 15 minutes). This can be useful
+      // for managing sensitive data and reducing storage costs.
+      Duration ttl = Duration.newBuilder().setSeconds(900).build();
+
       // Build the secret to create.
       Secret secret =
           Secret.newBuilder()
@@ -48,6 +55,7 @@ public class CreateSecret {
                   Replication.newBuilder()
                       .setAutomatic(Replication.Automatic.newBuilder().build())
                       .build())
+              .setTtl(ttl)
               .build();
 
       // Create the secret.
