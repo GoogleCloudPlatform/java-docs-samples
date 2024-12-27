@@ -61,21 +61,20 @@ public class CreateDiskSecondaryZonal {
        String secondaryProjectId, String primaryDiskName, String secondaryDiskName,
        String primaryDiskZone, String secondaryDiskZone, long diskSizeGb, String diskType)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    String primaryDiskSource = String.format("projects/%s/zones/%s/disks/%s",
-        primaryProjectId, primaryDiskZone, primaryDiskName);
-
-    DiskAsyncReplication asyncReplication = DiskAsyncReplication.newBuilder()
-        .setDisk(primaryDiskSource)
-        .build();
-
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (DisksClient disksClient = DisksClient.create()) {
+      String primaryDiskSource = String.format("projects/%s/zones/%s/disks/%s",
+          primaryProjectId, primaryDiskZone, primaryDiskName);
+
+      DiskAsyncReplication asyncReplication = DiskAsyncReplication.newBuilder()
+          .setDisk(primaryDiskSource)
+          .build();
       Disk disk = Disk.newBuilder()
           .setName(secondaryDiskName)
+          .setZone(secondaryDiskZone)
           .setSizeGb(diskSizeGb)
           .setType(diskType)
-          .setZone(secondaryDiskZone)
           .setAsyncPrimaryDisk(asyncReplication)
           .build();
 

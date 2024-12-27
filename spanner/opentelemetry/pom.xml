@@ -25,6 +25,7 @@
     <version>1.2.0</version>
   </parent>
 
+  <!-- [START spanner_opentelemetry_dependencies] -->
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -45,7 +46,6 @@
   </dependencyManagement>
 
   <dependencies>
-  <!-- [START spanner_opentelemetry_dependencies] -->
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-spanner</artifactId>
@@ -66,7 +66,7 @@
       <groupId>io.opentelemetry</groupId>
       <artifactId>opentelemetry-exporter-otlp</artifactId>
     </dependency>
-  <!-- [END spanner_opentelemetry_dependencies] -->
   </dependencies>
+  <!-- [END spanner_opentelemetry_dependencies] -->
 
 </project>

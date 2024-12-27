@@ -19,6 +19,7 @@ package compute.disks;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.times;
@@ -31,6 +32,7 @@ import com.google.cloud.compute.v1.DisksClient;
 import com.google.cloud.compute.v1.InsertDiskRequest;
 import com.google.cloud.compute.v1.InsertStoragePoolRequest;
 import com.google.cloud.compute.v1.Operation;
+import com.google.cloud.compute.v1.Operation.Status;
 import com.google.cloud.compute.v1.StoragePool;
 import com.google.cloud.compute.v1.StoragePoolsClient;
 import compute.disks.storagepool.CreateDiskInStoragePool;
@@ -41,7 +43,6 @@ import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 
 @RunWith(JUnit4.class)
 @Timeout(value = 5, unit = TimeUnit.MINUTES)
@@ -71,14 +72,14 @@ public class HyperdiskIT {
                  mockStatic(StoragePoolsClient.class)) {
       StoragePoolsClient mockClient = mock(StoragePoolsClient.class);
       OperationFuture<Operation, Operation> mockFuture =
-              mock(OperationFuture.class, Mockito.RETURNS_DEEP_STUBS);
-      Operation operation = mock(Operation.class, Mockito.RETURNS_DEEP_STUBS);
+              mock(OperationFuture.class, RETURNS_DEEP_STUBS);
+      Operation operation = mock(Operation.class, RETURNS_DEEP_STUBS);
 
       mockedStoragePoolsClient.when(StoragePoolsClient::create).thenReturn(mockClient);
       when(mockClient.insertAsync(any(InsertStoragePoolRequest.class)))
               .thenReturn(mockFuture);
       when(mockFuture.get(anyLong(), any(TimeUnit.class))).thenReturn(operation);
-      when(operation.getStatus()).thenReturn(Operation.Status.DONE);
+      when(operation.getStatus()).thenReturn(Status.DONE);
       when(mockClient.get(PROJECT_ID, ZONE, STORAGE_POOL_NAME)).thenReturn(storagePool);
 
 
@@ -110,13 +111,13 @@ public class HyperdiskIT {
     try (MockedStatic<DisksClient> mockedDisksClient = mockStatic(DisksClient.class)) {
       DisksClient mockClient = mock(DisksClient.class);
       OperationFuture<Operation, Operation> mockFuture =
-              mock(OperationFuture.class, Mockito.RETURNS_DEEP_STUBS);
-      Operation operation = mock(Operation.class, Mockito.RETURNS_DEEP_STUBS);
+              mock(OperationFuture.class, RETURNS_DEEP_STUBS);
+      Operation operation = mock(Operation.class, RETURNS_DEEP_STUBS);
 
       mockedDisksClient.when(DisksClient::create).thenReturn(mockClient);
       when(mockClient.insertAsync(any(InsertDiskRequest.class))).thenReturn(mockFuture);
       when(mockFuture.get(anyLong(), any(TimeUnit.class))).thenReturn(operation);
-      when(operation.getStatus()).thenReturn(Operation.Status.DONE);
+      when(operation.getStatus()).thenReturn(Status.DONE);
       when(mockClient.get(PROJECT_ID, ZONE, HYPERDISK_IN_POOL_NAME)).thenReturn(expectedHyperdisk);
 
 
