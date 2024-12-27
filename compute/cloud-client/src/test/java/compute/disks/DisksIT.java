@@ -114,7 +114,8 @@ public class DisksIT {
     Util.cleanUpExistingInstances("test-disks", PROJECT_ID, ZONE);
     Util.cleanUpExistingDisks("gcloud-test-", PROJECT_ID, ZONE);
     Util.cleanUpExistingDisks("gcloud-test-", PROJECT_ID, "us-central1-c");
-    Util.cleanUpExistingRegionalDisks("gcloud-test-disk-secondary-regional-", PROJECT_ID, "us-central1");
+    Util.cleanUpExistingRegionalDisks(
+            "gcloud-test-disk-secondary-regional-", PROJECT_ID, "us-central1");
     Util.cleanUpExistingRegionalDisks("gcloud-test-disk-", PROJECT_ID, REGION);
     Util.cleanUpExistingSnapshots("gcloud-test-snapshot-", PROJECT_ID);
 
