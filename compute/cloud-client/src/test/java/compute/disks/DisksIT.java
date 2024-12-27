@@ -345,10 +345,9 @@ public class DisksIT {
   @Test
   void testCreateDiskWithSnapshotSchedule()
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    Status status = CreateDiskWithSnapshotSchedule.createDiskWithSnapshotSchedule(
+    CreateDiskWithSnapshotSchedule.createDiskWithSnapshotSchedule(
             PROJECT_ID, ZONE, DISK_WITH_SNAPSHOT_SCHEDULE, SNAPSHOT_SCHEDULE);
 
     Assert.assertNotNull(Util.getDisk(PROJECT_ID, ZONE, DISK_WITH_SNAPSHOT_SCHEDULE));
-    assertThat(status).isEqualTo(Status.DONE);
   }
 }

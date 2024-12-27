@@ -47,11 +47,13 @@ public class CreateDiskWithSnapshotSchedule {
   public static Status createDiskWithSnapshotSchedule(
       String projectId, String zone, String diskName, String snapshotScheduleName)
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests.
     try (DisksClient disksClient = DisksClient.create()) {
-
+      String region = zone.substring(0, zone.lastIndexOf('-'));
       // Get the resource policy to link to the disk
       String resourcePolicyLink = String.format("projects/%s/regions/%s/resourcePolicies/%s",
-              projectId, zone.substring(0, zone.lastIndexOf('-')), snapshotScheduleName);
+              projectId, region, snapshotScheduleName);
 
       Disk disk = Disk.newBuilder()
               .setName(diskName)
