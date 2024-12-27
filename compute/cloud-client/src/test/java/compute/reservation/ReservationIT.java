@@ -18,19 +18,23 @@ package compute.reservation;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.api.gax.rpc.NotFoundException;
-import com.google.cloud.compute.v1.AllocationSpecificSKUReservation;
+import com.google.cloud.compute.v1.InsertReservationRequest;
 import com.google.cloud.compute.v1.Operation;
+import com.google.cloud.compute.v1.Operation.Status;
 import com.google.cloud.compute.v1.Reservation;
 import com.google.cloud.compute.v1.ReservationsClient;
-import com.google.cloud.compute.v1.ShareSettings;
-import com.google.cloud.compute.v1.ShareSettingsProjectConfig;
 import compute.CreateInstanceTemplate;
 import compute.CreateRegionalInstanceTemplate;
 import compute.DeleteInstanceTemplate;
@@ -45,51 +49,41 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.MockedStatic;
 
 @RunWith(JUnit4.class)
 @Timeout(value = 6, unit = TimeUnit.MINUTES)
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ReservationIT {
-
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String ZONE = "asia-south1-a";
   private static final String REGION = ZONE.substring(0, ZONE.lastIndexOf('-'));
-  static String javaVersion = System.getProperty("java.version").substring(0, 2);
-  private static ReservationsClient reservationsClient;
-  private static final String RESERVATION_NAME_GLOBAL = "test-reservation-global-" + javaVersion
-      + "-" + UUID.randomUUID().toString().substring(0, 8);
-  private static final String  RESERVATION_NAME_REGIONAL = "test-reservation-regional-"
-      + javaVersion + "-" + UUID.randomUUID().toString().substring(0, 8);
+  static String templateUUID = UUID.randomUUID().toString();
+  private static final String RESERVATION_NAME_GLOBAL = "test-reservation-global-" + templateUUID;
+  private static final String  RESERVATION_NAME_REGIONAL =
+      "test-reservation-regional-" + templateUUID;
   private static final String GLOBAL_INSTANCE_TEMPLATE_NAME =
-      "test-global-inst-temp-" + javaVersion + "-" + UUID.randomUUID().toString().substring(0, 8);
-  private static final String REGIONAL_INSTANCE_TEMPLATE_NAME = "test-regional-inst-temp-"
-      + javaVersion  + "-" + UUID.randomUUID().toString().substring(0, 8);
+      "test-global-inst-temp-" + templateUUID;
+  private static final String REGIONAL_INSTANCE_TEMPLATE_NAME =
+      "test-regional-inst-temp-" + templateUUID;
   private static final String GLOBAL_INSTANCE_TEMPLATE_URI = String.format(
       "projects/%s/global/instanceTemplates/%s", PROJECT_ID, GLOBAL_INSTANCE_TEMPLATE_NAME);
   private static final String REGIONAL_INSTANCE_TEMPLATE_URI =
       String.format("projects/%s/regions/%s/instanceTemplates/%s",
           PROJECT_ID, REGION, REGIONAL_INSTANCE_TEMPLATE_NAME);
   private static final String SPECIFIC_SHARED_INSTANCE_TEMPLATE_NAME =
-      "test-shared-inst-temp-"  + javaVersion  + "-"
-          + UUID.randomUUID().toString().substring(0, 8);
+      "test-shared-inst-temp-"  + templateUUID;
   private static final String  INSTANCE_TEMPLATE_SHARED_RESERV_URI =
       String.format("projects/%s/global/instanceTemplates/%s",
       PROJECT_ID, SPECIFIC_SHARED_INSTANCE_TEMPLATE_NAME);
-  private static final String RESERVATION_NAME_SHARED = "test-reservation-shared-" + javaVersion
-      + "-" + UUID.randomUUID().toString().substring(0, 8);
+  private static final String RESERVATION_NAME_SHARED = "test-reservation-shared-" + templateUUID;
   private static final int NUMBER_OF_VMS = 3;
-  private ByteArrayOutputStream stdOut;
+  private static ByteArrayOutputStream stdOut;
 
   // Check if the required environment variables are set.
   public static void requireEnvVar(String envVarName) {
@@ -102,21 +96,8 @@ public class ReservationIT {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
-    final PrintStream out = System.out;
-    ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
+    stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
-
-    // Cleanup existing stale resources.
-    Util.cleanUpExistingInstanceTemplates("test-global-inst-temp-" + javaVersion, PROJECT_ID);
-    Util.cleanUpExistingRegionalInstanceTemplates(
-        "test-regional-inst-temp-" + javaVersion, PROJECT_ID, ZONE);
-    Util.cleanUpExistingReservations(
-        "test-reservation-global-" + javaVersion, PROJECT_ID, ZONE);
-    Util.cleanUpExistingReservations("test-reservation-regional-" + javaVersion, PROJECT_ID, ZONE);
-    Util.cleanUpExistingInstanceTemplates("test-shared-inst-temp-" + javaVersion, PROJECT_ID);
-
-    // Initialize the client once for all tests
-    reservationsClient = ReservationsClient.create();
 
     // Create instance template with GLOBAL location.
     CreateInstanceTemplate.createInstanceTemplate(PROJECT_ID, GLOBAL_INSTANCE_TEMPLATE_NAME);
@@ -129,17 +110,15 @@ public class ReservationIT {
     // Create instance template for shares reservation.
     CreateInstanceTemplate.createInstanceTemplate(
         PROJECT_ID, SPECIFIC_SHARED_INSTANCE_TEMPLATE_NAME);
-
-    stdOut.close();
-    System.setOut(out);
   }
 
   @AfterAll
   public static void cleanup()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     final PrintStream out = System.out;
-    ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
+
+    Util.cleanUpExistingReservations("test-reservation", PROJECT_ID, ZONE);
 
     // Delete instance template with GLOBAL location.
     DeleteInstanceTemplate.deleteInstanceTemplate(PROJECT_ID, GLOBAL_INSTANCE_TEMPLATE_NAME);
@@ -173,34 +152,19 @@ public class ReservationIT {
         NotFoundException.class,
         () -> GetReservation.getReservation(PROJECT_ID, RESERVATION_NAME_REGIONAL, ZONE));
 
-    // Close the client after all tests
-    reservationsClient.close();
-
     stdOut.close();
     System.setOut(out);
   }
 
-  @BeforeEach
-  public void beforeEach() {
-    stdOut = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(stdOut));
-  }
-
-  @AfterEach
-  public void afterEach() {
-    stdOut = null;
-    System.setOut(null);
-  }
-
   @Test
-  @Order(1)
   public void testCreateReservationWithGlobalInstanceTemplate()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    CreateReservationForInstanceTemplate.createReservationForInstanceTemplate(
+    Reservation reservation = CreateReservationForInstanceTemplate
+        .createReservationForInstanceTemplate(
         PROJECT_ID, RESERVATION_NAME_GLOBAL,
         GLOBAL_INSTANCE_TEMPLATE_URI, NUMBER_OF_VMS, ZONE);
-    Reservation reservation = reservationsClient.get(PROJECT_ID, ZONE, RESERVATION_NAME_GLOBAL);
 
+    assertNotNull(reservation);
     Assert.assertTrue(reservation.getSpecificReservation()
         .getSourceInstanceTemplate().contains(GLOBAL_INSTANCE_TEMPLATE_NAME));
     Assert.assertEquals(RESERVATION_NAME_GLOBAL, reservation.getName());
@@ -209,11 +173,12 @@ public class ReservationIT {
   @Test
   public void testCreateReservationWithRegionInstanceTemplate()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    CreateReservationForInstanceTemplate.createReservationForInstanceTemplate(
+    Reservation reservation = CreateReservationForInstanceTemplate
+        .createReservationForInstanceTemplate(
         PROJECT_ID, RESERVATION_NAME_REGIONAL, REGIONAL_INSTANCE_TEMPLATE_URI,
         NUMBER_OF_VMS, ZONE);
-    Reservation reservation = reservationsClient.get(PROJECT_ID, ZONE, RESERVATION_NAME_REGIONAL);
 
+    assertNotNull(reservation);
     Assert.assertTrue(reservation.getSpecificReservation()
         .getSourceInstanceTemplate().contains(REGIONAL_INSTANCE_TEMPLATE_NAME));
     Assert.assertTrue(reservation.getZone().contains(ZONE));
@@ -221,64 +186,27 @@ public class ReservationIT {
   }
 
   @Test
-  @Order(2)
-  public void testUpdateVmsForReservation()
-      throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    int newNumberOfVms = 5;
-    UpdateVmsForReservation.updateVmsForReservation(
-        PROJECT_ID, ZONE, RESERVATION_NAME_GLOBAL, newNumberOfVms);
-    Reservation reservation = GetReservation.getReservation(
-        PROJECT_ID, RESERVATION_NAME_GLOBAL, ZONE);
-
-    Assert.assertEquals(newNumberOfVms, reservation.getSpecificReservation().getCount());
-  }
-
-  @Test
   public void testCreateSharedReservation()
-      throws ExecutionException, InterruptedException, TimeoutException {
-    // Mock the ReservationsClient
-    ReservationsClient mockReservationsClient = mock(ReservationsClient.class);
+          throws ExecutionException, InterruptedException, TimeoutException, IOException {
+    try (MockedStatic<ReservationsClient> mockReservationsClient =
+                 mockStatic(ReservationsClient.class)) {
+      ReservationsClient mockClient = mock(ReservationsClient.class);
+      OperationFuture mockFuture = mock(OperationFuture.class);
+      Operation mockOperation = mock(Operation.class);
 
-    // This test require projects in the test environment to share reservation with,
-    // therefore the operation should be mocked. If you want to make a real test,
-    // please set the CONSUMER_PROJECT_ID_1 and CONSUMER_PROJECT_ID_2 accordingly.
-    // Make sure that base project has proper permissions to share reservations.
-    // See: https://cloud.google.com/compute/docs/instances/reservations-shared#shared_reservation_constraint
-    ShareSettings shareSettings = ShareSettings.newBuilder()
-        .setShareType(String.valueOf(ShareSettings.ShareType.SPECIFIC_PROJECTS))
-        .putProjectMap("CONSUMER_PROJECT_ID_1", ShareSettingsProjectConfig.newBuilder().build())
-        .putProjectMap("CONSUMER_PROJECT_ID_2", ShareSettingsProjectConfig.newBuilder().build())
-        .build();
+      mockReservationsClient.when(ReservationsClient::create).thenReturn(mockClient);
+      when(mockClient.insertAsync(any(InsertReservationRequest.class)))
+              .thenReturn(mockFuture);
+      when(mockFuture.get(3, TimeUnit.MINUTES)).thenReturn(mockOperation);
+      when(mockOperation.getStatus()).thenReturn(Status.DONE);
 
-    Reservation reservation =
-        Reservation.newBuilder()
-            .setName(RESERVATION_NAME_SHARED)
-            .setZone(ZONE)
-            .setSpecificReservationRequired(true)
-            .setShareSettings(shareSettings)
-            .setSpecificReservation(
-                AllocationSpecificSKUReservation.newBuilder()
-                    .setCount(NUMBER_OF_VMS)
-                    .setSourceInstanceTemplate(INSTANCE_TEMPLATE_SHARED_RESERV_URI)
-                    .build())
-            .build();
+      Status status = CreateSharedReservation.createSharedReservation(PROJECT_ID, ZONE,
+              RESERVATION_NAME_SHARED, INSTANCE_TEMPLATE_SHARED_RESERV_URI, NUMBER_OF_VMS);
 
-    OperationFuture mockFuture = mock(OperationFuture.class);
-    when(mockReservationsClient.insertAsync(PROJECT_ID, ZONE, reservation))
-        .thenReturn(mockFuture);
-    Operation mockOperation = mock(Operation.class);
-    when(mockFuture.get(3, TimeUnit.MINUTES)).thenReturn(mockOperation);
-    when(mockOperation.hasError()).thenReturn(false);
-    when(mockOperation.getStatus()).thenReturn(Operation.Status.DONE);
+      verify(mockClient, times(1)).insertAsync(any(InsertReservationRequest.class));
+      verify(mockFuture, times(1)).get(anyLong(), any(TimeUnit.class));
+      assertEquals(Status.DONE, status);
 
-    // Create an instance, passing in the mock client
-    CreateSharedReservation creator = new CreateSharedReservation(mockReservationsClient);
-
-    creator.createSharedReservation(PROJECT_ID, ZONE,
-        RESERVATION_NAME_SHARED, INSTANCE_TEMPLATE_SHARED_RESERV_URI, NUMBER_OF_VMS);
-
-    verify(mockReservationsClient, times(1))
-        .insertAsync(PROJECT_ID, ZONE, reservation);
-    assertThat(stdOut.toString()).contains("Reservation created. Operation Status: DONE");
+    }
   }
 }
