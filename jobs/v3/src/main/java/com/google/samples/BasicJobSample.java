@@ -73,7 +73,6 @@ public final class BasicJobSample {
   // [END job_basic_job]
 
   // [START job_create_job]
-  // [START create_job]
 
   /** Create a job. */
   public static Job createJob(Job jobToBeCreated) throws IOException {
@@ -93,7 +92,6 @@ public final class BasicJobSample {
       throw e;
     }
   }
-  // [END create_job]
   // [END job_create_job]
 
   // [START job_get_job]
