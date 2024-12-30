@@ -22,140 +22,94 @@ import com.google.cloud.tpu.v2alpha1.Node;
 import com.google.cloud.tpu.v2alpha1.QueuedResource;
 import com.google.cloud.tpu.v2alpha1.TpuClient;
 import com.google.protobuf.Duration;
-// Uncomment the following line to use Interval or Date
-//import com.google.protobuf.Timestamp;
-//import com.google.type.Interval;
-//import java.util.Date;
-//import java.time.Instant;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
 public class CreateTimeBoundQueuedResource {
 
   public static void main(String[] args)
-      throws IOException, ExecutionException, InterruptedException {
+          throws IOException, ExecutionException, InterruptedException {
     // TODO(developer): Replace these variables before running the sample.
     // Project ID or project number of the Google Cloud project you want to create a node.
     String projectId = "YOUR_PROJECT_ID";
     // The zone in which to create the TPU.
     // For more information about supported TPU types for specific zones,
     // see https://cloud.google.com/tpu/docs/regions-zones
-    String zone = "europe-west4-a";
-    // The name for your TPU.
-    String nodeName = "YOUR_NODE_ID";
+    String zone = "us-central2-b";
+    // The name of your node.
+    String nodeId = "YOUR_NODE_ID";
     // The accelerator type that specifies the version and size of the Cloud TPU you want to create.
     // For more information about supported accelerator types for each TPU version,
     // see https://cloud.google.com/tpu/docs/system-architecture-tpu-vm#versions.
-    String tpuType = "v2-8";
+    String acceleratorType = "v2-8";
     // Software version that specifies the version of the TPU runtime to install.
     // For more information see https://cloud.google.com/tpu/docs/runtimes
-    String tpuSoftwareVersion = "tpu-vm-tf-2.14.1";
-    // The name for your Queued Resource.
-    String queuedResourceId = "QUEUED_RESOURCE_ID";
+    String runtimeVersion = "tpu-vm-tf-2.14.1";
+    // The name of your Queued Resource.
+    String queuedResourceId = "YOUR_QUEUED_RESOURCE_ID";
 
-
-    createTimeBoundQueuedResource(projectId, nodeName,
-        queuedResourceId, zone, tpuType, tpuSoftwareVersion);
+    createTimeBoundQueuedResource(projectId, nodeId,
+        queuedResourceId, zone, acceleratorType, runtimeVersion);
   }
 
   // Creates a Queued Resource with time bound configuration.
   public static QueuedResource createTimeBoundQueuedResource(
-      String projectId, String nodeName, String queuedResourceName,
-      String zone, String tpuType, String tpuSoftwareVersion)
-      throws IOException, ExecutionException, InterruptedException {
+      String projectId, String nodeId, String queuedResourceId,
+      String zone, String acceleratorType, String runtimeVersion)
+          throws IOException, ExecutionException, InterruptedException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (TpuClient tpuClient = TpuClient.create()) {
-      // Define parent for requests
       String parent = String.format("projects/%s/locations/%s", projectId, zone);
       // Create a Duration object representing 6 hours.
       Duration validAfterDuration = Duration.newBuilder().setSeconds(6 * 3600).build();
-      // Uncomment the appropriate lines to use other time bound configurations
       // Duration validUntilDuration = Duration.newBuilder().setSeconds(6 * 3600).build();
-      // String validAfterTime = "2024-10-14T09:00:00Z";
-      // String validUntilTime = "2024-12-14T09:00:00Z";
+      // You could also use timestamps like this:
+      // Timestamp validAfterTime = Timestamps.parse("2024-10-14T09:00:00Z");
+      // Timestamp validUntilTime = Timestamps.parse("2024-12-14T09:00:00Z");
 
-      // Create a node
       Node node =
           Node.newBuilder()
-              .setName(nodeName)
-              .setAcceleratorType(tpuType)
-              .setRuntimeVersion(tpuSoftwareVersion)
+              .setName(nodeId)
+              .setAcceleratorType(acceleratorType)
+              .setRuntimeVersion(runtimeVersion)
               .setQueuedResource(
                   String.format(
                       "projects/%s/locations/%s/queuedResources/%s",
-                      projectId, zone, queuedResourceName))
+                      projectId, zone, queuedResourceId))
               .build();
 
-      // Create queued resource
       QueuedResource queuedResource =
           QueuedResource.newBuilder()
-              .setName(queuedResourceName)
+              .setName(queuedResourceId)
               .setTpu(
                   QueuedResource.Tpu.newBuilder()
                       .addNodeSpec(
                           QueuedResource.Tpu.NodeSpec.newBuilder()
                               .setParent(parent)
                               .setNode(node)
-                              .setNodeId(nodeName)
+                              .setNodeId(nodeId)
                               .build())
                       .build())
               .setQueueingPolicy(
                   QueuedResource.QueueingPolicy.newBuilder()
-                      // You can specify a duration after which a resource should be allocated.
-                      // corresponds   --valid-after-duration flag
+                      //  Use one of the following queueing policies
                       .setValidAfterDuration(validAfterDuration)
+                      // .setValidUntilDuration(validUntilDuration)
+                      // .setValidAfterTime(validAfterTime)
+                      // .setValidUntilTime(validUntilTime)
                       .build())
-              // Uncomment the appropriate lines to use other time bound configurations
-              //.setQueueingPolicy(
-              //QueuedResource.QueueingPolicy.newBuilder()
-              // You can specify a time after which a resource should be allocated.
-              // corresponds  --valid-until-duration flag
-              //.setValidUntilDuration(validUntilDuration)
-              //.build())
-              //.setQueueingPolicy(
-              //QueuedResource.QueueingPolicy.newBuilder()
-              // You can specify a time before which the resource should be allocated.
-              // corresponds  --valid-after-time flag
-              //.setValidAfterTime(convertStringToTimestamp(validAfterTime))
-              //.build())
-              //.setQueueingPolicy(
-              //QueuedResource.QueueingPolicy.newBuilder()
-              // You can specify a time after which the resource should be allocated.
-              // corresponds  --valid-until-time flag
-              //.setValidUntilTime(convertStringToTimestamp(validUntilTime))
-              //.build())
-              //.setQueueingPolicy(
-              //QueuedResource.QueueingPolicy.newBuilder()
-              // You can specify a time interval before and after which
-              // the resource should be allocated.
-              //.setValidInterval(
-              //Interval.newBuilder()
-              //.setStartTime(convertStringToTimestamp(validAfterTime))
-              //.setEndTime(convertStringToTimestamp(validUntilTime))
-              //.build())
-              //.build())
               .build();
 
       CreateQueuedResourceRequest request =
           CreateQueuedResourceRequest.newBuilder()
               .setParent(parent)
               .setQueuedResource(queuedResource)
-              .setQueuedResourceId(queuedResourceName)
+              .setQueuedResourceId(queuedResourceId)
               .build();
 
       return tpuClient.createQueuedResourceAsync(request).get();
     }
   }
-
-  // Uncomment this method if you want to use time bound configurations
-  // Method to convert a string timestamp to a Protobuf Timestamp object
-  //  private static Timestamp convertStringToTimestamp(String timestampString) {
-  //    Instant instant = Instant.parse(timestampString);
-  //    return Timestamp.newBuilder()
-  //        .setSeconds(instant.getEpochSecond())
-  //        .setNanos(instant.getNano())
-  //        .build();
-  //  }
 }
 // [END tpu_queued_resources_time_bound]
