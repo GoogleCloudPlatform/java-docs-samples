@@ -40,6 +40,7 @@ import compute.Util;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.lang.Error;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -79,6 +80,8 @@ public class DisksIT {
   private static String SECONDARY_REGIONAL_DISK;
   private static String SECONDARY_DISK;
   private static final long DISK_SIZE = 10L;
+  private static String SECONDARY_CUSTOM_DISK;
+
   private ByteArrayOutputStream stdOut;
 
   // Check if the required environment variables are set.
@@ -109,6 +112,7 @@ public class DisksIT {
     REGIONAL_REPLICATED_DISK = "gcloud-test-disk-replicated-" + uuid;
     SECONDARY_REGIONAL_DISK = "gcloud-test-disk-secondary-regional-" + uuid;
     SECONDARY_DISK = "gcloud-test-disk-secondary-" + uuid;
+    SECONDARY_CUSTOM_DISK = "gcloud-test-disk-custom-" + uuid;
 
     // Cleanup existing stale resources.
     Util.cleanUpExistingInstances("test-disks", PROJECT_ID, ZONE);
@@ -186,6 +190,7 @@ public class DisksIT {
     RegionalDelete.deleteRegionalDisk(PROJECT_ID, REGION, REGIONAL_REPLICATED_DISK);
     RegionalDelete.deleteRegionalDisk(PROJECT_ID, "us-central1", SECONDARY_REGIONAL_DISK);
     DeleteDisk.deleteDisk(PROJECT_ID, "us-central1-c", SECONDARY_DISK);
+    DeleteDisk.deleteDisk(PROJECT_ID, "us-central1-c", SECONDARY_CUSTOM_DISK);
 
     stdOut.close();
     System.setOut(out);
@@ -343,14 +348,28 @@ public class DisksIT {
   @Test
   public void testCreateDiskSecondaryZonal()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    String diskType =  String.format(
+    String diskType = String.format(
         "projects/%s/zones/%s/diskTypes/pd-ssd", PROJECT_ID, ZONE);
     Status status = CreateDiskSecondaryZonal.createDiskSecondaryZonal(
         PROJECT_ID, PROJECT_ID, EMPTY_DISK_NAME, SECONDARY_DISK, ZONE,
-        "us-central1-c", DISK_SIZE,  diskType);
+        "us-central1-c", DISK_SIZE, diskType);
     Disk disk = Util.getDisk(PROJECT_ID, "us-central1-c", SECONDARY_DISK);
 
     assertThat(status).isEqualTo(Status.DONE);
     assertEquals(SECONDARY_DISK, disk.getName());
+  }
+
+  @Test
+  public void testCreateSecondaryCustomDisk()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    String diskType =  String.format(
+        "projects/%s/zones/%s/diskTypes/pd-ssd", PROJECT_ID, ZONE);
+    Status status = CreateSecondaryCustomDisk.createSecondaryCustomDisk(
+        PROJECT_ID, PROJECT_ID, EMPTY_DISK_NAME, SECONDARY_CUSTOM_DISK, ZONE,
+        "us-central1-c", DISK_SIZE,  diskType);
+    Disk disk = Util.getDisk(PROJECT_ID, "us-central1-c", SECONDARY_CUSTOM_DISK);
+
+    assertThat(status).isEqualTo(Status.DONE);
+    assertEquals(SECONDARY_CUSTOM_DISK, disk.getName());
   }
 }
