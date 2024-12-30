@@ -34,11 +34,11 @@ public class CloneZonalDisksFromConsistencyGroup {
     // Project ID or project number of the Cloud project you want to use.
     String project = "YOUR_PROJECT_ID";
     // Zone in which your disks are located.
-    String disksLocation = "us-central1-a";
+    String zone = "us-central1-a";
     // Name of the consistency group you want to clone disks from.
     String consistencyGroupName = "YOUR_CONSISTENCY_GROUP_NAME";
 
-    cloneZonalDisksFromConsistencyGroup(project, disksLocation, consistencyGroupName);
+    cloneZonalDisksFromConsistencyGroup(project, zone, consistencyGroupName);
   }
 
   // Clones zonal disks from a consistency group.
