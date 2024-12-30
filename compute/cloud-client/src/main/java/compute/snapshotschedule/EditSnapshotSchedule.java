@@ -17,8 +17,6 @@
 package compute.snapshotschedule;
 
 // [START compute_snapshot_schedule_edit]
-import static com.google.cloud.compute.v1.ResourcePolicySnapshotSchedulePolicyRetentionPolicy.OnSourceDiskDelete.APPLY_RETENTION_POLICY;
-
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.Operation.Status;
 import com.google.cloud.compute.v1.PatchResourcePolicyRequest;
@@ -26,6 +24,7 @@ import com.google.cloud.compute.v1.ResourcePoliciesClient;
 import com.google.cloud.compute.v1.ResourcePolicy;
 import com.google.cloud.compute.v1.ResourcePolicySnapshotSchedulePolicy;
 import com.google.cloud.compute.v1.ResourcePolicySnapshotSchedulePolicyRetentionPolicy;
+import com.google.cloud.compute.v1.ResourcePolicySnapshotSchedulePolicyRetentionPolicy.OnSourceDiskDelete;
 import com.google.cloud.compute.v1.ResourcePolicySnapshotSchedulePolicySchedule;
 import com.google.cloud.compute.v1.ResourcePolicySnapshotSchedulePolicySnapshotProperties;
 import com.google.cloud.compute.v1.ResourcePolicyWeeklyCycle;
@@ -74,17 +73,11 @@ public class EditSnapshotSchedule {
               .addDayOfWeeks(dayOfWeek)
               .build();
 
-      ResourcePolicySnapshotSchedulePolicySchedule.Builder scheduler =
-              ResourcePolicySnapshotSchedulePolicySchedule.newBuilder();
-      scheduler.clearDailySchedule().clearHourlySchedule();
-      scheduler.setWeeklySchedule(weeklySchedule);
-
-      String onSourceDiskDelete = APPLY_RETENTION_POLICY.toString();
       int maxRetentionDays = 3;
 
       ResourcePolicySnapshotSchedulePolicyRetentionPolicy.Builder retentionPolicy =
               ResourcePolicySnapshotSchedulePolicyRetentionPolicy.newBuilder();
-      retentionPolicy.setOnSourceDiskDelete(onSourceDiskDelete);
+      retentionPolicy.setOnSourceDiskDelete(OnSourceDiskDelete.APPLY_RETENTION_POLICY.toString());
       retentionPolicy.setMaxRetentionDays(maxRetentionDays);
 
       String description = "Updated description";
@@ -94,7 +87,8 @@ public class EditSnapshotSchedule {
               .setDescription(description)
               .setSnapshotSchedulePolicy(
                       ResourcePolicySnapshotSchedulePolicy.newBuilder()
-                              .setSchedule(scheduler)
+                              .setSchedule(ResourcePolicySnapshotSchedulePolicySchedule.newBuilder()
+                                      .setWeeklySchedule(weeklySchedule))
                               .setSnapshotProperties(snapshotProperties)
                               .setRetentionPolicy(retentionPolicy.build())
                               .build())

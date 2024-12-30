@@ -17,8 +17,6 @@
 package compute.snapshotschedule;
 
 // [START compute_snapshot_schedule_create]
-import static com.google.cloud.compute.v1.ResourcePolicySnapshotSchedulePolicyRetentionPolicy.OnSourceDiskDelete.KEEP_AUTO_SNAPSHOTS;
-
 import com.google.cloud.compute.v1.InsertResourcePolicyRequest;
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.compute.v1.Operation.Status;
@@ -27,6 +25,7 @@ import com.google.cloud.compute.v1.ResourcePolicy;
 import com.google.cloud.compute.v1.ResourcePolicyHourlyCycle;
 import com.google.cloud.compute.v1.ResourcePolicySnapshotSchedulePolicy;
 import com.google.cloud.compute.v1.ResourcePolicySnapshotSchedulePolicyRetentionPolicy;
+import com.google.cloud.compute.v1.ResourcePolicySnapshotSchedulePolicyRetentionPolicy.OnSourceDiskDelete;
 import com.google.cloud.compute.v1.ResourcePolicySnapshotSchedulePolicySchedule;
 import com.google.cloud.compute.v1.ResourcePolicySnapshotSchedulePolicySnapshotProperties;
 import java.io.IOException;
@@ -52,24 +51,22 @@ public class CreateSnapshotSchedule {
     // More about storage locations:
     // https://cloud.google.com/compute/docs/disks/snapshots?authuser=0#selecting_a_storage_location
     String storageLocation = "US";
-    // Determines what happens to your snapshots if the source disk is deleted.
-    String onSourceDiskDelete = KEEP_AUTO_SNAPSHOTS.toString();
 
     createSnapshotSchedule(projectId, region, snapshotScheduleName, scheduleDescription,
-            maxRetentionDays, storageLocation, onSourceDiskDelete);
+            maxRetentionDays, storageLocation);
   }
 
   // Creates a snapshot schedule policy.
   public static Status createSnapshotSchedule(String projectId, String region,
             String snapshotScheduleName, String scheduleDescription, int maxRetentionDays,
-            String storageLocation, String onSourceDiskDelete)
+            String storageLocation)
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (ResourcePoliciesClient resourcePoliciesClient = ResourcePoliciesClient.create()) {
-      String startTime = "08:00";
-      // Define the hourly schedule:
       int snapshotInterval = 10; // Create a snapshot every 10 hours
+      String startTime = "08:00"; // Define the hourly schedule
+      
       ResourcePolicyHourlyCycle hourlyCycle = ResourcePolicyHourlyCycle.newBuilder()
               .setHoursInCycle(snapshotInterval)
               .setStartTime(startTime)
@@ -78,7 +75,7 @@ public class CreateSnapshotSchedule {
       ResourcePolicySnapshotSchedulePolicyRetentionPolicy retentionPolicy =
               ResourcePolicySnapshotSchedulePolicyRetentionPolicy.newBuilder()
                       .setMaxRetentionDays(maxRetentionDays)
-                      .setOnSourceDiskDelete(onSourceDiskDelete)
+                      .setOnSourceDiskDelete(OnSourceDiskDelete.KEEP_AUTO_SNAPSHOTS.toString())
               .build();
 
       ResourcePolicySnapshotSchedulePolicySnapshotProperties snapshotProperties =
