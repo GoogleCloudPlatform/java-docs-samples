@@ -38,6 +38,8 @@ import com.google.cloud.compute.v1.Snapshot;
 import com.google.cloud.compute.v1.SnapshotsClient;
 import compute.DeleteInstance;
 import compute.Util;
+import compute.snapshotschedule.CreateSnapshotSchedule;
+import compute.snapshotschedule.DeleteSnapshotSchedule;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -159,7 +161,7 @@ public class DisksIT {
     TimeUnit.SECONDS.sleep(10);
     SetDiskAutodelete.setDiskAutodelete(PROJECT_ID, ZONE, INSTANCE_NAME, DISK_NAME, true);
     assertThat(stdOut.toString()).contains("Disk autodelete field updated.");
-    Util.createSnapshotSchedule(PROJECT_ID, REGION, SNAPSHOT_SCHEDULE,
+    CreateSnapshotSchedule.createSnapshotSchedule(PROJECT_ID, REGION, SNAPSHOT_SCHEDULE,
             "description", 10, "US");
     // Create zonal and regional blank disks for testing attach and resize.
     createZonalDisk();
@@ -198,7 +200,7 @@ public class DisksIT {
     DeleteDisk.deleteDisk(PROJECT_ID, "us-central1-c", SECONDARY_DISK);
     DeleteDisk.deleteDisk(PROJECT_ID, "us-central1-c", SECONDARY_CUSTOM_DISK);
     DeleteDisk.deleteDisk(PROJECT_ID, ZONE, DISK_WITH_SNAPSHOT_SCHEDULE);
-    Util.deleteSnapshotSchedule(PROJECT_ID, REGION, SNAPSHOT_SCHEDULE);
+    DeleteSnapshotSchedule.deleteSnapshotSchedule(PROJECT_ID, REGION, SNAPSHOT_SCHEDULE);
 
     stdOut.close();
     System.setOut(out);
