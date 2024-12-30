@@ -16,9 +16,11 @@
 
 package compute;
 
+import com.google.cloud.compute.v1.DeleteResourcePolicyRequest;
 import com.google.cloud.compute.v1.DeleteStoragePoolRequest;
 import com.google.cloud.compute.v1.Disk;
 import com.google.cloud.compute.v1.DisksClient;
+import com.google.cloud.compute.v1.InsertResourcePolicyRequest;
 import com.google.cloud.compute.v1.Instance;
 import com.google.cloud.compute.v1.InstanceTemplate;
 import com.google.cloud.compute.v1.InstanceTemplatesClient;
@@ -32,6 +34,12 @@ import com.google.cloud.compute.v1.Reservation;
 import com.google.cloud.compute.v1.ReservationsClient;
 import com.google.cloud.compute.v1.ResourcePoliciesClient;
 import com.google.cloud.compute.v1.ResourcePolicy;
+import com.google.cloud.compute.v1.ResourcePolicyHourlyCycle;
+import com.google.cloud.compute.v1.ResourcePolicySnapshotSchedulePolicy;
+import com.google.cloud.compute.v1.ResourcePolicySnapshotSchedulePolicyRetentionPolicy;
+import com.google.cloud.compute.v1.ResourcePolicySnapshotSchedulePolicyRetentionPolicy.OnSourceDiskDelete;
+import com.google.cloud.compute.v1.ResourcePolicySnapshotSchedulePolicySchedule;
+import com.google.cloud.compute.v1.ResourcePolicySnapshotSchedulePolicySnapshotProperties;
 import com.google.cloud.compute.v1.Snapshot;
 import com.google.cloud.compute.v1.SnapshotsClient;
 import com.google.cloud.compute.v1.StoragePool;
@@ -41,7 +49,6 @@ import compute.disks.DeleteDisk;
 import compute.disks.DeleteSnapshot;
 import compute.disks.RegionalDelete;
 import compute.reservation.DeleteReservation;
-import compute.snapshotschedule.DeleteSnapshotSchedule;
 import java.io.IOException;
 import java.lang.Error;
 import java.nio.charset.StandardCharsets;
@@ -296,7 +303,7 @@ public abstract class Util {
       for (ResourcePolicy resource : resourcePoliciesClient.list(projectId, region).iterateAll()) {
         if (containPrefixToDeleteAndZone(resource, prefixToDelete, region)
                 && isCreatedBeforeThresholdTime(resource.getCreationTimestamp())) {
-          DeleteSnapshotSchedule.deleteSnapshotSchedule(projectId, region, resource.getName());
+          Util.deleteSnapshotSchedule(projectId, region, resource.getName());
         }
       }
     }
@@ -352,5 +359,67 @@ public abstract class Util {
       System.out.println("Resource not found, skipping deletion:");
     }
     return containPrefixToDelete;
+  }
+
+  public static void createSnapshotSchedule(String projectId, String region,
+          String snapshotScheduleName, String scheduleDescription, int maxRetentionDays,
+          String storageLocation)
+          throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    try (ResourcePoliciesClient resourcePoliciesClient = ResourcePoliciesClient.create()) {
+      int snapshotInterval = 10;
+      String startTime = "08:00";
+
+      ResourcePolicyHourlyCycle hourlyCycle = ResourcePolicyHourlyCycle.newBuilder()
+              .setHoursInCycle(snapshotInterval)
+              .setStartTime(startTime)
+              .build();
+
+      ResourcePolicySnapshotSchedulePolicyRetentionPolicy retentionPolicy =
+              ResourcePolicySnapshotSchedulePolicyRetentionPolicy.newBuilder()
+                      .setMaxRetentionDays(maxRetentionDays)
+                      .setOnSourceDiskDelete(OnSourceDiskDelete.KEEP_AUTO_SNAPSHOTS.toString())
+                      .build();
+
+      ResourcePolicySnapshotSchedulePolicySnapshotProperties snapshotProperties =
+              ResourcePolicySnapshotSchedulePolicySnapshotProperties.newBuilder()
+                      .addStorageLocations(storageLocation)
+                      .build();
+
+      ResourcePolicySnapshotSchedulePolicy snapshotSchedulePolicy =
+              ResourcePolicySnapshotSchedulePolicy.newBuilder()
+                      .setRetentionPolicy(retentionPolicy)
+                      .setSchedule(ResourcePolicySnapshotSchedulePolicySchedule.newBuilder()
+                              .setHourlySchedule(hourlyCycle)
+                              .build())
+                      .setSnapshotProperties(snapshotProperties)
+                      .build();
+
+      ResourcePolicy resourcePolicy = ResourcePolicy.newBuilder()
+              .setName(snapshotScheduleName)
+              .setDescription(scheduleDescription)
+              .setSnapshotSchedulePolicy(snapshotSchedulePolicy)
+              .build();
+      InsertResourcePolicyRequest request = InsertResourcePolicyRequest.newBuilder()
+              .setProject(projectId)
+              .setRegion(region)
+              .setResourcePolicyResource(resourcePolicy)
+              .build();
+
+      resourcePoliciesClient.insertAsync(request)
+              .get(3, TimeUnit.MINUTES);
+    }
+  }
+
+  public static void deleteSnapshotSchedule(
+          String projectId, String region, String snapshotScheduleName)
+          throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    try (ResourcePoliciesClient resourcePoliciesClient = ResourcePoliciesClient.create()) {
+      DeleteResourcePolicyRequest request = DeleteResourcePolicyRequest.newBuilder()
+              .setProject(projectId)
+              .setRegion(region)
+              .setResourcePolicy(snapshotScheduleName)
+              .build();
+      resourcePoliciesClient.deleteAsync(request).get(3, TimeUnit.MINUTES);
+    }
   }
 }
