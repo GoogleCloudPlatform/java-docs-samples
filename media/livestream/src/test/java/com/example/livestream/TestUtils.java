@@ -19,14 +19,17 @@ package com.example.livestream;
 import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.video.livestream.v1.Asset;
 import com.google.cloud.video.livestream.v1.Channel;
+import com.google.cloud.video.livestream.v1.Clip;
 import com.google.cloud.video.livestream.v1.DeleteAssetRequest;
 import com.google.cloud.video.livestream.v1.DeleteChannelRequest;
+import com.google.cloud.video.livestream.v1.DeleteClipRequest;
 import com.google.cloud.video.livestream.v1.DeleteEventRequest;
 import com.google.cloud.video.livestream.v1.DeleteInputRequest;
 import com.google.cloud.video.livestream.v1.Event;
 import com.google.cloud.video.livestream.v1.Input;
 import com.google.cloud.video.livestream.v1.ListAssetsRequest;
 import com.google.cloud.video.livestream.v1.ListChannelsRequest;
+import com.google.cloud.video.livestream.v1.ListClipsRequest;
 import com.google.cloud.video.livestream.v1.ListEventsRequest;
 import com.google.cloud.video.livestream.v1.ListInputsRequest;
 import com.google.cloud.video.livestream.v1.LivestreamServiceClient;
@@ -106,6 +109,19 @@ public class TestUtils {
                 DeleteEventRequest.newBuilder().setName(event.getName()).build();
 
             livestreamServiceClient.deleteEvent(deleteEventRequest);
+          }
+          // Delete the channel clips
+          var listClipsRequest =
+              ListClipsRequest.newBuilder().setParent(channel.getName()).build();
+
+          LivestreamServiceClient.ListClipsPagedResponse clipsResponse =
+              livestreamServiceClient.listClips(listClipsRequest);
+
+          for (Clip clip : clipsResponse.iterateAll()) {
+            var deleteClipRequest =
+                DeleteClipRequest.newBuilder().setName(clip.getName()).build();
+
+            livestreamServiceClient.deleteClipAsync(deleteClipRequest).get(10, TimeUnit.MINUTES);
           }
           // Delete the channel
           var deleteChannelRequest =
