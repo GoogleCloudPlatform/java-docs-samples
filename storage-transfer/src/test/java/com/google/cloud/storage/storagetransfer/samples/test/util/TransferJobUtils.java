@@ -15,7 +15,6 @@
  */
 
 // [START storagetransfer_transfer_all]
-// [START all]
 
 package com.google.cloud.storage.storagetransfer.samples.test.util;
 
@@ -68,5 +67,4 @@ public final class TransferJobUtils {
     return time;
   }
 }
-// [END all]
 // [END storagetransfer_transfer_all]
