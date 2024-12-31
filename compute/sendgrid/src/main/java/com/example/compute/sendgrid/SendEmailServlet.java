@@ -25,6 +25,7 @@ import com.sendgrid.helpers.mail.objects.Content;
 import com.sendgrid.helpers.mail.objects.Email;
 import java.io.IOException;
 
+// [START compute_sendgrid]
 // [START example]
 public class SendEmailServlet {
   static final String SENDGRID_API_KEY = "YOUR-SENDGRID-API-KEY";
@@ -65,3 +66,4 @@ public class SendEmailServlet {
 
 }
 // [END example]
+// [END compute_sendgrid]
