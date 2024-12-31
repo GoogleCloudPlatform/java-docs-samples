@@ -37,6 +37,7 @@
   </properties>
 
   <dependencies>
+    <!-- [START compute_sendgrid_dependecies_java] -->
     <!-- [START dependencies] -->
     <dependency>
       <groupId>com.sendgrid</groupId>
@@ -44,6 +45,7 @@
       <version>4.10.1</version>
     </dependency>
     <!-- [END dependencies] -->
+    <!-- [END compute_sendgrid_dependecies_java] -->
   </dependencies>
   <build>
     <plugins>
