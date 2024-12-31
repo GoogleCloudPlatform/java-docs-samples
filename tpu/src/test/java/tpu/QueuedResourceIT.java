@@ -240,4 +240,30 @@ public class QueuedResourceIT {
       assertEquals(returnedQueuedResource.getName(), mockQueuedResource.getName());
     }
   }
+
+  @Test
+  public void testCreateTimeBoundQueuedResource() throws Exception {
+    try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
+      QueuedResource mockQueuedResource =  QueuedResource.newBuilder()
+              .setName("QueuedResourceName")
+              .build();
+      TpuClient mockTpuClient = mock(TpuClient.class);
+      OperationFuture mockFuture = mock(OperationFuture.class);
+
+      mockedTpuClient.when(TpuClient::create).thenReturn(mockTpuClient);
+      when(mockTpuClient.createQueuedResourceAsync(any(CreateQueuedResourceRequest.class)))
+          .thenReturn(mockFuture);
+      when(mockFuture.get()).thenReturn(mockQueuedResource);
+
+      QueuedResource returnedQueuedResource =
+          CreateTimeBoundQueuedResource.createTimeBoundQueuedResource(
+              PROJECT_ID, ZONE, QUEUED_RESOURCE_NAME, NODE_NAME,
+              TPU_TYPE, TPU_SOFTWARE_VERSION);
+
+      verify(mockTpuClient, times(1))
+          .createQueuedResourceAsync(any(CreateQueuedResourceRequest.class));
+      verify(mockFuture, times(1)).get();
+      assertEquals(returnedQueuedResource.getName(), mockQueuedResource.getName());
+    }
+  }
 }
