@@ -63,10 +63,8 @@ public class CreateTimeBoundQueuedResource {
       String parent = String.format("projects/%s/locations/%s", projectId, zone);
       // Create a Duration object representing 6 hours.
       Duration validAfterDuration = Duration.newBuilder().setSeconds(6 * 3600).build();
-      // Duration validUntilDuration = Duration.newBuilder().setSeconds(6 * 3600).build();
       // You could also use timestamps like this:
       // Timestamp validAfterTime = Timestamps.parse("2024-10-14T09:00:00Z");
-      // Timestamp validUntilTime = Timestamps.parse("2024-12-14T09:00:00Z");
 
       Node node =
           Node.newBuilder()
@@ -93,11 +91,8 @@ public class CreateTimeBoundQueuedResource {
                       .build())
               .setQueueingPolicy(
                   QueuedResource.QueueingPolicy.newBuilder()
-                      //  Use one of the following queueing policies
                       .setValidAfterDuration(validAfterDuration)
-                      // .setValidUntilDuration(validUntilDuration)
                       // .setValidAfterTime(validAfterTime)
-                      // .setValidUntilTime(validUntilTime)
                       .build())
               .build();
 
