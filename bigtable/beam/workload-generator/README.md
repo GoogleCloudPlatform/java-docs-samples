@@ -27,9 +27,9 @@ be run as a Dataflow job.
     --template-file-gcs-location "$TEMPLATE_PATH" \
     --parameters bigtableInstanceId="$INSTANCE_ID" \
     --parameters bigtableTableId="$TABLE_ID" \
-    --region "$REGION" \
-    --parameters workloadRate=$WORKLOAD_RATE
-    --parameters workloadDurationMinutes=$WORKLOAD_DURATION
+    --region="$REGION" \
+    --parameters workloadRate="$WORKLOAD_RATE" \
+    --parameters workloadDurationMinutes="$WORKLOAD_DURATION"
     ```
 
 ### Deploying a template instructions
@@ -89,10 +89,10 @@ If you would like to modify this and run it yourself you can use these commands:
 1. Run the command
 
    ```
-   mvn compile exec:java -Dexec.mainClass=WorkloadGenerator \
+   mvn compile exec:java -Dexec.mainClass=bigtable.WorkloadGenerator \
    "-Dexec.args=--bigtableInstanceId=$INSTANCE_ID --bigtableTableId=$TABLE_ID \
    --runner=dataflow --project=$GOOGLE_CLOUD_PROJECT \
-   --region=$REGION" \
-   --workloadRate=$WORKLOAD_RATE 
-   --workloadDurationMinutes=$WORKLOAD_DURATION 
+   --region=$REGION \
+   --workloadRate=$WORKLOAD_RATE \
+   --workloadDurationMinutes=$WORKLOAD_DURATION" 
    ```
