@@ -16,15 +16,15 @@
 
 package com.example.dataflow;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import com.google.common.collect.ImmutableMap;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.UUID;
+import org.apache.beam.sdk.PipelineResult;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.iceberg.CatalogProperties;
@@ -52,25 +52,19 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class ApacheIcebergIT {
-  private ByteArrayOutputStream bout;
-  private final PrintStream originalOut = System.out;
-
-  private static final String CATALOG_NAME = "local";
-  private static final String TABLE_NAME = "table1";
-  private static final TableIdentifier TABLE_IDENTIFIER = TableIdentifier.of(TABLE_NAME);
-
-  // The output file that the Dataflow pipeline writes.
-  private static final String OUTPUT_FILE_NAME_PREFIX = UUID.randomUUID().toString();
-  private static final String OUTPUT_FILE_NAME = OUTPUT_FILE_NAME_PREFIX + "-00000-of-00001.txt";
 
   private Configuration hadoopConf = new Configuration();
   private java.nio.file.Path warehouseDirectory;
   private String warehouseLocation;
   private Catalog catalog;
-  private Table table;
+  private static final String CATALOG_NAME = "local";
 
+  String outputFileNamePrefix = UUID.randomUUID().toString();
+  String outputFileName = outputFileNamePrefix + "-00000-of-00001.txt";
 
-  private void createIcebergTable(Catalog catalog, TableIdentifier tableId) {
+  private Table createIcebergTable(String name) {
+
+    TableIdentifier tableId = TableIdentifier.of(name);
 
     // This schema represents an Iceberg table schema. It needs to match the
     // org.apache.beam.sdk.schemas.Schema that is defined in ApacheIcebergWrite. However, these
@@ -79,10 +73,10 @@ public class ApacheIcebergIT {
         NestedField.required(1, "id", Types.LongType.get()),
         NestedField.optional(2, "name", Types.StringType.get()));
 
-    table = catalog.createTable(tableId, schema);
+    return catalog.createTable(tableId, schema);
   }
 
-  private void writeTableRecord()
+  private void writeTableRecord(Table table)
       throws IOException {
     GenericRecord record = GenericRecord.create(table.schema());
     record.setField("id", 0L);
@@ -109,59 +103,82 @@ public class ApacheIcebergIT {
         .commit();
   }
 
+  private boolean tableContainsRecord(Table table, String data) {
+    CloseableIterable<Record> records = IcebergGenerics.read(table).build();
+    for (Record r : records) {
+      if (r.toString().contains(data)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   @Before
   public void setUp() throws IOException {
-    bout = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(bout));
-
     // Create an Apache Iceberg catalog with a table.
     warehouseDirectory = Files.createTempDirectory("test-warehouse");
     warehouseLocation = "file:" + warehouseDirectory.toString();
-    System.out.println(warehouseLocation);
     catalog =
         CatalogUtil.loadCatalog(
             CatalogUtil.ICEBERG_CATALOG_HADOOP,
             CATALOG_NAME,
             ImmutableMap.of(CatalogProperties.WAREHOUSE_LOCATION, warehouseLocation),
             hadoopConf);
-    createIcebergTable(catalog, TABLE_IDENTIFIER);
+
   }
 
   @After
   public void tearDown() throws IOException {
-    Files.deleteIfExists(Paths.get(OUTPUT_FILE_NAME));
-    System.setOut(originalOut);
+    Files.deleteIfExists(Paths.get(outputFileName));
   }
 
   @Test
   public void testApacheIcebergWrite() {
+    String tableName = "write_table";
+    final Table table = createIcebergTable("write_table");
+
     // Run the Dataflow pipeline.
     ApacheIcebergWrite.main(
         new String[] {
             "--runner=DirectRunner",
             "--warehouseLocation=" + warehouseLocation,
             "--catalogName=" + CATALOG_NAME,
-            "--tableName=" + TABLE_NAME
+            "--tableName=" + tableName
         });
 
     // Verify that the pipeline wrote records to the table.
-    Table table = catalog.loadTable(TABLE_IDENTIFIER);
-    CloseableIterable<Record> records = IcebergGenerics.read(table)
-        .build();
-    for (Record r : records) {
-      System.out.println(r);
-    }
+    assertTrue(tableContainsRecord(table, "0, Alice"));
+    assertTrue(tableContainsRecord(table, "1, Bob"));
+    assertTrue(tableContainsRecord(table, "2, Charles"));
+  }
 
-    String got = bout.toString();
-    assertTrue(got.contains("0, Alice"));
-    assertTrue(got.contains("1, Bob"));
-    assertTrue(got.contains("2, Charles"));
+  @Test
+  public void testApacheIcebergDynamicDestinations() {
+    final Table tableORD = createIcebergTable("flights-ORD");
+    final Table tableSYD = createIcebergTable("flights-SYD");
+
+    // Run the Dataflow pipeline.
+    PipelineResult.State state = ApacheIcebergDynamicDestinations.main(
+        new String[] {
+            "--runner=DirectRunner",
+            "--warehouseLocation=" + warehouseLocation,
+            "--catalogName=" + CATALOG_NAME
+        });
+    assertEquals(PipelineResult.State.DONE, state);
+
+    // Verify that the pipeline wrote records to the correct tables.
+    assertTrue(tableContainsRecord(tableORD, "0, Alice"));
+    assertTrue(tableContainsRecord(tableORD, "2, Charles"));
+    assertTrue(tableContainsRecord(tableSYD, "1, Bob"));
   }
 
   @Test
   public void testApacheIcebergRead() throws IOException {
+    String tableName = "read_table";
+    final Table table = createIcebergTable(tableName);
+
     // Seed the Apache Iceberg table with data.
-    writeTableRecord();
+    writeTableRecord(table);
 
     // Run the Dataflow pipeline.
     ApacheIcebergRead.main(
@@ -169,12 +186,12 @@ public class ApacheIcebergIT {
             "--runner=DirectRunner",
             "--warehouseLocation=" + warehouseLocation,
             "--catalogName=" + CATALOG_NAME,
-            "--tableName=" + TABLE_NAME,
-            "--outputPath=" + OUTPUT_FILE_NAME_PREFIX
+            "--tableName=" + tableName,
+            "--outputPath=" + outputFileNamePrefix
         });
 
-    // Verify the pipeline wrote the table data to a local file.
-    String output = Files.readString(Paths.get(OUTPUT_FILE_NAME));
+    // Verify the pipeline wrote the table data to a text file.
+    String output = Files.readString(Paths.get(outputFileName));
     assertTrue(output.contains("0:Person-0"));
   }
 }
