@@ -30,7 +30,7 @@
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.2.0</version>
+    <version>1.2.2</version>
   </parent>
 
   <properties>
@@ -39,8 +39,8 @@
 
     <maven.war.plugin>2.6</maven.war.plugin>
 
-    <appengine.maven.plugin>2.8.0</appengine.maven.plugin>
-    <jetty.maven.plugin>11.0.20</jetty.maven.plugin>
+    <appengine.maven.plugin>2.8.3</appengine.maven.plugin>
+    <jetty.maven.plugin>11.0.24</jetty.maven.plugin>
 
     <failOnMissingWebXml>false</failOnMissingWebXml> <!-- REQUIRED -->
   </properties>
@@ -52,7 +52,7 @@
         <groupId>com.google.cloud</groupId>
         <scope>import</scope>
         <type>pom</type>
-        <version>26.32.0</version>
+        <version>26.52.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
