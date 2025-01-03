@@ -38,12 +38,15 @@ spec:
       labels:
         app: esp-echo
     spec:
+      # [START endpoints_secret_1_java]
       # [START secret-1]
       volumes:
         - name: service-account-creds
           secret:
             secretName: service-account-creds
       # [END secret-1]
+      # [END endpoints_secret_1_java]
+      # [START endpoints_service_java]
       # [START service]
       containers:
         - name: esp
@@ -56,14 +59,17 @@ spec:
             "--service_account_key", "/etc/nginx/creds/service-account-creds.json",
           ]
       # [END service]
+      # [END endpoints_service_java]
           ports:
             - containerPort: 8080
+          # [START endpoints_secret_2_java]
           # [START secret-2]
           volumeMounts:
             - mountPath: /etc/nginx/creds
               name: service-account-creds
               readOnly: true
           # [END secret-2]
+          # [END endpoints_secret_2_java]
         - name: echo
           image: gcr.io/endpoints-release/echo:latest
           ports:
