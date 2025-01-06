@@ -130,7 +130,6 @@ public final class BasicJobSample {
   // [END job_update_job]
 
   // [START job_update_job_with_field_mask]
-  // [START update_job_with_field_mask]
 
   /** Update a job. */
   public static Job updateJobWithFieldMask(String jobName, String fieldMask, Job jobToBeUpdated)
@@ -147,7 +146,6 @@ public final class BasicJobSample {
       throw e;
     }
   }
-  // [END update_job_with_field_mask]
   // [END job_update_job_with_field_mask]
 
   // [START job_delete_job]
