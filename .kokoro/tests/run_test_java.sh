@@ -96,11 +96,4 @@ if [[ "$file" == *"run/"* && ("$file" != *"run/filesystem"* && "$file" != *"run/
     fi
 fi
 
-# If this is a periodic build, send the test log to the FlakyBot except for Java 8
-# See https://github.com/googleapis/repo-automation-bots/tree/main/packages/flakybot.
-if [[ $JAVA_VERSION != "1.8" && $KOKORO_BUILD_ARTIFACTS_SUBDIR = *"periodic"* ]]; then
-    chmod +x $KOKORO_GFILE_DIR/linux_amd64/flakybot
-    $KOKORO_GFILE_DIR/linux_amd64/flakybot
-fi
-
 exit $RTN
