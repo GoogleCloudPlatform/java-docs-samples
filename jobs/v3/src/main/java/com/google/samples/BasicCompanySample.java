@@ -63,6 +63,7 @@ public final class BasicCompanySample {
   }
   // [END basic_company]
 
+  // [START job_create_company]
   // [START create_company]
 
   /** Create a company. */
@@ -84,7 +85,9 @@ public final class BasicCompanySample {
     }
   }
   // [END create_company]
+  // [END job_create_company]
 
+  // [START job_get_company]
   // [START get_company]
 
   /** Get a company. */
@@ -100,7 +103,9 @@ public final class BasicCompanySample {
     }
   }
   // [END get_company]
+  // [END job_get_company]
 
+  // [START job_update_company]
   // [START update_company]
 
   /** Updates a company. */
@@ -125,7 +130,9 @@ public final class BasicCompanySample {
     }
   }
   // [END update_company]
+  // [END job_update_company]
 
+  // [START job_update_company_with_field_mask]
   // [START update_company_with_field_mask]
 
   /** Updates a company. */
@@ -151,6 +158,7 @@ public final class BasicCompanySample {
     }
   }
   // [END update_company_with_field_mask]
+  // [END job_update_company_with_field_mask]
 
   // [START delete_company]
 
