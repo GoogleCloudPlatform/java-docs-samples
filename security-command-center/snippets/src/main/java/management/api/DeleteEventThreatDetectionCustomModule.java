@@ -41,13 +41,15 @@ public class DeleteEventThreatDetectionCustomModule {
     // once, and can be reused for multiple requests.
     try (SecurityCenterManagementClient client = SecurityCenterManagementClient.create()) {
 
-      String name =
+      String qualifiedModuleName =
           String.format(
               "projects/%s/locations/global/eventThreatDetectionCustomModules/%s",
               projectId, customModuleId);
 
       DeleteEventThreatDetectionCustomModuleRequest request =
-          DeleteEventThreatDetectionCustomModuleRequest.newBuilder().setName(name).build();
+          DeleteEventThreatDetectionCustomModuleRequest.newBuilder()
+              .setName(qualifiedModuleName)
+              .build();
 
       client.deleteEventThreatDetectionCustomModule(request);
 

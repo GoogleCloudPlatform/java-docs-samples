@@ -44,7 +44,7 @@ public class UpdateEventThreatDetectionCustomModule {
     // once, and can be reused for multiple requests.
     try (SecurityCenterManagementClient client = SecurityCenterManagementClient.create()) {
 
-      String name =
+      String qualifiedModuleName =
           String.format(
               "projects/%s/locations/global/eventThreatDetectionCustomModules/%s",
               projectId, customModuleId);
@@ -53,7 +53,7 @@ public class UpdateEventThreatDetectionCustomModule {
       // EnablementState accordingly.
       EventThreatDetectionCustomModule eventThreatDetectionCustomModule =
           EventThreatDetectionCustomModule.newBuilder()
-              .setName(name)
+              .setName(qualifiedModuleName)
               .setEnablementState(EnablementState.DISABLED)
               .build();
 

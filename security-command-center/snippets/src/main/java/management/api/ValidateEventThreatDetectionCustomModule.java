@@ -42,22 +42,24 @@ public class ValidateEventThreatDetectionCustomModule {
     // once, and can be reused for multiple requests.
     try (SecurityCenterManagementClient client = SecurityCenterManagementClient.create()) {
 
+      String parent = String.format("projects/%s/locations/global", projectId);
+
       // Define the raw JSON configuration for the Event Threat Detection custom module
-      String rawText =
-          "{\n"
-              + "\"ips\": [\"192.0.2.1\"],\n"
-              + "\"metadata\": {\n"
-              + "  \"properties\": {\n"
-              + "    \"someProperty\": \"someValue\"\n"
-              + "  },\n"
-              + "  \"severity\": \"MEDIUM\"\n"
-              + "}\n"
+      String rawText = 
+          "{"
+              + "\"ips\": [\"192.0.2.1\"],"
+              + "\"metadata\": {"
+              + "  \"properties\": {"
+              + "    \"someProperty\": \"someValue\""
+              + "  },"
+              + "  \"severity\": \"MEDIUM\""
+              + "}"
               + "}";
 
       ValidateEventThreatDetectionCustomModuleRequest request =
           ValidateEventThreatDetectionCustomModuleRequest.newBuilder()
-              .setParent(String.format("projects/%s/locations/global", projectId))
-              .setRawText(rawText) // Use raw JSON as a string for validation
+              .setParent(parent)
+              .setRawText(rawText) // Use JSON as a string for validation
               .setType("CONFIGURABLE_BAD_IP")
               .build();
 

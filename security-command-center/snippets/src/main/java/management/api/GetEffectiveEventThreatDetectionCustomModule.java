@@ -43,13 +43,15 @@ public class GetEffectiveEventThreatDetectionCustomModule {
     // once, and can be reused for multiple requests.
     try (SecurityCenterManagementClient client = SecurityCenterManagementClient.create()) {
 
-      String name =
+      String qualifiedModuleName =
           String.format(
               "projects/%s/locations/global/effectiveEventThreatDetectionCustomModules/%s",
               projectId, customModuleId);
 
       GetEffectiveEventThreatDetectionCustomModuleRequest request =
-          GetEffectiveEventThreatDetectionCustomModuleRequest.newBuilder().setName(name).build();
+          GetEffectiveEventThreatDetectionCustomModuleRequest.newBuilder()
+              .setName(qualifiedModuleName)
+              .build();
 
       EffectiveEventThreatDetectionCustomModule response =
           client.getEffectiveEventThreatDetectionCustomModule(request);

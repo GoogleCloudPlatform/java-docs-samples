@@ -40,10 +40,10 @@ public class ListEventThreatDetectionCustomModules {
     // once, and can be reused for multiple requests.
     try (SecurityCenterManagementClient client = SecurityCenterManagementClient.create()) {
 
+      String parent = String.format("projects/%s/locations/global", projectId);
+
       ListEventThreatDetectionCustomModulesRequest request =
-          ListEventThreatDetectionCustomModulesRequest.newBuilder()
-              .setParent(String.format("projects/%s/locations/global", projectId))
-              .build();
+          ListEventThreatDetectionCustomModulesRequest.newBuilder().setParent(parent).build();
 
       ListEventThreatDetectionCustomModulesPagedResponse response =
           client.listEventThreatDetectionCustomModules(request);
