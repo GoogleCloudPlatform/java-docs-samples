@@ -27,7 +27,6 @@ import java.io.IOException;
 public class UpdateEventThreatDetectionCustomModule {
 
   public static void main(String[] args) throws IOException {
-    // https://cloud.google.com/security-command-center/docs/reference/security-center-management/rest/v1/organizations.locations.eventThreatDetectionCustomModules/patch
     // TODO: Developer should replace project_id with a real project ID before running this code
     String projectId = "project_id";
 
@@ -50,15 +49,20 @@ public class UpdateEventThreatDetectionCustomModule {
               projectId, customModuleId);
 
       // Define the event threat detection custom module configuration, update the
-      // EnablementState accordingly.
+      // DisplayName and EnablementState accordingly.
       EventThreatDetectionCustomModule eventThreatDetectionCustomModule =
           EventThreatDetectionCustomModule.newBuilder()
               .setName(qualifiedModuleName)
+              .setDisplayName("updated_custom_module_name")
               .setEnablementState(EnablementState.DISABLED)
               .build();
 
-      // Set the field mask to specify which properties should be updated.
-      FieldMask fieldMask = FieldMask.newBuilder().addPaths("enablement_state").build();
+      // Set the field mask to specify which properties should be updated. In the below example we
+      // are updating displayName and EnablementState
+      // https://cloud.google.com/security-command-center/docs/reference/security-center-management/rest/v1/organizations.locations.eventThreatDetectionCustomModules/patch#query-parameters
+      // https://protobuf.dev/reference/protobuf/google.protobuf/#field-mask
+      FieldMask fieldMask =
+          FieldMask.newBuilder().addPaths("display_name").addPaths("enablement_state").build();
 
       UpdateEventThreatDetectionCustomModuleRequest request =
           UpdateEventThreatDetectionCustomModuleRequest.newBuilder()

@@ -25,7 +25,6 @@ import java.io.IOException;
 public class GetEffectiveEventThreatDetectionCustomModule {
 
   public static void main(String[] args) throws IOException {
-    // https://cloud.google.com/security-command-center/docs/reference/security-center-management/rest/v1/organizations.locations.effectiveEventThreatDetectionCustomModules/get
     // TODO: Developer should replace project_id with a real project ID before running this code
     String projectId = "project_id";
 
