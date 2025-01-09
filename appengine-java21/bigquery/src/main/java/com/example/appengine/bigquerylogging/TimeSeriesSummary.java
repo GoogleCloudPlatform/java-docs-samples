@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Google LLC
+ * Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +16,16 @@
 
 package com.example.appengine.bigquerylogging;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.monitoring.v3.Point;
 import com.google.monitoring.v3.TimeSeries;
 import com.google.protobuf.Timestamp;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public abstract class TimeSeriesSummary<T> {
   private String name;
