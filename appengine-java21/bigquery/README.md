@@ -4,7 +4,7 @@
 # Google Cloud API Showcase: BigQuery & Cloud Monitoring in App Engine standard environment for Java 21
 
 This API Showcase demonstrates how to run an App Engine standard environment application with dependencies on both 
-[Google BigQuery][bigquery] and [StackDriver Monitoring][monitoring].
+[Google BigQuery][bigquery] and [Cloud Monitoring][monitoring].
 
 [bigquery]: https://cloud.google.com/bigquery/docs
 [monitoring]: https://cloud.google.com/monitoring/docs

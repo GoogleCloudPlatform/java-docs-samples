@@ -10,7 +10,7 @@ Moves the Bigtable Hello World application to Google App Engine Standard for Jav
 * [Java 21](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
 * [Maven](https://maven.apache.org/download.cgi) (at least 3.3.9)
 * [Gradle](https://gradle.org)
-* [Google Cloud CLI](https://cloud.google.com/sdk/) (aka gcloud)
+* [Google Cloud CLI](https://cloud.google.com/cli/) (aka gcloud)
 
 Initialize the Google Cloud CLI using:
 
