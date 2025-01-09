@@ -42,13 +42,15 @@ public class GetEventThreatDetectionCustomModule {
     // once, and can be reused for multiple requests.
     try (SecurityCenterManagementClient client = SecurityCenterManagementClient.create()) {
 
-      String name =
+      String qualifiedModuleName =
           String.format(
               "projects/%s/locations/global/eventThreatDetectionCustomModules/%s",
               projectId, customModuleId);
 
       GetEventThreatDetectionCustomModuleRequest request =
-          GetEventThreatDetectionCustomModuleRequest.newBuilder().setName(name).build();
+          GetEventThreatDetectionCustomModuleRequest.newBuilder()
+              .setName(qualifiedModuleName)
+              .build();
 
       EventThreatDetectionCustomModule response =
           client.getEventThreatDetectionCustomModule(request);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Google LLC
+ * Copyright 2025 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,24 +16,23 @@
 
 package management.api;
 
-// [START securitycenter_list_event_threat_detection_custom_module]
-import com.google.cloud.securitycentermanagement.v1.ListEventThreatDetectionCustomModulesRequest;
+// [START securitycenter_list_effective_event_threat_detection_custom_module]
+import com.google.cloud.securitycentermanagement.v1.ListEffectiveEventThreatDetectionCustomModulesRequest;
 import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient;
-import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient.ListEventThreatDetectionCustomModulesPagedResponse;
+import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient.ListEffectiveEventThreatDetectionCustomModulesPagedResponse;
 import java.io.IOException;
 
-public class ListEventThreatDetectionCustomModules {
+public class ListEffectiveEventThreatDetectionCustomModules {
 
   public static void main(String[] args) throws IOException {
-    // https://cloud.google.com/security-command-center/docs/reference/security-center-management/rest/v1/organizations.locations.eventThreatDetectionCustomModules/list
     // TODO: Developer should replace project_id with a real project ID before running this code
     String projectId = "project_id";
 
-    listEventThreatDetectionCustomModules(projectId);
+    listEffectiveEventThreatDetectionCustomModules(projectId);
   }
 
-  public static ListEventThreatDetectionCustomModulesPagedResponse
-      listEventThreatDetectionCustomModules(String projectId) throws IOException {
+  public static ListEffectiveEventThreatDetectionCustomModulesPagedResponse
+      listEffectiveEventThreatDetectionCustomModules(String projectId) throws IOException {
 
     // Initialize client that will be used to send requests. This client only needs
     // to be created
@@ -42,14 +41,16 @@ public class ListEventThreatDetectionCustomModules {
 
       String parent = String.format("projects/%s/locations/global", projectId);
 
-      ListEventThreatDetectionCustomModulesRequest request =
-          ListEventThreatDetectionCustomModulesRequest.newBuilder().setParent(parent).build();
+      ListEffectiveEventThreatDetectionCustomModulesRequest request =
+          ListEffectiveEventThreatDetectionCustomModulesRequest.newBuilder()
+              .setParent(parent)
+              .build();
 
-      ListEventThreatDetectionCustomModulesPagedResponse response =
-          client.listEventThreatDetectionCustomModules(request);
+      ListEffectiveEventThreatDetectionCustomModulesPagedResponse response =
+          client.listEffectiveEventThreatDetectionCustomModules(request);
 
       return response;
     }
   }
 }
-// [END securitycenter_list_event_threat_detection_custom_module]
+// [END securitycenter_list_effective_event_threat_detection_custom_module]

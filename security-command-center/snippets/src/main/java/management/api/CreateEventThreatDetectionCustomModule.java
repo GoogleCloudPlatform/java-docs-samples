@@ -50,6 +50,8 @@ public class CreateEventThreatDetectionCustomModule {
     // once, and can be reused for multiple requests.
     try (SecurityCenterManagementClient client = SecurityCenterManagementClient.create()) {
 
+      String parent = String.format("projects/%s/locations/global", projectId);
+
       // define the metadata and other config parameters severity, description,
       // recommendation and ips below
       Map<String, Value> metadata = new HashMap<>();
@@ -83,7 +85,7 @@ public class CreateEventThreatDetectionCustomModule {
 
       CreateEventThreatDetectionCustomModuleRequest request =
           CreateEventThreatDetectionCustomModuleRequest.newBuilder()
-              .setParent(String.format("projects/%s/locations/global", projectId))
+              .setParent(parent)
               .setEventThreatDetectionCustomModule(eventThreatDetectionCustomModule)
               .build();
 
