@@ -28,7 +28,7 @@ public class GetQueuedResource {
     // Project ID or project number of the Google Cloud project.
     String projectId = "YOUR_PROJECT_ID";
     // The zone in which the TPU was created.
-    String zone = "europe-west4-a";
+    String zone = "us-central1-f";
     // The name for your Queued Resource.
     String queuedResourceId = "QUEUED_RESOURCE_ID";
 
