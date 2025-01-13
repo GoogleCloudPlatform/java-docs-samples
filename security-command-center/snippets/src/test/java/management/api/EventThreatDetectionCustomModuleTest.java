@@ -24,8 +24,6 @@ import static org.junit.Assert.assertTrue;
 import com.google.cloud.securitycentermanagement.v1.EffectiveEventThreatDetectionCustomModule;
 import com.google.cloud.securitycentermanagement.v1.EventThreatDetectionCustomModule;
 import com.google.cloud.securitycentermanagement.v1.EventThreatDetectionCustomModule.EnablementState;
-import com.google.cloud.securitycentermanagement.v1.ListEventThreatDetectionCustomModulesRequest;
-import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient;
 import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient.ListDescendantEventThreatDetectionCustomModulesPagedResponse;
 import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient.ListEffectiveEventThreatDetectionCustomModulesPagedResponse;
 import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient.ListEventThreatDetectionCustomModulesPagedResponse;
@@ -33,6 +31,8 @@ import com.google.cloud.securitycentermanagement.v1.ValidateEventThreatDetection
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import com.google.common.base.Strings;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -52,6 +52,7 @@ public class EventThreatDetectionCustomModuleTest {
       "java_sample_etd_custom_module_test_" + UUID.randomUUID();
   private static final int MAX_ATTEMPT_COUNT = 3;
   private static final int INITIAL_BACKOFF_MILLIS = 120000; // 2 minutes
+  private static List<String> createdCustomModuleIds = new ArrayList<>();
 
   @Rule
   public final MultipleAttemptsRule multipleAttemptsRule =
@@ -71,36 +72,16 @@ public class EventThreatDetectionCustomModuleTest {
   }
 
   @AfterClass
+  // Perform cleanup of all the custom modules created by the current execution of the test, after
+  // running tests
   public static void cleanUp() throws IOException {
-    // Perform cleanup after running tests
-    cleanupExistingCustomModules();
-  }
-
-  // cleanupExistingCustomModules clean up all the existing custom module
-  private static void cleanupExistingCustomModules() throws IOException {
-    try (SecurityCenterManagementClient client = SecurityCenterManagementClient.create()) {
-      ListEventThreatDetectionCustomModulesRequest request =
-          ListEventThreatDetectionCustomModulesRequest.newBuilder()
-              .setParent(String.format("projects/%s/locations/global", PROJECT_ID))
-              .build();
-      ListEventThreatDetectionCustomModulesPagedResponse response =
-          client.listEventThreatDetectionCustomModules(request);
-      // Iterate over the response and delete custom module one by one which start with
-      // java_sample_custom_module
-      for (EventThreatDetectionCustomModule module : response.iterateAll()) {
-        try {
-          if (module.getDisplayName().startsWith("java_sample_etd_custom_module")) {
-            String customModuleId = extractCustomModuleId(module.getName());
-            deleteCustomModule(PROJECT_ID, customModuleId);
-          }
-        } catch (Exception e) {
-          System.err.println("Failed to delete module: " + module.getDisplayName());
-          e.printStackTrace();
-        }
+    for (String customModuleId : createdCustomModuleIds) {
+      try {
+        deleteCustomModule(PROJECT_ID, customModuleId);
+      } catch (Exception e) {
+        System.err.println("Failed to delete module: " + customModuleId);
+        e.printStackTrace();
       }
-    } catch (Exception e) {
-      System.err.println("Failed to process cleanupExistingCustomModules.");
-      e.printStackTrace();
     }
   }
 
@@ -131,6 +112,7 @@ public class EventThreatDetectionCustomModuleTest {
     EventThreatDetectionCustomModule response =
         CreateEventThreatDetectionCustomModule.createEventThreatDetectionCustomModule(
             PROJECT_ID, CUSTOM_MODULE_DISPLAY_NAME);
+    createdCustomModuleIds.add(extractCustomModuleId(response.getName()));
     assertNotNull(response);
     assertThat(response.getDisplayName()).isEqualTo(CUSTOM_MODULE_DISPLAY_NAME);
   }
@@ -148,8 +130,10 @@ public class EventThreatDetectionCustomModuleTest {
 
   @Test
   public void testListEventThreatDetectionCustomModules() throws IOException {
-    CreateEventThreatDetectionCustomModule.createEventThreatDetectionCustomModule(
-        PROJECT_ID, CUSTOM_MODULE_DISPLAY_NAME);
+    EventThreatDetectionCustomModule createCustomModuleResponse =
+        CreateEventThreatDetectionCustomModule.createEventThreatDetectionCustomModule(
+            PROJECT_ID, CUSTOM_MODULE_DISPLAY_NAME);
+    createdCustomModuleIds.add(extractCustomModuleId(createCustomModuleResponse.getName()));
     ListEventThreatDetectionCustomModulesPagedResponse response =
         ListEventThreatDetectionCustomModules.listEventThreatDetectionCustomModules(PROJECT_ID);
     assertTrue(
@@ -163,6 +147,7 @@ public class EventThreatDetectionCustomModuleTest {
         CreateEventThreatDetectionCustomModule.createEventThreatDetectionCustomModule(
             PROJECT_ID, CUSTOM_MODULE_DISPLAY_NAME);
     String customModuleId = extractCustomModuleId(response.getName());
+    createdCustomModuleIds.add(customModuleId);
     EventThreatDetectionCustomModule getCustomModuleResponse =
         GetEventThreatDetectionCustomModule.getEventThreatDetectionCustomModule(
             PROJECT_ID, customModuleId);
@@ -177,6 +162,7 @@ public class EventThreatDetectionCustomModuleTest {
         CreateEventThreatDetectionCustomModule.createEventThreatDetectionCustomModule(
             PROJECT_ID, CUSTOM_MODULE_DISPLAY_NAME);
     String customModuleId = extractCustomModuleId(createCustomModuleResponse.getName());
+    createdCustomModuleIds.add(customModuleId);
     EventThreatDetectionCustomModule response =
         UpdateEventThreatDetectionCustomModule.updateEventThreatDetectionCustomModule(
             PROJECT_ID, customModuleId);
@@ -190,6 +176,7 @@ public class EventThreatDetectionCustomModuleTest {
         CreateEventThreatDetectionCustomModule.createEventThreatDetectionCustomModule(
             PROJECT_ID, CUSTOM_MODULE_DISPLAY_NAME);
     String customModuleId = extractCustomModuleId(createCustomModuleResponse.getName());
+    createdCustomModuleIds.add(customModuleId);
     EffectiveEventThreatDetectionCustomModule getEffectiveCustomModuleResponse =
         GetEffectiveEventThreatDetectionCustomModule.getEffectiveEventThreatDetectionCustomModule(
             PROJECT_ID, customModuleId);
@@ -202,8 +189,10 @@ public class EventThreatDetectionCustomModuleTest {
 
   @Test
   public void testListEffectiveEventThreatDetectionCustomModules() throws IOException {
-    CreateEventThreatDetectionCustomModule.createEventThreatDetectionCustomModule(
-        PROJECT_ID, CUSTOM_MODULE_DISPLAY_NAME);
+    EventThreatDetectionCustomModule createCustomModuleResponse =
+        CreateEventThreatDetectionCustomModule.createEventThreatDetectionCustomModule(
+            PROJECT_ID, CUSTOM_MODULE_DISPLAY_NAME);
+    createdCustomModuleIds.add(extractCustomModuleId(createCustomModuleResponse.getName()));
     ListEffectiveEventThreatDetectionCustomModulesPagedResponse response =
         ListEffectiveEventThreatDetectionCustomModules
             .listEffectiveEventThreatDetectionCustomModules(PROJECT_ID);
@@ -214,8 +203,10 @@ public class EventThreatDetectionCustomModuleTest {
 
   @Test
   public void testListDescendantEventThreatDetectionCustomModules() throws IOException {
-    CreateEventThreatDetectionCustomModule.createEventThreatDetectionCustomModule(
-        PROJECT_ID, CUSTOM_MODULE_DISPLAY_NAME);
+    EventThreatDetectionCustomModule createCustomModuleResponse =
+        CreateEventThreatDetectionCustomModule.createEventThreatDetectionCustomModule(
+            PROJECT_ID, CUSTOM_MODULE_DISPLAY_NAME);
+    createdCustomModuleIds.add(extractCustomModuleId(createCustomModuleResponse.getName()));
     ListDescendantEventThreatDetectionCustomModulesPagedResponse response =
         ListDescendantEventThreatDetectionCustomModules
             .listDescendantEventThreatDetectionCustomModules(PROJECT_ID);
