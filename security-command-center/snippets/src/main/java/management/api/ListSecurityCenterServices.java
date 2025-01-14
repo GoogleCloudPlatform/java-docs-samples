@@ -34,19 +34,15 @@ public class ListSecurityCenterServices {
 
   public static ListSecurityCenterServicesPagedResponse listSecurityCenterServices(String projectId)
       throws IOException {
-
     // Initialize client that will be used to send requests. This client only needs
     // to be created
     // once, and can be reused for multiple requests.
     try (SecurityCenterManagementClient client = SecurityCenterManagementClient.create()) {
-
       ListSecurityCenterServicesRequest request =
           ListSecurityCenterServicesRequest.newBuilder()
               .setParent(String.format("projects/%s/locations/global", projectId))
               .build();
-
       ListSecurityCenterServicesPagedResponse response = client.listSecurityCenterServices(request);
-
       return response;
     }
   }

@@ -33,7 +33,7 @@ import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 public class SecurityCenterServiceTest {
-  // TODO(Developer): Replace the below variable
+	
   private static final String PROJECT_ID = System.getenv("SCC_PROJECT_ID");
   private static final String SERVICE = "EVENT_THREAT_DETECTION";
 

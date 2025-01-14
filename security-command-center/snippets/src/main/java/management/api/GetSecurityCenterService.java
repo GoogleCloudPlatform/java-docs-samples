@@ -38,21 +38,16 @@ public class GetSecurityCenterService {
 
   public static SecurityCenterService getSecurityCenterService(String projectId, String service)
       throws IOException {
-
     // Initialize client that will be used to send requests. This client only needs
     // to be created
     // once, and can be reused for multiple requests.
     try (SecurityCenterManagementClient client = SecurityCenterManagementClient.create()) {
-
       String name =
           String.format(
               "projects/%s/locations/global/securityCenterServices/%s", projectId, service);
-
       GetSecurityCenterServiceRequest request =
           GetSecurityCenterServiceRequest.newBuilder().setName(name).build();
-
       SecurityCenterService response = client.getSecurityCenterService(request);
-
       return response;
     }
   }

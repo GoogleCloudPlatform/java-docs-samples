@@ -40,12 +40,10 @@ public class UpdateSecurityCenterService {
 
   public static SecurityCenterService updateSecurityCenterService(String projectId, String service)
       throws IOException {
-
     // Initialize client that will be used to send requests. This client only needs
     // to be created
     // once, and can be reused for multiple requests.
     try (SecurityCenterManagementClient client = SecurityCenterManagementClient.create()) {
-
       String name =
           String.format(
               "projects/%s/locations/global/securityCenterServices/%s", projectId, service);
