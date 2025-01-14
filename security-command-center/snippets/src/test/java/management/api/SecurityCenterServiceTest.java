@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Google LLC
+ * Copyright 2025 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,6 @@ import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 public class SecurityCenterServiceTest {
-	
   private static final String PROJECT_ID = System.getenv("SCC_PROJECT_ID");
   private static final String SERVICE = "EVENT_THREAT_DETECTION";
 
