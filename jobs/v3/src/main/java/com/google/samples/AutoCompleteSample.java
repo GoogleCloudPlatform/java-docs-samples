@@ -38,6 +38,7 @@ public final class AutoCompleteSample {
   private static CloudTalentSolution talentSolutionClient =
       JobServiceQuickstart.getTalentSolutionClient();
 
+  // [START job_auto_complete_job_title]
   // [START auto_complete_job_title]
 
   /** Auto completes job titles within given companyName. */
@@ -60,6 +61,7 @@ public final class AutoCompleteSample {
     System.out.println(results);
   }
   // [END auto_complete_job_title]
+  // [END job_auto_complete_job_title]
 
   // [START auto_complete_default]
   /** Auto completes job titles within given companyName. */
