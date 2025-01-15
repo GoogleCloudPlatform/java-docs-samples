@@ -16,7 +16,7 @@
 
 package com.example.compute.mailjet;
 
-// [START mailjet_imports]
+// [START compute_mailjet_imports]
 
 import com.mailjet.client.ClientOptions;
 import com.mailjet.client.MailjetClient;
@@ -27,8 +27,9 @@ import com.mailjet.client.resource.Emailv31;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-// [END mailjet_imports]
+// [END compute_mailjet_imports]
 
+// [START compute_mailjet_send_email]
 // [START app]
 public class MailjetSender {
 
@@ -82,3 +83,4 @@ public class MailjetSender {
   }
 }
 // [END app]
+// [END compute_mailjet_send_email]
