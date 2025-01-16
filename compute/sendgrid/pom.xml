@@ -38,13 +38,11 @@
 
   <dependencies>
     <!-- [START compute_sendgrid_dependencies_java] -->
-    <!-- [START dependencies] -->
     <dependency>
       <groupId>com.sendgrid</groupId>
       <artifactId>sendgrid-java</artifactId>
       <version>4.10.1</version>
     </dependency>
-    <!-- [END dependencies] -->
     <!-- [END compute_sendgrid_dependencies_java] -->
   </dependencies>
   <build>
