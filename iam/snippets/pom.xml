@@ -29,7 +29,7 @@
   <parent>
     <artifactId>shared-configuration</artifactId>
     <groupId>com.google.cloud.samples</groupId>
-    <version>1.2.0</version>
+    <version>1.2.2</version>
   </parent>
 
   <properties>
@@ -44,7 +44,7 @@
         <groupId>com.google.cloud</groupId>
         <scope>import</scope>
         <type>pom</type>
-        <version>26.32.0</version>
+        <version>26.52.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -72,7 +72,7 @@
       <artifactId>truth</artifactId>
       <groupId>com.google.truth</groupId>
       <scope>test</scope>
-      <version>1.4.0</version>
+      <version>1.4.4</version>
     </dependency>
     <dependency>
       <artifactId>junit</artifactId>

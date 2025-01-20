@@ -27,16 +27,16 @@ limitations under the License.
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.2.0</version>
+    <version>1.2.2</version>
   </parent>
 
   <properties>
     <maven.compiler.target>11</maven.compiler.target>
     <maven.compiler.source>11</maven.compiler.source>
-    <ktor_version>3.0.0-eap-852</ktor_version>
+    <ktor_version>3.1.0-eap-1208</ktor_version>
     <kotlin.code.style>official</kotlin.code.style>
-    <kotlin_version>1.9.22</kotlin_version>
-    <logback_version>1.4.14</logback_version>
+    <kotlin_version>1.9.25</kotlin_version>
+    <logback_version>1.5.16</logback_version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
     <main.class>com.example.appengine.ApplicationKt</main.class>
@@ -121,7 +121,7 @@ limitations under the License.
         <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>exec-maven-plugin</artifactId>
-            <version>3.1.1</version>
+            <version>3.5.0</version>
             <executions>
                 <execution>
                     <goals>
@@ -136,7 +136,7 @@ limitations under the License.
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-assembly-plugin</artifactId>
-            <version>3.6.0</version>
+            <version>3.7.1</version>
             <configuration>
                 <descriptorRefs>
                     <descriptorRef>jar-with-dependencies</descriptorRef>
@@ -162,7 +162,7 @@ limitations under the License.
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
-        <version>2.8.0</version>
+        <version>2.8.3</version>
         <configuration>
           <projectId>GCLOUD_CONFIG</projectId>
           <version>kotlin-ktor</version>
