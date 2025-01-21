@@ -18,48 +18,62 @@ package compute;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
+import static compute.Util.getZone;
 
+import com.google.cloud.compute.v1.CreateSnapshotRegionDiskRequest;
 import com.google.cloud.compute.v1.Disk;
 import com.google.cloud.compute.v1.Instance;
 import com.google.cloud.compute.v1.Instance.Status;
 import com.google.cloud.compute.v1.InstancesClient;
+import com.google.cloud.compute.v1.Operation;
+import com.google.cloud.compute.v1.RegionDisksClient;
+import com.google.cloud.compute.v1.Snapshot;
 import compute.disks.CloneEncryptedDisk;
 import compute.disks.CreateEncryptedDisk;
 import compute.disks.DeleteDisk;
+import compute.disks.DeleteSnapshot;
+import compute.disks.RegionalCreateFromSource;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-@Disabled("TODO: fix https://github.com/GoogleCloudPlatform/java-docs-samples/issues/9373")
 @RunWith(JUnit4.class)
 @Timeout(value = 10, unit = TimeUnit.MINUTES)
 public class InstanceOperationsIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String ZONE = "us-central1-a";
+  private static final String ZONE = getZone();
+  private static final String REGION = ZONE.substring(0, ZONE.length() - 2);
   private static String MACHINE_NAME;
   private static String MACHINE_NAME_ENCRYPTED;
   private static String DISK_NAME;
   private static String ENCRYPTED_DISK_NAME;
   private static String RAW_KEY;
-
-  private ByteArrayOutputStream stdOut;
+  private static String INSTANCE_NAME;
+  private static final String DISK_TYPE = String.format("regions/%s/diskTypes/pd-standard", REGION);
+  private static String REPLICATED_DISK_NAME;
+  private static String SNAPSHOT_NAME;
+  private static final String DISK_SNAPSHOT_LINK =
+          String.format("projects/%s/global/snapshots/%s", PROJECT_ID, SNAPSHOT_NAME);
+  private static final List<String> REPLICA_ZONES = Arrays.asList(
+          String.format("projects/%s/zones/%s-a", PROJECT_ID, REGION),
+          String.format("projects/%s/zones/%s-b", PROJECT_ID, REGION));
 
   // Check if the required environment variables are set.
   public static void requireEnvVar(String envVarName) {
@@ -73,46 +87,42 @@ public class InstanceOperationsIT {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
-    final PrintStream out = System.out;
-    ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(stdOut));
-
-    MACHINE_NAME = "my-new-test-instance" + UUID.randomUUID();
-    MACHINE_NAME_ENCRYPTED = "encrypted-test-instance" + UUID.randomUUID();
+    MACHINE_NAME = "test-instance-operation-" + UUID.randomUUID();
+    MACHINE_NAME_ENCRYPTED = "test-instance-encrypted-" + UUID.randomUUID();
     DISK_NAME = "test-clone-disk-enc-" + UUID.randomUUID();
     ENCRYPTED_DISK_NAME = "test-disk-enc-" + UUID.randomUUID();
     RAW_KEY = Util.getBase64EncodedKey();
-
-    // Cleanup existing stale resources.
-    Util.cleanUpExistingInstances("my-new-test-instance", PROJECT_ID, ZONE);
-    Util.cleanUpExistingInstances("encrypted-test-instance", PROJECT_ID, ZONE);
+    INSTANCE_NAME = "test-instance-" + UUID.randomUUID();
+    REPLICATED_DISK_NAME = "test-disk-replicated-" + UUID.randomUUID();
+    SNAPSHOT_NAME = "test-snapshot-" + UUID.randomUUID().toString().split("-")[0];
 
     compute.CreateInstance.createInstance(PROJECT_ID, ZONE, MACHINE_NAME);
     compute.CreateEncryptedInstance
         .createEncryptedInstance(PROJECT_ID, ZONE, MACHINE_NAME_ENCRYPTED, RAW_KEY);
+    RegionalCreateFromSource.createRegionalDisk(PROJECT_ID, REGION, REPLICA_ZONES,
+            REPLICATED_DISK_NAME, DISK_TYPE, 200, Optional.empty(), Optional.empty());
+    createDiskSnapshot(PROJECT_ID, REGION, REPLICATED_DISK_NAME, SNAPSHOT_NAME);
 
     TimeUnit.SECONDS.sleep(30);
-
-    stdOut.close();
-    System.setOut(out);
   }
-
 
   @AfterAll
   public static void cleanup()
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
-    final PrintStream out = System.out;
-    ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(stdOut));
+    // Cleanup existing stale resources.
+    Util.cleanUpExistingInstances("test-instance-", PROJECT_ID, ZONE);
+    Util.cleanUpExistingDisks("test-clone-disk-enc-", PROJECT_ID, ZONE);
+    Util.cleanUpExistingDisks("test-disk-enc-", PROJECT_ID, ZONE);
+    Util.cleanUpExistingRegionalDisks("test-disk-replicated-", PROJECT_ID, REGION);
+    Util.cleanUpExistingSnapshots("test-snapshot-", PROJECT_ID);
 
     // Delete all instances created for testing.
     compute.DeleteInstance.deleteInstance(PROJECT_ID, ZONE, MACHINE_NAME_ENCRYPTED);
     compute.DeleteInstance.deleteInstance(PROJECT_ID, ZONE, MACHINE_NAME);
+    compute.DeleteInstance.deleteInstance(PROJECT_ID, ZONE, INSTANCE_NAME);
     DeleteDisk.deleteDisk(PROJECT_ID, ZONE, DISK_NAME);
     DeleteDisk.deleteDisk(PROJECT_ID, ZONE, ENCRYPTED_DISK_NAME);
-
-    stdOut.close();
-    System.setOut(out);
+    DeleteSnapshot.deleteSnapshot(PROJECT_ID, SNAPSHOT_NAME);
   }
 
   private static Instance getInstance(String machineName) throws IOException {
@@ -121,16 +131,28 @@ public class InstanceOperationsIT {
     }
   }
 
-  @BeforeEach
-  public void beforeEach() {
-    stdOut = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(stdOut));
-  }
+  public static void createDiskSnapshot(String project, String region, String diskName,
+                                        String snapshotName)
+          throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    try (RegionDisksClient disksClient = RegionDisksClient.create()) {
 
-  @AfterEach
-  public void afterEach() {
-    stdOut = null;
-    System.setOut(null);
+      CreateSnapshotRegionDiskRequest createSnapshotDiskRequest =
+              CreateSnapshotRegionDiskRequest.newBuilder()
+              .setProject(project)
+              .setRegion(region)
+              .setDisk(diskName)
+              .setSnapshotResource(Snapshot.newBuilder()
+                      .setName(snapshotName)
+                      .build())
+              .build();
+
+      Operation operation = disksClient.createSnapshotAsync(createSnapshotDiskRequest)
+              .get(3, TimeUnit.MINUTES);
+
+      if (operation.hasError()) {
+        throw new Error("Failed to create the snapshot");
+      }
+    }
   }
 
   @Test
@@ -204,14 +226,17 @@ public class InstanceOperationsIT {
   @Test
   public void testCloneEncryptedDisk()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
-    Assert.assertEquals(Util.getInstanceStatus(PROJECT_ID, ZONE, MACHINE_NAME_ENCRYPTED),
-        "RUNNING");
+    ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(stdOut));
+
     Instance instance = getInstance(MACHINE_NAME_ENCRYPTED);
     String diskType = String.format("zones/%s/diskTypes/pd-standard", ZONE);
     CloneEncryptedDisk.createDiskFromCustomerEncryptedKey(PROJECT_ID, ZONE, DISK_NAME, diskType, 10,
         instance.getDisks(0).getSource(), RAW_KEY.getBytes(
             StandardCharsets.UTF_8));
     assertThat(stdOut.toString()).contains("Disk cloned with customer encryption key.");
+
+    stdOut.close();
   }
 
   @Test
@@ -227,5 +252,16 @@ public class InstanceOperationsIT {
     Assert.assertEquals(ENCRYPTED_DISK_NAME, encryptedDisk.getName());
     Assert.assertNotNull(encryptedDisk.getDiskEncryptionKey());
     Assert.assertNotNull(encryptedDisk.getDiskEncryptionKey().getSha256());
+  }
+
+  @Test
+  public void testCreateInstanceWithRegionalDiskFromSnapshot()
+          throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    Operation.Status status = CreateInstanceWithRegionalDiskFromSnapshot
+                  .createInstanceWithRegionalDiskFromSnapshot(
+          PROJECT_ID, ZONE, INSTANCE_NAME, REPLICATED_DISK_NAME,
+                  DISK_TYPE, DISK_SNAPSHOT_LINK, REPLICA_ZONES);
+
+    assertThat(status).isEqualTo(Operation.Status.DONE);
   }
 }

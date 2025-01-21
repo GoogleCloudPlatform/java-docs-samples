@@ -17,6 +17,7 @@
 package aiplatform;
 
 // [START aiplatform_sdk_embedding_model_tuning]
+// [START generativeaionvertexai_sdk_embedding_model_tuning]
 import com.google.cloud.aiplatform.v1.CreatePipelineJobRequest;
 import com.google.cloud.aiplatform.v1.LocationName;
 import com.google.cloud.aiplatform.v1.PipelineJob;
@@ -83,7 +84,7 @@ public class EmbeddingModelTuningSample {
     Matcher matcher = Pattern.compile("^(?<Location>\\w+-\\w+)").matcher(apiEndpoint);
     String location = matcher.matches() ? matcher.group("Location") : "us-central1";
     String templateUri =
-        "https://us-kfp.pkg.dev/ml-pipeline/llm-text-embedding/tune-text-embedding-model/v1.1.3";
+        "https://us-kfp.pkg.dev/ml-pipeline/llm-text-embedding/tune-text-embedding-model/v1.1.4";
     PipelineServiceSettings settings =
         PipelineServiceSettings.newBuilder().setEndpoint(apiEndpoint).build();
     try (PipelineServiceClient client = PipelineServiceClient.create(settings)) {
@@ -131,3 +132,4 @@ public class EmbeddingModelTuningSample {
   }
 }
 // [END aiplatform_sdk_embedding_model_tuning]
+// [END generativeaionvertexai_sdk_embedding_model_tuning]

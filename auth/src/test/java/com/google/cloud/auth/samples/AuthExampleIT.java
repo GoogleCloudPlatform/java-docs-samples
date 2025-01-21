@@ -19,6 +19,8 @@ package com.google.cloud.auth.samples;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import com.google.api.apikeys.v2.Key;
+import com.google.cloud.ServiceOptions;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -56,5 +58,25 @@ public class AuthExampleIT {
     AuthExample.main(new String[] {"explicit", credentials});
     String output = bout.toString();
     assertTrue(output.contains("Buckets:"));
+  }
+
+  @Test
+  public void testAuthApiKey() throws IOException, IllegalStateException {
+    String projectId = ServiceOptions.getDefaultProjectId();
+    String keyDisplayName = "Test API Key";
+    String service = "language.googleapis.com";
+    String method = "google.cloud.language.v2.LanguageService.AnalyzeSentiment";
+    Key apiKey = null;
+    try {
+      apiKey = AuthTestUtils.createTestApiKey(projectId, keyDisplayName, service, method);
+
+      String output = ApiKeyAuthExample.authenticateUsingApiKey(apiKey.getKeyString());
+
+      assertTrue(output.contains("magnitude:"));
+    } finally {
+      if (apiKey != null) {
+        AuthTestUtils.deleteTestApiKey(apiKey.getName());
+      }
+    }
   }
 }

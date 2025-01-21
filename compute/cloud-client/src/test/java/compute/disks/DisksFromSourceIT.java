@@ -18,7 +18,6 @@ package compute.disks;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
-import static compute.Util.getZone;
 
 import com.google.cloud.compute.v1.CreateSnapshotDiskRequest;
 import com.google.cloud.compute.v1.Disk;
@@ -59,8 +58,8 @@ import org.junit.runners.JUnit4;
 public class DisksFromSourceIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static String ZONE;
-  private static String REGION;
+  private static final String ZONE = "asia-south1-a";
+  private static final String REGION = ZONE.substring(0, ZONE.length() - 2);
   private static CryptoKey CRYPTO_KEY;
   private static Image DEBIAN_IMAGE;
   private static String KMS_KEYRING_NAME;
@@ -90,8 +89,6 @@ public class DisksFromSourceIT {
     // requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
-    ZONE = getZone();
-    REGION = ZONE.substring(0, ZONE.length() - 2);
     KMS_KEYRING_NAME = "compute-test-keyring";
     KMS_KEY_NAME = "compute-test-key";
 
@@ -104,8 +101,10 @@ public class DisksFromSourceIT {
     SNAPSHOT_NAME_REGIONAL = "test-snapshot-name-from-source" + uuid;
     DISK_TYPE = String.format("zones/%s/diskTypes/pd-standard", ZONE);
 
-    // Cleanup existing stale instances.
+    // Cleanup existing stale resources.
     Util.cleanUpExistingInstances("test-disk", PROJECT_ID, ZONE);
+    Util.cleanUpExistingSnapshots("test-snapshot-name-from-source", PROJECT_ID);
+    Util.cleanUpExistingDisks("test-disk", PROJECT_ID, ZONE);
 
     // Create disk from image.
     DEBIAN_IMAGE = null;
@@ -114,7 +113,8 @@ public class DisksFromSourceIT {
     }
 
     // Create KMS Encrypted disk.
-    // The service account needs to have the cloudkms.cryptoKeyVersions.useToEncrypt
+    // The service account service-{PROJECT_ID}@compute-system.iam.gserviceaccount.com
+    // needs to have the cloudkms.cryptoKeyVersions.useToEncrypt
     // permission to execute this test.
     CRYPTO_KEY = createKmsKey();
     CreateKmsEncryptedDisk.createKmsEncryptedDisk(PROJECT_ID, ZONE, KMS_ENCRYPTED_DISK_NAME,

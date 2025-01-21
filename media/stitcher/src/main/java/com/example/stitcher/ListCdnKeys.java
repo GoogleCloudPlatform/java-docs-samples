@@ -22,6 +22,7 @@ import com.google.cloud.video.stitcher.v1.CdnKey;
 import com.google.cloud.video.stitcher.v1.ListCdnKeysRequest;
 import com.google.cloud.video.stitcher.v1.LocationName;
 import com.google.cloud.video.stitcher.v1.VideoStitcherServiceClient;
+import com.google.cloud.video.stitcher.v1.VideoStitcherServiceClient.ListCdnKeysPagedResponse;
 import java.io.IOException;
 
 public class ListCdnKeys {
@@ -34,10 +35,11 @@ public class ListCdnKeys {
     listCdnKeys(projectId, location);
   }
 
-  public static void listCdnKeys(String projectId, String location) throws IOException {
+  // Lists the CDN keys for a given project and location.
+  public static ListCdnKeysPagedResponse listCdnKeys(String projectId, String location)
+      throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. In this example, try-with-resources is used
-    // which automatically calls close() on the client to clean up resources.
+    // once, and can be reused for multiple requests.
     try (VideoStitcherServiceClient videoStitcherServiceClient =
         VideoStitcherServiceClient.create()) {
       ListCdnKeysRequest listCdnKeysRequest =
@@ -47,11 +49,12 @@ public class ListCdnKeys {
 
       VideoStitcherServiceClient.ListCdnKeysPagedResponse response =
           videoStitcherServiceClient.listCdnKeys(listCdnKeysRequest);
-      System.out.println("CDN keys:");
 
+      System.out.println("CDN keys:");
       for (CdnKey cdnKey : response.iterateAll()) {
         System.out.println(cdnKey.getName());
       }
+      return response;
     }
   }
 }

@@ -20,6 +20,7 @@ package com.example.stitcher;
 
 import com.google.cloud.video.stitcher.v1.ListVodStitchDetailsRequest;
 import com.google.cloud.video.stitcher.v1.VideoStitcherServiceClient;
+import com.google.cloud.video.stitcher.v1.VideoStitcherServiceClient.ListVodStitchDetailsPagedResponse;
 import com.google.cloud.video.stitcher.v1.VodSessionName;
 import com.google.cloud.video.stitcher.v1.VodStitchDetail;
 import java.io.IOException;
@@ -35,11 +36,11 @@ public class ListVodStitchDetails {
     listVodStitchDetails(projectId, location, sessionId);
   }
 
-  public static void listVodStitchDetails(String projectId, String location, String sessionId)
-      throws IOException {
+  // Lists the VOD stitch details for a video on demand (VOD) session.
+  public static ListVodStitchDetailsPagedResponse listVodStitchDetails(
+      String projectId, String location, String sessionId) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. In this example, try-with-resources is used
-    // which automatically calls close() on the client to clean up resources.
+    // once, and can be reused for multiple requests.
     try (VideoStitcherServiceClient videoStitcherServiceClient =
         VideoStitcherServiceClient.create()) {
       ListVodStitchDetailsRequest listVodStitchDetailsRequest =
@@ -49,11 +50,12 @@ public class ListVodStitchDetails {
 
       VideoStitcherServiceClient.ListVodStitchDetailsPagedResponse response =
           videoStitcherServiceClient.listVodStitchDetails(listVodStitchDetailsRequest);
-      System.out.println("VOD stitch details:");
 
+      System.out.println("VOD stitch details:");
       for (VodStitchDetail stitchDetail : response.iterateAll()) {
         System.out.println(stitchDetail.toString());
       }
+      return response;
     }
   }
 }

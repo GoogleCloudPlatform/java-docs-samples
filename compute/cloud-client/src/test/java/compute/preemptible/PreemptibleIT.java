@@ -34,13 +34,11 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-@Disabled("TODO: fix https://github.com/GoogleCloudPlatform/java-docs-samples/issues/9373")
 @RunWith(JUnit4.class)
 @Timeout(value = 10, unit = TimeUnit.MINUTES)
 public class PreemptibleIT {
@@ -67,11 +65,10 @@ public class PreemptibleIT {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
+    INSTANCE_NAME = "preemptible-test-instance-" + UUID.randomUUID().toString().split("-")[0];
+
     // Cleanup existing test instances.
     Util.cleanUpExistingInstances("preemptible-test-instance", PROJECT_ID, ZONE);
-    TimeUnit.SECONDS.sleep(20);
-
-    INSTANCE_NAME = "preemptible-test-instance" + UUID.randomUUID().toString().split("-")[0];
 
     // Create Instance with Preemptible setting.
     CreatePreemptibleInstance.createPremptibleInstance(PROJECT_ID, ZONE, INSTANCE_NAME);

@@ -254,7 +254,7 @@ public class CreateInstancesAdvanced {
   // [START compute_instances_create_from_image]
 
   /**
-   * Create a new VM instance with Debian 10 operating system.
+   * Create a new VM instance with Debian 11 operating system.
    *
    * @param project project ID or project number of the Cloud project you want to use.
    * @param zone name of the zone to create the instance in. For example: "us-west3-b"
@@ -265,7 +265,7 @@ public class CreateInstancesAdvanced {
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
     try (ImagesClient imagesClient = ImagesClient.create()) {
       // List of public operating system (OS) images: https://cloud.google.com/compute/docs/images/os-details
-      Image image = imagesClient.getFromFamily("debian-cloud", "debian-10");
+      Image image = imagesClient.getFromFamily("debian-cloud", "debian-11");
       String diskType = String.format("zones/%s/diskTypes/pd-standard", zone);
       Vector<AttachedDisk> disks = new Vector<>();
       disks.add(diskFromImage(diskType, 10, true, image.getSelfLink()));
@@ -301,7 +301,7 @@ public class CreateInstancesAdvanced {
   // [START compute_instances_create_from_image_plus_empty_disk]
 
   /**
-   * Create a new VM instance with Debian 10 operating system and a 11 GB additional empty disk.
+   * Create a new VM instance with Debian 11 operating system and a 11 GB additional empty disk.
    *
    * @param project project ID or project number of the Cloud project you want to use.
    * @param zone name of the zone to create the instance in. For example: "us-west3-b"
@@ -312,7 +312,7 @@ public class CreateInstancesAdvanced {
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
     try (ImagesClient imagesClient = ImagesClient.create()) {
       // List of public operating system (OS) images: https://cloud.google.com/compute/docs/images/os-details
-      Image image = imagesClient.getFromFamily("debian-cloud", "debian-10");
+      Image image = imagesClient.getFromFamily("debian-cloud", "debian-11");
       String diskType = String.format("zones/%s/diskTypes/pd-standard", zone);
       Vector<AttachedDisk> disks = new Vector<>();
       disks.add(diskFromImage(diskType, 10, true, image.getSelfLink()));
@@ -349,7 +349,7 @@ public class CreateInstancesAdvanced {
   // [START compute_instances_create_from_image_plus_snapshot_disk]
 
   /**
-   * Create a new VM instance with Debian 10 operating system and data disk created from snapshot.
+   * Create a new VM instance with Debian 11 operating system and data disk created from snapshot.
    *
    * @param project project ID or project number of the Cloud project you want to use.
    * @param zone name of the zone to create the instance in. For example: "us-west3-b"
@@ -363,7 +363,7 @@ public class CreateInstancesAdvanced {
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
     try (ImagesClient imagesClient = ImagesClient.create()) {
       // List of public operating system (OS) images: https://cloud.google.com/compute/docs/images/os-details
-      Image image = imagesClient.getFromFamily("debian-cloud", "debian-10");
+      Image image = imagesClient.getFromFamily("debian-cloud", "debian-11");
       String diskType = String.format("zones/%s/diskTypes/pd-standard", zone);
       Vector<AttachedDisk> disks = new Vector<>();
       disks.add(diskFromImage(diskType, 10, true, image.getSelfLink()));
@@ -377,7 +377,7 @@ public class CreateInstancesAdvanced {
   // [START compute_instances_create_from_image]
 
   /**
-   * Create a new VM instance with Debian 10 operating system in specified network and subnetwork.
+   * Create a new VM instance with Debian 11 operating system in specified network and subnetwork.
    *
    * @param project project ID or project number of the Cloud project you want to use.
    * @param zone name of the zone to create the instance in. For example: "us-west3-b"
@@ -394,7 +394,7 @@ public class CreateInstancesAdvanced {
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
     try (ImagesClient imagesClient = ImagesClient.create()) {
       // List of public operating system (OS) images: https://cloud.google.com/compute/docs/images/os-details
-      Image image = imagesClient.getFromFamily("debian-cloud", "debian-10");
+      Image image = imagesClient.getFromFamily("debian-cloud", "debian-11");
       String diskType = String.format("zones/%s/diskTypes/pd-standard", zone);
       Vector<AttachedDisk> disks = new Vector<>();
       disks.add(diskFromImage(diskType, 10, true, image.getSelfLink()));

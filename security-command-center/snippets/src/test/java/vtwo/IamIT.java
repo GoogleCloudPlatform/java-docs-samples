@@ -37,7 +37,7 @@ import vtwo.source.CreateSource;
 public class IamIT {
 
   private static final String ORGANIZATION_ID = System.getenv("SCC_PROJECT_ORG_ID");
-  private static final String USER_EMAIL = "someuser@domain.com";
+  private static final String USER_EMAIL = "example@domain.com";
   private static final String USER_PERMISSION = "securitycenter.findings.update";
   private static final String USER_ROLE = "roles/securitycenter.findingsEditor";
   private static Source SOURCE;

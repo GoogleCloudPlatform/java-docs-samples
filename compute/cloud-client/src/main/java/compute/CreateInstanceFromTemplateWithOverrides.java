@@ -49,7 +49,7 @@ public class CreateInstanceFromTemplateWithOverrides {
      *    https://cloud.google.com/sdk/gcloud/reference/compute/machine-types/list
      * newDiskSourceImage - Path the the disk image you want to use for your new
      *    disk. This can be one of the public images
-     *    (like "projects/debian-cloud/global/images/family/debian-10")
+     *    (like "projects/debian-cloud/global/images/family/debian-11")
      *    or a private image you have access to.
      *    You can check the list of available public images using the doc:
      *    http://cloud.google.com/compute/docs/images
@@ -72,7 +72,7 @@ public class CreateInstanceFromTemplateWithOverrides {
         InstanceTemplatesClient instanceTemplatesClient = InstanceTemplatesClient.create()) {
 
       String machineType = "n1-standard-1";
-      String newDiskSourceImage = "projects/debian-cloud/global/images/family/debian-10";
+      String newDiskSourceImage = "projects/debian-cloud/global/images/family/debian-11";
 
       // Retrieve an instance template.
       InstanceTemplate instanceTemplate = instanceTemplatesClient

@@ -17,6 +17,7 @@
 package aiplatform;
 
 // [START aiplatform_sdk_tuning]
+// [START generativeaionvertexai_sdk_tuning]
 import com.google.cloud.aiplatform.v1.CreatePipelineJobRequest;
 import com.google.cloud.aiplatform.v1.LocationName;
 import com.google.cloud.aiplatform.v1.PipelineJob;
@@ -116,3 +117,4 @@ public class CreatePipelineJobModelTuningSample {
 }
 
 // [END aiplatform_sdk_tuning]
+// [END generativeaionvertexai_sdk_tuning]

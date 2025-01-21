@@ -18,9 +18,9 @@ package compute.customhostname;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
-import static compute.Util.getZone;
 
 import compute.DeleteInstance;
+import compute.Util;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -32,19 +32,17 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-@Disabled("TODO: fix https://github.com/GoogleCloudPlatform/java-docs-samples/issues/9373")
 @RunWith(JUnit4.class)
 @Timeout(value = 10, unit = TimeUnit.MINUTES)
 public class CustomHostnameInstanceIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static String INSTANCE_NAME;
-  private static String ZONE;
+  private static final String ZONE = "us-central1-a";
   private static String CUSTOM_HOSTNAME;
 
   private ByteArrayOutputStream stdOut;
@@ -65,8 +63,10 @@ public class CustomHostnameInstanceIT {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
     INSTANCE_NAME = "my-custom-hostname-test-instance" + UUID.randomUUID().toString().split("-")[0];
-    ZONE = getZone();
     CUSTOM_HOSTNAME = "host.domain.com";
+
+    // Clean up existing stale resources.
+    Util.cleanUpExistingInstances("my-custom-hostname-test-instance", PROJECT_ID, ZONE);
 
     // Create Instance with a custom hostname.
     CreateInstanceWithCustomHostname.createInstanceWithCustomHostname(PROJECT_ID, ZONE,
@@ -105,5 +105,4 @@ public class CustomHostnameInstanceIT {
     GetInstanceHostname.getInstanceHostname(PROJECT_ID, ZONE, INSTANCE_NAME);
     assertThat(stdOut.toString()).contains(CUSTOM_HOSTNAME);
   }
-
 }

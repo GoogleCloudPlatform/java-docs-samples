@@ -27,6 +27,7 @@ import com.google.cloud.compute.v1.NetworkInterface;
 import com.google.cloud.compute.v1.Operation;
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import compute.DeleteInstance;
+import compute.Util;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -41,13 +42,11 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-@Disabled("TODO: fix https://github.com/GoogleCloudPlatform/java-docs-samples/issues/9373")
 @RunWith(JUnit4.class)
 @Timeout(value = 10, unit = TimeUnit.MINUTES)
 public class WindowsOsImageIT {
@@ -126,6 +125,9 @@ public class WindowsOsImageIT {
     testInstanceName = "images-test-help-instance-" + randomUUID;
     testImageName = "test-image-" + randomUUID;
 
+    // Cleanup existing stale resources.
+    Util.cleanUpExistingInstances("images-test-help-instance-", PROJECT_ID, ZONE);
+
     // Create a VM with a smallest possible disk that can be used for testing
     Assert.assertTrue("Failed to setup instance for image create/delete testing",
         createInstance(testInstanceName));
@@ -163,8 +165,7 @@ public class WindowsOsImageIT {
   }
 
   @Test
-  public void testUnforcedCreateImage()
-      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+  public void testUnforcedCreateImage() {
     Assertions.assertThrows(
         IllegalStateException.class,
         () -> CreateImage.createImage(

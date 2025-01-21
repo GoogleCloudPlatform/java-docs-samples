@@ -52,7 +52,7 @@ public class PredictTextEmbeddingsSampleTest {
         PredictTextEmbeddingsSample.predictTextEmbeddings(
             APIS_ENDPOINT,
             PROJECT,
-            "text-embedding-004",
+            "text-embedding-005",
             texts,
             "QUESTION_ANSWERING",
             OptionalInt.of(5));
@@ -70,11 +70,13 @@ public class PredictTextEmbeddingsSampleTest {
         PredictTextEmbeddingsSamplePreview.predictTextEmbeddings(
             APIS_ENDPOINT,
             PROJECT,
-            "text-embedding-preview-0409",
+            "text-embedding-005",
             texts,
-            "QUESTION_ANSWERING",
+            "CODE_RETRIEVAL_QUERY",
             OptionalInt.of(5));
     assertThat(embeddings.size()).isEqualTo(texts.size());
-    assertThat(embeddings.get(0).size()).isEqualTo(5);
+    for (List<Float> embedding : embeddings) {
+      assertThat(embedding.size()).isEqualTo(5);
+    }
   }
 }

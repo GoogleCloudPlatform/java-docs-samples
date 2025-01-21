@@ -3,7 +3,6 @@
 
 ########################################################################
 #                   Updating CODEOWNERS file guide
-# - Add new entry under respective DEE team name
 # - Add new entry in alphabatical order under the team name
 # - Add common Github team owners first followed by specific ones
 # - Always add Github teams as owners instead of individual usernames
@@ -17,17 +16,17 @@
 
 # Repo owner. cloud-samples-reviewer is limited to samples ownership.
 * @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers
-/* @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
-.github @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
-.kokoro @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver
+/* @GoogleCloudPlatform/java-samples-reviewers @GoogleCloudPlatform/cloud-samples-infra @yoshi-approver
+.github @GoogleCloudPlatform/java-samples-reviewers @GoogleCloudPlatform/cloud-samples-infra @yoshi-approver
+.kokoro @GoogleCloudPlatform/java-samples-reviewers @GoogleCloudPlatform/cloud-samples-infra @yoshi-approver
 
 # Serverless, Orchestration, DevOps
-/container-registry              @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/torus-dpe
-/endpoints                       @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/torus-dpe
-/eventarc                        @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/torus-dpe
-/run                             @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/torus-dpe
-/tasks                           @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/torus-dpe
-/workflows                       @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/torus-dpe
+/container-registry              @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers
+/endpoints                       @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers
+/eventarc                        @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers
+/run                             @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers
+/tasks                           @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers
+/workflows                       @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers
 
 # Infrastructure
 /accessapproval                  @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/dee-infra
@@ -41,64 +40,67 @@
 /privateca                       @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/dee-infra
 /recaptcha_enterprise            @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/dee-infra
 /recaptcha_enterprise/demosite   @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/recaptcha-customer-obsession-reviewers
-/secretmanager                   @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/dee-infra
-/security-command-center         @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/dee-infra
+/secretmanager                   @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/cloud-secrets-team
+/security-command-center         @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/gcp-security-command-center
 /servicedirectory                @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/dee-infra
 /webrisk                         @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/dee-infra
+/tpu                             @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/dee-infra
 
 # DEE Platform Ops (DEEPO)
-/errorreporting                  @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/dee-platform-ops
-/monitoring                      @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/dee-platform-ops
-/opencensus                      @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/dee-platform-ops
-/trace                           @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/dee-platform-ops
+/errorreporting                  @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers
+/monitoring                      @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers
 
 # Cloud SDK Databases & Data Analytics teams
 # ---* Cloud Native DB
-/bigtable                        @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers@GoogleCloudPlatform/cloud-native-db-dpes
+/bigtable                        @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/cloud-native-db-dpes @GoogleCloudPlatform/bigtable-eng
 /memorystore                     @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers
 /spanner                         @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/api-spanner-java
 # ---* Cloud Storage
 /storage                         @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/cloud-storage-dpes
 /storage-transfer                @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/cloud-storage-dpes
 # ---* Infra DB
-/cloud-sql                       @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/infra-db-sdk
+/cloud-sql                       @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/cloud-sql-connectors
 
 # Data & AI
-/aiplatform                      @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/dee-data-ai
-/automl                          @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/dee-data-ai
-/contact-center-insights         @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/dee-data-ai
-/datalabeling                    @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/dee-data-ai
-/dataflow                        @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/dee-data-ai
-/dataproc                        @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/dee-data-ai
-/dialogflow                      @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/dee-data-ai
-/dialogflow-cx                   @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/dee-data-ai
-/discoveryengine                 @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/dee-data-ai
-/document-ai                     @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/dee-data-ai
-/jobs                            @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/dee-data-ai
-/language                        @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/dee-data-ai
-/mediatranslation                @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/dee-data-ai
-/mlengine                        @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/dee-data-ai
-/speech                          @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/dee-data-ai
-/talent                          @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/dee-data-ai
-/texttospeech                    @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/dee-data-ai
-/translate                       @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/dee-data-ai
-/video                           @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/dee-data-ai
-/vision                          @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/dee-data-ai
+/aiplatform                      @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/text-embedding
+/automl                          @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers
+/contact-center-insights         @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers
+/datalabeling                    @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers
+/dataflow                        @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers
+/dataproc                        @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers
+/dialogflow                      @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers
+/dialogflow-cx                   @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers
+/discoveryengine                 @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers
+/document-ai                     @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers
+/jobs                            @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers
+/language                        @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers
+/mediatranslation                @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers
+/mlengine                        @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers
+/speech                          @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers
+/talent                          @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers
+/texttospeech                    @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers
+/translate                       @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/cloud-ml-translate-dev
+/video                           @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers
+/vision                          @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers
 
 # Self-service
 # ---* Shared with DEE Teams
-/content-warehouse               @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/googleapis-contentwarehouse
-/datacatalog                     @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/googleapi-dataplex
-/functions                       @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/torus-dpe @GoogleCloudPlatform/functions-framework-google
+/content-warehouse               @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/googleapis-contentwarehouse
+/datacatalog                     @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/googleapi-dataplex
+/dataplex                        @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/googleapi-dataplex
+/functions                       @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers
 # ---* Fully Eng Owned
+
 /appengine-*                     @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/serverless-runtimes
-/asset                           @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/cloud-asset-analysis-team @GoogleCloudPlatform/cloud-asset-platform-team
+/asset                           @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/cloud-asset-analysis-team
 /dlp                             @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/googleapis-dlp
 /flexible                        @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/serverless-runtimes
 /healthcare                      @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/healthcare-life-sciences
-/managedkafka                    @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/api-pubsub-and-pubsublite
+/iot                             @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/api-iot
 /media                           @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/cloud-media-team
 /pubsub                          @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/api-pubsub-and-pubsublite
 /pubsublite                      @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/api-pubsub-and-pubsublite
 /retail                          @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/cloud-retail-team
 /unittests                       @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/serverless-runtimes
+/bigquery/bigquerydatatransfer   @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers 
+/routeoptimization               @GoogleCloudPlatform/java-samples-reviewers @yoshi-approver @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/geo-routeoptimization
