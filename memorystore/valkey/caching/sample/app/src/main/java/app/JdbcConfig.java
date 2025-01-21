@@ -14,7 +14,7 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 public class JdbcConfig {
 
   // Database configuration properties with environment variable fallback
-  @Value("${DB_URL:jdbc:postgresql://localhost:5432/default_db}")
+  @Value("${DB_URL:jdbc:postgresql://localhost:5432/postgres}")
   private String url;
 
   @Value("${DB_USERNAME:postgres}")

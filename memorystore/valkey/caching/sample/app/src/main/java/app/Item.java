@@ -4,14 +4,24 @@
 
 package app;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import org.json.JSONObject;
 
 public class Item {
 
   private final Long id;
+
+  @NotNull
   private final String name;
+
+  @NotNull
   private final String description;
+
+  @NotNull
+  @Positive
   private final Double price;
+
   private boolean fromCache;
 
   public Item() {

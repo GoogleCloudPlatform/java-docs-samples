@@ -17,18 +17,33 @@ services:
       - POSTGRES_PASSWORD=password
       - POSTGRES_DB=postgres
     volumes:
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ../app/init.sql:/docker-entrypoint-initdb.d/init.sql
 
-  api:
+  data:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: api
+    container_name: sample-data
+    ports:
+      - "8082:8082"
+    depends_on:
+      - postgres
+    environment:
+      - DB_URL=jdbc:postgresql://postgres:5432/postgres
+      - DB_USERNAME=admin
+      - DB_PASSWORD=password
+
+  app:
+    build:
+      context: ../app
+      dockerfile: Dockerfile
+    container_name: app
     ports:
       - "8080:8080"
     depends_on:
-      - postgres
       - valkey
+      - postgres
+      - data
     environment:
       - VALKEY_HOST=valkey
       - VALKEY_PORT=6379

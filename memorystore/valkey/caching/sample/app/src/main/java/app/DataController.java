@@ -5,6 +5,7 @@
 
 package app;
 
+import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Controller;
 import redis.clients.jedis.Jedis;
@@ -49,6 +50,11 @@ public class DataController {
     jedis.expire(idString, DEFAULT_TTL);
 
     return item.get();
+  }
+
+  public List<Item> getMultiple(int amount) {
+    // Get multiple items from the database
+    return itemsRepository.getMultiple(amount);
   }
 
   public long create(Item item) {

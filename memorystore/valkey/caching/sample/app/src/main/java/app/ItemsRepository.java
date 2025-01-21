@@ -5,6 +5,7 @@
 package app;
 
 import java.sql.PreparedStatement;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -40,6 +41,20 @@ public class ItemsRepository {
     } catch (EmptyResultDataAccessException e) {
       return Optional.empty();
     }
+  }
+
+  public List<Item> getMultiple(int amount) {
+    return jdbcTemplate.query(
+      "SELECT * FROM items ORDER BY random() LIMIT ?",
+      (rs, rowNum) ->
+        new Item(
+          rs.getLong("id"),
+          rs.getString("name"),
+          rs.getString("description"),
+          rs.getDouble("price")
+        ),
+      amount
+    );
   }
 
   public long create(Item item) {
@@ -84,12 +99,12 @@ public class ItemsRepository {
   }
 
   public boolean exists(long id) {
+    /** Set the query to execute */
+    String query = "SELECT EXISTS(SELECT 1 FROM items WHERE id = ?)";
+
+    /** Return query result */
     return Boolean.TRUE.equals(
-      jdbcTemplate.queryForObject(
-        "SELECT EXISTS(SELECT 1 FROM items WHERE id = ?)",
-        Boolean.class,
-        id
-      )
+      jdbcTemplate.queryForObject(query, Boolean.class, id)
     );
   }
 }

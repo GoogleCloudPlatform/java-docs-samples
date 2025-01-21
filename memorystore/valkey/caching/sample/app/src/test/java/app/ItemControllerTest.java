@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.util.List;
 import org.hamcrest.Matchers;
 import org.json.JSONObject;
 import org.junit.jupiter.api.DisplayName;
@@ -39,7 +40,7 @@ class ItemControllerTest {
 
     // Act: Perform GET /item/1
     mockMvc
-      .perform(get("/item/{id}", itemId))
+      .perform(get("/api/item/{id}", itemId))
       .andExpect(status().isOk()) // Assert HTTP status is 200 OK
       .andExpect(content().string(Matchers.containsString("\"id\":1"))) // Assert JSON contains "id":1
       .andExpect(
@@ -65,10 +66,55 @@ class ItemControllerTest {
     given(dataController.get(itemId)).willReturn(null); // Simulate item not found
 
     // Act: Perform GET /item/2
-    mockMvc.perform(get("/item/{id}", itemId)).andExpect(status().isNotFound()); // Assert HTTP status is 404 Not Found
+    mockMvc
+      .perform(get("/api/item/{id}", itemId))
+      .andExpect(status().isNotFound()); // Assert HTTP status is 404 Not Found
 
     // Assert: Verify DataController's get method was called
     verify(dataController).get(itemId);
+  }
+
+  @Test
+  @DisplayName("Test reading multiple random items")
+  void testReadMultipleItems() throws Exception {
+    // Arrange: DataController returns a list of random items
+    Item item1 = new Item(1L, "Item1", "Description1", 100.0);
+    Item item2 = new Item(2L, "Item2", "Description2", 200.0);
+    Item item3 = new Item(3L, "Item3", "Description3", 300.0);
+    Item item4 = new Item(4L, "Item4", "Description4", 400.0);
+    Item item5 = new Item(5L, "Item5", "Description5", 500.0);
+    Item item6 = new Item(6L, "Item6", "Description6", 600.0);
+    Item item7 = new Item(7L, "Item7", "Description7", 700.0);
+    Item item8 = new Item(8L, "Item8", "Description8", 800.0);
+    Item item9 = new Item(9L, "Item9", "Description9", 900.0);
+    Item item10 = new Item(10L, "Item10", "Description10", 1000.0);
+
+    List<Item> items = List.of(
+      item1,
+      item2,
+      item3,
+      item4,
+      item5,
+      item6,
+      item7,
+      item8,
+      item9,
+      item10
+    );
+    given(dataController.getMultiple(10)).willReturn(items);
+
+    // Act: Perform GET /random
+    mockMvc
+      .perform(get("/api/item/random"))
+      .andExpect(status().isOk()) // Assert HTTP status is 200 OK
+      .andExpect(jsonPath("$.items.length()").value(10)) // Assert the `items` array has 10 elements
+      .andExpect(jsonPath("$.items[0].id").value(1)) // Check first item's ID
+      .andExpect(jsonPath("$.items[0].name").value("Item1")) // Check first item's name
+      .andExpect(jsonPath("$.items[9].id").value(10)) // Check last item's ID
+      .andExpect(jsonPath("$.items[9].name").value("Item10")); // Check last item's name
+
+    // Assert: Verify DataController's getMultiple method was called with the correct parameter
+    verify(dataController).getMultiple(10);
   }
 
   @Test
@@ -84,7 +130,7 @@ class ItemControllerTest {
     itemJson.remove("id"); // Remove ID from JSON for creation
     mockMvc
       .perform(
-        post("/item/create")
+        post("/api/item/create")
           .contentType("application/json") // Specify JSON content type
           .content(itemJson.toString()) // Convert JSON to string
       )
@@ -108,12 +154,11 @@ class ItemControllerTest {
     // Act: Perform POST /item/create with an invalid request body (missing required fields)
     mockMvc
       .perform(
-        post("/item/create")
+        post("/api/item/create")
           .contentType("application/json") // Specify JSON content type
           .content("{\"name\":\"NewItem\"}") // Incomplete JSON (missing fields)
       )
-      .andExpect(status().isBadRequest()) // Assert HTTP status is 400 Bad Request
-      .andExpect(content().string("{\"error\":\"Invalid item!\"}")); // Assert response message
+      .andExpect(status().isBadRequest()); // Assert HTTP status is 400 Bad Request
 
     // Assert: Verify DataController's create method was not called
     verify(dataController, never()).create(any());
@@ -125,7 +170,7 @@ class ItemControllerTest {
     // Act: Perform DELETE /item/delete/5
     long itemId = 5;
     mockMvc
-      .perform(delete("/item/delete/{id}", itemId))
+      .perform(delete("/api/item/delete/{id}", itemId))
       .andExpect(status().isOk()) // Assert HTTP status is 200 OK
       .andExpect(content().string("{\"id\":5}")); // Assert response message
 

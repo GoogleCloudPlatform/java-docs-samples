@@ -45,10 +45,9 @@ public class JedisConfig {
     try {
       jedis.ping();
     } catch (Exception e) {
-      throw new RuntimeException(
-        "Failed to connect to Redis server at " + redisHost + ":" + redisPort,
-        e
-      );
+      String msg =
+        "Failed to connect to Redis server at " + redisHost + ":" + redisPort;
+      throw new RuntimeException(msg, e);
     }
 
     return jedis;

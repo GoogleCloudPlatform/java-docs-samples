@@ -9,13 +9,16 @@
 
 package app;
 
+import jakarta.validation.Valid;
 import org.json.JSONObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/item")
+@RequestMapping("/api/item")
 public class ItemController {
+
+  public static final int TOTAL_RANDOM_ITEMS = 10;
 
   private final DataController dataController;
 
@@ -24,23 +27,9 @@ public class ItemController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<String> read(@PathVariable String id) {
-    long itemId;
+  public ResponseEntity<String> read(@PathVariable Long id) {
+    Item item = dataController.get(id);
 
-    try {
-      itemId = Long.parseLong(id);
-    } catch (NumberFormatException e) {
-      return ResponseEntity.badRequest()
-        .body(
-          JSONObject.valueToString(
-            new JSONObject().put("error", "Invalid item ID!")
-          )
-        );
-    }
-
-    Item item = dataController.get(itemId);
-
-    // If the data doesn't exist, return a not found response
     if (item == null) {
       return ResponseEntity.notFound().build();
     }
@@ -48,30 +37,28 @@ public class ItemController {
     return ResponseEntity.ok(item.toJSONObject().toString());
   }
 
-  @PostMapping("/create")
-  public ResponseEntity<String> create(@RequestBody Item item) {
-    if (
-      item == null ||
-      item.getName() == null ||
-      item.getDescription() == null ||
-      item.getPrice() == null ||
-      Double.isNaN(item.getPrice()) ||
-      item.getPrice() < 0
-    ) {
-      return ResponseEntity.badRequest()
-        .body(
-          JSONObject.valueToString(
-            new JSONObject().put("error", "Invalid item!")
-          )
-        );
-    }
+  @GetMapping("/random")
+  public ResponseEntity<String> read() {
+    return ResponseEntity.ok(
+      new JSONObject()
+        .put("items", dataController.getMultiple(TOTAL_RANDOM_ITEMS))
+        .toString()
+    );
+  }
 
+  @PostMapping("/create")
+  public ResponseEntity<String> create(@Valid @RequestBody Item item) {
+    /** Create a new item */
     Item createdItem = new Item(
       item.getName(),
       item.getDescription(),
       item.getPrice()
     );
+
+    /** Save the item */
     long itemId = dataController.create(createdItem);
+
+    /** Return a successful response */
     return ResponseEntity.ok(
       JSONObject.valueToString(new JSONObject().put("id", itemId))
     );
