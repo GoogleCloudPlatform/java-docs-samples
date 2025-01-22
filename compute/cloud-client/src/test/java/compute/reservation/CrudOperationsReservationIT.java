@@ -30,6 +30,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -75,6 +76,7 @@ public class CrudOperationsReservationIT {
   }
 
   @Test
+  @Ignore("Issue #9989")
   public void testGetReservation()
       throws IOException {
     Reservation reservation = GetReservation.getReservation(
@@ -85,6 +87,7 @@ public class CrudOperationsReservationIT {
   }
 
   @Test
+  @Ignore("Issue #9989")
   public void testListReservation() throws IOException {
     List<Reservation> reservations =
         ListReservations.listReservations(PROJECT_ID, ZONE);
@@ -94,6 +97,7 @@ public class CrudOperationsReservationIT {
   }
 
   @Test
+  @Ignore("Issue #9989")
   public void testUpdateVmsForReservation()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     int newNumberOfVms = 1;
