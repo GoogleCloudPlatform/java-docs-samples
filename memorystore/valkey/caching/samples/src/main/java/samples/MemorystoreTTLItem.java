@@ -1,0 +1,63 @@
+/**
+ * This code snippet is part of a tutorial on how to use Memorystore for Valkey.
+ *
+ * <p>See https://cloud.google.com/memorystore/docs/valkey/create-instances before running the code
+ * snippet.
+ *
+ * <p>Prerequisites: 1. A running Memorystore for Valkey instance in Google Cloud. 2. Your client
+ * must run in the same VPC network as the Memorystore instance.
+ *
+ * <p>Replace "INSTANCE_ID" with the private IP of your Memorystore instance. Replace "ITEM_ID" and
+ * "ITEM_VALUE" with the key and value to cache.
+ */
+import redis.clients.jedis.Jedis;
+
+public class MemorystoreTTLItem {
+
+  public static void main(String[] args) throws InterruptedException {
+    /** Connect to your Memorystore for Valkey instance */
+    Jedis jedis = new Jedis("127.0.0.1", 6379);
+
+    /** Replace with the item ID and value to cache */
+    String itemId = "foo";
+    String itemValue = "bar";
+
+    /** Set a TTL of 10 seconds during entry creation */
+    int ttlSeconds = 10;
+
+    /** Create a new cached item with a TTL value */
+    jedis.setex(itemId, ttlSeconds, itemValue);
+
+    /** Print out the cached item details */
+    System.out.println(
+        "Item cached with ID: " + itemId + " and value: " + itemValue + " for " + ttlSeconds + "s");
+
+    /** Wait for 5 seconds */
+    System.out.println("Waiting for 5 seconds...");
+    Thread.sleep(5000);
+
+    /** Retrieve the remaining TTL */
+    Long remainingTTL = jedis.ttl(itemId);
+
+    /** Find the cached item, and print out the remanining expiry */
+    String cachedItem = jedis.get(itemId);
+
+    /** Print out the item id with remaining TTL value */
+    System.out.println("Remaining TTL for item " + itemId + ": " + remainingTTL + "s");
+
+    /** Wait for another 6 seconds to demonstrate TTL expiry */
+    System.out.println("Waiting for 6 seconds for expiry...");
+    Thread.sleep(6000);
+
+    /** Retrieve the remaining TTL or check item existence */
+    remainingTTL = jedis.ttl(itemId);
+
+    /** If TTL is less than 0, print a message indicating expiration */
+    if (remainingTTL < 0) {
+      System.out.println("Item with ID " + itemId + " has expired and is no longer available.");
+    }
+
+    /** Close the Redis connection */
+    jedis.close();
+  }
+}
