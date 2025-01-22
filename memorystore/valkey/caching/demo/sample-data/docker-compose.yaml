@@ -1,0 +1,52 @@
+name: caching-app
+
+services:
+  valkey:
+    image: valkey/valkey:latest
+    ports:
+      - "6379:6379"
+    command: ["valkey-server", "--save", "60", "1", "--loglevel", "warning"]
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=postgres
+    volumes:
+      - ../app/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  data:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sample-data
+    ports:
+      - "8082:8082"
+    depends_on:
+      - postgres
+    environment:
+      - DB_URL=jdbc:postgresql://postgres:5432/postgres
+      - DB_USERNAME=admin
+      - DB_PASSWORD=password
+
+  app:
+    build:
+      context: ../app
+      dockerfile: Dockerfile
+    container_name: app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - valkey
+      - postgres
+      - data
+    environment:
+      - VALKEY_HOST=valkey
+      - VALKEY_PORT=6379
+      - DB_URL=jdbc:postgresql://postgres:5432/postgres
+      - DB_USERNAME=admin
+      - DB_PASSWORD=password
