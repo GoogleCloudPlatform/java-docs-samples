@@ -27,6 +27,7 @@
  * an actual cached item ID.
  */
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
 
 public class MemorystoreReadItem {
 
@@ -43,19 +44,23 @@ public class MemorystoreReadItem {
   public static void main(String[] args) {
 
     /** Connect to your Memorystore for Valkey instance */
-    Jedis jedis = new Jedis(instanceId, port);
+    JedisPool pool = new JedisPool(instanceId, port);
 
-    /** Read the cached item */
-    String cachedItem = jedis.get(itemId);
+    /** Run try with resource */
+    try (Jedis jedis = pool.getResource()) {
 
-    /* If found, print out the cached item */
-    if (cachedItem != null) {
-      System.out.println("Cached item: " + cachedItem);
-    }
+      /** Read the cached item */
+      String cachedItem = jedis.get(itemId);
 
-    /** If no item found, print a message */
-    if (cachedItem == null) {
-      System.out.println("No cached item found with ID: " + itemId);
+      /* If found, print out the cached item */
+      if (cachedItem != null) {
+        System.out.println("Cached item: " + cachedItem);
+      }
+
+      /** If no item found, print a message */
+      if (cachedItem == null) {
+        System.out.println("No cached item found with ID: " + itemId);
+      }
     }
   }
 }

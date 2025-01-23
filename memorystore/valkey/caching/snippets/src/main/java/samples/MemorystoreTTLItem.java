@@ -26,6 +26,7 @@
  * "ITEM_VALUE" with the key and value of the item to cache.
  */
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
 
 public class MemorystoreTTLItem {
 
@@ -45,44 +46,51 @@ public class MemorystoreTTLItem {
   public static void main(String[] args) throws InterruptedException {
 
     /** Connect to your Memorystore for Valkey instance */
-    Jedis jedis = new Jedis(instanceId, port);
+    JedisPool pool = new JedisPool(instanceId, port);
 
-    /** Set a TTL of 10 seconds during entry creation */
-    int ttlSeconds = 10;
+    /** Run try with resource */
+    try (Jedis jedis = pool.getResource()) {
 
-    /** Create a new cached item with a TTL value */
-    jedis.setex(itemId, ttlSeconds, itemValue);
+      /** Set a TTL of 10 seconds during entry creation */
+      int ttlSeconds = 10;
 
-    /** Print out the cached item details */
-    System.out.println(
-        "Item cached with ID: " + itemId + " and value: " + itemValue + " for " + ttlSeconds + "s");
+      /** Create a new cached item with a TTL value */
+      jedis.setex(itemId, ttlSeconds, itemValue);
 
-    /** Wait for 5 seconds */
-    System.out.println("Waiting for 5 seconds...");
-    Thread.sleep(5000);
+      /** Print out the cached item details */
+      System.out.println(
+          "Item cached with ID: "
+              + itemId
+              + " and value: "
+              + itemValue
+              + " for "
+              + ttlSeconds
+              + "s");
 
-    /** Retrieve the remaining TTL */
-    Long remainingTTL = jedis.ttl(itemId);
+      /** Wait for 5 seconds */
+      System.out.println("Waiting for 5 seconds...");
+      Thread.sleep(5000);
 
-    /** Find the cached item, and print out the remanining expiry */
-    String cachedItem = jedis.get(itemId);
+      /** Retrieve the remaining TTL */
+      Long remainingTTL = jedis.ttl(itemId);
 
-    /** Print out the item id with remaining TTL value */
-    System.out.println("Remaining TTL for item " + itemId + ": " + remainingTTL + "s");
+      /** Find the cached item, and print out the remanining expiry */
+      String cachedItem = jedis.get(itemId);
 
-    /** Wait for another 6 seconds to demonstrate TTL expiry */
-    System.out.println("Waiting for 6 seconds for expiry...");
-    Thread.sleep(6000);
+      /** Print out the item id with remaining TTL value */
+      System.out.println("Remaining TTL for item " + itemId + ": " + remainingTTL + "s");
 
-    /** Retrieve the remaining TTL or check item existence */
-    remainingTTL = jedis.ttl(itemId);
+      /** Wait for another 6 seconds to demonstrate TTL expiry */
+      System.out.println("Waiting for 6 seconds for expiry...");
+      Thread.sleep(6000);
 
-    /** If TTL is less than 0, print a message indicating expiration */
-    if (remainingTTL < 0) {
-      System.out.println("Item with ID " + itemId + " has expired and is no longer available.");
+      /** Retrieve the remaining TTL or check item existence */
+      remainingTTL = jedis.ttl(itemId);
+
+      /** If TTL is less than 0, print a message indicating expiration */
+      if (remainingTTL < 0) {
+        System.out.println("Item with ID " + itemId + " has expired and is no longer available.");
+      }
     }
-
-    /** Close the Redis connection */
-    jedis.close();
   }
 }

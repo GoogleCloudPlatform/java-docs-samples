@@ -26,6 +26,7 @@
  * "ITEM_VALUE" with the key and value to be cached.
  */
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
 
 public class MemorystoreWriteItem {
 
@@ -36,23 +37,25 @@ public class MemorystoreWriteItem {
   private static final int port = 6379;
 
   /** Configure the id of the item to write to Memorystore */
-  private static final String itemId = "ITEM_ID";
+  private static final String itemId = "ITEM_VALUE";
 
   /** Configure the id of the item to write to Memorystore */
-  private static final String itemValue = "ITEM_VALUE";
+  private static final String itemValue = "test_three_value";
 
   /* Run the code snippet */
   public static void main(String[] args) {
-    /** Connect to the Memorystore Redis instance */
-    Jedis jedis = new Jedis(instanceId, port);
 
-    /** Write the item to the cache */
-    jedis.set(itemId, itemValue);
+    /** Connect to your Memorystore for Valkey instance */
+    JedisPool pool = new JedisPool(instanceId, port);
 
-    /** Print out the cached result */
-    System.out.println("Item cached with ID: " + itemId + " and value: " + itemValue);
+    /** Run try with resource */
+    try (Jedis jedis = pool.getResource()) {
 
-    /** Close the connection */
-    jedis.close();
+      /** Write the item to the cache */
+      jedis.set(itemId, itemValue);
+
+      /** Print out the cached result */
+      System.out.println("Item cached with ID: " + itemId + " and value: " + itemValue);
+    }
   }
 }

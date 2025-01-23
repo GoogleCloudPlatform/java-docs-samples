@@ -27,6 +27,7 @@
  * the key to be deleted from the cache.
  */
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
 
 public class MemorystoreDeleteItem {
 
@@ -43,22 +44,23 @@ public class MemorystoreDeleteItem {
   public static void main(String[] args) {
 
     /** Connect to your Memorystore for Valkey instance */
-    Jedis jedis = new Jedis(instanceId, port);
+    JedisPool pool = new JedisPool(instanceId, port);
 
-    /** Delete the item from the cache */
-    Long result = jedis.del(itemId);
+    /** Run try with resource */
+    try (Jedis jedis = pool.getResource()) {
 
-    /** Check if any items have been successfully deleted */
-    if (result > 0) {
-      System.out.println("Successfully deleted item with ID: " + itemId);
+      /** Delete the item from the cache */
+      Long result = jedis.del(itemId);
+
+      /** Check if any items have been successfully deleted */
+      if (result > 0) {
+        System.out.println("Successfully deleted item with ID: " + itemId);
+      }
+
+      /* Print out that no item has been found for deletion */
+      if (result == 0) {
+        System.out.println("No item found with ID: " + itemId);
+      }
     }
-
-    /* Print out that no item has been found for deletion */
-    if (result == 0) {
-      System.out.println("No item found with ID: " + itemId);
-    }
-
-    /** Close the Redis connection */
-    jedis.close();
   }
 }
