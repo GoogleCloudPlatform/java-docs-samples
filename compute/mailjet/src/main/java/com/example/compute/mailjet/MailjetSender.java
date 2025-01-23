@@ -30,7 +30,6 @@ import org.json.JSONObject;
 // [END compute_mailjet_imports]
 
 // [START compute_mailjet_send_email]
-// [START app]
 public class MailjetSender {
 
   public static void main(String[] args) throws MailjetException {
@@ -82,5 +81,4 @@ public class MailjetSender {
     }
   }
 }
-// [END app]
 // [END compute_mailjet_send_email]
