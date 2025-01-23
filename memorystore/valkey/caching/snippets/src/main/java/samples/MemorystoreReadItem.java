@@ -31,16 +31,17 @@ import redis.clients.jedis.Jedis;
 public class MemorystoreReadItem {
 
   /** Configure the Memorystore instance id */
-  private static final String INSTANCE_ID = "INSTANCE_ID";
+  private static final String instanceId = "INSTANCE_ID";
 
   /** Configure the Memorystore port, if not the default port */
-  private static final int PORT = 6379;
+  private static final int port = 6379;
 
   /** Configure the id of the item to read from Memorystore */
-  private static final String ITEM_ID = "ITEM_ID";
+  private static final String itemId = "ITEM_ID";
 
   /* Run the code snippet */
   public static void main(String[] args) {
+
     /** Connect to your Memorystore for Valkey instance */
     Jedis jedis = new Jedis(instanceId, port);
 
