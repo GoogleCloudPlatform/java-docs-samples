@@ -37,10 +37,10 @@ public class MemorystoreWriteItem {
   private static final int port = 6379;
 
   /** Configure the id of the item to write to Memorystore */
-  private static final String itemId = "ITEM_VALUE";
+  private static final String itemId = "ITEM_ID";
 
   /** Configure the id of the item to write to Memorystore */
-  private static final String itemValue = "test_three_value";
+  private static final String itemValue = "ITEM_VALUE";
 
   /* Run the code snippet */
   public static void main(String[] args) {
@@ -62,7 +62,7 @@ public class MemorystoreWriteItem {
 
       /* If found, print out the cached item */
       if (cachedItem != null) {
-        System.out.println("Cached item: " + cachedItem);
+        System.out.println("Found Cached item: " + cachedItem);
       }
 
       /** If no item found, print a message */
