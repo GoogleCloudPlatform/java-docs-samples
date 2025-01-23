@@ -52,10 +52,23 @@ public class MemorystoreWriteItem {
     try (Jedis jedis = pool.getResource()) {
 
       /** Write the item to the cache */
+      System.out.println("Writing cached item with ID: " + itemId + " and value: " + itemValue);
       jedis.set(itemId, itemValue);
 
-      /** Print out the cached result */
-      System.out.println("Item cached with ID: " + itemId + " and value: " + itemValue);
+      /** Read the cached item */
+      System.out.println(
+          "Check the cached item has been written successfully written to the cache");
+      String cachedItem = jedis.get(itemId);
+
+      /* If found, print out the cached item */
+      if (cachedItem != null) {
+        System.out.println("Cached item: " + cachedItem);
+      }
+
+      /** If no item found, print a message */
+      if (cachedItem == null) {
+        System.out.println("No cached item found with ID: " + itemId);
+      }
     }
   }
 }
