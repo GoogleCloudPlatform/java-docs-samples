@@ -14,6 +14,18 @@ You must have java installed locally on your machinee. Run `java --version` to c
 
 A working instance of Memorystore for Valkey must be available. You can run the [Valkey CLI](https://valkey.io/topics/cli/) for a local instance, or create an instance through the [GCP Platform](https://console.cloud.google.com/memorystore/valkey/instances?).
 
+To setup a live instance, create a new Memorystore instance through the GCloud CLI using the following
+
+```bash
+gcloud redis instances create myinstance --size=2 --region=LOCATION --redis-version=redis_6_x
+```
+
+Altrernativley, run a local instance through the Valkey CLI
+
+```bash
+valkey-cli
+```
+
 ## Running the sample code
 
 Each example contains instructions on any prerequiite configuration.
