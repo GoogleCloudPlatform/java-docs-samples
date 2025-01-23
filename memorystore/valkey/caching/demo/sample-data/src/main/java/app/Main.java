@@ -41,9 +41,7 @@ public class Main {
       System.out.println("Populating items table with sample data...");
       populateItems(jdbcTemplate);
     } catch (CannotGetJdbcConnectionException e) {
-      System.out.println(
-        "Failed to connect to the database. Retrying in 5 seconds..."
-      );
+      System.out.println("Failed to connect to the database. Retrying in 5 seconds...");
       // Sleep for 5 seconds and retry
       try {
         Thread.sleep(5000);
@@ -55,8 +53,7 @@ public class Main {
   }
 
   private static void populateItems(JdbcTemplate jdbcTemplate) {
-    String sql =
-      "INSERT INTO items (name, description, price) VALUES (?, ?, ?)";
+    String sql = "INSERT INTO items (name, description, price) VALUES (?, ?, ?)";
 
     // Prepare batch arguments
     List<Object[]> batchArgs = new ArrayList<>();
@@ -65,7 +62,7 @@ public class Main {
       String description = generateDescription();
       double price = RANDOM.nextInt(10000) / 100.0;
 
-      batchArgs.add(new Object[] { name, description, price });
+      batchArgs.add(new Object[] {name, description, price});
     }
 
     // Execute batch update
@@ -81,20 +78,18 @@ public class Main {
   }
 
   private static JdbcTemplate configureJdbcTemplate() {
-    String jdbcUrl = System.getenv()
-      .getOrDefault("DB_URL", "jdbc:postgresql://localhost:5432/items");
+    String jdbcUrl =
+        System.getenv().getOrDefault("DB_URL", "jdbc:postgresql://localhost:5432/items");
     String jdbcUsername = System.getenv().getOrDefault("DB_USERNAME", "root");
-    String jdbcPassword = System.getenv()
-      .getOrDefault("DB_PASSWORD", "password");
+    String jdbcPassword = System.getenv().getOrDefault("DB_PASSWORD", "password");
 
     JdbcTemplate jdbcTemplate = new JdbcTemplate();
     jdbcTemplate.setDataSource(
-      DataSourceBuilder.create()
-        .url(jdbcUrl)
-        .username(jdbcUsername)
-        .password(jdbcPassword)
-        .build()
-    );
+        DataSourceBuilder.create()
+            .url(jdbcUrl)
+            .username(jdbcUsername)
+            .password(jdbcPassword)
+            .build());
     return jdbcTemplate;
   }
 }

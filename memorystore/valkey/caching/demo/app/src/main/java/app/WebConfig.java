@@ -42,11 +42,11 @@ public class WebConfig {
       @Override
       public void addCorsMappings(CorsRegistry registry) {
         registry
-          .addMapping("/**") // Allow all endpoints
-          .allowedOrigins(allowedOrigins.split(",")) // Allow requests from the frontend
-          .allowedMethods(allowedMethods.split(",")) // Restrict HTTP methods
-          .allowedHeaders(allowedHeaders.split(",")) // Specify allowed headers
-          .allowCredentials(true); // Allow cookies and credentials
+            .addMapping("/**") // Allow all endpoints
+            .allowedOrigins(allowedOrigins.split(",")) // Allow requests from the frontend
+            .allowedMethods(allowedMethods.split(",")) // Restrict HTTP methods
+            .allowedHeaders(allowedHeaders.split(",")) // Specify allowed headers
+            .allowCredentials(true); // Allow cookies and credentials
       }
     };
   }

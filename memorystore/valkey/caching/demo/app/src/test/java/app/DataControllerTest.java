@@ -34,11 +34,9 @@ import redis.clients.jedis.Jedis;
 @ExtendWith(MockitoExtension.class)
 class DataControllerTest {
 
-  @Mock
-  private ItemsRepository itemsRepository; // Mocked repository for database interactions
+  @Mock private ItemsRepository itemsRepository; // Mocked repository for database interactions
 
-  @Mock
-  private Jedis jedis; // Mocked Redis client for cache interactions
+  @Mock private Jedis jedis; // Mocked Redis client for cache interactions
 
   private DataController dataController; // System under test
 
@@ -62,7 +60,8 @@ class DataControllerTest {
       long itemId = 1;
       String itemIdStr = Long.toString(itemId);
       String cachedData =
-        "{\"id\":1,\"name\":\"Cached Item\",\"description\":\"Cached description\",\"price\":10.5}";
+          "{\"id\":1,\"name\":\"Cached Item\",\"description\":\"Cached"
+              + " description\",\"price\":10.5}";
       Item cachedItem = Item.fromJSONString(cachedData);
 
       given(jedis.exists(itemIdStr)).willReturn(true); // Cache contains the item
@@ -80,9 +79,7 @@ class DataControllerTest {
     }
 
     @Test
-    @DisplayName(
-      "Should return item from database and cache it if not in cache"
-    )
+    @DisplayName("Should return item from database and cache it if not in cache")
     void testGet_ItemNotInCache() {
       // Arrange: Item is not in cache but exists in the database
       long itemId = 2;
@@ -90,7 +87,8 @@ class DataControllerTest {
       Item dbItem = new Item(2L, "Database Item", "From DB", 15.99);
 
       given(jedis.exists(itemIdStr)).willReturn(false); // Cache miss
-      given(itemsRepository.get(itemId)).willReturn(Optional.of(dbItem)); // Database contains the item
+      given(itemsRepository.get(itemId))
+          .willReturn(Optional.of(dbItem)); // Database contains the item
 
       // Act: Call the get() method
       Item result = dataController.get(itemId);
@@ -104,9 +102,7 @@ class DataControllerTest {
     }
 
     @Test
-    @DisplayName(
-      "Should return null if item does not exist in cache or database"
-    )
+    @DisplayName("Should return null if item does not exist in cache or database")
     void testGet_ItemNotFound() {
       // Arrange: Item does not exist in cache or database
       long itemId = 3;
@@ -143,16 +139,9 @@ class DataControllerTest {
       long result = dataController.create(item);
 
       // Assert: Verify cache and database interactions
-      Item expectedItem = new Item(
-        0L,
-        item.getName(),
-        item.getDescription(),
-        item.getPrice()
-      );
-      verify(jedis).set(
-        Long.toString(result),
-        expectedItem.toJSONObject().toString()
-      ); // Add item to cache
+      Item expectedItem = new Item(0L, item.getName(), item.getDescription(), item.getPrice());
+      verify(jedis)
+          .set(Long.toString(result), expectedItem.toJSONObject().toString()); // Add item to cache
       verify(jedis).expire(Long.toString(result), DataController.DEFAULT_TTL); // Set TTL for cache
       assertEquals(0L, result); // Validate returned ID
     }
@@ -242,9 +231,7 @@ class DataControllerTest {
     }
 
     @Test
-    @DisplayName(
-      "Should return false if item does not exist in cache or database"
-    )
+    @DisplayName("Should return false if item does not exist in cache or database")
     void testExists_ItemNotFound() {
       // Arrange: Item does not exist in cache or database
       long itemId = 10;

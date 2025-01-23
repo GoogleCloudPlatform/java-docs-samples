@@ -40,14 +40,10 @@ public class JdbcConfig {
   public DataSource dataSource() {
     // Validate mandatory properties
     if (url == null || url.isEmpty()) {
-      throw new IllegalArgumentException(
-        "Database URL (DB_URL) is not configured"
-      );
+      throw new IllegalArgumentException("Database URL (DB_URL) is not configured");
     }
     if (username == null || username.isEmpty()) {
-      throw new IllegalArgumentException(
-        "Database username (DB_USERNAME) is not configured"
-      );
+      throw new IllegalArgumentException("Database username (DB_USERNAME) is not configured");
     }
 
     // Set up the DataSource

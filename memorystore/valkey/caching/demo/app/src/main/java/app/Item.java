@@ -25,15 +25,11 @@ public class Item {
 
   private final Long id;
 
-  @NotNull
-  private final String name;
+  @NotNull private final String name;
 
-  @NotNull
-  private final String description;
+  @NotNull private final String description;
 
-  @NotNull
-  @Positive
-  private final Double price;
+  @NotNull @Positive private final Double price;
 
   private boolean fromCache;
 
@@ -91,10 +87,9 @@ public class Item {
   public static Item fromJSONString(String obj) {
     JSONObject jsonObject = new JSONObject(obj);
     return new Item(
-      jsonObject.getLong("id"),
-      jsonObject.getString("name"),
-      jsonObject.getString("description"),
-      jsonObject.getDouble("price")
-    );
+        jsonObject.getLong("id"),
+        jsonObject.getString("name"),
+        jsonObject.getString("description"),
+        jsonObject.getDouble("price"));
   }
 }

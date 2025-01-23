@@ -39,9 +39,7 @@ public class JedisConfig {
   public Jedis jedis() {
     // Validate mandatory properties
     if (redisHost == null || redisHost.isEmpty()) {
-      throw new IllegalArgumentException(
-        "Redis host (VALKEY_HOST) is not configured"
-      );
+      throw new IllegalArgumentException("Redis host (VALKEY_HOST) is not configured");
     }
     if (redisPort <= 0 || redisPort > 65535) {
       throw new IllegalArgumentException("Redis port (VALKEY_PORT) is invalid");
@@ -58,8 +56,7 @@ public class JedisConfig {
     try {
       jedis.ping();
     } catch (Exception e) {
-      String msg =
-        "Failed to connect to Redis server at " + redisHost + ":" + redisPort;
+      String msg = "Failed to connect to Redis server at " + redisHost + ":" + redisPort;
       throw new RuntimeException(msg, e);
     }
 

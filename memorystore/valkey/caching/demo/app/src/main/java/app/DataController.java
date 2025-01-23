@@ -77,12 +77,7 @@ public class DataController {
     long itemId = itemsRepository.create(item);
 
     // Clone the item with the generated ID
-    Item createdItem = new Item(
-      itemId,
-      item.getName(),
-      item.getDescription(),
-      item.getPrice()
-    );
+    Item createdItem = new Item(itemId, item.getName(), item.getDescription(), item.getPrice());
 
     // Cache the data with the default TTL
     String idString = Long.toString(itemId);
