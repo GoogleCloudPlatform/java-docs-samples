@@ -21,6 +21,7 @@ package aiplatform.vectorsearch;
 import com.google.cloud.aiplatform.v1.IndexName;
 import com.google.cloud.aiplatform.v1.IndexServiceClient;
 import com.google.cloud.aiplatform.v1.IndexServiceSettings;
+import java.util.concurrent.TimeUnit;
 
 public class DeleteIndexSample {
 
@@ -30,6 +31,8 @@ public class DeleteIndexSample {
     String location = "YOUR_LOCATION";
     String indexId = "YOUR_INDEX_ID";
 
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests.
     try (IndexServiceClient indexServiceClient = IndexServiceClient.create(
         IndexServiceSettings.newBuilder().setEndpoint(location + "-aiplatform.googleapis.com:443")
             .build())) {
@@ -37,10 +40,13 @@ public class DeleteIndexSample {
     }
   }
 
-  static void deleteIndexSample(String project, String location, String indexId,
+  /**
+   * Deletes an index using the provided {@code indexServiceClient} to send the request.
+   */
+  public static void deleteIndexSample(String project, String location, String indexId,
       IndexServiceClient indexServiceClient) throws Exception {
     String indexName = IndexName.of(project, location, indexId).toString();
-    indexServiceClient.deleteIndexAsync(indexName).get();
+    indexServiceClient.deleteIndexAsync(indexName).get(5, TimeUnit.MINUTES);
   }
 }
 
