@@ -23,7 +23,7 @@
  * <p>Prerequisites: 1. A running Memorystore for Valkey instance.
  *
  * <p>Replace "INSTANCE_ID" with the private IP of your Memorystore instance. Replace "ITEM_ID" and
- * "ITEM_VALUE" with the key and value to cache.
+ * "ITEM_VALUE" with the key and value of the item to cache.
  */
 import redis.clients.jedis.Jedis;
 
