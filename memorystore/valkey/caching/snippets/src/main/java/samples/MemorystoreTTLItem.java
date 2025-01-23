@@ -20,8 +20,7 @@
  * <p>See https://cloud.google.com/memorystore/docs/valkey/create-instances before running the code
  * snippet.
  *
- * <p>Prerequisites: 1. A running Memorystore for Valkey instance in Google Cloud. 2. Your client
- * must run in the same VPC network as the Memorystore instance.
+ * <p>Prerequisites: 1. A running Memorystore for Valkey instance.
  *
  * <p>Replace "INSTANCE_ID" with the private IP of your Memorystore instance. Replace "ITEM_ID" and
  * "ITEM_VALUE" with the key and value to cache.
@@ -30,13 +29,23 @@ import redis.clients.jedis.Jedis;
 
 public class MemorystoreTTLItem {
 
-  public static void main(String[] args) throws InterruptedException {
-    /** Connect to your Memorystore for Valkey instance */
-    Jedis jedis = new Jedis("127.0.0.1", 6379);
+  /** Configure the Memorystore instance id */
+  private static final String instanceId = "INSTANCE_ID";
 
-    /** Replace with the item ID and value to cache */
-    String itemId = "foo";
-    String itemValue = "bar";
+  /** Configure the Memorystore port, if not the default port */
+  private static final int port = 6379;
+
+  /** Configure the id of the item to read/write from Memorystore */
+  private static final String itemId = "ITEM_ID";
+
+  /** Configure the value of the item to read/write from Memorystore */
+  private static final String itemValue = "ITEM_VALUE";
+
+  /* Run the code snippet */
+  public static void main(String[] args) throws InterruptedException {
+
+    /** Connect to your Memorystore for Valkey instance */
+    Jedis jedis = new Jedis(instanceId, port);
 
     /** Set a TTL of 10 seconds during entry creation */
     int ttlSeconds = 10;

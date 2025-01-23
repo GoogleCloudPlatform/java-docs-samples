@@ -20,8 +20,8 @@
  * <p>See https://cloud.google.com/memorystore/docs/valkey/create-instances before running the code
  * snippet.
  *
- * <p>Prerequisites: 1. A running Memorystore for Redis instance in Google Cloud. 2. An item already
- * cached in the Redis instance with a known ID.
+ * <p>Prerequisites: 1. A running Memorystore for Valkey instance. 2. An exisiting item to read from
+ * the Memrystore cache.
  *
  * <p>Replace "INSTANCE_ID" with the private IP of your Memorystore instance. Replace "ITEM_ID" with
  * an actual cached item ID.
@@ -30,12 +30,19 @@ import redis.clients.jedis.Jedis;
 
 public class MemorystoreReadItem {
 
+  /** Configure the Memorystore instance id */
+  private static final String INSTANCE_ID = "INSTANCE_ID";
+
+  /** Configure the Memorystore port, if not the default port */
+  private static final int PORT = 6379;
+
+  /** Configure the id of the item to read from Memorystore */
+  private static final String ITEM_ID = "ITEM_ID";
+
+  /* Run the code snippet */
   public static void main(String[] args) {
     /** Connect to your Memorystore for Valkey instance */
-    Jedis jedis = new Jedis("127.0.0.1", 6379);
-
-    /** Replace with an actual cached item ID */
-    String itemId = "foo";
+    Jedis jedis = new Jedis(instanceId, port);
 
     /** Read the cached item */
     String cachedItem = jedis.get(itemId);
