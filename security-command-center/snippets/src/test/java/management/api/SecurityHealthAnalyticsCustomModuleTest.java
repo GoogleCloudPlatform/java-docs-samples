@@ -47,7 +47,7 @@ import org.junit.runners.JUnit4;
 public class SecurityHealthAnalyticsCustomModuleTest {
   // TODO(Developer): Replace the below variable
   private static final String PROJECT_ID = System.getenv("SCC_PROJECT_ID");
-  private static final String CUSTOM_MODULE_DISPLAY_NAME = "java_sample_sha_custom_module_test";
+  private static final String CUSTOM_MODULE_DISPLAY_NAME = "java_sample_custom_module_test";
   private static final int MAX_ATTEMPT_COUNT = 3;
   private static final int INITIAL_BACKOFF_MILLIS = 120000; // 2 minutes
   private static List<String> createdCustomModuleIds = new ArrayList<>();
