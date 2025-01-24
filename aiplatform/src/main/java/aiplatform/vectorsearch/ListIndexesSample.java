@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Google LLC
+ * Copyright 2025 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ public class ListIndexesSample {
     try (IndexServiceClient indexServiceClient = IndexServiceClient.create(
         IndexServiceSettings.newBuilder().setEndpoint(location + "-aiplatform.googleapis.com:443")
             .build())) {
-      for (Index index : listIndexesSample(project, location, indexServiceClient).iterateAll()){
+      for (Index index : listIndexesSample(project, location, indexServiceClient).iterateAll()) {
         System.out.println(index);
       }
     }
@@ -48,7 +48,8 @@ public class ListIndexesSample {
    *
    * @returns the list of indexes
    */
-  public static ListIndexesPagedResponse listIndexesSample(String project, String location, IndexServiceClient indexServiceClient) throws Exception {
+  public static ListIndexesPagedResponse listIndexesSample(String project, String location,
+      IndexServiceClient indexServiceClient) throws Exception {
     String parent = LocationName.of(project, location).toString();
     return indexServiceClient.listIndexes(parent);
   }

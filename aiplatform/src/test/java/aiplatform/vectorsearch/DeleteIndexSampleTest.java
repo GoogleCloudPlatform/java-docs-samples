@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Google LLC
+ * Copyright 2025 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,16 +21,10 @@ import static com.google.common.truth.Truth.assertThat;
 import com.google.api.gax.grpc.GrpcTransportChannel;
 import com.google.api.gax.rpc.FixedTransportChannelProvider;
 import com.google.cloud.aiplatform.v1.DeleteIndexRequest;
-import com.google.cloud.aiplatform.v1.Index;
 import com.google.cloud.aiplatform.v1.IndexName;
 import com.google.cloud.aiplatform.v1.IndexServiceClient;
-import com.google.cloud.aiplatform.v1.IndexServiceClient.ListIndexesPagedResponse;
 import com.google.cloud.aiplatform.v1.IndexServiceGrpc.IndexServiceImplBase;
 import com.google.cloud.aiplatform.v1.IndexServiceSettings;
-import com.google.cloud.aiplatform.v1.ListIndexesRequest;
-import com.google.cloud.aiplatform.v1.ListIndexesResponse;
-import com.google.cloud.aiplatform.v1.LocationName;
-import com.google.common.collect.Lists;
 import com.google.longrunning.Operation;
 import com.google.protobuf.Any;
 import com.google.protobuf.Empty;
@@ -39,7 +33,6 @@ import io.grpc.inprocess.InProcessChannelBuilder;
 import io.grpc.inprocess.InProcessServerBuilder;
 import io.grpc.stub.StreamObserver;
 import io.grpc.testing.GrpcCleanupRule;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import org.junit.Before;
 import org.junit.Rule;
@@ -67,7 +60,8 @@ public class DeleteIndexSampleTest {
               StreamObserver<Operation> responseObserver) {
             requestRef.set(request);
             responseObserver.onNext(
-                Operation.newBuilder().setDone(true).setResponse(Any.pack(Empty.getDefaultInstance())).build());
+                Operation.newBuilder().setDone(true)
+                    .setResponse(Any.pack(Empty.getDefaultInstance())).build());
             responseObserver.onCompleted();
           }
         }).build().start());
