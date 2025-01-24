@@ -14,30 +14,35 @@
  * limitations under the License.
  */
 
-/**
- * This code snippet demonstrates how to use TTL (Time-To-Live) with Google Cloud Memorystore for
- * Redis.
- *
- * <p>For details, see: https://cloud.google.com/memorystore/docs/redis
- *
- * <p>Prerequisites: 1. A running Memorystore for Redis instance. 2. Replace "INSTANCE_ID",
- * "ITEM_ID", and "ITEM_VALUE" with the appropriate values.
- */
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
-/** Utility class for demonstrating TTL operations with Memorystore for Redis. */
-public class MemorystoreTTLItem {
+public final class MemorystoreTTLItem {
 
-    // Memorystore instance configuration
+    /** Replace the Memorystore instance id. */
     private static final String INSTANCE_ID = "INSTANCE_ID";
+
+    /** Replace the Memorystore port, if not the default port. */
     private static final int PORT = 6379;
+
+    /** Replace the id of the item to write to Memorystore. */
     private static final String ITEM_ID = "ITEM_ID";
+
+    /** Replace the id of the item to write to Memorystore. */
     private static final String ITEM_VALUE = "ITEM_VALUE";
 
+    /** Set the initial wait time for checking the cache. */
+    private static final int INITIAL_WAIT_TIME = 5000;
+
+    /** Set the final wait time for checking the cache. */
+    private static final int FINAL_WAIT_TIME = 6000;
+
+    private MemorystoreTTLItem() {
+        // No-op; won't be called
+    }
+
     /**
-     * Demonstrates creating a cached item with a TTL, checking its expiration, and observing TTL
-     * expiry.
+     * Writes to Memorystore with a Time-to-live(TTL) value.
      *
      * @param args command-line arguments
      * @throws InterruptedException if the thread sleep is interrupted
@@ -60,25 +65,24 @@ public class MemorystoreTTLItem {
 
             // Wait for 5 seconds to demonstrate the TTL countdown
             System.out.println("Waiting for 5 seconds...");
-            Thread.sleep(5000);
+            Thread.sleep(INITIAL_WAIT_TIME);
 
             // Retrieve and print the remaining TTL
             Long remainingTTL = jedis.ttl(ITEM_ID);
-            System.out.printf("Remaining TTL for item %s: %ds%n", ITEM_ID, remainingTTL);
+            System.out.printf("Remaining TTL %s: %ds%n", ITEM_ID, remainingTTL);
 
             // Wait for another 6 seconds to demonstrate TTL expiry
-            System.out.println("Waiting for 6 seconds to let the TTL expire...");
-            Thread.sleep(6000);
+            System.out.println("Waiting for 6s for TTL expiry...");
+            Thread.sleep(FINAL_WAIT_TIME);
 
             // Check the remaining TTL and item existence
             remainingTTL = jedis.ttl(ITEM_ID);
             if (remainingTTL < 0) {
-                System.out.printf(
-                        "Item with ID %s has expired and is no longer available.%n", ITEM_ID);
-            } else {
-                System.out.printf(
-                        "Item with ID %s is still available with TTL: %ds%n",
-                        ITEM_ID, remainingTTL);
+                System.out.printf("Item with ID %s has expired.", ITEM_ID);
+            }
+
+            if (remainingTTL >= 0) {
+                System.out.printf("Found Item %s", ITEM_ID, remainingTTL);
             }
         }
     }
