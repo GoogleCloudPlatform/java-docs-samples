@@ -16,7 +16,7 @@
 
 package aiplatform.vectorsearch;
 
-// [START aiplatform_vector_search_create_streaming_index_sample]
+// [START aiplatform_sdk_vector_search_create_streaming_index_sample]
 
 import com.google.cloud.aiplatform.v1.CreateIndexRequest;
 import com.google.cloud.aiplatform.v1.Index;
@@ -68,9 +68,12 @@ public class CreateStreamingIndexSample {
    *
    * @return the created index
    */
-  public static Index createStreamingIndexSample(String project, String location,
+  public static Index createStreamingIndexSample(
+      String project,
+      String location,
       String displayName,
-      String metadataJson, IndexServiceClient indexServiceClient) throws Exception {
+      String metadataJson,
+      IndexServiceClient indexServiceClient) throws Exception {
     Value.Builder metadataBuilder = Value.newBuilder();
     JsonFormat.parser().merge(metadataJson, metadataBuilder);
     CreateIndexRequest request =
@@ -87,4 +90,4 @@ public class CreateStreamingIndexSample {
   }
 }
 
-// [END aiplatform_vector_search_create_streaming_index_sample]
+// [END aiplatform_sdk_vector_search_create_streaming_index_sample]

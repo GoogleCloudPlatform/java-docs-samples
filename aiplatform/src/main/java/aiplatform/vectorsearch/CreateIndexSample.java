@@ -16,7 +16,7 @@
 
 package aiplatform.vectorsearch;
 
-// [START aiplatform_vector_search_create_index_sample]
+// [START aiplatform_sdk_vector_search_create_index_sample]
 
 import com.google.cloud.aiplatform.v1.CreateIndexRequest;
 import com.google.cloud.aiplatform.v1.Index;
@@ -86,4 +86,4 @@ public class CreateIndexSample {
   }
 }
 
-// [END aiplatform_vector_search_create_index_sample]
+// [END aiplatform_sdk_vector_search_create_index_sample]

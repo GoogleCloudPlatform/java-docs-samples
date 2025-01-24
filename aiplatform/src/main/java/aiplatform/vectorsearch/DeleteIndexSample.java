@@ -16,7 +16,7 @@
 
 package aiplatform.vectorsearch;
 
-// [START aiplatform_vector_search_delete_index_sample]
+// [START aiplatform_sdk_vector_search_delete_index_sample]
 
 import com.google.cloud.aiplatform.v1.IndexName;
 import com.google.cloud.aiplatform.v1.IndexServiceClient;
@@ -50,4 +50,4 @@ public class DeleteIndexSample {
   }
 }
 
-// [END aiplatform_vector_search_delete_index_sample]
+// [END aiplatform_sdk_vector_search_delete_index_sample]

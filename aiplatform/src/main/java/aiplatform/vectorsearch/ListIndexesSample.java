@@ -16,7 +16,7 @@
 
 package aiplatform.vectorsearch;
 
-// [START aiplatform_vector_search_list_indexes_sample]
+// [START aiplatform_sdk_vector_search_list_index_sample]
 
 import com.google.cloud.aiplatform.v1.Index;
 import com.google.cloud.aiplatform.v1.IndexServiceClient;
@@ -55,4 +55,4 @@ public class ListIndexesSample {
   }
 }
 
-// [END aiplatform_vector_search_list_indexes_sample]
+// [END aiplatform_sdk_vector_search_list_index_sample]
