@@ -15,60 +15,52 @@
  */
 
 /**
- * This code snippet is part of a tutorial on how to use Memorystore for Redis.
+ * This code snippet demonstrates how to write an item to Google Cloud Memorystore for Redis.
  *
- * <p>See https://cloud.google.com/memorystore/docs/valkey/create-instances before running the code
- * snippet.
+ * <p>For details, see: https://cloud.google.com/memorystore/docs/redis
  *
- * <p>Prerequisites: 1. A running Memorystore for Valkey instance.
- *
- * <p>Replace "INSTANCE_ID" with the private IP of your Memorystore instance. Replace "ITEM_ID" and
- * "ITEM_VALUE" with the key and value to be cached.
+ * <p>Prerequisites: 1. A running Memorystore for Redis instance. 2. Replace "INSTANCE_ID",
+ * "ITEM_ID", and "ITEM_VALUE" with actual values.
  */
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
+/** Utility class for writing items to Memorystore for Redis. */
 public class MemorystoreWriteItem {
 
-  /** Configure the Memorystore instance id */
-  private static final String instanceId = "INSTANCE_ID";
+    // Memorystore instance configuration
+    private static final String INSTANCE_ID = "INSTANCE_ID";
+    private static final int PORT = 6379;
+    private static final String ITEM_ID = "ITEM_ID";
+    private static final String ITEM_VALUE = "ITEM_VALUE";
 
-  /** Configure the Memorystore port, if not the default port */
-  private static final int port = 6379;
+    /**
+     * Writes an item to Memorystore and verifies that it has been successfully written.
+     *
+     * @param args command-line arguments
+     */
+    public static void main(String[] args) {
 
-  /** Configure the id of the item to write to Memorystore */
-  private static final String itemId = "ITEM_ID";
+        // Connect to the Memorystore instance
+        JedisPool pool = new JedisPool(INSTANCE_ID, PORT);
 
-  /** Configure the id of the item to write to Memorystore */
-  private static final String itemValue = "ITEM_VALUE";
+        try (Jedis jedis = pool.getResource()) {
 
-  /* Run the code snippet */
-  public static void main(String[] args) {
+            // Write the item to the cache
+            System.out.printf(
+                    "Writing cached item with ID: %s and value: %s%n", ITEM_ID, ITEM_VALUE);
+            jedis.set(ITEM_ID, ITEM_VALUE);
 
-    /** Connect to your Memorystore for Valkey instance */
-    JedisPool pool = new JedisPool(instanceId, port);
+            // Verify the cached item
+            System.out.println("Verifying that the item has been successfully written...");
+            String cachedItem = jedis.get(ITEM_ID);
 
-    /** Run try with resource */
-    try (Jedis jedis = pool.getResource()) {
-
-      /** Write the item to the cache */
-      System.out.println("Writing cached item with ID: " + itemId + " and value: " + itemValue);
-      jedis.set(itemId, itemValue);
-
-      /** Read the cached item */
-      System.out.println(
-          "Check the cached item has been written successfully written to the cache");
-      String cachedItem = jedis.get(itemId);
-
-      /* If found, print out the cached item */
-      if (cachedItem != null) {
-        System.out.println("Found Cached item: " + cachedItem);
-      }
-
-      /** If no item found, print a message */
-      if (cachedItem == null) {
-        System.out.println("No cached item found with ID: " + itemId);
-      }
+            // Print the cached item if found
+            if (cachedItem != null) {
+                System.out.printf("Found cached item: %s%n", cachedItem);
+            } else {
+                System.out.printf("No cached item found with ID: %s%n", ITEM_ID);
+            }
+        }
     }
-  }
 }

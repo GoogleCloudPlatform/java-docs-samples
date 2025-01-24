@@ -17,11 +17,10 @@
 /**
  * This code snippet demonstrates how to read an item from Google Cloud Memorystore for Redis.
  *
- * <p>See https://cloud.google.com/memorystore/docs/valkey/create-instances before running the code
- * snippet.
+ * <p>For details, see: https://cloud.google.com/memorystore/docs/redis
  *
- * <p>Prerequisites: 1. A running Memorystore for Valkey instance. 2. An exisiting item to read from
- * the Memrystore cache.
+ * <p>Prerequisites: 1. A running Memorystore for Redis instance. 2. An existing item to read from
+ * the Memorystore cache.
  *
  * <p>Replace "INSTANCE_ID" with the private IP of your Memorystore instance. Replace "ITEM_ID" with
  * an actual cached item ID.
@@ -29,38 +28,38 @@
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
+/** Utility class for reading items from Memorystore for Redis. */
 public class MemorystoreReadItem {
 
-  /** Configure the Memorystore instance id */
-  private static final String instanceId = "INSTANCE_ID";
+    // Memorystore instance configuration
+    private static final String INSTANCE_ID = "INSTANCE_ID";
+    private static final int PORT = 6379;
+    private static final String ITEM_ID = "ITEM_ID";
 
-  /** Configure the Memorystore port, if not the default port */
-  private static final int port = 6379;
+    // Private constructor to prevent instantiation
+    private MemorystoreReadItem() {}
 
-  /** Configure the id of the item to read from Memorystore */
-  private static final String itemId = "ITEM_ID";
+    /**
+     * Reads an item from Memorystore.
+     *
+     * @param args command-line arguments
+     */
+    public static void main(final String[] args) {
 
-  /* Run the code snippet */
-  public static void main(String[] args) {
+        // Connect to the Memorystore instance
+        JedisPool pool = new JedisPool(INSTANCE_ID, PORT);
 
-    /** Connect to your Memorystore for Valkey instance */
-    JedisPool pool = new JedisPool(instanceId, port);
+        try (Jedis jedis = pool.getResource()) {
 
-    /** Run try with resource */
-    try (Jedis jedis = pool.getResource()) {
+            // Attempt to read the cached item
+            String cachedItem = jedis.get(ITEM_ID);
 
-      /** Read the cached item */
-      String cachedItem = jedis.get(itemId);
-
-      /* If found, print out the cached item */
-      if (cachedItem != null) {
-        System.out.println("Cached item: " + cachedItem);
-      }
-
-      /** If no item found, print a message */
-      if (cachedItem == null) {
-        System.out.println("No cached item found with ID: " + itemId);
-      }
+            // Print the cached item if found
+            if (cachedItem != null) {
+                System.out.println("Cached item: " + cachedItem);
+            } else {
+                System.out.println("No cached item found with ID: " + ITEM_ID);
+            }
+        }
     }
-  }
 }

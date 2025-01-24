@@ -14,53 +14,45 @@
  * limitations under the License.
  */
 
-/**
- * This code snippet is part of a tutorial on how to use Memorystore for Valkey.
- *
- * <p>See https://cloud.google.com/memorystore/docs/valkey/create-instances before running the code
- * snippet.
- *
- * <p>Prerequisites: 1. A running Memorystore for Valkey instance. 2. An exisiting item to delete
- * from the Memrystore cache.
- *
- * <p>Replace "INSTANCE_ID" with the private IP of your Memorystore instance. Replace "ITEM_ID" with
- * the key to be deleted from the cache.
- */
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
-public class MemorystoreDeleteItem {
+public final class MemorystoreDeleteItem {
 
-  /** Configure the Memorystore instance id */
-  private static final String instanceId = "INSTANCE_ID";
+    /** Replace the instance ID of the Memorystore instance. */
+    private static final String INSTANCE_ID = "INSTANCE_ID";
 
-  /** Configure the Memorystore port, if not the default port */
-  private static final int port = 6379;
+    /** Replace the Memorystore port, if not the default port. */
+    private static final int PORT = 6379;
 
-  /** Configure the id of the item to delete from Memorystore */
-  private static final String itemId = "ITEM_ID";
+    /** Replace the id of the item to delete from Memorystore. */
+    private static final String ITEM_ID = "ITEM_ID";
 
-  /* Run the code snippet */
-  public static void main(String[] args) {
-
-    /** Connect to your Memorystore for Valkey instance */
-    JedisPool pool = new JedisPool(instanceId, port);
-
-    /** Run try with resource */
-    try (Jedis jedis = pool.getResource()) {
-
-      /** Delete the item from the cache */
-      Long result = jedis.del(itemId);
-
-      /** Check if any items have been successfully deleted */
-      if (result > 0) {
-        System.out.println("Successfully deleted item with ID: " + itemId);
-      }
-
-      /* Print out that no item has been found for deletion */
-      if (result == 0) {
-        System.out.println("No item found with ID: " + itemId);
-      }
+    private MemorystoreDeleteItem() {
+        // No-op; won't be called
     }
-  }
+
+    /**
+     * Deletes an item from Memorystore.
+     *
+     * @param args command-line arguments
+     */
+    public static void main(final String[] args) {
+
+        // Connect to the Memorystore instance
+        JedisPool pool = new JedisPool(INSTANCE_ID, PORT);
+
+        try (Jedis jedis = pool.getResource()) {
+
+            // Attempt to delete the item
+            Long result = jedis.del(ITEM_ID);
+
+            // Check if the item was successfully deleted
+            if (result > 0) {
+                System.out.println("Deleted item: " + ITEM_ID);
+            } else {
+                System.out.println("No item found with ID: " + ITEM_ID);
+            }
+        }
+    }
 }

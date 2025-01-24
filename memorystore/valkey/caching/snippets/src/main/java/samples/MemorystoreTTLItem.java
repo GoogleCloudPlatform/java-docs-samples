@@ -15,82 +15,71 @@
  */
 
 /**
- * This code snippet is part of a tutorial on how to use Memorystore for Valkey.
+ * This code snippet demonstrates how to use TTL (Time-To-Live) with Google Cloud Memorystore for
+ * Redis.
  *
- * <p>See https://cloud.google.com/memorystore/docs/valkey/create-instances before running the code
- * snippet.
+ * <p>For details, see: https://cloud.google.com/memorystore/docs/redis
  *
- * <p>Prerequisites: 1. A running Memorystore for Valkey instance.
- *
- * <p>Replace "INSTANCE_ID" with the private IP of your Memorystore instance. Replace "ITEM_ID" and
- * "ITEM_VALUE" with the key and value of the item to cache.
+ * <p>Prerequisites: 1. A running Memorystore for Redis instance. 2. Replace "INSTANCE_ID",
+ * "ITEM_ID", and "ITEM_VALUE" with the appropriate values.
  */
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
+/** Utility class for demonstrating TTL operations with Memorystore for Redis. */
 public class MemorystoreTTLItem {
 
-  /** Configure the Memorystore instance id */
-  private static final String instanceId = "INSTANCE_ID";
+    // Memorystore instance configuration
+    private static final String INSTANCE_ID = "INSTANCE_ID";
+    private static final int PORT = 6379;
+    private static final String ITEM_ID = "ITEM_ID";
+    private static final String ITEM_VALUE = "ITEM_VALUE";
 
-  /** Configure the Memorystore port, if not the default port */
-  private static final int port = 6379;
+    /**
+     * Demonstrates creating a cached item with a TTL, checking its expiration, and observing TTL
+     * expiry.
+     *
+     * @param args command-line arguments
+     * @throws InterruptedException if the thread sleep is interrupted
+     */
+    public static void main(final String[] args) throws InterruptedException {
 
-  /** Configure the id of the item to read/write from Memorystore */
-  private static final String itemId = "ITEM_ID";
+        // Connect to the Memorystore instance
+        JedisPool pool = new JedisPool(INSTANCE_ID, PORT);
 
-  /** Configure the value of the item to read/write from Memorystore */
-  private static final String itemValue = "ITEM_VALUE";
+        try (Jedis jedis = pool.getResource()) {
 
-  /* Run the code snippet */
-  public static void main(String[] args) throws InterruptedException {
+            // Set a TTL of 10 seconds during entry creation
+            final int ttlSeconds = 10;
+            jedis.setex(ITEM_ID, ttlSeconds, ITEM_VALUE);
 
-    /** Connect to your Memorystore for Valkey instance */
-    JedisPool pool = new JedisPool(instanceId, port);
+            // Print out the cached item details
+            System.out.printf(
+                    "Item cached with ID: %s and value: %s for %ds%n",
+                    ITEM_ID, ITEM_VALUE, ttlSeconds);
 
-    /** Run try with resource */
-    try (Jedis jedis = pool.getResource()) {
+            // Wait for 5 seconds to demonstrate the TTL countdown
+            System.out.println("Waiting for 5 seconds...");
+            Thread.sleep(5000);
 
-      /** Set a TTL of 10 seconds during entry creation */
-      int ttlSeconds = 10;
+            // Retrieve and print the remaining TTL
+            Long remainingTTL = jedis.ttl(ITEM_ID);
+            System.out.printf("Remaining TTL for item %s: %ds%n", ITEM_ID, remainingTTL);
 
-      /** Create a new cached item with a TTL value */
-      jedis.setex(itemId, ttlSeconds, itemValue);
+            // Wait for another 6 seconds to demonstrate TTL expiry
+            System.out.println("Waiting for 6 seconds to let the TTL expire...");
+            Thread.sleep(6000);
 
-      /** Print out the cached item details */
-      System.out.println(
-          "Item cached with ID: "
-              + itemId
-              + " and value: "
-              + itemValue
-              + " for "
-              + ttlSeconds
-              + "s");
-
-      /** Wait for 5 seconds */
-      System.out.println("Waiting for 5 seconds...");
-      Thread.sleep(5000);
-
-      /** Retrieve the remaining TTL */
-      Long remainingTTL = jedis.ttl(itemId);
-
-      /** Find the cached item, and print out the remanining expiry */
-      String cachedItem = jedis.get(itemId);
-
-      /** Print out the item id with remaining TTL value */
-      System.out.println("Remaining TTL for item " + itemId + ": " + remainingTTL + "s");
-
-      /** Wait for another 6 seconds to demonstrate TTL expiry */
-      System.out.println("Waiting for 6 seconds for expiry...");
-      Thread.sleep(6000);
-
-      /** Retrieve the remaining TTL or check item existence */
-      remainingTTL = jedis.ttl(itemId);
-
-      /** If TTL is less than 0, print a message indicating expiration */
-      if (remainingTTL < 0) {
-        System.out.println("Item with ID " + itemId + " has expired and is no longer available.");
-      }
+            // Check the remaining TTL and item existence
+            remainingTTL = jedis.ttl(ITEM_ID);
+            if (remainingTTL < 0) {
+                System.out.printf(
+                        "Item with ID %s has expired and is no longer available.%n", ITEM_ID);
+            } else {
+                System.out.printf(
+                        "Item with ID %s is still available with TTL: %ds%n",
+                        ITEM_ID, remainingTTL);
+            }
+        }
     }
-  }
 }
