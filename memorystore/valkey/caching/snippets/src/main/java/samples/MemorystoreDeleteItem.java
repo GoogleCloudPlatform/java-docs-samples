@@ -50,8 +50,11 @@ public final class MemorystoreDeleteItem {
             // Check if the item was successfully deleted
             if (result > 0) {
                 System.out.println("Deleted item: " + ITEM_ID);
-            } else {
-                System.out.println("No item found with ID: " + ITEM_ID);
+            }
+
+            // Print the cached item not found
+            if (result == 0) {
+                System.out.printf("No cached item found: %s%n", ITEM_ID);
             }
         }
     }
