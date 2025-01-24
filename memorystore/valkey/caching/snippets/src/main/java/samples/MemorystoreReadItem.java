@@ -14,30 +14,23 @@
  * limitations under the License.
  */
 
-/**
- * This code snippet demonstrates how to read an item from Google Cloud Memorystore for Redis.
- *
- * <p>For details, see: https://cloud.google.com/memorystore/docs/redis
- *
- * <p>Prerequisites: 1. A running Memorystore for Redis instance. 2. An existing item to read from
- * the Memorystore cache.
- *
- * <p>Replace "INSTANCE_ID" with the private IP of your Memorystore instance. Replace "ITEM_ID" with
- * an actual cached item ID.
- */
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
-/** Utility class for reading items from Memorystore for Redis. */
-public class MemorystoreReadItem {
+public final class MemorystoreReadItem {
 
-    // Memorystore instance configuration
+    /** Replace the instance ID of the Memorystore instance. */
     private static final String INSTANCE_ID = "INSTANCE_ID";
+
+    /** If valid, replace the port number of the Memorystore instance. */
     private static final int PORT = 6379;
+
+    /** Replace, the ID of the item to delete from the cache. */
     private static final String ITEM_ID = "ITEM_ID";
 
-    // Private constructor to prevent instantiation
-    private MemorystoreReadItem() {}
+    private MemorystoreReadItem() {
+        // No-op; won't be called
+    }
 
     /**
      * Reads an item from Memorystore.
@@ -57,8 +50,11 @@ public class MemorystoreReadItem {
             // Print the cached item if found
             if (cachedItem != null) {
                 System.out.println("Cached item: " + cachedItem);
-            } else {
-                System.out.println("No cached item found with ID: " + ITEM_ID);
+            }
+
+            // Print the cached item not found
+            if (cachedItem == null) {
+                System.out.printf("No cached item found: %s%n", ITEM_ID);
             }
         }
     }
