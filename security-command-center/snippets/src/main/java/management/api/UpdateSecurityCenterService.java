@@ -47,7 +47,6 @@ public class UpdateSecurityCenterService {
       String name =
           String.format(
               "projects/%s/locations/global/securityCenterServices/%s", projectId, service);
-
       // Define the security center service configuration, update the
       // IntendedEnablementState accordingly.
       SecurityCenterService securityCenterService =
@@ -55,18 +54,14 @@ public class UpdateSecurityCenterService {
               .setName(name)
               .setIntendedEnablementState(EnablementState.ENABLED)
               .build();
-
       // Set the field mask to specify which properties should be updated.
       FieldMask fieldMask = FieldMask.newBuilder().addPaths("intended_enablement_state").build();
-
       UpdateSecurityCenterServiceRequest request =
           UpdateSecurityCenterServiceRequest.newBuilder()
               .setSecurityCenterService(securityCenterService)
               .setUpdateMask(fieldMask)
               .build();
-
       SecurityCenterService response = client.updateSecurityCenterService(request);
-
       return response;
     }
   }

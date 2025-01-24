@@ -34,6 +34,9 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class SecurityCenterServiceTest {
   private static final String PROJECT_ID = System.getenv("SCC_PROJECT_ID");
+  // Replace SERVICE with one of the valid values:
+  // container-threat-detection, event-threat-detection, security-health-analytics,
+  // vm-threat-detection, web-security-scanner
   private static final String SERVICE = "EVENT_THREAT_DETECTION";
 
   // Check if the required environment variables are set.
