@@ -37,24 +37,23 @@ public class CreateIndexSample {
     String displayName = "YOUR_INDEX_DISPLAY_NAME";
     String contentsDeltaUri = "gs://YOUR_BUCKET/";
     String metadataJson =
-        """
-        {
-          "contentsDeltaUri": "%s",
-          "config": {
-            "dimensions": 100,
-            "approximateNeighborsCount": 150,
-            "distanceMeasureType": "DOT_PRODUCT_DISTANCE",
-            "shardSize": "SHARD_SIZE_MEDIUM",
-            "algorithm_config": {
-              "treeAhConfig": {
-                "leafNodeEmbeddingCount": 5000,
-                "fractionLeafNodesToSearch": 0.03
-              }
-            }
-          }
-        }
-        """
-            .formatted(contentsDeltaUri);
+        String.format(
+            "{\n"
+                + "  \"contentsDeltaUri\": \"%s\",\n"
+                + "  \"config\": {\n"
+                + "    \"dimensions\": 100,\n"
+                + "        \"approximateNeighborsCount\": 150,\n"
+                + "        \"distanceMeasureType\": \"DOT_PRODUCT_DISTANCE\",\n"
+                + "        \"shardSize\": \"SHARD_SIZE_MEDIUM\",\n"
+                + "        \"algorithm_config\": {\n"
+                + "      \"treeAhConfig\": {\n"
+                + "        \"leafNodeEmbeddingCount\": 5000,\n"
+                + "            \"fractionLeafNodesToSearch\": 0.03\n"
+                + "      }\n"
+                + "    }\n"
+                + "  }\n"
+                + "}",
+            contentsDeltaUri);
 
     createIndexSample(project, location, displayName, metadataJson);
   }

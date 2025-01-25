@@ -8,18 +8,6 @@
   <packaging>jar</packaging>
   <name>Google Cloud Vertex AI Snippets</name>
   <url>https://github.com/GoogleCloudPlatform/java-docs-samples/tree/main/aiplatform</url>
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>15</source>
-          <target>15</target>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 
   <!--
     The parent pom defines common style checks and testing strategies for our samples.
