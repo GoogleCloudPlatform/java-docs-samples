@@ -31,27 +31,23 @@ public class ListIndexesSample {
     String project = "YOUR_PROJECT_ID";
     String location = "YOUR_LOCATION";
 
-    // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests.
-    try (IndexServiceClient indexServiceClient = IndexServiceClient.create(
-        IndexServiceSettings.newBuilder().setEndpoint(location + "-aiplatform.googleapis.com:443")
-            .build())) {
-      for (Index index : listIndexesSample(project, location, indexServiceClient).iterateAll()) {
-        System.out.println(index);
-      }
+    for (Index index : listIndexesSample(project, location).iterateAll()) {
+      System.out.println(index);
     }
   }
 
-
-  /**
-   * Lists existing indexes using {@code indexServiceClient} to send the request.
-   *
-   * @returns the list of indexes
-   */
-  public static ListIndexesPagedResponse listIndexesSample(String project, String location,
-      IndexServiceClient indexServiceClient) throws Exception {
-    String parent = LocationName.of(project, location).toString();
-    return indexServiceClient.listIndexes(parent);
+  public static ListIndexesPagedResponse listIndexesSample(String project, String location)
+      throws Exception {
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests.
+    try (IndexServiceClient indexServiceClient =
+        IndexServiceClient.create(
+            IndexServiceSettings.newBuilder()
+                .setEndpoint(location + "-aiplatform.googleapis.com:443")
+                .build())) {
+      String parent = LocationName.of(project, location).toString();
+      return indexServiceClient.listIndexes(parent);
+    }
   }
 }
 

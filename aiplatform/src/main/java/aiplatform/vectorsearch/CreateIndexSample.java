@@ -36,7 +36,8 @@ public class CreateIndexSample {
     String location = "YOUR_LOCATION";
     String displayName = "YOUR_INDEX_DISPLAY_NAME";
     String contentsDeltaUri = "gs://YOUR_BUCKET/";
-    String metadataJson = """
+    String metadataJson =
+        """
         {
           "contentsDeltaUri": "%s",
           "config": {
@@ -52,37 +53,36 @@ public class CreateIndexSample {
             }
           }
         }
-        """.formatted(contentsDeltaUri);
+        """
+            .formatted(contentsDeltaUri);
 
-    // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests.
-    try (IndexServiceClient indexServiceClient = IndexServiceClient.create(
-        IndexServiceSettings.newBuilder().setEndpoint(location + "-aiplatform.googleapis.com:443")
-            .build())) {
-      createIndexSample(project, location, displayName, metadataJson, indexServiceClient);
-    }
+    createIndexSample(project, location, displayName, metadataJson);
   }
 
-  /**
-   * Creates an index using the provided {@code indexServiceClient} to send the request.
-   *
-   * @return the created index
-   */
-  public static Index createIndexSample(String project, String location, String displayName,
-      String metadataJson, IndexServiceClient indexServiceClient) throws Exception {
-    Value.Builder metadataBuilder = Value.newBuilder();
-    JsonFormat.parser().merge(metadataJson, metadataBuilder);
-    CreateIndexRequest request =
-        CreateIndexRequest.newBuilder()
-            .setParent(LocationName.of(project, location).toString())
-            .setIndex(Index.newBuilder()
-                .setDisplayName(displayName)
-                .setMetadata(
-                    metadataBuilder)
-                .setIndexUpdateMethod(IndexUpdateMethod.BATCH_UPDATE))
-            .build();
-    Index response = indexServiceClient.createIndexAsync(request).get(5, TimeUnit.MINUTES);
-    return response;
+  public static Index createIndexSample(
+      String project, String location, String displayName, String metadataJson) throws Exception {
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests.
+    try (IndexServiceClient indexServiceClient =
+        IndexServiceClient.create(
+            IndexServiceSettings.newBuilder()
+                .setEndpoint(location + "-aiplatform.googleapis.com:443")
+                .build())) {
+      Value.Builder metadataBuilder = Value.newBuilder();
+      JsonFormat.parser().merge(metadataJson, metadataBuilder);
+
+      CreateIndexRequest request =
+          CreateIndexRequest.newBuilder()
+              .setParent(LocationName.of(project, location).toString())
+              .setIndex(
+                  Index.newBuilder()
+                      .setDisplayName(displayName)
+                      .setMetadata(metadataBuilder)
+                      .setIndexUpdateMethod(IndexUpdateMethod.BATCH_UPDATE))
+              .build();
+
+      return indexServiceClient.createIndexAsync(request).get(5, TimeUnit.MINUTES);
+    }
   }
 }
 
