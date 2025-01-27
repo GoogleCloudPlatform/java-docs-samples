@@ -103,10 +103,14 @@ public long create(Item item) {
    item.getPrice()
    );
 
-   /** Cache the data in Memorystore for valkey with the Time-to-live value **/
+   /** Generate an Id string **/
    String idString = Long.toString(itemId);
-   jedis.set(idString, createdItem.toJSONObject().toString());
-   jedis.expire(idString, DEFAULT_TTL);
+
+   /** Prepare the object for caching **/
+   String itemToCache = createdItem.toJSONObject().toString();
+
+   /** Cache the data in Memorystore for valkey with the Time-to-live value **/
+   jedis.set(idString, DEFAULT_TTL, itemToCache);
 
    /** Return the item id */
    return itemId;
@@ -121,22 +125,34 @@ This method demonstrates how to efficiently retrieve data using a caching layer 
 /** Import the Jedis library */
 import redis.clients.jedis.Jedis;
 
+/** Set a default value for Time-to-live(TTL) **/
+public static final Long DEFAULT_TTL = 60L;
+
 public Item get(long id) {
-   /** Ensure that the item id is a string for retirval from Memorystore */
-    String idString = Long.toString(id);
+   /** Ensure that the item id is a string for retrieval from Memorystore */
+   String idString = Long.toString(id);
 
-    /* Check if the item exists in  the cache */
-    if (jedis.exists(idString)) {
-      // If the data exists in the cache extend the TTL
-      jedis.expire(idString, DEFAULT_TTL);
+   try{
+      /** Attempt to get the cached item from Memorystore **/
+      String cachedValue = jedis.get(idString);
 
-      // Return the cached data
-      Item cachedItem = Item.fromJSONString(jedis.get(idString));
-      cachedItem.setFromCache(true);
-      return cachedItem;
-    }
+      /** Check if we have found a valid cache item **/
+      if (cachedValue) {
+         /** Set a property to display cached item as a property in the application **/
+         cachedItem.setFromCache(true);
 
-   /** Search for the item in the database */
+         /** Extract the item into a data objet **/
+         Item cachedItem = Item.fromJSONString(cachedValue);
+
+         /** Return the cached item **/
+         return cachedItem;
+      }
+   } catch(Exception e){
+      /** If there's an error with the cache, log the error and continue **/
+      System.err.println("Error with cache: " + e.getMessage());
+   }
+
+   /** No cached item exists, search for the item in the database */
    Optional<Item> item = itemsRepository.get(id);
 
     /** Check if a record has been found, If the data doesn't exist in the database, return null */
@@ -144,11 +160,18 @@ public Item get(long id) {
       return null;
     }
 
-    // Cache result from the database with the default TTL
-    jedis.set(idString, item.get().toJSONObject().toString());
-    jedis.expire(idString, DEFAULT_TTL);
+   /** An item has been found in the database, cache with the id, value and TTL **/
+   try{
+      jedis.setex(idString, DEFAULT_TTL, item.get().toJSONObject().toString());
+   }
+   catch(exception ex)
+   {
+      /** If there's an error with the cache, log the error and continue */
+      System.err.println("Error setting the item in the cache: " + e.getMessage());
+   }
 
-    return item.get();
+   /** Return the item from the database **/
+   return item.get();
   }
 ```
 
