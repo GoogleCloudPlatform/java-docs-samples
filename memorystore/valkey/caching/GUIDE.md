@@ -31,10 +31,9 @@ By following this guide, you’ll have a reference architecture ready to adapt, 
 
 To begin, we are will generate an API with the following routes:
 
-_create_: For creating new items.
-_delete_: For creating deleting items.
-_create_: For creating new items.
-_create_: For creating new items.
+_create_: Creating new items in the database, and adding items to the cache with a TTL value.
+_retrieving_: For finding items in the cache, before falling back to the database if required.
+_delete_: Removing items from both the database and cache layers.
 
 ### Creating a new application
 
@@ -66,7 +65,8 @@ Add the folowing snippet toconnect directly to the Memorystore for Valkey instan
 
 #### Jakarta
 
-To ensure that our api routes are correctly validated. Add the following dependency:
+To ensure that our api routes are correctly validated. Add the following dependency.
+This enables the use of annotations like `@NotNull` and `@Size` on classes to automatically enforce input constraints, reducing the need for manual validation logic.
 
 ```xml
    <!-- Add Validation support-->
@@ -119,7 +119,12 @@ public long create(Item item) {
 
 ### Reading from the Cache (Retrieving Values)
 
-This method demonstrates how to efficiently retrieve data using a caching layer (Memorystore) to improve performance. The function first checks the cache for the requested item and handles its time-to-live (TTL) appropriately. If the item is not found in the cache, it fetches the data from the database, caches it, and then returns the result.
+This method demonstrates how to efficiently retrieve data using a caching layer (Memorystore) to improve performance.
+
+**Step 1**: The function searches the cache to see if an item exists, if found the cached itme is returned.
+**Step2**: If the item is not found in the cache, it is retrieved from the database. If no record exists, then `null` is returned.
+**Step3**: The database item is then turned into a string and cached in the datbase with the default TTL.
+**Step4**: The database item is then returned.
 
 ```java
 /** Import the Jedis library */
@@ -138,7 +143,7 @@ public Item get(long id) {
 
       /** Check if we have found a valid cache item **/
       if (cachedValue) {
-         /** Set a property to display cached item as a property in the application **/
+         /** Set a property to display cached item as a property for usage in the application **/
          cachedItem.setFromCache(true);
 
          /** Extract the item into a data objet **/
@@ -160,18 +165,23 @@ public Item get(long id) {
       return null;
     }
 
+    /** Get the database item, and convert it into a string value **/
+    Item dbItem = item.get();
+    String itemString = dbItem.toJSONObject().toString();
+
    /** An item has been found in the database, cache with the id, value and TTL **/
    try{
-      jedis.setex(idString, DEFAULT_TTL, item.get().toJSONObject().toString());
+      /** Update the cache with the id, TTL value and string object **/
+      jedis.setex(idString, DEFAULT_TTL, itemString);
    }
-   catch(exception ex)
+   catch(Exception ex)
    {
       /** If there's an error with the cache, log the error and continue */
       System.err.println("Error setting the item in the cache: " + e.getMessage());
    }
 
    /** Return the item from the database **/
-   return item.get();
+   return dbItem;
   }
 ```
 
