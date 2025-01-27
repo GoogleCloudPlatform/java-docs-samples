@@ -55,12 +55,12 @@ Next, ensure the following dependencies have been added to your POM.xml file.
 Add the folowing snippet toconnect directly to the Memorystore for Valkey instance.
 
 ```xml
-   <!-- Jedis: Redis Java Client -->
-   <dependency>
-      <groupId>redis.clients</groupId>
-      <artifactId>jedis</artifactId>
-      <version>4.3.0</version> <!-- Use the latest version -->
-   </dependency>
+<!-- Jedis: Redis Java Client -->
+<dependency>
+   <groupId>redis.clients</groupId>
+   <artifactId>jedis</artifactId>
+   <version>4.3.0</version> <!-- Use the latest version -->
+</dependency>
 ```
 
 #### Jakarta
@@ -69,12 +69,12 @@ To ensure that our api routes are correctly validated. Add the following depende
 This enables the use of annotations like `@NotNull` and `@Size` on classes to automatically enforce input constraints, reducing the need for manual validation logic.
 
 ```xml
-   <!-- Add Validation support-->
-   <dependency>
-      <groupId>jakarta.validation</groupId>
-      <artifactId>jakarta.validation-api</artifactId>
-      <version>3.0.2</version>
-   </dependency>
+<!-- Add Validation support-->
+<dependency>
+   <groupId>jakarta.validation</groupId>
+   <artifactId>jakarta.validation-api</artifactId>
+   <version>3.0.2</version>
+</dependency>
 ```
 
 ### Connecting our Service layer
@@ -86,34 +86,33 @@ Next, add the following to route logic to the API.
 Adding an entry will add the new item to the database. Once created, the id return from the database will be updated to a new object with the entries attributes. This new object will be added to the Memorystore cach with the appropirate Time-to-live (TTL) value.
 
 ```java
-
 /** Import the Jedis library */
 import redis.clients.jedis.Jedis;
 
 /** Creating an item with Time-to-live (TTL) */
 public long create(Item item) {
-   /** Save the item in the database */
-   long itemId = itemsRepository.create(item);
+    /** Save the item in the database */
+    long itemId = itemsRepository.create(item);
 
-   /** Create a new object with the saved database id */
-   Item createdItem = new Item(
-   itemId,
-   item.getName(),
-   item.getDescription(),
-   item.getPrice()
-   );
+    /** Create a new object with the saved database id */
+    Item createdItem = new Item(
+        itemId,
+        item.getName(),
+        item.getDescription(),
+        item.getPrice()
+    );
 
-   /** Generate an Id string **/
-   String idString = Long.toString(itemId);
+    /** Generate an Id string **/
+    String idString = Long.toString(itemId);
 
-   /** Prepare the object for caching **/
-   String itemToCache = createdItem.toJSONObject().toString();
+    /** Prepare the object for caching **/
+    String itemToCache = createdItem.toJSONObject().toString();
 
-   /** Cache the data in Memorystore for valkey with the Time-to-live value **/
-   jedis.set(idString, DEFAULT_TTL, itemToCache);
+    /** Cache the data in Memorystore for valkey with the Time-to-live value **/
+    jedis.set(idString, DEFAULT_TTL, itemToCache);
 
-   /** Return the item id */
-   return itemId;
+    /** Return the item id */
+    return itemId;
 }
 ```
 
@@ -131,58 +130,56 @@ This method demonstrates how to efficiently retrieve data using a caching layer 
 import redis.clients.jedis.Jedis;
 
 /** Set a default value for Time-to-live(TTL) **/
-public static final Long DEFAULT_TTL = 60L;
+public static final Long DEFAULT_TTL = 60 L;
 
 public Item get(long id) {
-   /** Ensure that the item id is a string for retrieval from Memorystore */
-   String idString = Long.toString(id);
+    /** Ensure that the item id is a string for retrieval from Memorystore */
+    String idString = Long.toString(id);
 
-   try{
-      /** Attempt to get the cached item from Memorystore **/
-      String cachedValue = jedis.get(idString);
+    try {
+        /** Attempt to get the cached item from Memorystore **/
+        String cachedValue = jedis.get(idString);
 
-      /** Check if we have found a valid cache item **/
-      if (cachedValue) {
-         /** Set a property to display cached item as a property for usage in the application **/
-         cachedItem.setFromCache(true);
+        /** Check if we have found a valid cache item **/
+        if (cachedValue) {
+            /** Set a property to display cached item as a property for usage in the application **/
+            cachedItem.setFromCache(true);
 
-         /** Extract the item into a data objet **/
-         Item cachedItem = Item.fromJSONString(cachedValue);
+            /** Extract the item into a data objet **/
+            Item cachedItem = Item.fromJSONString(cachedValue);
 
-         /** Return the cached item **/
-         return cachedItem;
-      }
-   } catch(Exception e){
-      /** If there's an error with the cache, log the error and continue **/
-      System.err.println("Error with cache: " + e.getMessage());
-   }
+            /** Return the cached item **/
+            return cachedItem;
+        }
+    } catch (Exception e) {
+        /** If there's an error with the cache, log the error and continue **/
+        System.err.println("Error with cache: " + e.getMessage());
+    }
 
-   /** No cached item exists, search for the item in the database */
-   Optional<Item> item = itemsRepository.get(id);
+    /** No cached item exists, search for the item in the database */
+    Optional < Item > item = itemsRepository.get(id);
 
     /** Check if a record has been found, If the data doesn't exist in the database, return null */
     if (item.isEmpty()) {
-      return null;
+        return null;
     }
 
     /** Get the database item, and convert it into a string value **/
     Item dbItem = item.get();
     String itemString = dbItem.toJSONObject().toString();
 
-   /** An item has been found in the database, cache with the id, value and TTL **/
-   try{
-      /** Update the cache with the id, TTL value and string object **/
-      jedis.setex(idString, DEFAULT_TTL, itemString);
-   }
-   catch(Exception ex)
-   {
-      /** If there's an error with the cache, log the error and continue */
-      System.err.println("Error setting the item in the cache: " + e.getMessage());
-   }
+    /** An item has been found in the database, cache with the id, value and TTL **/
+    try {
+        /** Update the cache with the id, TTL value and string object **/
+        jedis.setex(idString, DEFAULT_TTL, itemString);
+    } catch (Exception ex) {
+        /** If there's an error with the cache, log the error and continue */
+        System.err.println("Error setting the item in the cache: " + e.getMessage());
+    }
 
-   /** Return the item from the database **/
-   return dbItem;
-  }
+    /** Return the item from the database **/
+    return dbItem;
+}
 ```
 
 #### Deleting from the Cache (Invalidating Entries)
@@ -190,19 +187,19 @@ public Item get(long id) {
 For deletions, an item is first removed the datbase. Foollowing this, a check is perfromed to see if this item exists in Memorystore. If an item does exist, the entry is invalidated in the cache to maintain data consistency.
 
 ```java
-   /** Import the Jedis library */
-   import redis.clients.jedis.Jedis;
+ /** Import the Jedis library */
+ import redis.clients.jedis.Jedis;
 
-   public void delete(long id) {
-      // Delete the data from database
-      itemsRepository.delete(id);
+ public void delete(long id) {
+     // Delete the data from database
+     itemsRepository.delete(id);
 
-      // Also, delete the data from the cache if it exists
-      String idString = Long.toString(id);
-      if (jedis.exists(idString)) {
-        jedis.del(idString);
-      }
-   }
+     // Also, delete the data from the cache if it exists
+     String idString = Long.toString(id);
+     if (jedis.exists(idString)) {
+         jedis.del(idString);
+     }
+ }
 ```
 
 ## Scaling and Optimization
