@@ -94,7 +94,7 @@ public long create(Item item) {
     /** Save the item in the database */
     long itemId = itemsRepository.create(item);
 
-    /** Create a new object with the saved database id */
+    // Create a new object with the saved database id
     Item createdItem = new Item(
         itemId,
         item.getName(),
@@ -102,16 +102,16 @@ public long create(Item item) {
         item.getPrice()
     );
 
-    /** Generate an Id string **/
+    // Generate an Id string
     String idString = Long.toString(itemId);
 
-    /** Prepare the object for caching **/
+    // Prepare the object for caching
     String itemToCache = createdItem.toJSONObject().toString();
 
-    /** Cache the data in Memorystore for valkey with the Time-to-live value **/
+    // Cache the data in Memorystore for valkey with the Time-to-live value
     jedis.set(idString, DEFAULT_TTL, itemToCache);
 
-    /** Return the item id */
+    // Return the item id
     return itemId;
 }
 ```
@@ -133,51 +133,51 @@ import redis.clients.jedis.Jedis;
 public static final Long DEFAULT_TTL = 60 L;
 
 public Item get(long id) {
-    /** Ensure that the item id is a string for retrieval from Memorystore */
+    // Ensure that the item id is a string for retrieval from Memorystore
     String idString = Long.toString(id);
 
     try {
-        /** Attempt to get the cached item from Memorystore **/
+        // Attempt to get the cached item from Memorystore
         String cachedValue = jedis.get(idString);
 
-        /** Check if we have found a valid cache item **/
+        // Check if we have found a valid cache item
         if (cachedValue) {
-            /** Set a property to display cached item as a property for usage in the application **/
+            // Set a property to display cached item as a property for usage in the application
             cachedItem.setFromCache(true);
 
-            /** Extract the item into a data objet **/
+            // Extract the item into a data object
             Item cachedItem = Item.fromJSONString(cachedValue);
 
             /** Return the cached item **/
             return cachedItem;
         }
     } catch (Exception e) {
-        /** If there's an error with the cache, log the error and continue **/
+        // If there's an error with the cache, log the error and continue
         System.err.println("Error with cache: " + e.getMessage());
     }
 
-    /** No cached item exists, search for the item in the database */
+    // No cached item exists, search for the item in the database
     Optional < Item > item = itemsRepository.get(id);
 
-    /** Check if a record has been found, If the data doesn't exist in the database, return null */
+    // Check if a record has been found, If the data doesn't exist in the database, return null
     if (item.isEmpty()) {
         return null;
     }
 
-    /** Get the database item, and convert it into a string value **/
+    // Get the database item, and convert it into a string value
     Item dbItem = item.get();
     String itemString = dbItem.toJSONObject().toString();
 
-    /** An item has been found in the database, cache with the id, value and TTL **/
+    // An item has been found in the database, cache with the id, value and TTL
     try {
-        /** Update the cache with the id, TTL value and string object **/
+        // Update the cache with the id, TTL value and string object
         jedis.setex(idString, DEFAULT_TTL, itemString);
     } catch (Exception ex) {
-        /** If there's an error with the cache, log the error and continue */
+        // If there's an error with the cache, log the error and continue
         System.err.println("Error setting the item in the cache: " + e.getMessage());
     }
 
-    /** Return the item from the database **/
+    // Return the item from the database
     return dbItem;
 }
 ```
@@ -216,4 +216,4 @@ You can fine-tune cache expiration strategies (TTL values) and eviction policies
 
 By combining an in-memory store (Valkey) with a reliable database (PostgreSQL), all orchestrated by a Spring Boot application, you’ve built a caching solution that delivers high performance, reduces database load, and ensures an excellent user experience. Running it in Google Cloud extends these benefits further, providing managed services and easy scaling.
 
-For more information check out the [repository](https://github.com/GoogleCloudPlatform/java-docs-samples/tree/main/memorystore/valkey/caching)) for the full project details and follow the instructions to get started:
+For more information check out the [repository](https://github.com/GoogleCloudPlatform/java-docs-samples/tree/main/memorystore/valkey/caching)) for the full project details and follow the instructions to get started.
