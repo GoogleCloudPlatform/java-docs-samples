@@ -55,12 +55,12 @@ Next, ensure the following dependencies have been added to your POM.xml file.
 Add the folowing snippet toconnect directly to the Memorystore for Valkey instance.
 
 ```xml
-        <!-- Jedis: Redis Java Client -->
-        <dependency>
-            <groupId>redis.clients</groupId>
-            <artifactId>jedis</artifactId>
-            <version>4.3.0</version> <!-- Use the latest version -->
-        </dependency>
+      <!-- Jedis: Redis Java Client -->
+      <dependency>
+         <groupId>redis.clients</groupId>
+         <artifactId>jedis</artifactId>
+         <version>4.3.0</version> <!-- Use the latest version -->
+      </dependency>
 ```
 
 #### Jakarta
