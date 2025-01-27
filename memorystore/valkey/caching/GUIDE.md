@@ -37,12 +37,12 @@ _delete_: Removing items from both the database and cache layers.
 
 ### Creating a new application
 
-The first step is to initialize a brand new Spring Boot application. The [offical guide](https://spring.io/guides/gs/spring-boot) demonstrates how to generate a new project using [Spring Initializer](https://start.spring.io/).
+The first step is to initialize a brand new Spring Boot application. The [official guide](https://spring.io/guides/gs/spring-boot) demonstrates how to generate a new project using [Spring Initializer](https://start.spring.io/).
 
-1. We chosen `Maven` as the project type for this demonstration..
+1. Choose `Maven` as the project type for this demonstration..
 2. Select Sprint Boot version 3.4.1
 3. Complete the appropriate metadata.
-4. Choose your preffered Packing for downloading
+4. Choose your preferred `Packing` for downloading.
 5. Select `Java 17` for your Java version.
 6. Finally, generate and extract the files.
 
@@ -83,7 +83,7 @@ Next, add the following to route logic to the API.
 
 #### Writing to the cache
 
-Adding an entry will add the new item to the database. Once created, the id return from the database will be updated to a new object with the entries attributes. This new object will be added to the Memorystore cach with the appropirate Time-to-live (TTL) value.
+Adding an entry will add the new item to the database. Once created, the ID return from the database will be updated to a new object with the entries attributes. This new object will be added to the Memorystore cache with the appropriate Time-to-live (TTL) value.
 
 ```java
 /** Import the Jedis library */
@@ -120,7 +120,7 @@ public long create(Item item) {
 
 This method demonstrates how to efficiently retrieve data using a caching layer (Memorystore) to improve performance.
 
-**Step 1**: The function searches the cache to see if an item exists, if found the cached itme is returned.
+**Step 1**: This function searches the cache to see if an item exists, if found the cached itme is returned.
 **Step2**: If the item is not found in the cache, it is retrieved from the database. If no record exists, then `null` is returned.
 **Step3**: The database item is then turned into a string and cached in the datbase with the default TTL.
 **Step4**: The database item is then returned.
@@ -141,7 +141,7 @@ public Item get(long id) {
         String cachedValue = jedis.get(idString);
 
         // Check if we have found a valid cache item
-        if (cachedValue) {
+        if (cachedValue != null) {
             // Set a property to display cached item as a property for usage in the application
             cachedItem.setFromCache(true);
 
@@ -168,7 +168,7 @@ public Item get(long id) {
     Item dbItem = item.get();
     String itemString = dbItem.toJSONObject().toString();
 
-    // An item has been found in the database, cache with the id, value and TTL
+    // An item has been found in the database. Cache it with the ID, value, and TTL.
     try {
         // Update the cache with the id, TTL value and string object
         jedis.setex(idString, DEFAULT_TTL, itemString);
@@ -184,7 +184,7 @@ public Item get(long id) {
 
 #### Deleting from the Cache (Invalidating Entries)
 
-For deletions, an item is first removed the datbase. Foollowing this, a check is perfromed to see if this item exists in Memorystore. If an item does exist, the entry is invalidated in the cache to maintain data consistency.
+For deletions, an item is first removed the datbase. Following this, a check is performed to see if this item exists in Memorystore. If an item does exist, the entry is invalidated in the cache to maintain data consistency.
 
 ```java
  /** Import the Jedis library */
@@ -216,4 +216,4 @@ You can fine-tune cache expiration strategies (TTL values) and eviction policies
 
 By combining an in-memory store (Valkey) with a reliable database (PostgreSQL), all orchestrated by a Spring Boot application, you’ve built a caching solution that delivers high performance, reduces database load, and ensures an excellent user experience. Running it in Google Cloud extends these benefits further, providing managed services and easy scaling.
 
-For more information check out the [repository](https://github.com/GoogleCloudPlatform/java-docs-samples/tree/main/memorystore/valkey/caching)) for the full project details and follow the instructions to get started.
+For more information check out the [repository](https://github.com/GoogleCloudPlatform/java-docs-samples/tree/main/memorystore/valkey/caching) for the full project details and follow the instructions to get started.
