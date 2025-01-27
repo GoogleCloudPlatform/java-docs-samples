@@ -55,12 +55,12 @@ Next, ensure the following dependencies have been added to your POM.xml file.
 Add the folowing snippet toconnect directly to the Memorystore for Valkey instance.
 
 ```xml
-      <!-- Jedis: Redis Java Client -->
-      <dependency>
-         <groupId>redis.clients</groupId>
-         <artifactId>jedis</artifactId>
-         <version>4.3.0</version> <!-- Use the latest version -->
-      </dependency>
+   <!-- Jedis: Redis Java Client -->
+   <dependency>
+      <groupId>redis.clients</groupId>
+      <artifactId>jedis</artifactId>
+      <version>4.3.0</version> <!-- Use the latest version -->
+   </dependency>
 ```
 
 #### Jakarta
@@ -81,7 +81,7 @@ This enables the use of annotations like `@NotNull` and `@Size` on classes to au
 
 Next, add the following to route logic to the API.
 
-### Writing to the cache
+#### Writing to the cache
 
 Adding an entry will add the new item to the database. Once created, the id return from the database will be updated to a new object with the entries attributes. This new object will be added to the Memorystore cach with the appropirate Time-to-live (TTL) value.
 
@@ -117,7 +117,7 @@ public long create(Item item) {
 }
 ```
 
-### Reading from the Cache (Retrieving Values)
+#### Reading from the Cache (Retrieving Values)
 
 This method demonstrates how to efficiently retrieve data using a caching layer (Memorystore) to improve performance.
 
@@ -185,7 +185,7 @@ public Item get(long id) {
   }
 ```
 
-### Deleting from the Cache (Invalidating Entries)
+#### Deleting from the Cache (Invalidating Entries)
 
 For deletions, an item is first removed the datbase. Foollowing this, a check is perfromed to see if this item exists in Memorystore. If an item does exist, the entry is invalidated in the cache to maintain data consistency.
 
