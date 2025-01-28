@@ -32,7 +32,7 @@ public class ListIndexesSample {
     String location = "YOUR_LOCATION";
 
     for (Index index : listIndexesSample(project, location).iterateAll()) {
-      System.out.println(index);
+      System.out.println(index.getName());
     }
   }
 
