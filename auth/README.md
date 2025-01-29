@@ -47,12 +47,17 @@ Once you have an API key replace it in the main function in ApiKeyAuthExample an
 
 The same configuration above applies. 
 
-To run the samples for [Downscoping with Credential Access Boundaries](https://cloud.google.com/iam/docs/downscoping-short-lived-credentials)
-you must provide both a bucket name and object name under the TODO(developer): in the main method of `DownscopingExample`. 
+This directory contains two examples for [Downscoping with Credential Access Boundaries](https://cloud.google.com/iam/docs/downscoping-short-lived-credentials): `DownscopingExample`(server-side) and `ClientSideCredentialAccessBoundaryFactoryExample`(client-side). They demonstrate how to generate downscoped credentials.
 
-You can then run `DownscopingExample` via:
+To run either example, you must provide both a bucket name and object name within the `TODO(developer):` section of the respective example's main method.
 
-	mvn exec:java -Dexec.mainClass=com.google.cloud.auth.samples.DownscopingExample
+To run the DownscopingExample:
+
+    mvn exec:java -Dexec.mainClass=com.google.cloud.auth.samples.DownscopingExample
+
+And to run the ClientSideCredentialAccessBoundaryFactoryExample:
+
+    mvn exec:java -Dexec.mainClass=com.google.cloud.auth.samples.ClientSideCredentialAccessBoundaryFactoryExample
 
 ## Tests
 Run all tests:

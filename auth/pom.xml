@@ -69,6 +69,10 @@ limitations under the License.
       <artifactId>google-auth-library-oauth2-http</artifactId>
     </dependency>
     <dependency>
+      <groupId>com.google.auth</groupId>
+      <artifactId>cab-token-generator</artifactId>
+    </dependency>
+    <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-apikeys</artifactId>
     </dependency>
