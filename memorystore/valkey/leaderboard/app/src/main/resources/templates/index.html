@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Leaderboard</title>
+    <script src="main.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body
+    class="bg-white text-black font-sans flex flex-col min-h-screen max-h-screen"
+  >
+    <h1 class="text-center text-4xl font-bold my-5">Leaderboard</h1>
+
+    <!-- List of Leaderboard Entries -->
+    <div class="flex overflow-y-scroll flex-grow w-full px-5 flex-col">
+      <div
+        id="header-container"
+        class="flex-1 flex flex-col bg-white rounded-lg"
+      >
+        <div class="flex justify-center items-center">
+          <div
+            class="w-[600px] max-w-[80%] flex justify-between items-center py-2"
+          >
+            <p class="text-lg font-bold">#</p>
+            <p class="text-lg font-bold">Name</p>
+            <p class="text-lg font-bold">Score</p>
+          </div>
+        </div>
+      </div>
+      <div id="listings-container" class="flex-1 flex flex-col"></div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="flex justify-center items-center gap-12 py-5 font-bold">
+      <button
+        class="w-12 h-12 text-xl flex items-center justify-center bg-gray-100 rounded-full hover:bg-gray-200"
+        onclick="downPage()"
+      >
+        &lt;
+      </button>
+      <p>Page <span id="page-number">1</span></p>
+      <button
+        class="w-12 h-12 text-xl flex items-center justify-center bg-gray-100 rounded-full hover:bg-gray-200"
+        onclick="upPage()"
+      >
+        &gt;
+      </button>
+    </div>
+
+    <!-- Result Analysis -->
+    <div
+      id="result-analysis"
+      class="flex justify-center gap-12 bg-gray-100 px-8 py-2 box-border"
+    >
+      <p>
+        Item is from cache:
+        <b id="from-cache" class="font-bold">null</b>
+      </p>
+      <p>|</p>
+      <p>
+        Time to fetch item:
+        <b id="time-to-fetch" class="font-bold">null</b>
+      </p>
+    </div>
+  </body>
+</html>
