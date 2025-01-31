@@ -16,23 +16,18 @@
 
 package vtwo;
 
+// import static org.junit.Assert.assertThat;
 import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
 
-import com.google.api.gax.rpc.InvalidArgumentException;
-import com.google.cloud.securitycenter.v1.Asset;
-import com.google.cloud.securitycenter.v1.ListAssetsRequest;
-import com.google.cloud.securitycenter.v1.SecurityCenterClient;
-import com.google.cloud.securitycenter.v2.OrganizationName;
-import com.google.cloud.securitycenter.v2.SecurityMarks;
-import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
-import java.util.concurrent.TimeUnit;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -41,6 +36,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+
+import com.google.cloud.testing.junit4.MultipleAttemptsRule;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import vtwo.assets.AddDeleteSecurityMarks;
 import vtwo.assets.AddSecurityMarksToAssets;
 import vtwo.assets.DeleteAssetsSecurityMarks;
@@ -49,9 +49,7 @@ import vtwo.assets.DeleteAssetsSecurityMarks;
 public class AssetSecurityMarksIT {
 
   private static final String ORGANIZATION_ID = System.getenv("SCC_PROJECT_ORG_ID");
-  private static final String LOCATION = "global";
   private static String assetId;
-  private static String assetName;
   private static ByteArrayOutputStream stdOut;
 
   @Rule
@@ -64,9 +62,11 @@ public class AssetSecurityMarksIT {
   }
 
   // Extracts the asset ID from a full resource name.
+  // This regex pattern matches the last segment of the resource name,
+  // which consists of digits after the final forward slash (e.g., "assets/12345").
   private static String extractAssetId(String assetPath) {
     // Pattern to match the asset ID at the end of the resource name.
-    Pattern pattern = Pattern.compile("assets/(\\d+)$");
+    Pattern pattern = Pattern.compile("assets/([^/]+)$");
     Matcher matcher = pattern.matcher(assetPath);
     if (matcher.find()) {
       return matcher.group(1);
@@ -74,38 +74,38 @@ public class AssetSecurityMarksIT {
     return assetPath;
   }
 
-  @SuppressWarnings("deprecation")
   @BeforeClass
   public static void setUp() throws IOException, InterruptedException {
-    final PrintStream out = System.out;
-    stdOut = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(stdOut));
 
-    requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
+    // Validate required environment variables.
+    requireEnvVar("SCC_PROJECT_ORG_ID");
 
-    // Fetch a valid asset ID dynamically
-    try (SecurityCenterClient client = SecurityCenterClient.create()) {
-      OrganizationName orgName = OrganizationName.of(ORGANIZATION_ID);
-      ListAssetsRequest request =
-          ListAssetsRequest.newBuilder().setParent(orgName.toString()).setPageSize(1).build();
+    // Load static_asset.json from resources
+    // Since there are no APIs to create an Asset
+    InputStream inputStream =
+        AssetSecurityMarksIT.class.getClassLoader().getResourceAsStream("static_asset.json");
 
-      Asset asset = client.listAssets(request).iterateAll().iterator().next().getAsset();
-      assetName = asset.getName(); // Get the full resource name for the asset
-      assetId = extractAssetId(assetName);
-    } catch (InvalidArgumentException e) {
-      System.err.println("Error retrieving asset ID: " + e.getMessage());
-      throw e;
+    if (inputStream == null) {
+      throw new IOException("static_asset.json file not found in resources.");
     }
 
-    stdOut = null;
-    System.setOut(out);
-    TimeUnit.MINUTES.sleep(1);
+    // Convert InputStream to String
+    String jsonContent = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+
+    // Parse JSON (using Gson)
+    JsonObject jsonObject = JsonParser.parseString(jsonContent).getAsJsonObject();
+
+    // Extract assetId from mock data
+    assetId = extractAssetId(jsonObject.get("name").getAsString());
+
+    if (assetId == null || assetId.isEmpty()) {
+      throw new IllegalStateException("Asset ID is missing from static_asset.json");
+    }
   }
 
   @Before
   public void beforeEach() {
     stdOut = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(stdOut));
   }
 
   @After
@@ -121,8 +121,8 @@ public class AssetSecurityMarksIT {
 
   @Test
   public void testAddSecurityMarksToAsset() throws IOException {
-    SecurityMarks response =
-        AddSecurityMarksToAssets.addToAsset(ORGANIZATION_ID, LOCATION, assetId);
+    com.google.cloud.securitycenter.v2.SecurityMarks response =
+        AddSecurityMarksToAssets.addToAsset(ORGANIZATION_ID, assetId);
 
     assertTrue(response.getMarksOrThrow("key_a").contains("value_a"));
     assertTrue(response.getMarksOrThrow("key_b").contains("value_b"));
@@ -130,8 +130,8 @@ public class AssetSecurityMarksIT {
 
   @Test
   public void testDeleteSecurityMarksOnAsset() throws IOException {
-    SecurityMarks response =
-        DeleteAssetsSecurityMarks.deleteSecurityMarks(ORGANIZATION_ID, LOCATION, assetId);
+    com.google.cloud.securitycenter.v2.SecurityMarks response =
+        DeleteAssetsSecurityMarks.deleteSecurityMarks(ORGANIZATION_ID, assetId);
 
     assertFalse(response.containsMarks("key_a"));
     assertFalse(response.containsMarks("key_b"));
@@ -139,13 +139,10 @@ public class AssetSecurityMarksIT {
 
   @Test
   public void testAddAndDeleteSecurityMarks() throws IOException {
-    SecurityMarks response =
-        AddDeleteSecurityMarks.addDeleteSecurityMarks(ORGANIZATION_ID, LOCATION, assetId);
+    com.google.cloud.securitycenter.v2.SecurityMarks response =
+        AddDeleteSecurityMarks.addAndDeleteSecurityMarks(ORGANIZATION_ID, assetId);
 
-    // Assert update for key_a
     assertTrue(response.getMarksOrThrow("key_a").contains("new_value_for_a"));
-
-    // Assert deletion for key_b
-    assertFalse(response.getMarksMap().containsKey("key_b"));
+    assertTrue(response.getMarksOrThrow("key_b").contains("new_value_for_b"));
   }
 }

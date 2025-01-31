@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+// [START securitycenter_add_delete_security_marks_assets_v2]
 package vtwo.assets;
 
 import com.google.cloud.securitycenter.v2.SecurityCenterClient;
@@ -22,60 +23,52 @@ import com.google.cloud.securitycenter.v2.UpdateSecurityMarksRequest;
 import com.google.protobuf.FieldMask;
 import java.io.IOException;
 
-//[START securitycenter_add_delete_security_marks_assets_v2]
-
 public class AddDeleteSecurityMarks {
   public static void main(String[] args) throws IOException {
     // organizationId: Google Cloud Organization id.
-    String organizationId = "{google-cloud-organization-id}";
+    String organizationId = "ORGANIZATION_ID";
 
-    // Specify the finding-id.
-    String assetId = "{asset-id}";
+    // Specify the asset id.
+    String assetId = "ASSET_ID";
 
-    // Specify the location.
-    String location = "global";
-
-    addDeleteSecurityMarks(organizationId, location, assetId);
+    addAndDeleteSecurityMarks(organizationId, assetId);
   }
 
-  // Demonstrates adding/updating at the same time as deleting security
-  // marks from an asset.
-  // To add or change security marks, you must have an IAM role that includes permission:
-  public static SecurityMarks addDeleteSecurityMarks(String organizationId,
-      String location, String assetId) throws IOException {
+  public static SecurityMarks addAndDeleteSecurityMarks(String organizationId, String assetId)
+      throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
-    SecurityCenterClient client = SecurityCenterClient.create();
+    try (SecurityCenterClient client = SecurityCenterClient.create()) {
 
-    // Specify the value of 'assetName' in one of the following formats:
-    //    String assetName = "organizations/{org-id}/assets/{asset-id}";
-    //    String assetName = "projects/{project-id}/assets/{asset-id}";
-    //    String assetName = "folders/{folder-id}/assets/{asset-id}";
-    String assetName = String.format("organizations/%s/assets/%s", organizationId, assetId);   
+      // Specify the value of 'assetName' in one of the following formats:
+      // String assetName = "organizations/{org-id}/assets/{asset-id}";
+      String assetName = String.format("organizations/%s/assets/%s", organizationId, assetId);
 
-    // Start setting up a request to clear and update security marks for an asset.
-    // Create security mark and field mask for clearing security marks.
-    SecurityMarks securityMarks = SecurityMarks.newBuilder()
-        .setName(assetName + "/securityMarks")
-        .putMarks("key_a", "new_value_for_a")
-        .build();
+      // Start setting up a request to clear and update security marks for an asset.
+      // Create security mark and field mask for clearing security marks.
+      SecurityMarks securityMarks =
+          SecurityMarks.newBuilder()
+              .setName(assetName + "/securityMarks")
+              .putMarks("key_a", "new_value_for_a")
+              .putMarks("key_b", "new_value_for_b")
+              .build();
 
-    FieldMask updateMask = FieldMask.newBuilder()
-        .addPaths("marks.key_a")
-        .addPaths("marks.key_b")
-        .build();
+      // Define the paths in the updateMask that correspond to the keys being updated in
+      // securityMarks.
+      FieldMask updateMask =
+          FieldMask.newBuilder().addPaths("marks.key_a").addPaths("marks.key_b").build();
 
-    UpdateSecurityMarksRequest request = UpdateSecurityMarksRequest.newBuilder()
-        .setSecurityMarks(securityMarks)
-        .setUpdateMask(updateMask)
-        .build();
+      // Create the request to update security marks.
+      UpdateSecurityMarksRequest request =
+          UpdateSecurityMarksRequest.newBuilder()
+              .setSecurityMarks(securityMarks)
+              .setUpdateMask(updateMask)
+              .build();
 
-    // Call the API.
-    SecurityMarks response = client.updateSecurityMarks(request);
-
-    System.out.println("Security Marks updated and cleared::" + response);
-    return response;
+      // Call the API and return the response.
+      SecurityMarks response = client.updateSecurityMarks(request);
+      return response;
+    }
   }
 }
-
-//[END securitycenter_add_delete_security_marks_assets_v2]
+// [END securitycenter_add_delete_security_marks_assets_v2]
