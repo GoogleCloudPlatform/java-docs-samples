@@ -1,3 +1,19 @@
+/*
+ * Copyright 2025 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 const PAGE_SIZE = 25;
 let currentPage = 0;
 let isLoading = false;
@@ -72,8 +88,8 @@ function renderEntries() {
   elements.entriesContainer.innerHTML = isLoading
     ? loadingTemplate()
     : leaderboardData.length
-      ? entriesTemplate()
-      : emptyTemplate();
+    ? entriesTemplate()
+    : emptyTemplate();
 }
 
 function loadingTemplate() {
@@ -98,7 +114,7 @@ function entriesTemplate() {
             <span class="w-24 text-right font-mono text-blue-600">${entry.score}</span>
           </div>
         </li>
-      `,
+      `
         )
         .join("")}
     </ul>
