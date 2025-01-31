@@ -1,30 +1,47 @@
+/*
+ * Copyright 2025 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package app;
 
-import java.util.List;
 import org.json.JSONObject;
+
+import java.util.List;
 
 public class LeaderboardResponse {
 
-  private List<LeaderboardEntry> entries;
-  private int fromCache;
+    private List<LeaderboardEntry> entries;
+    private int fromCache;
 
-  public LeaderboardResponse(List<LeaderboardEntry> entries, int fromCache) {
-    this.entries = entries;
-    this.fromCache = fromCache;
-  }
+    public LeaderboardResponse(List<LeaderboardEntry> entries, int fromCache) {
+        this.entries = entries;
+        this.fromCache = fromCache;
+    }
 
-  public List<LeaderboardEntry> getEntries() {
-    return entries;
-  }
+    public List<LeaderboardEntry> getEntries() {
+        return entries;
+    }
 
-  public int getFromCache() {
-    return fromCache;
-  }
+    public int getFromCache() {
+        return fromCache;
+    }
 
-  public JSONObject toJson() {
-    JSONObject json = new JSONObject();
-    json.put("entries", entries);
-    json.put("fromCache", fromCache);
-    return json;
-  }
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("entries", entries);
+        json.put("fromCache", fromCache);
+        return json;
+    }
 }
