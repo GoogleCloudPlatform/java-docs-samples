@@ -1,0 +1,202 @@
+[
+  {
+    "id": 1,
+    "name": "Item 1",
+    "description": "Description for item 1.",
+    "price": 268.83,
+    "category": "Home",
+    "stock": 20,
+    "rating": 1.9,
+    "image_url": "https://picsum.photos/id/101/300/200"
+  },
+  {
+    "id": 2,
+    "name": "Item 2",
+    "description": "Description for item 2.",
+    "price": 438.3,
+    "category": "Beauty",
+    "stock": 54,
+    "rating": 2.4,
+    "image_url": "https://picsum.photos/id/102/300/200"
+  },
+  {
+    "id": 3,
+    "name": "Item 3",
+    "description": "Description for item 3.",
+    "price": 432.23,
+    "category": "Electronics",
+    "stock": 5,
+    "rating": 1.6,
+    "image_url": "https://picsum.photos/id/103/300/200"
+  },
+  {
+    "id": 4,
+    "name": "Item 4",
+    "description": "Description for item 4.",
+    "price": 118.8,
+    "category": "Books",
+    "stock": 90,
+    "rating": 1.7,
+    "image_url": "https://picsum.photos/id/104/300/200"
+  },
+  {
+    "id": 5,
+    "name": "Item 5",
+    "description": "Description for item 5.",
+    "price": 68.23,
+    "category": "Clothing",
+    "stock": 44,
+    "rating": 4.5,
+    "image_url": "https://picsum.photos/id/100/300/200"
+  },
+  {
+    "id": 6,
+    "name": "Item 6",
+    "description": "Description for item 6.",
+    "price": 295.92,
+    "category": "Clothing",
+    "stock": 34,
+    "rating": 2.8,
+    "image_url": "https://picsum.photos/id/106/300/200"
+  },
+  {
+    "id": 7,
+    "name": "Item 7",
+    "description": "Description for item 7.",
+    "price": 11.74,
+    "category": "Electronics",
+    "stock": 75,
+    "rating": 3.1,
+    "image_url": "https://picsum.photos/id/107/300/200"
+  },
+  {
+    "id": 8,
+    "name": "Item 8",
+    "description": "Description for item 8.",
+    "price": 199.74,
+    "category": "Electronics",
+    "stock": 85,
+    "rating": 1.4,
+    "image_url": "https://picsum.photos/id/108/300/200"
+  },
+  {
+    "id": 9,
+    "name": "Item 9",
+    "description": "Description for item 9.",
+    "price": 446.12,
+    "category": "Books",
+    "stock": 92,
+    "rating": 4.3,
+    "image_url": "https://picsum.photos/id/109/300/200"
+  },
+  {
+    "id": 10,
+    "name": "Item 10",
+    "description": "Description for item 10.",
+    "price": 158.55,
+    "category": "Toys",
+    "stock": 76,
+    "rating": 1.3,
+    "image_url": "https://picsum.photos/id/110/300/200"
+  },
+  {
+    "id": 11,
+    "name": "Item 11",
+    "description": "Description for item 11.",
+    "price": 123.06,
+    "category": "Clothing",
+    "stock": 10,
+    "rating": 1.1,
+    "image_url": "https://picsum.photos/id/111/300/200"
+  },
+  {
+    "id": 12,
+    "name": "Item 12",
+    "description": "Description for item 12.",
+    "price": 399.79,
+    "category": "Home",
+    "stock": 91,
+    "rating": 3.5,
+    "image_url": "https://picsum.photos/id/112/300/200"
+  },
+  {
+    "id": 13,
+    "name": "Item 13",
+    "description": "Description for item 13.",
+    "price": 22.95,
+    "category": "Clothing",
+    "stock": 98,
+    "rating": 1.5,
+    "image_url": "https://picsum.photos/id/113/300/200"
+  },
+  {
+    "id": 14,
+    "name": "Item 14",
+    "description": "Description for item 14.",
+    "price": 178.61,
+    "category": "Beauty",
+    "stock": 58,
+    "rating": 4.3,
+    "image_url": "https://picsum.photos/id/114/300/200"
+  },
+  {
+    "id": 15,
+    "name": "Item 15",
+    "description": "Description for item 15.",
+    "price": 447.49,
+    "category": "Beauty",
+    "stock": 6,
+    "rating": 4.6,
+    "image_url": "https://picsum.photos/id/115/300/200"
+  },
+  {
+    "id": 16,
+    "name": "Item 16",
+    "description": "Description for item 16.",
+    "price": 54.81,
+    "category": "Books",
+    "stock": 9,
+    "rating": 3.2,
+    "image_url": "https://picsum.photos/id/116/300/200"
+  },
+  {
+    "id": 17,
+    "name": "Item 17",
+    "description": "Description for item 17.",
+    "price": 272.11,
+    "category": "Home",
+    "stock": 97,
+    "rating": 4.7,
+    "image_url": "https://picsum.photos/id/117/300/200"
+  },
+  {
+    "id": 18,
+    "name": "Item 18",
+    "description": "Description for item 18.",
+    "price": 273.65,
+    "category": "Toys",
+    "stock": 13,
+    "rating": 4.1,
+    "image_url": "https://picsum.photos/id/118/300/200"
+  },
+  {
+    "id": 19,
+    "name": "Item 19",
+    "description": "Description for item 19.",
+    "price": 300.57,
+    "category": "Toys",
+    "stock": 74,
+    "rating": 1.8,
+    "image_url": "https://picsum.photos/id/119/300/200"
+  },
+  {
+    "id": 20,
+    "name": "Item 20",
+    "description": "Description for item 20.",
+    "price": 251.68,
+    "category": "Beauty",
+    "stock": 51,
+    "rating": 2.4,
+    "image_url": "https://picsum.photos/id/120/300/200"
+  }
+]

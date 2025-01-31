@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS account (
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(255) NOT NULL,
+    username VARCHAR(20) NOT NULL,
+    password VARCHAR(255) NOT NULL
+);
