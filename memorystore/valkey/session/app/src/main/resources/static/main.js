@@ -1,3 +1,19 @@
+/*
+ * Copyright 2025 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 window.items = [];
 
 let msTaken = new Date().getTime();
@@ -41,13 +57,17 @@ verifyToken().then((data) => {
         const card = document.createElement("div");
         card.className = "bg-white p-4 rounded-lg shadow-md";
         card.innerHTML = `
-          <img src="${item.image_url}" alt="${item.name}" class="w-full h-48 object-cover mb-4 rounded">
+          <img src="${item.image_url}" alt="${
+          item.name
+        }" class="w-full h-48 object-cover mb-4 rounded">
           <h3 class="text-lg font-bold mb-2">${item.name}</h3>
           <p class="text-gray-600 text-sm mb-2">${item.description}</p>
           <p class="text-xl font-bold text-blue-600 mb-4">$${item.price.toFixed(
-            2,
+            2
           )}</p>
-          <button onclick="addToBasket(${item.id})" class="w-full bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+          <button onclick="addToBasket(${
+            item.id
+          })" class="w-full bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
             Add to Basket
           </button>
         `;
