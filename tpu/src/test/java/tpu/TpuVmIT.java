@@ -17,77 +17,250 @@
 package tpu;
 
 import static com.google.common.truth.Truth.assertThat;
-import static com.google.common.truth.Truth.assertWithMessage;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import com.google.api.gax.rpc.NotFoundException;
+import com.google.api.gax.longrunning.OperationFuture;
+import com.google.cloud.tpu.v2.AcceleratorConfig;
+import com.google.cloud.tpu.v2.CreateNodeRequest;
+import com.google.cloud.tpu.v2.DeleteNodeRequest;
+import com.google.cloud.tpu.v2.GetNodeRequest;
+import com.google.cloud.tpu.v2.ListNodesRequest;
 import com.google.cloud.tpu.v2.Node;
+import com.google.cloud.tpu.v2.StartNodeRequest;
+import com.google.cloud.tpu.v2.StopNodeRequest;
+import com.google.cloud.tpu.v2.TpuClient;
+import com.google.cloud.tpu.v2.TpuSettings;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.UUID;
+import java.io.PrintStream;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.MockedStatic;
 
 @RunWith(JUnit4.class)
-@Timeout(value = 15, unit = TimeUnit.MINUTES)
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Timeout(value = 10)
 public class TpuVmIT {
-  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+  private static final String PROJECT_ID = "project-id";
   private static final String ZONE = "asia-east1-c";
-  private static final String NODE_NAME = "test-tpu-" + UUID.randomUUID();
+  private static final String NODE_NAME = "test-tpu";
   private static final String TPU_TYPE = "v2-8";
-  private static final String TPU_SOFTWARE_VERSION = "tpu-vm-tf-2.12.1";
-  private static final String NODE_PATH_NAME =
-      String.format("projects/%s/locations/%s/nodes/%s", PROJECT_ID, ZONE, NODE_NAME);
+  private static final AcceleratorConfig.Type ACCELERATOR_TYPE = AcceleratorConfig.Type.V2;
+  private static final String TPU_SOFTWARE_VERSION = "tpu-vm-tf-2.14.1";
+  private static final String TOPOLOGY = "2x2";
 
-  public static void requireEnvVar(String envVarName) {
-    assertWithMessage(String.format("Missing environment variable '%s' ", envVarName))
-        .that(System.getenv(envVarName)).isNotEmpty();
-  }
+  @Test
+  public void testCreateTpuVm() throws Exception {
+    try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
+      Node mockNode = mock(Node.class);
+      TpuClient mockTpuClient = mock(TpuClient.class);
+      OperationFuture mockFuture = mock(OperationFuture.class);
 
-  @BeforeAll
-  public static void setUp() {
-    requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
-    requireEnvVar("GOOGLE_CLOUD_PROJECT");
-  }
+      mockedTpuClient.when(() -> TpuClient.create(any(TpuSettings.class)))
+          .thenReturn(mockTpuClient);
+      when(mockTpuClient.createNodeAsync(any(CreateNodeRequest.class)))
+          .thenReturn(mockFuture);
+      when(mockFuture.get()).thenReturn(mockNode);
 
-  @AfterAll
-  public static void cleanup() throws Exception {
-    DeleteTpuVm.deleteTpuVm(PROJECT_ID, ZONE, NODE_NAME);
+      Node returnedNode = CreateTpuVm.createTpuVm(
+          PROJECT_ID, ZONE, NODE_NAME,
+          TPU_TYPE, TPU_SOFTWARE_VERSION);
 
-    // Test that TPUs is deleted
-    Assertions.assertThrows(
-        NotFoundException.class,
-        () -> GetTpuVm.getTpuVm(PROJECT_ID, ZONE, NODE_NAME));
+      verify(mockTpuClient, times(1))
+          .createNodeAsync(any(CreateNodeRequest.class));
+      verify(mockFuture, times(1)).get();
+      assertEquals(returnedNode, mockNode);
+    }
   }
 
   @Test
-  @Order(1)
-  public void testCreateTpuVm() throws IOException, ExecutionException, InterruptedException {
-
-    Node node = CreateTpuVm.createTpuVm(
-        PROJECT_ID, ZONE, NODE_NAME, TPU_TYPE, TPU_SOFTWARE_VERSION);
-
-    assertNotNull(node);
-    assertThat(node.getName().equals(NODE_NAME));
-    assertThat(node.getAcceleratorType().equals(TPU_TYPE));
-  }
-
-  @Test
-  @Order(2)
   public void testGetTpuVm() throws IOException {
-    Node node = GetTpuVm.getTpuVm(PROJECT_ID, ZONE, NODE_NAME);
+    try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
+      Node mockNode = mock(Node.class);
+      TpuClient mockClient = mock(TpuClient.class);
 
-    assertNotNull(node);
-    assertThat(node.getName()).isEqualTo(NODE_PATH_NAME);
+      mockedTpuClient.when(TpuClient::create).thenReturn(mockClient);
+      when(mockClient.getNode(any(GetNodeRequest.class))).thenReturn(mockNode);
+
+      Node returnedNode = GetTpuVm.getTpuVm(PROJECT_ID, ZONE, NODE_NAME);
+
+      verify(mockClient, times(1))
+          .getNode(any(GetNodeRequest.class));
+      assertThat(returnedNode).isEqualTo(mockNode);
+    }
+  }
+
+  @Test
+  public void testDeleteTpuVm() throws IOException, ExecutionException, InterruptedException {
+    ByteArrayOutputStream bout = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(bout));
+    try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
+      TpuClient mockTpuClient = mock(TpuClient.class);
+      OperationFuture mockFuture = mock(OperationFuture.class);
+
+      mockedTpuClient.when(() -> TpuClient.create(any(TpuSettings.class)))
+          .thenReturn(mockTpuClient);
+      when(mockTpuClient.deleteNodeAsync(any(DeleteNodeRequest.class)))
+          .thenReturn(mockFuture);
+
+      DeleteTpuVm.deleteTpuVm(PROJECT_ID, ZONE, NODE_NAME);
+      String output = bout.toString();
+
+      assertThat(output).contains("TPU VM deleted");
+      verify(mockTpuClient, times(1)).deleteNodeAsync(any(DeleteNodeRequest.class));
+
+      bout.close();
+    }
+  }
+
+  @Test
+  public void testCreateTpuVmWithTopologyFlag()
+      throws IOException, ExecutionException, InterruptedException {
+    try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
+      Node mockNode = mock(Node.class);
+      TpuClient mockTpuClient = mock(TpuClient.class);
+      OperationFuture mockFuture = mock(OperationFuture.class);
+
+      mockedTpuClient.when(TpuClient::create).thenReturn(mockTpuClient);
+      when(mockTpuClient.createNodeAsync(any(CreateNodeRequest.class)))
+          .thenReturn(mockFuture);
+      when(mockFuture.get()).thenReturn(mockNode);
+      Node returnedNode = CreateTpuWithTopologyFlag.createTpuWithTopologyFlag(
+          PROJECT_ID, ZONE, NODE_NAME, ACCELERATOR_TYPE,
+           TPU_SOFTWARE_VERSION, TOPOLOGY);
+
+      verify(mockTpuClient, times(1))
+          .createNodeAsync(any(CreateNodeRequest.class));
+      verify(mockFuture, times(1)).get();
+      assertEquals(returnedNode, mockNode);
+    }
+  }
+
+  @Test
+  public void testListTpuVm() throws IOException {
+    try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
+      Node mockNode1 = mock(Node.class);
+      Node mockNode2 = mock(Node.class);
+      List<Node> mockListNodes = Arrays.asList(mockNode1, mockNode2);
+      TpuClient mockTpuClient = mock(TpuClient.class);
+      TpuClient.ListNodesPagedResponse mockListNodesResponse =
+          mock(TpuClient.ListNodesPagedResponse.class);
+      TpuClient.ListNodesPage mockListNodesPage = mock(TpuClient.ListNodesPage.class);
+
+      mockedTpuClient.when(TpuClient::create).thenReturn(mockTpuClient);
+      when(mockTpuClient.listNodes(any(ListNodesRequest.class))).thenReturn(mockListNodesResponse);
+      when(mockListNodesResponse.getPage()).thenReturn(mockListNodesPage);
+      when(mockListNodesPage.getValues()).thenReturn(mockListNodes);
+
+      TpuClient.ListNodesPage returnedListNodes = ListTpuVms.listTpuVms(PROJECT_ID, ZONE);
+
+      assertThat(returnedListNodes.getValues()).isEqualTo(mockListNodes);
+      verify(mockTpuClient, times(1)).listNodes(any(ListNodesRequest.class));
+    }
+  }
+
+  @Test
+  public void testStartTpuVm() throws IOException, ExecutionException, InterruptedException {
+    try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
+      TpuClient mockClient = mock(TpuClient.class);
+      Node mockNode = mock(Node.class);
+      OperationFuture mockFuture = mock(OperationFuture.class);
+
+      mockedTpuClient.when(TpuClient::create).thenReturn(mockClient);
+      when(mockClient.startNodeAsync(any(StartNodeRequest.class)))
+          .thenReturn(mockFuture);
+      when(mockFuture.get()).thenReturn(mockNode);
+
+      Node returnedNode = StartTpuVm.startTpuVm(PROJECT_ID, ZONE, NODE_NAME);
+
+      verify(mockClient, times(1))
+          .startNodeAsync(any(StartNodeRequest.class));
+      verify(mockFuture, times(1)).get();
+      assertEquals(returnedNode, mockNode);
+    }
+  }
+
+  @Test
+  public void testStopTpuVm() throws IOException, ExecutionException, InterruptedException {
+    try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
+      TpuClient mockClient = mock(TpuClient.class);
+      Node mockNode = mock(Node.class);
+      OperationFuture mockFuture = mock(OperationFuture.class);
+
+      mockedTpuClient.when(TpuClient::create).thenReturn(mockClient);
+      when(mockClient.stopNodeAsync(any(StopNodeRequest.class)))
+          .thenReturn(mockFuture);
+      when(mockFuture.get()).thenReturn(mockNode);
+
+      Node returnedNode = StopTpuVm.stopTpuVm(PROJECT_ID, ZONE, NODE_NAME);
+
+      verify(mockClient, times(1))
+          .stopNodeAsync(any(StopNodeRequest.class));
+      verify(mockFuture, times(1)).get();
+      assertEquals(returnedNode, mockNode);
+    }
+  }
+
+  @Test
+  public void testCreateSpotTpuVm() throws Exception {
+    try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
+      Node mockNode = mock(Node.class);
+      TpuClient mockTpuClient = mock(TpuClient.class);
+      OperationFuture mockFuture = mock(OperationFuture.class);
+
+      mockedTpuClient.when(TpuClient::create).thenReturn(mockTpuClient);
+      when(mockTpuClient.createNodeAsync(any(CreateNodeRequest.class)))
+              .thenReturn(mockFuture);
+      when(mockFuture.get()).thenReturn(mockNode);
+
+      Node returnedNode = CreateSpotTpuVm.createSpotTpuVm(
+              PROJECT_ID, ZONE, NODE_NAME,
+              TPU_TYPE, TPU_SOFTWARE_VERSION);
+
+      verify(mockTpuClient, times(1))
+              .createNodeAsync(any(CreateNodeRequest.class));
+      verify(mockFuture, times(1)).get();
+      assertEquals(returnedNode, mockNode);
+    }
+  }
+
+  @Test
+  public void testCreateTpuVmWithStartupScript() throws Exception {
+    try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
+      Node mockNode = Node.newBuilder()
+              .setName("nodeName")
+              .setAcceleratorType("acceleratorType")
+              .setRuntimeVersion("runtimeVersion")
+              .build();
+
+      TpuClient mockTpuClient = mock(TpuClient.class);
+      OperationFuture mockFuture = mock(OperationFuture.class);
+
+      mockedTpuClient.when(TpuClient::create).thenReturn(mockTpuClient);
+      when(mockTpuClient.createNodeAsync(any(CreateNodeRequest.class)))
+              .thenReturn(mockFuture);
+      when(mockFuture.get()).thenReturn(mockNode);
+
+      Node returnedNode = CreateTpuVmWithStartupScript.createTpuVmWithStartupScript(
+              PROJECT_ID, ZONE, NODE_NAME,
+              TPU_TYPE, TPU_SOFTWARE_VERSION);
+
+      verify(mockTpuClient, times(1))
+              .createNodeAsync(any(CreateNodeRequest.class));
+      verify(mockFuture, times(1)).get();
+      assertEquals(returnedNode.getName(), mockNode.getName());
+      assertEquals(returnedNode.getAcceleratorType(), mockNode.getAcceleratorType());
+      assertEquals(returnedNode.getRuntimeVersion(), mockNode.getRuntimeVersion());
+    }
   }
 }

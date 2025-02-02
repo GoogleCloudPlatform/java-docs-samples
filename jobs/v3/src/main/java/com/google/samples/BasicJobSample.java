@@ -73,7 +73,6 @@ public final class BasicJobSample {
   // [END job_basic_job]
 
   // [START job_create_job]
-  // [START create_job]
 
   /** Create a job. */
   public static Job createJob(Job jobToBeCreated) throws IOException {
@@ -93,7 +92,6 @@ public final class BasicJobSample {
       throw e;
     }
   }
-  // [END create_job]
   // [END job_create_job]
 
   // [START job_get_job]
@@ -132,7 +130,6 @@ public final class BasicJobSample {
   // [END job_update_job]
 
   // [START job_update_job_with_field_mask]
-  // [START update_job_with_field_mask]
 
   /** Update a job. */
   public static Job updateJobWithFieldMask(String jobName, String fieldMask, Job jobToBeUpdated)
@@ -149,7 +146,6 @@ public final class BasicJobSample {
       throw e;
     }
   }
-  // [END update_job_with_field_mask]
   // [END job_update_job_with_field_mask]
 
   // [START job_delete_job]

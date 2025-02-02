@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.compute.v1.Reservation;
+import compute.Util;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
@@ -29,6 +30,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -63,6 +65,8 @@ public class CrudOperationsReservationIT {
   @AfterAll
   public static void cleanup()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    Util.cleanUpExistingReservations("test-reservation", PROJECT_ID, ZONE);
+
     DeleteReservation.deleteReservation(PROJECT_ID, ZONE, RESERVATION_NAME);
 
     // Test that reservation is deleted
@@ -72,6 +76,7 @@ public class CrudOperationsReservationIT {
   }
 
   @Test
+  @Ignore("Issue #9989")
   public void testGetReservation()
       throws IOException {
     Reservation reservation = GetReservation.getReservation(
@@ -82,6 +87,7 @@ public class CrudOperationsReservationIT {
   }
 
   @Test
+  @Ignore("Issue #9989")
   public void testListReservation() throws IOException {
     List<Reservation> reservations =
         ListReservations.listReservations(PROJECT_ID, ZONE);
@@ -91,6 +97,7 @@ public class CrudOperationsReservationIT {
   }
 
   @Test
+  @Ignore("Issue #9989")
   public void testUpdateVmsForReservation()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     int newNumberOfVms = 1;

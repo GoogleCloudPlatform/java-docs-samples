@@ -46,8 +46,6 @@ public final class BasicCompanySample {
   private static CloudTalentSolution talentSolutionClient =
       JobServiceQuickstart.getTalentSolutionClient();
 
-  // [START basic_company]
-
   /** Generate a company */
   public static Company generateCompany() {
     // distributor company id should be a unique Id in your system.
@@ -61,9 +59,8 @@ public final class BasicCompanySample {
     System.out.println("Company generated: " + company);
     return company;
   }
-  // [END basic_company]
 
-  // [START create_company]
+  // [START job_create_company]
 
   /** Create a company. */
   public static Company createCompany(Company companyToBeCreated) throws IOException {
@@ -83,9 +80,9 @@ public final class BasicCompanySample {
       throw e;
     }
   }
-  // [END create_company]
+  // [END job_create_company]
 
-  // [START get_company]
+  // [START job_get_company]
 
   /** Get a company. */
   public static Company getCompany(String companyName) throws IOException {
@@ -99,9 +96,9 @@ public final class BasicCompanySample {
       throw e;
     }
   }
-  // [END get_company]
+  // [END job_get_company]
 
-  // [START update_company]
+  // [START job_update_company]
 
   /** Updates a company. */
   public static Company updateCompany(String companyName, Company companyToBeUpdated)
@@ -124,9 +121,9 @@ public final class BasicCompanySample {
       throw e;
     }
   }
-  // [END update_company]
+  // [END job_update_company]
 
-  // [START update_company_with_field_mask]
+  // [START job_update_company_with_field_mask]
 
   /** Updates a company. */
   public static Company updateCompanyWithFieldMask(
@@ -150,9 +147,7 @@ public final class BasicCompanySample {
       throw e;
     }
   }
-  // [END update_company_with_field_mask]
-
-  // [START delete_company]
+  // [END job_update_company_with_field_mask]
 
   /** Delete a company. */
   public static void deleteCompany(String companyName) throws IOException {
@@ -164,7 +159,6 @@ public final class BasicCompanySample {
       throw e;
     }
   }
-  // [END delete_company]
 
   public static void main(String... args) throws Exception {
     // Construct a company
