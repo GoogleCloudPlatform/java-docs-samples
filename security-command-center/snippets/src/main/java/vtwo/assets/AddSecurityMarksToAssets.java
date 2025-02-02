@@ -15,6 +15,7 @@
  */
 
 // [START securitycenter_add_security_marks_assets_v2]
+
 package vtwo.assets;
 
 import autovalue.shaded.com.google.common.collect.ImmutableMap;

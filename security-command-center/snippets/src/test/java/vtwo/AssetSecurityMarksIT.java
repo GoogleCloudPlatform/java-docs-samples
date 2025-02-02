@@ -27,7 +27,6 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -35,12 +34,10 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-
+import org.junit.runners.JUnit4;
 import vtwo.assets.AddDeleteSecurityMarks;
 import vtwo.assets.AddSecurityMarksToAssets;
 import vtwo.assets.DeleteAssetsSecurityMarks;

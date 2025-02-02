@@ -15,6 +15,7 @@
  */
 
 // [START securitycenter_delete_security_marks_assets_v2]
+
 package vtwo.assets;
 
 import com.google.cloud.securitycenter.v2.SecurityCenterClient;
