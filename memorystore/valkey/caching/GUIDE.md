@@ -39,10 +39,10 @@ _delete_: Removing items from both the database and cache layers.
 
 The first step is to initialize a brand new Spring Boot application. The [official guide](https://spring.io/guides/gs/spring-boot) demonstrates how to generate a new project using [Spring Initializer](https://start.spring.io/).
 
-1. Choose `Maven` as the project type for this demonstration..
-2. Select Sprint Boot version 3.4.1
+1. Choose `Maven` as the project type for this demonstration.
+2. Select Spring Boot version `3.4.1`.
 3. Complete the appropriate metadata.
-4. Choose your preferred `Packing` for downloading.
+4. Choose your preferred `Packaging` for downloading.
 5. Select `Java 17` for your Java version.
 6. Finally, generate and extract the files.
 
@@ -52,7 +52,7 @@ Next, ensure the following dependencies have been added to your POM.xml file.
 
 #### Jedis
 
-Add the folowing snippet toconnect directly to the Memorystore for Valkey instance.
+Add the following snippet to connect directly to the Memorystore for Valkey instance.
 
 ```xml
 <!-- Jedis: Redis Java Client -->
@@ -65,11 +65,10 @@ Add the folowing snippet toconnect directly to the Memorystore for Valkey instan
 
 #### Jakarta
 
-To ensure that our api routes are correctly validated. Add the following dependency.
-This enables the use of annotations like `@NotNull` and `@Size` on classes to automatically enforce input constraints, reducing the need for manual validation logic.
+To ensure that our API routes are correctly validated, add the following dependency. This enables the use of annotations like `@NotNull` and `@Size` on classes to automatically enforce input constraints, reducing the need for manual validation logic.
 
 ```xml
-<!-- Add Validation support-->
+<!-- Add validation support-->
 <dependency>
    <groupId>jakarta.validation</groupId>
    <artifactId>jakarta.validation-api</artifactId>
@@ -77,7 +76,7 @@ This enables the use of annotations like `@NotNull` and `@Size` on classes to au
 </dependency>
 ```
 
-### Connecting our Service layer
+### Connecting our service layer
 
 Next, add the following to route logic to the API.
 
@@ -91,32 +90,31 @@ import redis.clients.jedis.Jedis;
 
 /** Creating an item with Time-to-live (TTL) */
 public long create(Item item) {
-    /** Save the item in the database */
+    // Create the data in the database
     long itemId = itemsRepository.create(item);
 
-    // Create a new object with the saved database id
+    // Clone the item with the generated ID
     Item createdItem = new Item(
         itemId,
         item.getName(),
         item.getDescription(),
-        item.getPrice()
-    );
+        item.getPrice());
 
-    // Generate an Id string
-    String idString = Long.toString(itemId);
+    // Use try-catch to avoid returning the data if there's an error with the cache
+    try {
+      // Cache the data with the default TTL
+      String idString = Long.toString(itemId);
+      jedis.setex(idString, DEFAULT_TTL, createdItem.toJSONObject().toString());
+    } catch (Exception e) {
+      // If there's an error with the cache, log the error and continue
+      System.err.println("Error with cache: " + e.getMessage());
+    }
 
-    // Prepare the object for caching
-    String itemToCache = createdItem.toJSONObject().toString();
-
-    // Cache the data in Memorystore for valkey with the Time-to-live value
-    jedis.set(idString, DEFAULT_TTL, itemToCache);
-
-    // Return the item id
     return itemId;
 }
 ```
 
-#### Reading from the Cache (Retrieving Values)
+#### Reading from the cache (retrieving values)
 
 This method demonstrates how to efficiently retrieve data using a caching layer (Memorystore) to improve performance.
 
@@ -132,74 +130,74 @@ import redis.clients.jedis.Jedis;
 /** Set a default value for Time-to-live(TTL) **/
 public static final Long DEFAULT_TTL = 60 L;
 
+/** Retrieve an item from the cache */
 public Item get(long id) {
-    // Ensure that the item id is a string for retrieval from Memorystore
     String idString = Long.toString(id);
 
+    // Use try-catch to avoid missing the database if there's an error with the
+    // cache
     try {
-        // Attempt to get the cached item from Memorystore
-        String cachedValue = jedis.get(idString);
-
-        // Check if we have found a valid cache item
-        if (cachedValue != null) {
-            // Set a property to display cached item as a property for usage in the application
-            cachedItem.setFromCache(true);
-
-            // Extract the item into a data object
-            Item cachedItem = Item.fromJSONString(cachedValue);
-
-            /** Return the cached item **/
-            return cachedItem;
-        }
+      // Check if the data exists in the cache first
+      String cachedValue = jedis.get(idString);
+      if (cachedValue != null) {
+        // Return the cached data
+        Item cachedItem = Item.fromJSONString(cachedValue);
+        cachedItem.setFromCache(true);
+        return cachedItem;
+      }
     } catch (Exception e) {
-        // If there's an error with the cache, log the error and continue
-        System.err.println("Error with cache: " + e.getMessage());
+      // If there's an error with the cache, log the error and continue
+      System.err.println("Error with cache: " + e.getMessage());
     }
 
-    // No cached item exists, search for the item in the database
-    Optional < Item > item = itemsRepository.get(id);
+    Optional<Item> item = itemsRepository.get(id);
 
-    // Check if a record has been found, If the data doesn't exist in the database, return null
     if (item.isEmpty()) {
-        return null;
+      // If the data doesn't exist in the database, return null
+      return null;
     }
 
-    // Get the database item, and convert it into a string value
-    Item dbItem = item.get();
-    String itemString = dbItem.toJSONObject().toString();
-
-    // An item has been found in the database. Cache it with the ID, value, and TTL.
+    // Use try-catch to avoid missing returning the data if there's an error with
+    // the cache
     try {
-        // Update the cache with the id, TTL value and string object
-        jedis.setex(idString, DEFAULT_TTL, itemString);
-    } catch (Exception ex) {
-        // If there's an error with the cache, log the error and continue
-        System.err.println("Error setting the item in the cache: " + e.getMessage());
+      // Cache result from the database with the default TTL
+      jedis.setex(idString, DEFAULT_TTL, item.get().toJSONObject().toString());
+    } catch (Exception e) {
+      // If there's an error with the cache, log the error and continue
+      System.err.println("Error with cache: " + e.getMessage());
     }
 
-    // Return the item from the database
-    return dbItem;
+    return item.get();
 }
 ```
 
-#### Deleting from the Cache (Invalidating Entries)
+#### Deleting from the cache (invalidating entries)
 
 For deletions, an item is first removed the datbase. Following this, a check is performed to see if this item exists in Memorystore. If an item does exist, the entry is invalidated in the cache to maintain data consistency.
 
 ```java
- /** Import the Jedis library */
- import redis.clients.jedis.Jedis;
+/** Import the Jedis library */
+import redis.clients.jedis.Jedis;
 
- public void delete(long id) {
-     // Delete the data from database
-     itemsRepository.delete(id);
+/** Delete an item from the database and cache */
+public void delete(long id) {
+    // Delete the data from database
+    itemsRepository.delete(id);
 
-     // Also, delete the data from the cache if it exists
-     String idString = Long.toString(id);
-     if (jedis.exists(idString)) {
-         jedis.del(idString);
-     }
- }
+    // Use try-catch to avoid missing the cache if there's an error with the cache
+    try {
+      // Also, delete the data from the cache if it exists
+      String idString = Long.toString(id);
+      long totalDeleted = jedis.del(idString);
+
+      if (totalDeleted == 0) {
+        throw new Exception("Item not found in cache");
+      }
+    } catch (Exception e) {
+      // If there's an error with the cache, log the error and continue
+      System.err.println("Error with cache: " + e.getMessage());
+    }
+}
 ```
 
 ## Scaling and Optimization
@@ -216,4 +214,4 @@ You can fine-tune cache expiration strategies (TTL values) and eviction policies
 
 By combining an in-memory store (Valkey) with a reliable database (PostgreSQL), all orchestrated by a Spring Boot application, you’ve built a caching solution that delivers high performance, reduces database load, and ensures an excellent user experience. Running it in Google Cloud extends these benefits further, providing managed services and easy scaling.
 
-For more information check out the [repository](https://github.com/GoogleCloudPlatform/java-docs-samples/tree/main/memorystore/valkey/caching) for the full project details and follow the instructions to get started.
+For more information, check out the [repository](https://github.com/GoogleCloudPlatform/java-docs-samples/tree/main/memorystore/valkey/caching) for the full project details and follow the instructions to get started.
