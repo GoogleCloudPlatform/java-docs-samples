@@ -36,7 +36,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import com.google.cloud
 
 @RunWith(JUnit4.class)
 // CHECKSTYLE OFF: AbbreviationAsWordInName
@@ -44,35 +43,28 @@ public class ClientSideCredentialAccessBoundaryFactoryExampleIT {
   // CHECKSTYLE ON: AbbreviationAsWordInName
   private static final String CONTENT = "CONTENT";
   private ByteArrayOutputStream bout;
-  private PrintStream out;
-  private String credentials;
   private Bucket bucket;
   private Blob blob;
-  private String[] args;
 
   @Before
   public void setUp() {
     bout = new ByteArrayOutputStream();
-    out = new PrintStream(bout);
+    PrintStream out = new PrintStream(bout);
     System.setOut(out);
 
-    credentials = System.getenv("GOOGLE_APPLICATION_CREDENTIALS");
+    String credentials = System.getenv("GOOGLE_APPLICATION_CREDENTIALS");
     assertNotNull(credentials);
 
     // Create a bucket and object that are deleted once the test completes.
     Storage storage = StorageOptions.newBuilder().build().getService();
 
     String bucketName = String.format("bucket-client-side-cab-test-%s", UUID.randomUUID());
-    Bucket bucket = storage.create(BucketInfo.newBuilder(bucketName).build());
+    bucket = storage.create(BucketInfo.newBuilder(bucketName).build());
 
     String objectName = String.format("blob-client-side-cab-test-%s", UUID.randomUUID());
     BlobId blobId = BlobId.of(bucketName, objectName);
     BlobInfo blobInfo = Blob.newBuilder(blobId).build();
-    Blob blob = storage.create(blobInfo, CONTENT.getBytes(StandardCharsets.UTF_8));
-
-    this.bucket = bucket;
-    this.blob = blob;
-    this.args = new String[] {bucketName, objectName};
+    blob = storage.create(blobInfo, CONTENT.getBytes(StandardCharsets.UTF_8));
   }
 
   @After

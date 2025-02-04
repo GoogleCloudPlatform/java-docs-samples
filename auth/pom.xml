@@ -70,7 +70,7 @@ limitations under the License.
     </dependency>
     <dependency>
       <groupId>com.google.auth</groupId>
-      <artifactId>cab-token-generator</artifactId>
+      <artifactId>google-auth-library-cab-token-generator</artifactId>
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>

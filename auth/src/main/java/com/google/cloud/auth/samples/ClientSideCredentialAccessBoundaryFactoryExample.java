@@ -16,7 +16,7 @@
 
 package com.google.cloud.auth.samples;
 
-import com.google.auth.credentialaccessboundary;
+import com.google.auth.credentialaccessboundary.ClientSideCredentialAccessBoundaryFactory;
 import com.google.auth.oauth2.AccessToken;
 import com.google.auth.oauth2.CredentialAccessBoundary;
 import com.google.auth.oauth2.GoogleCredentials;
@@ -24,7 +24,9 @@ import com.google.auth.oauth2.OAuth2CredentialsWithRefresh;
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
+import dev.cel.common.CelValidationException;
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 
 /** Demonstrates how to use ClientSideCredentialAccessBoundaryFactory to generate downscoped tokens. */
 public class ClientSideCredentialAccessBoundaryFactoryExample {
@@ -48,7 +50,7 @@ public class ClientSideCredentialAccessBoundaryFactoryExample {
   /** Simulates token broker generating downscoped tokens for specified bucket. */
   // [START auth_client_cab_token_broker]
   public static AccessToken getTokenFromBroker(String bucketName, String objectPrefix)
-      throws IOException {
+      throws IOException, GeneralSecurityException, CelValidationException {
     // Retrieve the source credentials from ADC.
     GoogleCredentials sourceCredentials =
         GoogleCredentials.getApplicationDefault()
@@ -123,7 +125,11 @@ public class ClientSideCredentialAccessBoundaryFactoryExample {
             // in the resource bucket. objectName.substring(0, 3) is the prefix here. This field is
             // not required if access to all bucket resources are allowed. If access to limited
             // resources in the bucket is needed, this mechanism can be used.
-            return getTokenFromBroker(bucketName, objectName.substring(0, 3));
+            try {
+              return getTokenFromBroker(bucketName, objectName.substring(0, 3));
+            } catch (GeneralSecurityException | CelValidationException e) {
+              throw new RuntimeException(e);
+            }
           }
         };
 
