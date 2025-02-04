@@ -94,13 +94,16 @@ public class DataController {
             final long position,
             final long maxPosition,
             final boolean isDescending) {
+        // Define an object
         List<Tuple> entries = new ArrayList<>();
 
+        // Use zrevrangeWithScores to get the entries in descending order
         if (isDescending) {
             entries = new ArrayList<>(
                     jedis.zrevrangeWithScores(cacheKey, position, maxPosition));
         }
 
+        // If zrangeWithScores is used, the entries are in ascending order
         if (!isDescending) {
             entries = new ArrayList<>(
                     jedis.zrangeWithScores(cacheKey, position, maxPosition));
@@ -109,9 +112,18 @@ public class DataController {
         List<LeaderboardEntry> newEntries = new ArrayList<>();
         for (int i = 0; i < entries.size(); i++) {
             Tuple e = entries.get(i);
+
+            // Calculate overall position
+            long overallPosition = position + i;
+            if (!isDescending) {
+                overallPosition = jedis.zcard(cacheKey) - overallPosition - 1;
+            }
+
             newEntries.add(
                     new LeaderboardEntry(
-                            e.getElement(), e.getScore(), position + i));
+                        e.getElement(), e.getScore(), overallPosition
+                    )
+                );
         }
 
         return newEntries;
@@ -138,12 +150,20 @@ public class DataController {
     }
 
     /**
-     * Creates or updates a leaderboard entry.
+     * Creates or updates a leaderboard entry with the given username and score.
+     * Only updates the entry if the new score is higher than the current score.
      *
      * @param username The username of the entry
      * @param score    The score to set
      */
     public void createOrUpdate(final String username, final Double score) {
+        // See if score is higher than the current score
+        Double currentScore = this.jedis.zscore(
+            Global.LEADERBOARD_ENTRIES_KEY, username);
+        if (currentScore != null && currentScore >= score) {
+            return;
+        }
+
         this.leaderboardRepository.update(username, score);
         this.jedis.zadd(Global.LEADERBOARD_ENTRIES_KEY, score, username);
     }

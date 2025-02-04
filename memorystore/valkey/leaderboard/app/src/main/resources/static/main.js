@@ -88,8 +88,8 @@ function renderEntries() {
   elements.entriesContainer.innerHTML = isLoading
     ? loadingTemplate()
     : leaderboardData.length
-    ? entriesTemplate()
-    : emptyTemplate();
+      ? entriesTemplate()
+      : emptyTemplate();
 }
 
 function loadingTemplate() {
@@ -109,12 +109,12 @@ function entriesTemplate() {
           (entry) => `
         <li class="py-3 hover:bg-gray-50">
           <div class="flex justify-between items-center">
-            <span class="w-16">${entry.position}.</span>
+            <span class="w-16">${entry.position + 1}.</span>
             <span class="flex-1">${entry.username}</span>
             <span class="w-24 text-right font-mono text-blue-600">${entry.score}</span>
           </div>
         </li>
-      `
+      `,
         )
         .join("")}
     </ul>
