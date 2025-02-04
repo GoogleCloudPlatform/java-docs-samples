@@ -25,25 +25,52 @@ import java.util.List;
 @Repository
 public class LeaderboardRepository {
 
+    /** Template for database operations. */
     private final JdbcTemplate jdbcTemplate;
 
-    public LeaderboardRepository(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    /**
+     * Constructs repository with database template.
+     *
+     * @param newJdbcTemplate database operations template
+     */
+    public LeaderboardRepository(final JdbcTemplate newJdbcTemplate) {
+        this.jdbcTemplate = newJdbcTemplate;
     }
 
+    /**
+     * Retrieves all leaderboard entries.
+     *
+     * @return list of leaderboard entries
+     */
     public List<LeaderboardEntry> getEntries() {
         return jdbcTemplate.query(
                 "SELECT * FROM leaderboard",
-                (rs, rowNum) ->
-                        new LeaderboardEntry(rs.getString("username"), rs.getDouble("score")));
+                (rs, rowNum) -> new LeaderboardEntry(
+                        rs.getString("username"),
+                        rs.getDouble("score")));
     }
 
-    public void create(String username, Double score) {
+    /**
+     * Creates new leaderboard entry.
+     *
+     * @param username player username
+     * @param score    player score
+     */
+    public void create(final String username, final Double score) {
         jdbcTemplate.update(
-                "INSERT INTO leaderboard (username, score) VALUES (?, ?)", username, score);
+                "INSERT INTO leaderboard (username, score) VALUES (?, ?)",
+                username, score);
     }
 
-    public void update(String username, Double score) {
-        jdbcTemplate.update("UPDATE leaderboard SET score = ? WHERE username = ?", score, username);
+    /**
+     * Updates existing leaderboard entry.
+     *
+     * @param username player username
+     * @param score    new score
+     */
+    public void update(final String username, final Double score) {
+        jdbcTemplate.update(
+                "UPDATE leaderboard SET score = ? WHERE username = ?",
+                score, username);
     }
 }

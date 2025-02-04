@@ -16,21 +16,41 @@
 
 package app;
 
+/** Enum for specifying sort order of leaderboard entries. */
 public enum OrderByType {
+    /** Sort from highest to lowest score. */
     HIGH_TO_LOW("h2l"),
+    /** Sort from lowest to highest score. */
     LOW_TO_HIGH("l2h");
 
+    /** String value representing the sort order. */
     private final String value;
 
-    OrderByType(String value) {
-        this.value = value;
+    /**
+     * Constructor.
+     *
+     * @param valueParam String value for this order type
+     */
+    OrderByType(final String valueParam) {
+        this.value = valueParam;
     }
 
+    /**
+     * Gets the string value.
+     *
+     * @return The value for this order type
+     */
     public String getValue() {
         return value;
     }
 
-    public static OrderByType fromString(String text) {
+    /**
+     * Converts string to enum value.
+     *
+     * @param text String to convert
+     * @return Matching enum value or null if not found
+     */
+    public static OrderByType fromString(final String text) {
         for (OrderByType b : OrderByType.values()) {
             if (b.value.equalsIgnoreCase(text)) {
                 return b;
@@ -39,7 +59,13 @@ public enum OrderByType {
         return null;
     }
 
-    public static boolean isValid(String text) {
+    /**
+     * Checks if string matches an enum value.
+     *
+     * @param text String to check
+     * @return True if string matches an enum value
+     */
+    public static boolean isValid(final String text) {
         return fromString(text) != null;
     }
 }

@@ -16,8 +16,13 @@
 
 package app;
 
-public class Global {
+public final class Global {
 
-    // Add a global constant for the leaderboard entries key
+    /** Private constructor to prevent instantiation. */
+    private Global() {
+        throw new UnsupportedOperationException();
+    }
+
+    /** Key for accessing leaderboard entries in responses. */
     public static final String LEADERBOARD_ENTRIES_KEY = "entries";
 }

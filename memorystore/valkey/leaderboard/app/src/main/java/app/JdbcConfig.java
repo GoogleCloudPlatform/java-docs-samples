@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-/** Configuration for the JDBC DataSource to connect to the PostgreSQL server. */
+/** Configuration for the JDBC DataSource to
+ * connect to the PostgreSQL server.
+ */
 package app;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -27,27 +29,35 @@ import javax.sql.DataSource;
 @Configuration
 public class JdbcConfig {
 
-    // Database configuration properties with environment variable fallback
+    /** Database configuration properties with environment variable fallback. */
     @Value("${DB_URL:jdbc:postgresql://localhost:5432/postgres}")
     private String url;
 
+    /** Database username with postgres fallback. */
     @Value("${DB_USERNAME:postgres}")
     private String username;
 
+    /** Database password. */
     @Value("${DB_PASSWORD:}")
     private String password;
 
+    /**
+     * Creates and configures the database DataSource.
+     *
+     * @return configured DataSource
+     * @throws IllegalArgumentException if required properties are missing
+     */
     @Bean
     public DataSource dataSource() {
-        // Validate mandatory properties
         if (url == null || url.isEmpty()) {
-            throw new IllegalArgumentException("Database URL (DB_URL) is not configured");
+            throw new IllegalArgumentException(
+                    "Database URL (DB_URL) is not configured");
         }
         if (username == null || username.isEmpty()) {
-            throw new IllegalArgumentException("Database username (DB_USERNAME) is not configured");
+            throw new IllegalArgumentException(
+                    "Database username (DB_USERNAME) is not configured");
         }
 
-        // Set up the DataSource
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("org.postgresql.Driver");
         dataSource.setUrl(url);

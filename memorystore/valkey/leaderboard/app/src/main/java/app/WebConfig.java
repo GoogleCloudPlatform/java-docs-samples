@@ -26,28 +26,34 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebConfig {
 
-    @Value("${ALLOWED_ORIGINS:localhost:3000}") // Default to localhost:3000 if not set
+    /** Allowed origin domains for CORS. */
+    @Value("${ALLOWED_ORIGINS:localhost:3000}")
     private String allowedOrigins;
 
-    @Value(
-            "${ALLOWED_METHODS:GET,POST,PUT,DELETE}") // Default to GET,POST,PUT,DELETE methods if
-                                                      // not set
+    /** Allowed HTTP methods for CORS. */
+    @Value("${ALLOWED_METHODS:GET,POST,PUT,DELETE}")
     private String allowedMethods;
 
-    @Value("${ALLOWED_HEADERS:*}") // Default to all headers if not set
+    /** Allowed headers for CORS requests. */
+    @Value("${ALLOWED_HEADERS:*}")
     private String allowedHeaders;
 
+    /**
+     * Configures CORS settings for the application.
+     *
+     * @return WebMvcConfigurer with CORS configuration
+     */
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
             @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**") // Allow all endpoints
-                        .allowedOrigins(
-                                allowedOrigins.split(",")) // Allow requests from the frontend
-                        .allowedMethods(allowedMethods.split(",")) // Restrict HTTP methods
-                        .allowedHeaders(allowedHeaders.split(",")) // Specify allowed headers
-                        .allowCredentials(true); // Allow cookies and credentials
+            public void addCorsMappings(final CorsRegistry registry) {
+                registry
+                        .addMapping("/**")
+                        .allowedOrigins(allowedOrigins.split(","))
+                        .allowedMethods(allowedMethods.split(","))
+                        .allowedHeaders(allowedHeaders.split(","))
+                        .allowCredentials(true);
             }
         };
     }

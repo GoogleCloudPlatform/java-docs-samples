@@ -14,23 +14,5 @@
  * limitations under the License.
  */
 
+/** Contains classes for the leaderboard application. */
 package app;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-
-@Controller
-public class HomeController {
-
-    /**
-     * Handles requests to the home page.
-     *
-     * @param model view model
-     * @return view name for home page
-     */
-    @GetMapping("/")
-    public String home(final Model model) {
-        return "index";
-    }
-}

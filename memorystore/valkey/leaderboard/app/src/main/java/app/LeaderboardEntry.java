@@ -17,37 +17,77 @@
 /** Data class representing a single entry in the leaderboard. */
 package app;
 
-public class LeaderboardEntry {
+public final class LeaderboardEntry {
 
-    private final String _username;
-    private final Double _score;
-    private Long _position;
+    /** Username for this leaderboard entry. */
+    private final String username;
 
-    public LeaderboardEntry(String username, Double score, Long position) {
-        this._username = username;
-        this._score = score;
-        this._position = position;
+    /** Score achieved by this user. */
+    private final Double score;
+
+    /** Position in the leaderboard ranking. */
+    private Long position;
+
+    /**
+     * Creates a new leaderboard entry with position.
+     *
+     * @param usernameParam Username for the entry
+     * @param scoreParam    Score achieved
+     * @param positionParam Position in ranking
+     */
+    public LeaderboardEntry(final String usernameParam, final Double scoreParam,
+            final Long positionParam) {
+        this.username = usernameParam;
+        this.score = scoreParam;
+        this.position = positionParam;
     }
 
-    public LeaderboardEntry(String username, Double score) {
-        this._username = username;
-        this._score = score;
-        this._position = -1L;
+    /**
+     * Creates a new leaderboard entry without position.
+     *
+     * @param usernameParam Username for the entry
+     * @param scoreParam    Score achieved
+     */
+    public LeaderboardEntry(
+            final String usernameParam, final Double scoreParam) {
+        this.username = usernameParam;
+        this.score = scoreParam;
+        this.position = -1L;
     }
 
+    /**
+     * Gets the username.
+     *
+     * @return The username
+     */
     public String getUsername() {
-        return _username;
+        return username;
     }
 
+    /**
+     * Gets the score.
+     *
+     * @return The score
+     */
     public Double getScore() {
-        return _score;
+        return score;
     }
 
+    /**
+     * Gets the position.
+     *
+     * @return The position
+     */
     public Long getPosition() {
-        return _position;
+        return position;
     }
 
-    public void setPosition(Long position) {
-        _position = position;
+    /**
+     * Sets the position.
+     *
+     * @param positionParam The new position
+     */
+    public void setPosition(final Long positionParam) {
+        this.position = positionParam;
     }
 }

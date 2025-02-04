@@ -17,36 +17,46 @@
 package app;
 
 import org.springframework.stereotype.Controller;
-
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.resps.Tuple;
-
-import java.util.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Controller
 public class DataController {
 
+    /** Repository for persisting leaderboard entries. */
     private final LeaderboardRepository leaderboardRepository;
+
+    /** Redis client for caching leaderboard data. */
     private final Jedis jedis;
 
-    public DataController(Jedis jedis, LeaderboardRepository leaderboardRepository) {
-        this.leaderboardRepository = leaderboardRepository;
-        this.jedis = jedis;
+    /**
+     * Constructs a new DataController.
+     *
+     * @param redisClient Redis client for caching
+     * @param repository  Repository for persistence
+     */
+    public DataController(final Jedis redisClient,
+            final LeaderboardRepository repository) {
+        this.leaderboardRepository = repository;
+        this.jedis = redisClient;
     }
 
     /**
      * Get the leaderboard entries starting from the given position.
      *
      * @param position The starting position of the entries to search.
-     * @param orderBy The order of the entries.
+     * @param orderBy  The order of the entries.
      * @param pageSize The number of entries to return.
      * @param username The username to check the rank of.
      * @return The leaderboard entries.
      */
     public LeaderboardResponse getLeaderboard(
-            long position, OrderByType orderBy, long pageSize, String username) {
+            final long position,
+            final OrderByType orderBy,
+            final long pageSize,
+            final String username) {
         String cacheKey = Global.LEADERBOARD_ENTRIES_KEY;
         long maxPosition = position + pageSize - 1;
 
@@ -54,49 +64,54 @@ public class DataController {
         boolean cacheUpdated = this.initializeCache();
 
         // Set the cache status for the front end
-        int cacheStatus =
-                cacheUpdated
-                        ? FromCacheType.FROM_DB.getValue()
-                        : FromCacheType.FULL_CACHE.getValue();
+        int cacheStatus = cacheUpdated
+                ? FromCacheType.FROM_DB.getValue()
+                : FromCacheType.FULL_CACHE.getValue();
 
         // If we have a username, search for the user's rank
         if (username != null) {
             Long userRank = jedis.zrevrank(cacheKey, username);
             if (userRank != null) {
-                position = userRank;
-                maxPosition = userRank + pageSize - 1;
+                long pos = userRank;
+                long maxPos = userRank + pageSize - 1;
 
                 return new LeaderboardResponse(
-                        getEntries(cacheKey, position, maxPosition, true), cacheStatus);
+                        getEntries(cacheKey, pos, maxPos, true),
+                        cacheStatus);
             }
         }
 
         // Get the leaderboard entries depending on the order
-        List<LeaderboardEntry> leaderboardList =
-                getEntries(cacheKey, position, maxPosition, orderBy == OrderByType.HIGH_TO_LOW);
+        List<LeaderboardEntry> leaderboardList = getEntries(
+                cacheKey, position, maxPosition,
+                orderBy == OrderByType.HIGH_TO_LOW);
 
         return new LeaderboardResponse(leaderboardList, cacheStatus);
     }
 
     private List<LeaderboardEntry> getEntries(
-            String cacheKey, long position, long maxPosition, boolean isDescending) {
-        // Define an object
+            final String cacheKey,
+            final long position,
+            final long maxPosition,
+            final boolean isDescending) {
         List<Tuple> entries = new ArrayList<>();
 
-        // Use zrevrangeWithScores to get the entries in descending order
         if (isDescending) {
-            entries = new ArrayList<>(jedis.zrevrangeWithScores(cacheKey, position, maxPosition));
+            entries = new ArrayList<>(
+                    jedis.zrevrangeWithScores(cacheKey, position, maxPosition));
         }
 
-        // If zrangeWithScores is used, the entries are in ascending order
         if (!isDescending) {
-            entries = new ArrayList<>(jedis.zrangeWithScores(cacheKey, position, maxPosition));
+            entries = new ArrayList<>(
+                    jedis.zrangeWithScores(cacheKey, position, maxPosition));
         }
 
         List<LeaderboardEntry> newEntries = new ArrayList<>();
         for (int i = 0; i < entries.size(); i++) {
             Tuple e = entries.get(i);
-            newEntries.add(new LeaderboardEntry(e.getElement(), e.getScore(), position + i));
+            newEntries.add(
+                    new LeaderboardEntry(
+                            e.getElement(), e.getScore(), position + i));
         }
 
         return newEntries;
@@ -107,19 +122,28 @@ public class DataController {
             return false;
         }
 
-        List<LeaderboardEntry> entries = this.leaderboardRepository.getEntries();
+        List<LeaderboardEntry> entries = this.leaderboardRepository
+                .getEntries();
 
         if (!entries.isEmpty()) {
             for (LeaderboardEntry entry : entries) {
                 this.jedis.zadd(
-                        Global.LEADERBOARD_ENTRIES_KEY, entry.getScore(), entry.getUsername());
+                        Global.LEADERBOARD_ENTRIES_KEY,
+                        entry.getScore(),
+                        entry.getUsername());
             }
         }
 
         return true;
     }
 
-    public void createOrUpdate(String username, Double score) {
+    /**
+     * Creates or updates a leaderboard entry.
+     *
+     * @param username The username of the entry
+     * @param score    The score to set
+     */
+    public void createOrUpdate(final String username, final Double score) {
         this.leaderboardRepository.update(username, score);
         this.jedis.zadd(Global.LEADERBOARD_ENTRIES_KEY, score, username);
     }
