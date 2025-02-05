@@ -142,7 +142,11 @@ public Item get(long id) {
       if (cachedValue != null) {
         // Return the cached data
         Item cachedItem = Item.fromJSONString(cachedValue);
+
+        // Set a property to display cached item as a property for usage in the application
         cachedItem.setFromCache(true);
+
+        // Return the cached item
         return cachedItem;
       }
     } catch (Exception e) {
@@ -190,6 +194,7 @@ public void delete(long id) {
       String idString = Long.toString(id);
       long totalDeleted = jedis.del(idString);
 
+      // Throw an exception if no item was found in the cache.
       if (totalDeleted == 0) {
         throw new Exception("Item not found in cache");
       }
