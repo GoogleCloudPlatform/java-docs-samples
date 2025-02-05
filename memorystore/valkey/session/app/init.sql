@@ -4,3 +4,9 @@ CREATE TABLE IF NOT EXISTS account (
     username VARCHAR(20) NOT NULL,
     password VARCHAR(255) NOT NULL
 );
+
+CREATE TABLE session (
+  token VARCHAR(255) PRIMARY KEY,
+  account_id INTEGER NOT NULL,
+  expires_at TIMESTAMP NOT NULL
+);

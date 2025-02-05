@@ -16,9 +16,16 @@
 
 package app;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.BDDMockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.BDDMockito.doThrow;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.verify;
 
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -28,229 +35,226 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import redis.clients.jedis.Jedis;
-
-import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
 class DataControllerTest {
 
-    @Mock private AccountRepository accountRepository;
+  @Mock private AccountRepository accountRepository;
 
-    @Mock private Jedis jedis;
+  @Mock private Jedis jedis;
 
-    private DataController dataController;
+  private DataController dataController;
 
-    @BeforeEach
-    void setUp() {
-        dataController = new DataController(accountRepository, jedis);
+  @BeforeEach
+  void setUp() {
+    dataController = new DataController(accountRepository, jedis);
+  }
+
+  @Nested
+  @DisplayName("Testing register() method")
+  class RegisterTests {
+
+    @Test
+    @DisplayName("Should register a new user")
+    void testRegister() {
+      String email = "test@example.com";
+      String username = "testUser";
+      String password = "securePassword";
+
+      // Action
+      dataController.register(email, username, password);
+
+      // Verify
+      verify(accountRepository).registerUser(email, username, password);
+    }
+  }
+
+  @Nested
+  @DisplayName("Testing login() method")
+  class LoginTests {
+
+    @Test
+    @DisplayName("Should return token for valid credentials")
+    void testLogin_ValidCredentials() {
+      String username = "testUser";
+      String password = "securePassword";
+      String token = "generatedToken";
+
+      // Given
+      given(accountRepository.authenticateUser(username, password))
+          .willReturn(Optional.of(1)); // pretend userId = 1
+
+      // Mock static Utils.generateToken(...)
+      try (MockedStatic<Utils> mockedUtils = Mockito.mockStatic(Utils.class)) {
+        mockedUtils
+            .when(() -> Utils.generateToken(Global.TOKEN_BYTE_LENGTH))
+            .thenReturn(token);
+
+        // Action
+        String result = dataController.login(username, password);
+
+        // Assert & Verify
+        assertEquals(token, result);
+        verify(jedis).set(token, username);
+        verify(jedis).expire(token, Global.TOKEN_EXPIRATION);
+      }
     }
 
-    @Nested
-    @DisplayName("Testing register() method")
-    class RegisterTests {
+    @Test
+    @DisplayName("Should return null for invalid credentials")
+    void testLogin_InvalidCredentials() {
+      String username = "testUser";
+      String password = "wrongPassword";
 
-        @Test
-        @DisplayName("Should register a new user")
-        void testRegister() {
-            String email = "test@example.com";
-            String username = "testUser";
-            String password = "securePassword";
+      given(accountRepository.authenticateUser(username, password))
+          .willReturn(Optional.empty());
 
-            // Action
-            dataController.register(email, username, password);
+      String result = dataController.login(username, password);
 
-            // Verify
-            verify(accountRepository).registerUser(email, username, password);
-        }
+      assertNull(result);
     }
 
-    @Nested
-    @DisplayName("Testing login() method")
-    class LoginTests {
+    @Test
+    @DisplayName("Should throw RuntimeException if Jedis operation fails")
+    void testLogin_JedisFailure() {
+      String username = "testUser";
+      String password = "securePassword";
+      String token = "generatedToken";
 
-        @Test
-        @DisplayName("Should return token for valid credentials")
-        void testLogin_ValidCredentials() {
-            String username = "testUser";
-            String password = "securePassword";
-            String token = "generatedToken";
+      given(accountRepository.authenticateUser(username, password))
+          .willReturn(Optional.of(1));
 
-            // Given
-            given(accountRepository.authenticateUser(username, password))
-                    .willReturn(Optional.of(1)); // pretend userId = 1
+      try (MockedStatic<Utils> mockedUtils = Mockito.mockStatic(Utils.class)) {
+        mockedUtils
+            .when(() -> Utils.generateToken(Global.TOKEN_BYTE_LENGTH))
+            .thenReturn(token);
 
-            // Mock static Utils.generateToken(...)
-            try (MockedStatic<Utils> mockedUtils = Mockito.mockStatic(Utils.class)) {
-                mockedUtils
-                        .when(() -> Utils.generateToken(Global.TOKEN_BYTE_LENGTH))
-                        .thenReturn(token);
+        // Force an error in Jedis.set(...)
+        doThrow(new RuntimeException("Jedis error")).when(jedis).set(token, username);
 
-                // Action
-                String result = dataController.login(username, password);
+        // Should throw RuntimeException because Jedis fails
+        assertThrows(
+            RuntimeException.class, () -> dataController.login(username, password));
+      }
+    }
+  }
 
-                // Assert & Verify
-                assertEquals(token, result);
-                verify(jedis).set(token, username);
-                verify(jedis).expire(token, Global.TOKEN_EXPIRATION);
-            }
-        }
+  @Nested
+  @DisplayName("Testing logout() method")
+  class LogoutTests {
 
-        @Test
-        @DisplayName("Should return null for invalid credentials")
-        void testLogin_InvalidCredentials() {
-            String username = "testUser";
-            String password = "wrongPassword";
+    @Test
+    @DisplayName("Should delete token from Jedis")
+    void testLogout() {
+      String token = "testToken";
 
-            given(accountRepository.authenticateUser(username, password))
-                    .willReturn(Optional.empty());
+      dataController.logout(token);
 
-            String result = dataController.login(username, password);
-
-            assertNull(result);
-        }
-
-        @Test
-        @DisplayName("Should throw RuntimeException if Jedis operation fails")
-        void testLogin_JedisFailure() {
-            String username = "testUser";
-            String password = "securePassword";
-            String token = "generatedToken";
-
-            given(accountRepository.authenticateUser(username, password))
-                    .willReturn(Optional.of(1));
-
-            try (MockedStatic<Utils> mockedUtils = Mockito.mockStatic(Utils.class)) {
-                mockedUtils
-                        .when(() -> Utils.generateToken(Global.TOKEN_BYTE_LENGTH))
-                        .thenReturn(token);
-
-                // Force an error in Jedis.set(...)
-                doThrow(new RuntimeException("Jedis error")).when(jedis).set(token, username);
-
-                // Should throw RuntimeException because Jedis fails
-                assertThrows(
-                        RuntimeException.class, () -> dataController.login(username, password));
-            }
-        }
+      // Verify it deletes from Jedis
+      verify(jedis).del(token);
     }
 
-    @Nested
-    @DisplayName("Testing logout() method")
-    class LogoutTests {
+    @Test
+    @DisplayName("Should throw RuntimeException if Jedis operation fails")
+    void testLogout_JedisFailure() {
+      String token = "testToken";
 
-        @Test
-        @DisplayName("Should delete token from Jedis")
-        void testLogout() {
-            String token = "testToken";
+      // Force an error in Jedis.del(...)
+      doThrow(new RuntimeException("Jedis error")).when(jedis).del(token);
 
-            dataController.logout(token);
+      assertThrows(RuntimeException.class, () -> dataController.logout(token));
+    }
+  }
 
-            // Verify it deletes from Jedis
-            verify(jedis).del(token);
-        }
+  @Nested
+  @DisplayName("Testing verify() method")
+  class VerifyTests {
 
-        @Test
-        @DisplayName("Should throw RuntimeException if Jedis operation fails")
-        void testLogout_JedisFailure() {
-            String token = "testToken";
+    @Test
+    @DisplayName("Should return username and extend token expiration if valid")
+    void testVerify_ValidToken() {
+      String token = "testToken";
+      String username = "testUser";
 
-            // Force an error in Jedis.del(...)
-            doThrow(new RuntimeException("Jedis error")).when(jedis).del(token);
+      given(jedis.get(token)).willReturn(username);
 
-            assertThrows(RuntimeException.class, () -> dataController.logout(token));
-        }
+      String result = dataController.verify(token);
+
+      assertEquals(username, result);
+      verify(jedis).expire(token, Global.TOKEN_EXPIRATION);
     }
 
-    @Nested
-    @DisplayName("Testing verify() method")
-    class VerifyTests {
+    @Test
+    @DisplayName("Should return null if token is invalid")
+    void testVerify_InvalidToken() {
+      String token = "invalidToken";
 
-        @Test
-        @DisplayName("Should return username and extend token expiration if valid")
-        void testVerify_ValidToken() {
-            String token = "testToken";
-            String username = "testUser";
+      given(jedis.get(token)).willReturn(null);
 
-            given(jedis.get(token)).willReturn(username);
+      String result = dataController.verify(token);
 
-            String result = dataController.verify(token);
-
-            assertEquals(username, result);
-            verify(jedis).expire(token, Global.TOKEN_EXPIRATION);
-        }
-
-        @Test
-        @DisplayName("Should return null if token is invalid")
-        void testVerify_InvalidToken() {
-            String token = "invalidToken";
-
-            given(jedis.get(token)).willReturn(null);
-
-            String result = dataController.verify(token);
-
-            assertNull(result);
-        }
-
-        @Test
-        @DisplayName("Should throw RuntimeException if Jedis operation fails")
-        void testVerify_JedisFailure() {
-            String token = "testToken";
-
-            doThrow(new RuntimeException("Jedis error")).when(jedis).get(token);
-
-            assertThrows(RuntimeException.class, () -> dataController.verify(token));
-        }
+      assertNull(result);
     }
 
-    @Nested
-    @DisplayName("Testing checkIfEmailExists() method")
-    class CheckIfEmailExistsTests {
+    @Test
+    @DisplayName("Should throw RuntimeException if Jedis operation fails")
+    void testVerify_JedisFailure() {
+      String token = "testToken";
 
-        @Test
-        @DisplayName("Should return true if email exists")
-        void testCheckIfEmailExists_True() {
-            String email = "test@example.com";
+      doThrow(new RuntimeException("Jedis error")).when(jedis).get(token);
 
-            given(accountRepository.isEmailRegistered(email)).willReturn(true);
+      assertThrows(RuntimeException.class, () -> dataController.verify(token));
+    }
+  }
 
-            assertTrue(dataController.checkIfEmailExists(email));
-        }
+  @Nested
+  @DisplayName("Testing checkIfEmailExists() method")
+  class CheckIfEmailExistsTests {
 
-        @Test
-        @DisplayName("Should return false if email does not exist")
-        void testCheckIfEmailExists_False() {
-            String email = "nonexistent@example.com";
+    @Test
+    @DisplayName("Should return true if email exists")
+    void testCheckIfEmailExists_True() {
+      String email = "test@example.com";
 
-            given(accountRepository.isEmailRegistered(email)).willReturn(false);
+      given(accountRepository.isEmailRegistered(email)).willReturn(true);
 
-            assertFalse(dataController.checkIfEmailExists(email));
-        }
+      assertTrue(dataController.checkIfEmailExists(email));
     }
 
-    @Nested
-    @DisplayName("Testing checkIfUsernameExists() method")
-    class CheckIfUsernameExistsTests {
+    @Test
+    @DisplayName("Should return false if email does not exist")
+    void testCheckIfEmailExists_False() {
+      String email = "nonexistent@example.com";
 
-        @Test
-        @DisplayName("Should return true if username exists")
-        void testCheckIfUsernameExists_True() {
-            String username = "testUser";
+      given(accountRepository.isEmailRegistered(email)).willReturn(false);
 
-            given(accountRepository.isUsernameRegistered(username)).willReturn(true);
-
-            assertTrue(dataController.checkIfUsernameExists(username));
-        }
-
-        @Test
-        @DisplayName("Should return false if username does not exist")
-        void testCheckIfUsernameExists_False() {
-            String username = "nonexistentUser";
-
-            given(accountRepository.isUsernameRegistered(username)).willReturn(false);
-
-            assertFalse(dataController.checkIfUsernameExists(username));
-        }
+      assertFalse(dataController.checkIfEmailExists(email));
     }
+  }
+
+  @Nested
+  @DisplayName("Testing checkIfUsernameExists() method")
+  class CheckIfUsernameExistsTests {
+
+    @Test
+    @DisplayName("Should return true if username exists")
+    void testCheckIfUsernameExists_True() {
+      String username = "testUser";
+
+      given(accountRepository.isUsernameRegistered(username)).willReturn(true);
+
+      assertTrue(dataController.checkIfUsernameExists(username));
+    }
+
+    @Test
+    @DisplayName("Should return false if username does not exist")
+    void testCheckIfUsernameExists_False() {
+      String username = "nonexistentUser";
+
+      given(accountRepository.isUsernameRegistered(username)).willReturn(false);
+
+      assertFalse(dataController.checkIfUsernameExists(username));
+    }
+  }
 }
