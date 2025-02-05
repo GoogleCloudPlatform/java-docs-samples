@@ -16,8 +16,9 @@
 
 package com.google.cloud.auth.samples;
 
+import static com.google.cloud.auth.samples.ClientSideCredentialAccessBoundaryFactoryConsumer.retrieveBlobWithDownscopedToken;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobId;
@@ -26,9 +27,7 @@ import com.google.cloud.storage.Bucket;
 import com.google.cloud.storage.BucketInfo;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import org.junit.After;
@@ -42,26 +41,22 @@ import org.junit.runners.JUnit4;
 public class ClientSideCredentialAccessBoundaryFactoryExampleIT {
   // CHECKSTYLE ON: AbbreviationAsWordInName
   private static final String CONTENT = "CONTENT";
-  private ByteArrayOutputStream bout;
   private Bucket bucket;
   private Blob blob;
 
   @Before
   public void setUp() {
-    bout = new ByteArrayOutputStream();
-    PrintStream out = new PrintStream(bout);
-    System.setOut(out);
-
     String credentials = System.getenv("GOOGLE_APPLICATION_CREDENTIALS");
     assertNotNull(credentials);
 
     // Create a bucket and object that are deleted once the test completes.
     Storage storage = StorageOptions.newBuilder().build().getService();
 
-    String bucketName = String.format("bucket-client-side-cab-test-%s", UUID.randomUUID());
+    String suffix = UUID.randomUUID().toString().substring(0, 18);
+    String bucketName = String.format("bucket-client-side-cab-test-%s", suffix);
     bucket = storage.create(BucketInfo.newBuilder(bucketName).build());
 
-    String objectName = String.format("blob-client-side-cab-test-%s", UUID.randomUUID());
+    String objectName = String.format("blob-client-side-cab-test-%s", suffix);
     BlobId blobId = BlobId.of(bucketName, objectName);
     BlobInfo blobInfo = Blob.newBuilder(blobId).build();
     blob = storage.create(blobInfo, CONTENT.getBytes(StandardCharsets.UTF_8));
@@ -69,21 +64,17 @@ public class ClientSideCredentialAccessBoundaryFactoryExampleIT {
 
   @After
   public void cleanup() {
-    blob.delete();
-    bucket.delete();
+    if (blob != null) {
+      blob.delete();
+    }
+    if (bucket != null) {
+      bucket.delete();
+    }
   }
 
   @Test
   public void testClientSideCredentialAccessBoundaryFactory() throws IOException {
-    ClientSideCredentialAccessBoundaryFactoryExample.tokenConsumer(bucket.getName(), blob.getName());
-    String expectedOutput =
-        "Retrieved object, "
-            + blob.getName()
-            + ", from bucket,"
-            + bucket.getName()
-            + ", with content: "
-            + CONTENT;
-    String output = bout.toString();
-    assertTrue(output.contains(expectedOutput));
+    String content = retrieveBlobWithDownscopedToken(bucket.getName(), blob.getName());
+    assertEquals(CONTENT, content);
   }
 }
