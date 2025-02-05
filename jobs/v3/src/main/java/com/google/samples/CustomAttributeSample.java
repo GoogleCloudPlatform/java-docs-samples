@@ -79,6 +79,7 @@ public final class CustomAttributeSample {
   }
   // [END job_custom_attribute_job]
 
+  // [START job_custom_attribute_filter_string_value]
   // [START custom_attribute_filter_string_value]
 
   /** CustomAttributeFilter on String value CustomAttribute */
@@ -112,7 +113,9 @@ public final class CustomAttributeSample {
     System.out.printf("Custom search job results (String value): %s\n", response);
   }
   // [END custom_attribute_filter_string_value]
+  // [END job_custom_attribute_filter_string_value]
 
+  // [START job_custom_attribute_filter_long_value]
   // [START custom_attribute_filter_long_value]
 
   /** CustomAttributeFilter on Long value CustomAttribute */
@@ -146,6 +149,7 @@ public final class CustomAttributeSample {
     System.out.printf("Custom search job results (Long value): %s\n", response);
   }
   // [END custom_attribute_filter_long_value]
+  // [END job_custom_attribute_filter_long_value]
 
   // [START job_custom_attribute_filter_multi_attributes]
 
