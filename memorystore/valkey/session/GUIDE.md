@@ -52,7 +52,7 @@ Next, ensure the following dependencies have been added to your POM.xml file.
 
 #### Jedis
 
-Add the folowing snippet toconnect directly to the Memorystore for Valkey instance.
+Add the folowing snippet to connect directly to the Memorystore for Valkey instance.
 
 ```xml
 <!-- Jedis: Redis Java Client -->
