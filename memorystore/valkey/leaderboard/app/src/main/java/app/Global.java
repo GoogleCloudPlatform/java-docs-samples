@@ -18,11 +18,11 @@ package app;
 
 public final class Global {
 
-    /** Private constructor to prevent instantiation. */
-    private Global() {
-        throw new UnsupportedOperationException();
-    }
+  /** Private constructor to prevent instantiation. */
+  private Global() {
+    throw new UnsupportedOperationException();
+  }
 
-    /** Key for accessing leaderboard entries in responses. */
-    public static final String LEADERBOARD_ENTRIES_KEY = "entries";
+  /** Key for accessing leaderboard entries in responses. */
+  public static final String LEADERBOARD_ENTRIES_KEY = "entries";
 }

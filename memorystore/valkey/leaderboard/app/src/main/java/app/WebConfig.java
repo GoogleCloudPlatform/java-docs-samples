@@ -15,6 +15,7 @@
  */
 
 /** Use this configuration to allow CORS requests from the frontend. */
+
 package app;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -26,35 +27,35 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebConfig {
 
-    /** Allowed origin domains for CORS. */
-    @Value("${ALLOWED_ORIGINS:localhost:3000}")
-    private String allowedOrigins;
+  /** Allowed origin domains for CORS. */
+  @Value("${ALLOWED_ORIGINS:localhost:3000}")
+  private String allowedOrigins;
 
-    /** Allowed HTTP methods for CORS. */
-    @Value("${ALLOWED_METHODS:GET,POST,PUT,DELETE}")
-    private String allowedMethods;
+  /** Allowed HTTP methods for CORS. */
+  @Value("${ALLOWED_METHODS:GET,POST,PUT,DELETE}")
+  private String allowedMethods;
 
-    /** Allowed headers for CORS requests. */
-    @Value("${ALLOWED_HEADERS:*}")
-    private String allowedHeaders;
+  /** Allowed headers for CORS requests. */
+  @Value("${ALLOWED_HEADERS:*}")
+  private String allowedHeaders;
 
-    /**
-     * Configures CORS settings for the application.
-     *
-     * @return WebMvcConfigurer with CORS configuration
-     */
-    @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(final CorsRegistry registry) {
-                registry
-                        .addMapping("/**")
-                        .allowedOrigins(allowedOrigins.split(","))
-                        .allowedMethods(allowedMethods.split(","))
-                        .allowedHeaders(allowedHeaders.split(","))
-                        .allowCredentials(true);
-            }
-        };
-    }
+  /**
+   * Configures CORS settings for the application.
+   *
+   * @return WebMvcConfigurer with CORS configuration
+   */
+  @Bean
+  public WebMvcConfigurer corsConfigurer() {
+    return new WebMvcConfigurer() {
+      @Override
+      public void addCorsMappings(final CorsRegistry registry) {
+        registry
+            .addMapping("/**")
+            .allowedOrigins(allowedOrigins.split(","))
+            .allowedMethods(allowedMethods.split(","))
+            .allowedHeaders(allowedHeaders.split(","))
+            .allowCredentials(true);
+      }
+    };
+  }
 }

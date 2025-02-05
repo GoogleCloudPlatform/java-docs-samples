@@ -15,62 +15,63 @@
  */
 
 /** Handles CRUD operations for the leaderboard table. */
+
 package app;
 
+import java.util.List;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 
 @Repository
 public class LeaderboardRepository {
 
-    /** Template for database operations. */
-    private final JdbcTemplate jdbcTemplate;
+  /** Template for database operations. */
+  private final JdbcTemplate jdbcTemplate;
 
-    /**
-     * Constructs repository with database template.
-     *
-     * @param newJdbcTemplate database operations template
-     */
-    public LeaderboardRepository(final JdbcTemplate newJdbcTemplate) {
-        this.jdbcTemplate = newJdbcTemplate;
-    }
+  /**
+   * Constructs repository with database template.
+   *
+   * @param newJdbcTemplate database operations template
+   */
+  public LeaderboardRepository(final JdbcTemplate newJdbcTemplate) {
+    this.jdbcTemplate = newJdbcTemplate;
+  }
 
-    /**
-     * Retrieves all leaderboard entries.
-     *
-     * @return list of leaderboard entries
-     */
-    public List<LeaderboardEntry> getEntries() {
-        return jdbcTemplate.query(
-                "SELECT * FROM leaderboard",
-                (rs, rowNum) -> new LeaderboardEntry(
-                        rs.getString("username"),
-                        rs.getDouble("score")));
-    }
+  /**
+   * Retrieves all leaderboard entries.
+   *
+   * @return list of leaderboard entries
+   */
+  public List<LeaderboardEntry> getEntries() {
+    return jdbcTemplate.query(
+        "SELECT * FROM leaderboard",
+        (rs, rowNum) -> new LeaderboardEntry(
+            rs.getString("username"),
+            rs.getDouble("score")));
+  }
 
-    /**
-     * Creates new leaderboard entry.
-     *
-     * @param username player username
-     * @param score    player score
-     */
-    public void create(final String username, final Double score) {
-        jdbcTemplate.update(
-                "INSERT INTO leaderboard (username, score) VALUES (?, ?)",
-                username, score);
-    }
+  /**
+   * Creates new leaderboard entry.
+   *
+   * @param username player username
+   * @param score  player score
+   */
+  public void create(final String username, final Double score) {
+    jdbcTemplate.update(
+        "INSERT INTO leaderboard (username, score) VALUES (?, ?)",
+        username, score);
+  }
 
-    /**
-     * Updates existing leaderboard entry.
-     *
-     * @param username player username
-     * @param score    new score
-     */
-    public void update(final String username, final Double score) {
-        jdbcTemplate.update(
-                "UPDATE leaderboard SET score = ? WHERE username = ?",
-                score, username);
-    }
+  /**
+   * Updates existing leaderboard entry.
+   *
+   * @param username player username
+   * @param score  new score
+   */
+  public void update(final String username, final Double score) {
+    jdbcTemplate.update(
+        "UPDATE leaderboard SET score = ? WHERE username = ?",
+        score, username);
+  }
 }

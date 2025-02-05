@@ -18,29 +18,29 @@ package app;
 
 /** Cache state indicator for leaderboard data. */
 public enum FromCacheType {
-    /** Data freshly loaded from database. */
-    FROM_DB(0),
-    /** Data served from cache. */
-    FULL_CACHE(1);
+  /** Data freshly loaded from database. */
+  FROM_DB(0),
+  /** Data served from cache. */
+  FULL_CACHE(1);
 
-    /** Numeric value for the cache state. */
-    private final int value;
+  /** Numeric value for the cache state. */
+  private final int value;
 
-    /**
-     * Constructor.
-     *
-     * @param valueParam Numeric value for this state
-     */
-    FromCacheType(final int valueParam) {
-        this.value = valueParam;
-    }
+  /**
+   * Constructor.
+   *
+   * @param valueParam Numeric value for this state
+   */
+  FromCacheType(final int valueParam) {
+    this.value = valueParam;
+  }
 
-    /**
-     * Gets the numeric value.
-     *
-     * @return The value for this state
-     */
-    public int getValue() {
-        return value;
-    }
+  /**
+   * Gets the numeric value.
+   *
+   * @return The value for this state
+   */
+  public int getValue() {
+    return value;
+  }
 }

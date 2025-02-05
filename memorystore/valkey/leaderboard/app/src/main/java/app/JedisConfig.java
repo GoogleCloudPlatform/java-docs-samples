@@ -15,6 +15,7 @@
  */
 
 /** Configuration for the Jedis client to connect to the Valkey server. */
+
 package app;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -25,53 +26,53 @@ import redis.clients.jedis.Jedis;
 @Configuration
 public class JedisConfig {
 
-    /** Maximum valid port number for TCP/IP. */
-    private static final int MAX_PORT = 65535;
+  /** Maximum valid port number for TCP/IP. */
+  private static final int MAX_PORT = 65535;
 
-    /** Redis server configuration properties. */
-    @Value("${VALKEY_HOST:localhost}") // Default to localhost if not set
-    private String redisHost;
+  /** Redis server configuration properties. */
+  @Value("${VALKEY_HOST:localhost}") // Default to localhost if not set
+  private String redisHost;
 
-    /** port on valkey instance. */
-    @Value("${VALKEY_PORT:6379}") // Default to 6379 if not set
-    private int redisPort;
+  /** port on valkey instance. */
+  @Value("${VALKEY_PORT:6379}") // Default to 6379 if not set
+  private int redisPort;
 
-    /** Password for authenticating with valkey. */
-    @Value("${VALKEY_PASSWORD:}") // Empty by default if not set
-    private String redisPassword;
+  /** Password for authenticating with valkey. */
+  @Value("${VALKEY_PASSWORD:}") // Empty by default if not set
+  private String redisPassword;
 
-    /**
-     * Creates and configures a Jedis client.
-     *
-     * @return Configured Jedis client instance
-     */
-    @Bean
-    public Jedis jedis() {
-        // Validate mandatory properties
-        if (redisHost == null || redisHost.isEmpty()) {
-            throw new IllegalArgumentException(
-                    "Redis host (VALKEY_HOST) is not configured");
-        }
-        if (redisPort <= 0 || redisPort > MAX_PORT) {
-            throw new IllegalArgumentException(
-                    "Redis port (VALKEY_PORT) is invalid");
-        }
-
-        Jedis jedis = new Jedis(redisHost, redisPort);
-
-        // Authenticate if a password is set
-        if (!redisPassword.isEmpty()) {
-            jedis.auth(redisPassword);
-        }
-
-        // Verify the connection to the Redis server
-        try {
-            jedis.ping();
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to connect to Redis server at "
-                    + redisHost + ":" + redisPort, e);
-        }
-
-        return jedis;
+  /**
+   * Creates and configures a Jedis client.
+   *
+   * @return Configured Jedis client instance
+   */
+  @Bean
+  public Jedis jedis() {
+    // Validate mandatory properties
+    if (redisHost == null || redisHost.isEmpty()) {
+      throw new IllegalArgumentException(
+          "Redis host (VALKEY_HOST) is not configured");
     }
+    if (redisPort <= 0 || redisPort > MAX_PORT) {
+      throw new IllegalArgumentException(
+          "Redis port (VALKEY_PORT) is invalid");
+    }
+
+    Jedis jedis = new Jedis(redisHost, redisPort);
+
+    // Authenticate if a password is set
+    if (!redisPassword.isEmpty()) {
+      jedis.auth(redisPassword);
+    }
+
+    // Verify the connection to the Redis server
+    try {
+      jedis.ping();
+    } catch (Exception e) {
+      throw new RuntimeException("Failed to connect to Redis server at "
+          + redisHost + ":" + redisPort, e);
+    }
+
+    return jedis;
+  }
 }

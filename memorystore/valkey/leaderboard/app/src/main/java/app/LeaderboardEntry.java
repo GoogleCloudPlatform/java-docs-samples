@@ -15,6 +15,7 @@
 */
 
 /** Data class representing a single entry in the leaderboard. */
+
 package app;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -22,77 +23,77 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public final class LeaderboardEntry {
 
-    /** Username for this leaderboard entry. */
-    private final String username;
+  /** Username for this leaderboard entry. */
+  private final String username;
 
-    /** Score achieved by this user. */
-    private final Double score;
+  /** Score achieved by this user. */
+  private final Double score;
 
-    /** Position in the leaderboard ranking. */
-    private Long position;
+  /** Position in the leaderboard ranking. */
+  private Long position;
 
-    /**
-     * Creates a new leaderboard entry with position.
-     *
-     * @param usernameParam Username for the entry
-     * @param scoreParam    Score achieved
-     * @param positionParam Position in ranking
-     */
-    public LeaderboardEntry(final String usernameParam, final Double scoreParam,
-            final Long positionParam) {
-        this.username = usernameParam;
-        this.score = scoreParam;
-        this.position = positionParam;
-    }
+  /**
+   * Creates a new leaderboard entry with position.
+   *
+   * @param usernameParam Username for the entry
+   * @param scoreParam  Score achieved
+   * @param positionParam Position in ranking
+   */
+  public LeaderboardEntry(final String usernameParam, final Double scoreParam,
+      final Long positionParam) {
+    this.username = usernameParam;
+    this.score = scoreParam;
+    this.position = positionParam;
+  }
 
-    /**
-     * Creates a new leaderboard entry from JSON.
-     *
-     * @param usernameParam Username for the entry
-     * @param scoreParam    Score achieved
-     */
-    @JsonCreator
-    public LeaderboardEntry(
-            @JsonProperty("username") final String usernameParam,
-            @JsonProperty("score") final Double scoreParam) {
-        this.username = usernameParam;
-        this.score = scoreParam;
-        this.position = -1L;
-    }
+  /**
+   * Creates a new leaderboard entry from JSON.
+   *
+   * @param usernameParam Username for the entry
+   * @param scoreParam  Score achieved
+   */
+  @JsonCreator
+  public LeaderboardEntry(
+      @JsonProperty("username") final String usernameParam,
+      @JsonProperty("score") final Double scoreParam) {
+    this.username = usernameParam;
+    this.score = scoreParam;
+    this.position = -1L;
+  }
 
-    /**
-     * Gets the username.
-     *
-     * @return The username
-     */
-    public String getUsername() {
-        return username;
-    }
+  /**
+   * Gets the username.
+   *
+   * @return The username
+   */
+  public String getUsername() {
+    return username;
+  }
 
-    /**
-     * Gets the score.
-     *
-     * @return The score
-     */
-    public Double getScore() {
-        return score;
-    }
+  /**
+   * Gets the score.
+   *
+   * @return The score
+   */
+  public Double getScore() {
+    return score;
+  }
 
-    /**
-     * Gets the position.
-     *
-     * @return The position
-     */
-    public Long getPosition() {
-        return position;
-    }
+  /**
+   * Gets the position.
+   *
+   * @return The position
+   */
+  public Long getPosition() {
+    return position;
+  }
 
-    /**
-     * Sets the position.
-     *
-     * @param positionParam The new position
-     */
-    public void setPosition(final Long positionParam) {
-        this.position = positionParam;
-    }
+  /**
+   * Sets the position.
+   *
+   * @param positionParam The new position
+   */
+  public void setPosition(final Long positionParam) {
+    this.position = positionParam;
+  }
 }

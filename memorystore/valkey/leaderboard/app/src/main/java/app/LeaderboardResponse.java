@@ -16,60 +16,60 @@
 
 package app;
 
+import java.util.List;
 import org.json.JSONObject;
 
-import java.util.List;
 
 /**
  * Response object containing leaderboard entries and cache status.
  */
 public final class LeaderboardResponse {
 
-    /** List of entries in the leaderboard. */
-    private final List<LeaderboardEntry> entries;
+  /** List of entries in the leaderboard. */
+  private final List<LeaderboardEntry> entries;
 
-    /** Indicates if the response was served from cache. */
-    private final int fromCache;
+  /** Indicates if the response was served from cache. */
+  private final int fromCache;
 
-    /**
-     * Constructs a new leaderboard response.
-     *
-     * @param newEntries   List of leaderboard entries
-     * @param newFromCache Cache status indicator
-     */
-    public LeaderboardResponse(
-            final List<LeaderboardEntry> newEntries, final int newFromCache) {
-        this.entries = newEntries;
-        this.fromCache = newFromCache;
-    }
+  /**
+   * Constructs a new leaderboard response.
+   *
+   * @param newEntries   List of leaderboard entries
+   * @param newFromCache Cache status indicator
+   */
+  public LeaderboardResponse(
+      final List<LeaderboardEntry> newEntries, final int newFromCache) {
+    this.entries = newEntries;
+    this.fromCache = newFromCache;
+  }
 
-    /**
-     * Gets the leaderboard entries.
-     *
-     * @return List of leaderboard entries
-     */
-    public List<LeaderboardEntry> getEntries() {
-        return entries;
-    }
+  /**
+   * Gets the leaderboard entries.
+   *
+   * @return List of leaderboard entries
+   */
+  public List<LeaderboardEntry> getEntries() {
+    return entries;
+  }
 
-    /**
-     * Gets the cache status.
-     *
-     * @return Cache status indicator
-     */
-    public int getFromCache() {
-        return fromCache;
-    }
+  /**
+   * Gets the cache status.
+   *
+   * @return Cache status indicator
+   */
+  public int getFromCache() {
+    return fromCache;
+  }
 
-    /**
-     * Converts the response to JSON format.
-     *
-     * @return JSONObject representation
-     */
-    public JSONObject toJson() {
-        JSONObject json = new JSONObject();
-        json.put("entries", entries);
-        json.put("fromCache", fromCache);
-        return json;
-    }
+  /**
+   * Converts the response to JSON format.
+   *
+   * @return JSONObject representation
+   */
+  public JSONObject toJson() {
+    JSONObject json = new JSONObject();
+    json.put("entries", entries);
+    json.put("fromCache", fromCache);
+    return json;
+  }
 }
