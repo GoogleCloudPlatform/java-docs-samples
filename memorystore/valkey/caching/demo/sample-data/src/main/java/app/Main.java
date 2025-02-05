@@ -24,14 +24,32 @@ import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-public class Main {
+public final class Main {
 
+  private Main() {
+    throw new UnsupportedOperationException(
+        "This is a utility class and cannot be instantiated");
+  }
+
+  /** Maximum number of entries to generate. */
   private static final int MAX_GENERATED_ENTRIES = 15000;
-
+  /** Faker instance for generating random data. */
   private static final Faker FAKER = new Faker();
+  /** Random number generator for generating random data. */
   private static final Random RANDOM = new Random();
+  /** Sleep time in milliseconds before retrying to connect. */
+  private static final int SLEEP_TIME = 5000;
+  /** Bound on price. */
+  private static final int PRICE_BOUND = 10000;
+  /** Scaling factor for price. */
+  private static final int PRICE_SCALE = 100;
 
-  public static void main(String[] args) {
+  /**
+   * Main method to start sample-data application.
+   *
+   * @param args Command-line arguments
+   */
+  public static void main(final String[] args) {
     // Connect to PostgreSQL
     System.out.println("Connecting to PostgreSQL...");
     JdbcTemplate jdbcTemplate = configureJdbcTemplate();
@@ -41,10 +59,12 @@ public class Main {
       System.out.println("Populating items table with sample data...");
       populateItems(jdbcTemplate);
     } catch (CannotGetJdbcConnectionException e) {
-      System.out.println("Failed to connect to the database. Retrying in 5 seconds...");
+      System.out
+          .println("Failed to connect to the"
+              + " database. Retrying in 5 seconds...");
       // Sleep for 5 seconds and retry
       try {
-        Thread.sleep(5000);
+        Thread.sleep(SLEEP_TIME);
       } catch (InterruptedException ex) {
         Thread.currentThread().interrupt();
       }
@@ -52,17 +72,19 @@ public class Main {
     }
   }
 
-  private static void populateItems(JdbcTemplate jdbcTemplate) {
-    String sql = "INSERT INTO items (name, description, price) VALUES (?, ?, ?)";
+  private static void populateItems(final JdbcTemplate jdbcTemplate) {
+    String sql = "INSERT INTO items"
+        + " (name, description, price) VALUES (?, ?, ?)";
 
     // Prepare batch arguments
     List<Object[]> batchArgs = new ArrayList<>();
     for (int i = 0; i < MAX_GENERATED_ENTRIES; i++) {
       String name = generateProductName();
       String description = generateDescription();
-      double price = RANDOM.nextInt(10000) / 100.0;
+      double price = RANDOM.nextInt(PRICE_BOUND) / PRICE_SCALE;
 
-      batchArgs.add(new Object[] {name, description, price});
+      batchArgs.add(new Object[] {
+          name, description, price });
     }
 
     // Execute batch update
@@ -78,10 +100,15 @@ public class Main {
   }
 
   private static JdbcTemplate configureJdbcTemplate() {
-    String jdbcUrl =
-        System.getenv().getOrDefault("DB_URL", "jdbc:postgresql://localhost:5432/items");
-    String jdbcUsername = System.getenv().getOrDefault("DB_USERNAME", "root");
-    String jdbcPassword = System.getenv().getOrDefault("DB_PASSWORD", "password");
+    String jdbcUrl = System
+        .getenv()
+        .getOrDefault("DB_URL", "jdbc:postgresql://localhost:5432/items");
+    String jdbcUsername = System
+        .getenv()
+        .getOrDefault("DB_USERNAME", "root");
+    String jdbcPassword = System
+        .getenv()
+        .getOrDefault("DB_PASSWORD", "password");
 
     JdbcTemplate jdbcTemplate = new JdbcTemplate();
     jdbcTemplate.setDataSource(
@@ -92,4 +119,5 @@ public class Main {
             .build());
     return jdbcTemplate;
   }
+
 }

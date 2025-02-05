@@ -1,9 +1,31 @@
+/*
+ * Copyright 2025 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package app;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.BDDMockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,7 +33,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import redis.clients.jedis.Jedis;
 
@@ -45,16 +67,17 @@ class DataControllerTest {
       // Arrange: Item exists in cache
       long itemId = 1;
       String itemIdStr = Long.toString(itemId);
-      String cachedData =
-        "{\"id\":1,\"name\":\"Cached Item\",\"description\":\"Cached description\",\"price\":10.5}";
-      Item cachedItem = Item.fromJSONString(cachedData);
+      String cachedData = "{\"id\":1,\"name\":\"Cached Item\""
+          + ",\"description\":\"Cached description\",\"price\":10.5}";
+      Item cachedItem = Item.fromJsonString(cachedData);
 
       given(jedis.get(itemIdStr)).willReturn(cachedData);
 
       // Act: Call the get() method
       Item result = dataController.get(itemId);
 
-      // Assert: Verify cache is used, database is not queried, and correct item is returned
+      // Assert: Verify cache is used, database is not queried, and correct item is
+      // returned
       verify(itemsRepository, never()).get(anyLong()); // Database should not be called
       assertEquals(cachedItem.getId(), result.getId());
       assertEquals(cachedItem.getName(), result.getName());
@@ -62,9 +85,7 @@ class DataControllerTest {
     }
 
     @Test
-    @DisplayName(
-      "Should return item from database and cache it if not in cache"
-    )
+    @DisplayName("Should return item from database and cache it if not in cache")
     void testGet_ItemNotInCache() {
       // Arrange: Item is not in cache but exists in the database
       long itemId = 2;
@@ -72,26 +93,26 @@ class DataControllerTest {
       Item dbItem = new Item(2L, "Database Item", "From DB", 15.99);
 
       given(jedis.get(itemIdStr)).willReturn(null);
-      given(itemsRepository.get(itemId)).willReturn(Optional.of(dbItem)); // Database contains the item
+      given(
+          itemsRepository
+              .get(itemId))
+          .willReturn(Optional.of(dbItem)); // Database contains the item
 
       // Act: Call the get() method
       Item result = dataController.get(itemId);
 
       // Assert: Verify database usage, cache update, and correct item return
       verify(jedis).setex(
-        itemIdStr,
-        DataController.DEFAULT_TTL,
-        dbItem.toJSONObject().toString()
-      ); // Add item to cache
+          itemIdStr,
+          DataController.DEFAULT_TTL,
+          dbItem.toJsonObject().toString()); // Add item to cache
       assertEquals(dbItem.getId(), result.getId());
       assertEquals(dbItem.getName(), result.getName());
       assertEquals(false, result.isFromCache());
     }
 
     @Test
-    @DisplayName(
-      "Should return null if item does not exist in cache or database"
-    )
+    @DisplayName("Should return null if item does not exist in cache or database")
     void testGet_ItemNotFound() {
       // Arrange: Item does not exist in cache or database
       long itemId = 3;
@@ -105,10 +126,9 @@ class DataControllerTest {
 
       // Assert: Verify no cache update and null return
       verify(jedis, never()).setex(
-        anyString(),
-        eq(DataController.DEFAULT_TTL),
-        anyString()
-      ); // Cache should not be updated
+          anyString(),
+          eq(DataController.DEFAULT_TTL),
+          anyString()); // Cache should not be updated
       assertNull(result);
     }
   }
@@ -133,16 +153,14 @@ class DataControllerTest {
 
       // Assert: Verify cache and database interactions
       Item expectedItem = new Item(
-        0L,
-        item.getName(),
-        item.getDescription(),
-        item.getPrice()
-      );
+          0L,
+          item.getName(),
+          item.getDescription(),
+          item.getPrice());
       verify(jedis).setex(
-        Long.toString(result),
-        DataController.DEFAULT_TTL,
-        expectedItem.toJSONObject().toString()
-      ); // Add item to cache with TTL
+          Long.toString(result),
+          DataController.DEFAULT_TTL,
+          expectedItem.toJsonObject().toString()); // Add item to cache with TTL
       assertEquals(0L, result); // Validate returned ID
     }
   }
@@ -231,9 +249,7 @@ class DataControllerTest {
     }
 
     @Test
-    @DisplayName(
-      "Should return false if item does not exist in cache or database"
-    )
+    @DisplayName("Should return false if item does not exist in cache or database")
     void testExists_ItemNotFound() {
       // Arrange: Item does not exist in cache or database
       long itemId = 10;

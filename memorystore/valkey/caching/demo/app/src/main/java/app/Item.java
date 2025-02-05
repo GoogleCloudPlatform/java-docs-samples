@@ -1,3 +1,19 @@
+/*
+ * Copyright 2025 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 /**
  * Data class representing an item in the application.
  */
@@ -64,7 +80,7 @@ public class Item {
     this.fromCache = fromCache;
   }
 
-  public JSONObject toJSONObject() {
+  public JSONObject toJsonObject() {
     JSONObject obj = new JSONObject();
     obj.put("id", this.id);
     obj.put("name", this.name);
@@ -75,13 +91,12 @@ public class Item {
     return obj;
   }
 
-  public static Item fromJSONString(String obj) {
+  public static Item fromJsonString(String obj) {
     JSONObject jsonObject = new JSONObject(obj);
     return new Item(
-      jsonObject.getLong("id"),
-      jsonObject.getString("name"),
-      jsonObject.getString("description"),
-      jsonObject.getDouble("price")
-    );
+        jsonObject.getLong("id"),
+        jsonObject.getString("name"),
+        jsonObject.getString("description"),
+        jsonObject.getDouble("price"));
   }
 }

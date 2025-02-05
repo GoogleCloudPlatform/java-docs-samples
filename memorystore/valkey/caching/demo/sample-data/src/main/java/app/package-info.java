@@ -14,20 +14,5 @@
  * limitations under the License.
  */
 
-/**
- * Main class to start the Spring Boot application.
- */
-
+/** Contains classes for the caching application. */
 package app;
-
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-@SpringBootApplication
-public class Main {
-
-  public static void main(String[] args) {
-    SpringApplication.run(Main.class, args);
-  }
-}
-   
