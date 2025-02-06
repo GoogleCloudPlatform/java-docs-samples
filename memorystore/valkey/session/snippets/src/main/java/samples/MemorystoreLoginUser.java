@@ -14,6 +14,8 @@
 * limitations under the License.
 */
 
+package samples;
+
 import java.util.UUID;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
@@ -49,11 +51,11 @@ public final class MemorystoreLoginUser {
       // Generate a session token
       String sessionToken = UUID.randomUUID().toString();
 
-      // Store the session token in Redis with an expiration time
+      // Store the session token in Valkey with an expiration time
       jedis.setex(sessionToken, SESSION_TIMEOUT, USER_ID);
       System.out.printf("User %s logged in with session: %s%n", USER_ID, sessionToken);
     } catch (Exception e) {
-      System.err.printf("Error connecting to Redis: %s%n", e.getMessage());
+      System.err.printf("Error connecting to Valkey: %s%n", e.getMessage());
     }
   }
 }
