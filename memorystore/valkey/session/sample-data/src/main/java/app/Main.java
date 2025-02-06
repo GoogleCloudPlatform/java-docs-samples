@@ -17,121 +17,99 @@
 package app;
 
 import com.github.javafaker.Faker;
-
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
 public class Main {
 
-    /** Maximum number of generated entries. */
-    private static final int MAX_GENERATED_ENTRIES = 15000;
-    /** Faker instance for generating random data. */
-    private static final Faker FAKER = new Faker();
-    /** Random instance for generating random data. */
-    private static final Random RANDOM = new Random();
-    /** An hour in ms. */
-    private static final long ONE_HOUR = 3600000;
-    /** Maximum username length. */
-    private static final int MAX_USERNAME_LENGTH = 20;
-    /** Sleep between retrying connections. */
-    private static final int RETRY_SLEEP = 5000;
+  /** Maximum number of generated entries. */
+  private static final int MAX_GENERATED_ENTRIES = 15000;
+  /** Faker instance for generating random data. */
+  private static final Faker FAKER = new Faker();
+  /** Random instance for generating random data. */
+  private static final Random RANDOM = new Random();
+  /** An hour in ms. */
+  private static final long ONE_HOUR = 3600000;
+  /** Maximum username length. */
+  private static final int MAX_USERNAME_LENGTH = 20;
+  /** Sleep between retrying connections. */
+  private static final int RETRY_SLEEP = 5000;
 
-    /**
-     * Main method to populate the leaderboard with test data.
-     * @param args
-     */
-    public static void main(final String[] args) {
-        // Connect to PostgreSQL
-        System.out.println("Connecting to PostgreSQL...");
-        JdbcTemplate jdbcTemplate = configureJdbcTemplate();
+  /**
+   * Main method to populate the leaderboard with test data.
+   *
+   * @param args Command line arguments
+   *  
+   */
+  public static void main(final String[] args) {
+    // Connect to PostgreSQL
+    System.out.println("Connecting to PostgreSQL...");
+    JdbcTemplate jdbcTemplate = configureJdbcTemplate();
 
-        // Populate leaderboard with test data
-        try {
-            System.out.println("Populating accounts...");
-            populateAccounts(jdbcTemplate);
-            System.out.println("Populating sessions...");
-            populateSessions(jdbcTemplate);
-        } catch (CannotGetJdbcConnectionException e) {
-            System.out.println("Failed to connect to the"
-            + " database. Retrying in 5 seconds...");
-            // Sleep for 5 seconds and retry
-            try {
-                Thread.sleep(RETRY_SLEEP);
-            } catch (InterruptedException ex) {
-                Thread.currentThread().interrupt();
-            }
-            main(args);
-        }
+    // Populate leaderboard with test data
+    try {
+      System.out.println("Populating accounts...");
+      populateAccounts(jdbcTemplate);
+    } catch (CannotGetJdbcConnectionException e) {
+      System.out.println("Failed to connect to the"
+          + " database. Retrying in 5 seconds...");
+      // Sleep for 5 seconds and retry
+      try {
+        Thread.sleep(RETRY_SLEEP);
+      } catch (InterruptedException ex) {
+        Thread.currentThread().interrupt();
+      }
+      main(args);
     }
+  }
 
-    private static void populateAccounts(final JdbcTemplate jdbcTemplate) {
-        String sql = "INSERT INTO account"
+  private static void populateAccounts(final JdbcTemplate jdbcTemplate) {
+    String sql = "INSERT INTO account"
         + " (email, username, password) VALUES (?, ?, ?)";
 
-        // Prepare batch arguments
-        List<Object[]> batchArgs = new ArrayList<>();
-        for (int i = 0; i < MAX_GENERATED_ENTRIES; i++) {
-            String email = FAKER.internet().emailAddress();
-            String username = FAKER.name().username();
-            username = username.length() > MAX_USERNAME_LENGTH
-                ? username.substring(0, MAX_USERNAME_LENGTH) : username;
-            String password = FAKER.internet().password();
+    // Prepare batch arguments
+    List<Object[]> batchArgs = new ArrayList<>();
+    for (int i = 0; i < MAX_GENERATED_ENTRIES; i++) {
+      String email = FAKER.internet().emailAddress();
+      String username = FAKER.name().username();
+      username = username.length() > MAX_USERNAME_LENGTH
+        ? username.substring(0, MAX_USERNAME_LENGTH) : username;
+      String password = FAKER.internet().password();
 
-            batchArgs.add(new Object[] {email, username, password});
-        }
-
-        // Execute batch update
-        jdbcTemplate.batchUpdate(sql, batchArgs);
+      batchArgs.add(new Object[] {email, username, password});
     }
 
-    private static void populateSessions(final JdbcTemplate jdbcTemplate) {
-        String sql = "INSERT INTO session"
-        + " (token, account_id, expires_at) VALUES (?, ?, ?)";
+    // Execute batch update
+    jdbcTemplate.batchUpdate(sql, batchArgs);
+  }
 
-        // Prepare batch arguments
-        List<Object[]> batchArgs = new ArrayList<>();
-        for (int i = 0; i < MAX_GENERATED_ENTRIES; i++) {
-            String token = FAKER.internet().uuid();
-            int accountId = RANDOM.nextInt(MAX_GENERATED_ENTRIES) + 1;
-            long expiresAt = System.currentTimeMillis() + ONE_HOUR;
-            Timestamp expiresAtTimestamp = new Timestamp(expiresAt);
+  private static JdbcTemplate configureJdbcTemplate() {
+    String jdbcUrl = System
+        .getenv()
+        .getOrDefault(
+          "DB_URL", "jdbc:postgresql://localhost:5432/postgres");
+    String jdbcUsername = System
+        .getenv()
+        .getOrDefault("DB_USERNAME", "root");
+    String jdbcPassword = System
+        .getenv()
+        .getOrDefault("DB_PASSWORD", "password");
 
-            batchArgs.add(new Object[] {token, accountId, expiresAtTimestamp});
-        }
+    JdbcTemplate jdbcTemplate = new JdbcTemplate();
+    jdbcTemplate.setDataSource(
+        DataSourceBuilder.create()
+            .url(jdbcUrl)
+            .username(jdbcUsername)
+            .password(jdbcPassword)
+            .build());
+    return jdbcTemplate;
+  }
 
-        // Execute batch update
-        jdbcTemplate.batchUpdate(sql, batchArgs);
-    }
-
-    private static JdbcTemplate configureJdbcTemplate() {
-        String jdbcUrl = System
-                .getenv()
-                .getOrDefault(
-                    "DB_URL", "jdbc:postgresql://localhost:5432/postgres");
-        String jdbcUsername = System
-            .getenv()
-            .getOrDefault("DB_USERNAME", "root");
-        String jdbcPassword = System
-            .getenv()
-            .getOrDefault("DB_PASSWORD", "password");
-
-        JdbcTemplate jdbcTemplate = new JdbcTemplate();
-        jdbcTemplate.setDataSource(
-                DataSourceBuilder.create()
-                        .url(jdbcUrl)
-                        .username(jdbcUsername)
-                        .password(jdbcPassword)
-                        .build());
-        return jdbcTemplate;
-    }
-
-      /** Dummy method to trick Checkstyle. */
-    public void avoidCheckstyleError() {
-    }
+  /** Dummy method to trick Checkstyle. */
+  public void avoidCheckstyleError() {
+  }
 }
