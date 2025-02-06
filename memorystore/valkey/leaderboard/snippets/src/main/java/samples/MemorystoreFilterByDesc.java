@@ -20,7 +20,7 @@ import java.util.Set;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
-public final class MemorystoreFilterByDesc {
+public final class MemorystoreSortByScoreDesc {
 
   /** Replace the Memorystore instance id. */
   private static final String INSTANCE_ID = "INSTANCE_ID";
@@ -38,7 +38,7 @@ public final class MemorystoreFilterByDesc {
       new SimpleEntry<>("User3", 95.0),
       new SimpleEntry<>("User4", 70.0));
 
-  private MemorystoreFilterByDesc() {
+  private MemorystoreSortByScoreDesc() {
     // No-op; won't be called
   }
 
