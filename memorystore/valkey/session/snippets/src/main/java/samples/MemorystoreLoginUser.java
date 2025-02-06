@@ -44,9 +44,8 @@ public final class MemorystoreLoginUser {
      */
     public static void main(final String[] args) {
         // Connect to the Memorystore instance
-        JedisPool pool = new JedisPool(INSTANCE_ID, PORT);
-
-        try (Jedis jedis = pool.getResource()) {
+        try (JedisPool pool = new JedisPool(INSTANCE_ID, PORT);
+                Jedis jedis = pool.getResource()) {
 
             // Generate a session token
             String sessionToken = UUID.randomUUID().toString();

@@ -39,10 +39,8 @@ public final class MemorystoreClearBasket {
      */
     public static void main(final String[] args) {
         // Connect to the Memorystore instance
-        JedisPool pool = new JedisPool(INSTANCE_ID, PORT);
-
-        try (Jedis jedis = pool.getResource()) {
-            String basketKey = "basket:" + USER_ID;
+        try (JedisPool pool = new JedisPool(INSTANCE_ID, PORT);
+                Jedis jedis = pool.getResource()) {
 
             // Delete the basket (remove all items)
             long deleted = jedis.del(basketKey);

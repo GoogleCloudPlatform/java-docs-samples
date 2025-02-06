@@ -45,9 +45,9 @@ public final class MemorystoreRemoveItemFromBasket {
      */
     public static void main(final String[] args) {
         // Connect to the Memorystore instance
-        JedisPool pool = new JedisPool(INSTANCE_ID, PORT);
+        try (JedisPool pool = new JedisPool(INSTANCE_ID, PORT);
+                Jedis jedis = pool.getResource()) {
 
-        try (Jedis jedis = pool.getResource()) {
             String basketKey = "basket:" + USER_ID;
 
             // Remove the item from the user's basket
@@ -59,7 +59,14 @@ public final class MemorystoreRemoveItemFromBasket {
             // Remove the item if the quanitity is less than or equal to 0
             if (newQty <= 0) {
                 // Remove the item from the basket
-                jedis.hdel(basketKey, ITEM_ID);
+                Long totalRemoved = jedis.hdel(basketKey, ITEM_ID);
+
+                // When no item is found to remove,
+                // that means the item is not in the basket
+                if (totalRemoved == 0) {
+                    System.out.printf("Item %s not found in basket: %s%n", ITEM_ID, USER_ID);
+                    return;
+                }
 
                 // print the item removed
                 System.out.printf("Removed item from basket: %s%n", ITEM_ID);

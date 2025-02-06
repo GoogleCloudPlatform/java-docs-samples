@@ -42,14 +42,16 @@ public final class MemorystoreLogoutUser {
         try (JedisPool pool = new JedisPool(INSTANCE_ID, PORT);
                 Jedis jedis = pool.getResource()) {
 
-            // Check if the session exists
-            if (!jedis.exists(TOKEN)) {
+            // Remove the session from Redis
+            Long totalRemoved = jedis.del(TOKEN);
+
+            // When no session is found to remove,
+            // that means the user is not logged in
+            if (totalRemoved == 0) {
                 System.out.printf("User %s is not logged in.%n", TOKEN);
                 return;
             }
 
-            // Remove the session from Redis
-            jedis.del(TOKEN);
             System.out.printf("User %s has been logged out.%n", TOKEN);
         } catch (Exception e) {
             System.err.printf("Error connecting to Redis: %s%n", e.getMessage());
