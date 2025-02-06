@@ -7,7 +7,7 @@ Note: Before submitting a pull request, please open an issue for discussion if y
 ## Checklist
 
 - [ ] I have followed [Sample Format Guide](https://github.com/GoogleCloudPlatform/java-docs-samples/blob/main/SAMPLE_FORMAT.md)
-- [ ] `pom.xml` parent set to latest `shared-configuration`
+- [ ] `pom.xml` parent set to latest `shared-configuration` **required**
 - [ ] Appropriate changes to README are included in PR
 - [ ] These samples need a new **API enabled** in testing projects to pass (let us know which ones)
 - [ ] These samples need a new/updated **env vars** in testing projects set to pass (let us know which ones)
