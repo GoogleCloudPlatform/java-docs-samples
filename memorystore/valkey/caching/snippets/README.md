@@ -39,5 +39,5 @@ mvn compile
 ## Run the sample code
 
 ```bash
-mvn exec:java -Dexec.mainClass=MemorystoreTTLItem #Replace the main class as needed
+mvn exec:java -Dexec.mainClass=MemorystoreTtlItem #Replace the main class as needed
 ```
