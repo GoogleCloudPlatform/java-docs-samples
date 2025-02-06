@@ -14,6 +14,8 @@
 * limitations under the License.
 */
 
+package samples;
+
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
@@ -62,7 +64,7 @@ public final class MemorystoreAddItemToBasket {
         System.out.printf("Failed to add item: %s%n", ITEM_ID);
       }
     } catch (Exception e) {
-      System.err.printf("Error connecting to Redis: %s%n", e.getMessage());
+      System.err.printf("Error connecting to Valkey: %s%n", e.getMessage());
     }
   }
 }

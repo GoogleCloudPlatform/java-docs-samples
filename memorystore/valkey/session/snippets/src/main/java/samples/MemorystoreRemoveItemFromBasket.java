@@ -14,6 +14,8 @@
 * limitations under the License.
 */
 
+package samples;
+
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
@@ -72,7 +74,7 @@ public final class MemorystoreRemoveItemFromBasket {
         System.out.printf("Removed item from basket: %s%n", ITEM_ID);
       }
     } catch (Exception e) {
-      System.err.printf("Error connecting to Redis: %s%n", e.getMessage());
+      System.err.printf("Error connecting to Valkey: %s%n", e.getMessage());
     }
   }
 }

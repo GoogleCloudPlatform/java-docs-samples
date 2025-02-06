@@ -14,6 +14,8 @@
 * limitations under the License.
 */
 
+package samples;
+
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
@@ -54,7 +56,7 @@ public final class MemorystoreLogoutUser {
 
       System.out.printf("User %s has been logged out.%n", TOKEN);
     } catch (Exception e) {
-      System.err.printf("Error connecting to Redis: %s%n", e.getMessage());
+      System.err.printf("Error connecting to Valkey: %s%n", e.getMessage());
     }
   }
 }
