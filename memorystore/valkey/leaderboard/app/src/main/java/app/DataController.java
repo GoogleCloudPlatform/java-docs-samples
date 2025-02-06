@@ -129,6 +129,12 @@ public class DataController {
     return newEntries;
   }
 
+  /**
+   * Initializes the leaderboard cache if it is empty.
+   *
+   * @return {@code true} if the cache was initialized, {@code false} if it was
+   * already populated.
+   */
   private boolean initializeCache() {
     if (this.jedis.zcard(Global.LEADERBOARD_ENTRIES_KEY) > 0) {
       return false;
