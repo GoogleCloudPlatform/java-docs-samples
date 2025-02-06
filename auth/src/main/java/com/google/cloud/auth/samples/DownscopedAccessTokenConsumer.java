@@ -31,7 +31,7 @@ import java.io.IOException;
  * consumer side of the downscoping process. It retrieves a blob's content using credentials that
  * have limited access based on a pre-defined Credential Access Boundary.
  */
-public class ClientSideCredentialAccessBoundaryFactoryConsumer {
+public class DownscopedAccessTokenConsumer {
 
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
@@ -69,7 +69,7 @@ public class ClientSideCredentialAccessBoundaryFactoryConsumer {
             // in the resource bucket. objectName.substring(0, 3) is the prefix here. This field is
             // not required if access to all bucket resources are allowed. If access to limited
             // resources in the bucket is needed, this mechanism can be used.
-            return ClientSideCredentialAccessBoundaryFactoryExample
+            return DownscopedAccessTokenGenerator
                 .getTokenFromBroker(bucketName, objectName);
           }
         };

@@ -29,7 +29,7 @@ import java.security.GeneralSecurityException;
 /**
  * Demonstrates how to use ClientSideCredentialAccessBoundaryFactory to generate downscoped tokens.
  */
-public class ClientSideCredentialAccessBoundaryFactoryExample {
+public class DownscopedAccessTokenGenerator {
 
   /**
    * Simulates a token broker generating downscoped tokens for specific objects in a  bucket.

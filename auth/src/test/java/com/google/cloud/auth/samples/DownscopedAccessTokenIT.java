@@ -16,7 +16,7 @@
 
 package com.google.cloud.auth.samples;
 
-import static com.google.cloud.auth.samples.ClientSideCredentialAccessBoundaryFactoryConsumer.retrieveBlobWithDownscopedToken;
+import static com.google.cloud.auth.samples.DownscopedAccessTokenConsumer.retrieveBlobWithDownscopedToken;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -38,7 +38,7 @@ import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 // CHECKSTYLE OFF: AbbreviationAsWordInName
-public class ClientSideCredentialAccessBoundaryFactoryExampleIT {
+public class DownscopedAccessTokenIT {
   // CHECKSTYLE ON: AbbreviationAsWordInName
   private static final String CONTENT = "CONTENT";
   private Bucket bucket;
@@ -73,7 +73,7 @@ public class ClientSideCredentialAccessBoundaryFactoryExampleIT {
   }
 
   @Test
-  public void testClientSideCredentialAccessBoundaryFactory() throws IOException {
+  public void testDownscopedAccessToken() throws IOException {
     String content = retrieveBlobWithDownscopedToken(bucket.getName(), blob.getName());
     assertEquals(CONTENT, content);
   }
