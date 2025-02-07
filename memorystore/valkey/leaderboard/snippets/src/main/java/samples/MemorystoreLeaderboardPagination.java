@@ -16,7 +16,6 @@
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.List;
-import java.util.Set;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
@@ -95,7 +94,7 @@ public final class MemorystoreLeaderboardPagination {
     int end = start + PAGE_SIZE - 1;
 
     // Use zrevrange to find users between the start and end index
-    Set<String> paginatedUsers = jedis.zrevrange(LEADERBOARD_KEY, start, end);
+    List<String> paginatedUsers = jedis.zrevrange(LEADERBOARD_KEY, start, end);
 
     // If no users are found, print a message and return
     if (paginatedUsers.isEmpty()) {
