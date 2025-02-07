@@ -59,7 +59,9 @@ public final class MemorystoreAddScore {
       }
 
       // Verify that scores have been added
-      for (String userKey : USER_SCORES.keySet()) {
+      for (SimpleEntry<String, Double> entry : USER_SCORES) {
+        String userKey = entry.getKey();
+
         // Find the user score based on the user key
         Double userScore = jedis.zscore(LEADERBOARD_KEY, userKey);
 

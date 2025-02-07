@@ -16,7 +16,6 @@
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.List;
-import java.util.Set;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
@@ -61,10 +60,10 @@ public final class MemorystoreSortByScoreAsc {
       }
 
       // Retrieve and print all users sorted by score in ascending order
-      Set<String> sortedUsers = jedis.zrange(LEADERBOARD_KEY, 0, -1);
+      List<String> sortedUsers = jedis.zrange(LEADERBOARD_KEY, 0, -1);
 
       // Print the leaderboard in ascending order
-      System.out.printf("Leaderboad (Ascending)");
+      System.out.println("\nLeaderboad (Ascending)");
 
       // For each user, print the score
       for (String user : sortedUsers) {

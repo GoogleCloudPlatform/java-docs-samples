@@ -16,7 +16,6 @@
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.List;
-import java.util.Set;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
@@ -55,13 +54,16 @@ public final class MemorystoreSortByScoreDesc {
     try (Jedis jedis = pool.getResource()) {
       // Add the scores to the leaderboard
       for (SimpleEntry<String, Double> entry : USER_SCORES) {
-        jedis.zadd(LEADERBOARD_KEY, entry.getKey(), user.value());
-        System.out.printf("Added/Updated %s with score %s%n", user, score);
+        String user = entry.getKey();
+        double score = entry.getValue();
+
+        jedis.zadd(LEADERBOARD_KEY, score, user);
+          System.out.printf("Added/Updated %s with score %s%n", user, score);
       }
 
       // Retrieve and print all users sorted by score in descending order
       System.out.println("\nLeaderboard (Sorted by Descending Scores):");
-      Set<String> sortedUsers = jedis.zrevrange(LEADERBOARD_KEY, 0, -1);
+      List<String> sortedUsers = jedis.zrevrange(LEADERBOARD_KEY, 0, -1);
 
       // Print the leaderboard in descending order
       for (String user : sortedUsers) {
@@ -71,7 +73,7 @@ public final class MemorystoreSortByScoreDesc {
 
       // Get the highest-ranked user
       System.out.println("\nTop Ranked User:");
-      Set<String> topUser = jedis.zrevrange(LEADERBOARD_KEY, 0, 0);
+      List<String> topUser = jedis.zrevrange(LEADERBOARD_KEY, 0, 0);
       if (!topUser.isEmpty()) {
         String user = topUser.iterator().next();
         System.out.printf(
