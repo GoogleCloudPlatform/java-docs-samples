@@ -70,12 +70,13 @@ public class AuthExampleIT {
     Key apiKey = null;
     try {
       apiKey = AuthTestUtils.createTestApiKey(projectId, keyDisplayName, service, method);
-
+      System.out.println("created key " + apiKey.getKeyString());
       String output = ApiKeyAuthExample.authenticateUsingApiKey(apiKey.getKeyString());
 
       assertTrue(output.contains("magnitude:"));
     } finally {
       if (apiKey != null) {
+        System.out.println("deleting key " + apiKey.getKeyString());
         AuthTestUtils.deleteTestApiKey(apiKey.getName());
       }
     }
