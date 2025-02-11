@@ -65,7 +65,7 @@ public class ConnectorIamAuthnConnectionPoolFactory extends ConnectionPoolFactor
     // to refresh the tokens when they are needed, rather than on a regular interval
     // this is recommended for serverless environments to 
     // avoid background refreshes from throttling CPU.
-    config.addDataSourceProperty("cloudSqlRefreshStrategy", "lazy")
+    config.addDataSourceProperty("cloudSqlRefreshStrategy", "lazy");
 
     // ... Specify additional connection properties here.
     // [START_EXCLUDE]
