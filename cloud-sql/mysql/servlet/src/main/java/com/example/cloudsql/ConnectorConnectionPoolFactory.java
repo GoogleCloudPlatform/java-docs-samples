@@ -73,6 +73,12 @@ public class ConnectorConnectionPoolFactory extends ConnectionPoolFactory {
     config.addDataSourceProperty("ipTypes", "PUBLIC,PRIVATE");
     // [START cloud_sql_mysql_servlet_connect_unix]
 
+    // setting the refresh strategy to LAZY
+    // to refresh the tokens when they are needed, rather than on a regular interval
+    // this is recommended for serverless environments to 
+    // avoid background refreshes from throttling CPU.
+    config.addDataSourceProperty("cloudSqlRefreshStrategy", "lazy")
+    
     // ... Specify additional connection properties here.
     // [START_EXCLUDE]
     configureConnectionPool(config);

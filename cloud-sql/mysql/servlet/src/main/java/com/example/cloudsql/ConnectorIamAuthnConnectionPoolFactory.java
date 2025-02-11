@@ -60,6 +60,12 @@ public class ConnectorIamAuthnConnectionPoolFactory extends ConnectionPoolFactor
     // The Java Connector will handle SSL so it is unneccesary to enable it at the driver level.
     config.addDataSourceProperty("sslmode", "disable");
 
+    // setting the refresh strategy to LAZY
+    // to refresh the tokens when they are needed, rather than on a regular interval
+    // this is recommended for serverless environments to 
+    // avoid background refreshes from throttling CPU.
+    config.addDataSourceProperty("cloudSqlRefreshStrategy", "lazy")
+
 
     // ... Specify additional connection properties here.
     // [START_EXCLUDE]
