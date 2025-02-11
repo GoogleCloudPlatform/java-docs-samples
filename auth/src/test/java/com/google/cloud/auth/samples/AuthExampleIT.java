@@ -25,6 +25,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -60,8 +61,8 @@ public class AuthExampleIT {
     assertTrue(output.contains("Buckets:"));
   }
 
-  // Disabling the test temporarily while ldetmer is working on it.
-  // @Test
+  @Ignore("Temporarily disabled due to failing test (Issue #10023).")
+  @Test
   public void testAuthApiKey() throws IOException, IllegalStateException {
     String projectId = ServiceOptions.getDefaultProjectId();
     String keyDisplayName = "Test API Key";
