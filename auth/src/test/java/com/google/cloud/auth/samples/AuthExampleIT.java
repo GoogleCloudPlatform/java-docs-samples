@@ -64,6 +64,7 @@ public class AuthExampleIT {
   @Ignore("Temporarily disabled due to failing test (Issue #10023).")
   @Test
   public void testAuthApiKey() throws IOException, IllegalStateException {
+    //TODO: Re-enable this test after fixing issue #10023.
     String projectId = ServiceOptions.getDefaultProjectId();
     String keyDisplayName = "Test API Key";
     String service = "language.googleapis.com";
