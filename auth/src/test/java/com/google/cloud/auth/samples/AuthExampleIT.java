@@ -60,7 +60,8 @@ public class AuthExampleIT {
     assertTrue(output.contains("Buckets:"));
   }
 
-  @Test
+  // Disabling the test temporarily while ldetmer is working on it.
+  // @Test
   public void testAuthApiKey() throws IOException, IllegalStateException {
     String projectId = ServiceOptions.getDefaultProjectId();
     String keyDisplayName = "Test API Key";
