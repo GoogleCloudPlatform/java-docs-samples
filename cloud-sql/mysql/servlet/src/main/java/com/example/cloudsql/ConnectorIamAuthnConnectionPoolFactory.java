@@ -60,8 +60,8 @@ public class ConnectorIamAuthnConnectionPoolFactory extends ConnectionPoolFactor
     // The Java Connector will handle SSL so it is unneccesary to enable it at the driver level.
     config.addDataSourceProperty("sslmode", "disable");
 
-    // Setting cloudSqlRefreshStrategy to lazy
-    // to refresh the tokens when they are needed, rather than on a scheduled interval.
+    // cloudSqlRefreshStrategy set to "lazy" is used to perform a
+    // refresh when needed, rather than on a scheduled interval.
     // This is recommended for serverless environments to
     // avoid background refreshes from throttling CPU.
     config.addDataSourceProperty("cloudSqlRefreshStrategy", "lazy");
