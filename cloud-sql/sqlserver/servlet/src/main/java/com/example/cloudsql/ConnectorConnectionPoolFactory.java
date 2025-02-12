@@ -61,9 +61,9 @@ public class ConnectorConnectionPoolFactory extends ConnectionPoolFactory {
     // at the driver level.
     config.addDataSourceProperty("encrypt", "false");
 
-    // setting the refresh strategy to LAZY
-    // to refresh the tokens when they are needed, rather than on a regular interval
-    // this is recommended for serverless environments to 
+    // Setting cloudSqlRefreshStrategy to lazy
+    // to refresh the tokens when they are needed, rather than on a scheduled interval.
+    // This is recommended for serverless environments to
     // avoid background refreshes from throttling CPU.
     config.addDataSourceProperty("cloudSqlRefreshStrategy", "lazy");
 
