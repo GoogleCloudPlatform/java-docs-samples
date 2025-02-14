@@ -70,6 +70,7 @@ public class AuthExampleIT {
     Key apiKey = null;
     try {
       apiKey = AuthTestUtils.createTestApiKey(projectId, keyDisplayName, service, method);
+      assertNotNull(apiKey)
       System.out.println("created key " + apiKey.getKeyString());
       String output = ApiKeyAuthExample.authenticateUsingApiKey(apiKey.getKeyString());
 
