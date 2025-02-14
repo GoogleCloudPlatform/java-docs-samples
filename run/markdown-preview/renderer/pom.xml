@@ -59,7 +59,7 @@
       <version>0.17.0</version>
     </dependency>
     <dependency>
-      <groupId>com.atlassian.commonmark</groupId>
+      <groupId>org.commonmark</groupId>
       <artifactId>commonmark-ext-gfm-strikethrough</artifactId>
       <version>0.17.0</version>
     </dependency>
