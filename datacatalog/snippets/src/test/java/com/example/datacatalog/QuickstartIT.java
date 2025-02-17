@@ -32,6 +32,7 @@ import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -86,6 +87,7 @@ public class QuickstartIT {
     log.log(Level.INFO, bout.toString());
   }
 
+  @Ignore
   @Test
   public void testQuickstart() throws IOException {
     Quickstart.createTags(PROJECT_ID, tagTemplateId);

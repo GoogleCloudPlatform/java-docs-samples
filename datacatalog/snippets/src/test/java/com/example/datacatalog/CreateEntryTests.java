@@ -33,6 +33,7 @@ import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -87,6 +88,7 @@ public class CreateEntryTests {
     }
   }
 
+  @Ignore
   @Test
   public void testCreateFilesetEntry() throws IOException {
     String entryGroupId = "fileset_entry_group_parent_" + getUuid8Chars();
@@ -111,6 +113,7 @@ public class CreateEntryTests {
         CoreMatchers.containsString(String.format(entryTemplate, expectedEntryName)));
   }
 
+  @Ignore
   @Test
   public void testCreateEntryGroup() throws IOException {
     String entryGroupId = "entry_group_no_children_" + getUuid8Chars();

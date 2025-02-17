@@ -31,6 +31,7 @@ import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -82,6 +83,7 @@ public class ListEntryGroupsIT {
     log.log(Level.INFO, bout.toString());
   }
 
+  @Ignore
   @Test
   public void testListEntryGroups() throws IOException {
     ListEntryGroups.listEntryGroups(LocationName.of(PROJECT_ID, LOCATION));

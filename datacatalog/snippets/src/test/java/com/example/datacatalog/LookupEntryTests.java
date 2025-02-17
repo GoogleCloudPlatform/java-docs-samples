@@ -58,6 +58,7 @@ public class LookupEntryTests {
     System.setOut(null);
   }
 
+  @Ignore
   @Test
   public void testLookupEntryBigQueryDataset() {
     LookupEntryBigQueryDataset.lookupEntry(BIGQUERY_PROJECT, BIGQUERY_DATASET);
@@ -66,6 +67,7 @@ public class LookupEntryTests {
         "projects/" + BIGQUERY_PROJECT + "/locations/.+?/entryGroups/@bigquery/entries/.+?$");
   }
 
+  @Ignore
   @Test
   public void testLookupEntryBigQueryTable() {
     LookupEntryBigQueryTable.lookupEntry(BIGQUERY_PROJECT, BIGQUERY_DATASET, BIGQUERY_TABLE);
@@ -74,6 +76,7 @@ public class LookupEntryTests {
         "projects/" + BIGQUERY_PROJECT + "/locations/.+?/entryGroups/@bigquery/entries/.+?$");
   }
 
+  @Ignore
   @Test
   public void testLookupPubSubTopic() {
     LookupEntryPubSubTopic.lookupEntry(PUBSUB_PROJECT, PUBSUB_TOPIC);

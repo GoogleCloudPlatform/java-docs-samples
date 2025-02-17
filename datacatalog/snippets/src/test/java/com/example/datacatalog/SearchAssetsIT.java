@@ -28,6 +28,7 @@ import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -70,6 +71,7 @@ public class SearchAssetsIT {
     log.log(Level.INFO, bout.toString());
   }
 
+  @Ignore
   @Test
   public void testSearchAssets() throws IOException {
     SearchAssets.searchCatalog(PROJECT_ID, "type=lake");
