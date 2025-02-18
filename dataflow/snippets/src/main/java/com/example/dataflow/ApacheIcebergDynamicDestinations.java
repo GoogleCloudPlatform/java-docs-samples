@@ -41,13 +41,12 @@ public class ApacheIcebergDynamicDestinations {
       .build();
 
   // The data to write to table, formatted as JSON strings.
-  static final List<String> TABLE_ROWS = Arrays.asList(
+  static final List<String> TABLE_ROWS = List.of(
       "{\"id\":0, \"name\":\"Alice\", \"airport\": \"ORD\" }",
       "{\"id\":1, \"name\":\"Bob\", \"airport\": \"SYD\" }",
       "{\"id\":2, \"name\":\"Charles\", \"airport\": \"ORD\" }"
   );
 
-  // [END dataflow_apache_iceberg_dynamic_destinations]
   public interface Options extends PipelineOptions {
     @Description("The URI of the Apache Iceberg warehouse location")
     String getWarehouseLocation();
@@ -60,17 +59,11 @@ public class ApacheIcebergDynamicDestinations {
     void setCatalogName(String value);
   }
 
-  public static PipelineResult.State main(String[] args) {
+  public static void main(String[] args) {
     // Parse the pipeline options passed into the application. Example:
     //   --runner=DirectRunner --warehouseLocation=$LOCATION --catalogName=$CATALOG \
     // For more information, see https://beam.apache.org/documentation/programming-guide/#configuring-pipeline-options
-    var options = PipelineOptionsFactory.fromArgs(args).withValidation().as(Options.class);
-    Pipeline pipeline = createPipeline(options);
-    return pipeline.run().waitUntilFinish();
-  }
-
-  // [START dataflow_apache_iceberg_dynamic_destinations]
-  public static Pipeline createPipeline(Options options) {
+    Options options = PipelineOptionsFactory.fromArgs(args).withValidation().as(Options.class);
     Pipeline pipeline = Pipeline.create(options);
 
     // Configure the Iceberg source I/O
@@ -93,7 +86,8 @@ public class ApacheIcebergDynamicDestinations {
         .apply(JsonToRow.withSchema(SCHEMA))
         .apply(Managed.write(Managed.ICEBERG).withConfig(config));
 
-    return pipeline;
+    // Run the pipeline.
+    pipeline.run().waitUntilFinish();
   }
 }
 // [END dataflow_apache_iceberg_dynamic_destinations]

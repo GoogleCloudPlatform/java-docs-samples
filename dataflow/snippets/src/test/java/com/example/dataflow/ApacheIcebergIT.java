@@ -158,13 +158,12 @@ public class ApacheIcebergIT {
     final Table tableSYD = createIcebergTable("flights-SYD");
 
     // Run the Dataflow pipeline.
-    PipelineResult.State state = ApacheIcebergDynamicDestinations.main(
+    ApacheIcebergDynamicDestinations.main(
         new String[] {
             "--runner=DirectRunner",
             "--warehouseLocation=" + warehouseLocation,
             "--catalogName=" + CATALOG_NAME
         });
-    assertEquals(PipelineResult.State.DONE, state);
 
     // Verify that the pipeline wrote records to the correct tables.
     assertTrue(tableContainsRecord(tableORD, "0, Alice"));
