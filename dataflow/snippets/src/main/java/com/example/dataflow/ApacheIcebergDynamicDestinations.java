@@ -59,6 +59,9 @@ public class ApacheIcebergDynamicDestinations {
     void setCatalogName(String value);
   }
 
+  // Write JSON data to Apache Iceberg, using dynamic destinations to determine the Iceberg table
+  // where Dataflow writes each record. The JSON data contains a field named "airport". The
+  // Dataflow pipeline writes to Iceberg tables with the naming pattern "flights-{airport}".
   public static void main(String[] args) {
     // Parse the pipeline options passed into the application. Example:
     //   --runner=DirectRunner --warehouseLocation=$LOCATION --catalogName=$CATALOG \
@@ -82,8 +85,12 @@ public class ApacheIcebergDynamicDestinations {
         .build();
 
     // Build the pipeline.
-    pipeline.apply(Create.of(TABLE_ROWS))
+    pipeline
+        // Read in-memory JSON data.
+        .apply(Create.of(TABLE_ROWS))
+        // Convert the JSON records to Row objects.
         .apply(JsonToRow.withSchema(SCHEMA))
+        // Write each Row to Apache Iceberg.
         .apply(Managed.write(Managed.ICEBERG).withConfig(config));
 
     // Run the pipeline.
