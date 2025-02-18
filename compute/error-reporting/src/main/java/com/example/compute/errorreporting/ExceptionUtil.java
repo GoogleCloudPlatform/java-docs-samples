@@ -23,7 +23,6 @@ import java.util.Map;
 import org.fluentd.logger.FluentLogger;
 
 // [START compute_error_report_with_fluent]
-// [START example]
 public class ExceptionUtil {
   private static FluentLogger ERRORS = FluentLogger.getLogger("myapp");
 
@@ -47,5 +46,4 @@ public class ExceptionUtil {
     ERRORS.log("errors", data);
   }
 }
-// [END example]
 // [END compute_error_report_with_fluent]

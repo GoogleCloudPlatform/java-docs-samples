@@ -37,13 +37,11 @@
 
   <dependencies>
     <!-- [START compute_fluent_dependency] -->
-    <!-- [START dependencies] -->
     <dependency>
       <groupId>org.fluentd</groupId>
       <artifactId>fluent-logger</artifactId>
       <version>0.3.4</version>
     </dependency>
-    <!-- [END dependencies] -->
     <!-- [END compute_fluent_dependency] -->
   </dependencies>
   <build>
