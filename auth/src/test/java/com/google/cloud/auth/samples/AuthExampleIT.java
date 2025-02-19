@@ -64,7 +64,8 @@ public class AuthExampleIT {
   @Test
   public void testAuthApiKey() throws IOException, IllegalStateException {
     String projectId = ServiceOptions.getDefaultProjectId();
-    String keyDisplayName = "Test API Key " + System.currentTimeMillis();;
+    java.util.Random random = new java.util.Random();
+    String keyDisplayName = "Test API Key " + random.nextInt();
     String service = "language.googleapis.com";
     String method = "google.cloud.language.v2.LanguageService.AnalyzeSentiment";
     Key apiKey = null;
