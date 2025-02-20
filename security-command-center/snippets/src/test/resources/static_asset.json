@@ -1,0 +1,31 @@
+{
+  "name": "organizations/1081635000895/assets/5259189201668787349",
+  "security_center_properties": {
+    "resource_name": "//cloudresourcemanager.googleapis.com/organizations/1081635000895",
+    "resource_type": "google.cloud.resourcemanager.Organization",
+    "resource_display_name": "cscc-client-libs-external.joonix.net"
+  },
+  "resource_properties": {
+    "creationTime": "2019-03-13T21:41:55.851Z",
+    "displayName": "cscc-client-libs-external.joonix.net",
+    "lifecycleState": "ACTIVE",
+    "name": "organizations/1081635000895",
+    "organizationId": "1081635000895",
+    "owner": "{\"directoryCustomerId\":\"C03kcf68g\"}"
+  },
+  "security_marks": {
+    "name": "organizations/1081635000895/assets/5259189201668787349/securityMarks",
+    "marks": {
+      "LEASEKEY": "1736624991011382373",
+      "other": "other_val"
+    }
+  },
+  "create_time": {
+    "seconds": 1599734291,
+    "nanos": 993000000
+  },
+  "update_time": {
+    "seconds": 1733948390,
+    "nanos": 962000000
+  }
+}
