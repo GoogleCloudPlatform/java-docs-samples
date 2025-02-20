@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<!--
+  Copyright 2025 Google LLC
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Session Management</title>
+    <script src="verify.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body
+    class="bg-gradient-to-br from-gray-50 to-gray-200 min-h-screen flex flex-col justify-center items-center font-roboto m-0 p-0"
+  >
+    <!-- Top Bar -->
+    <div
+      class="fixed top-0 left-0 w-full bg-white shadow-md p-4 flex items-center justify-between backdrop-blur-sm bg-opacity-90"
+    >
+      <div class="flex-1"></div>
+
+      <!-- User Greeting & Logout -->
+      <div class="loading-required hidden flex items-center space-x-6">
+        <h1 class="text-xl font-semibold text-gray-800">
+          Welcome back,
+          <span class="username-value text-blue-600 font-bold">loading</span>
+        </h1>
+        <button
+          id="logout-button"
+          class="bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded-lg transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-sm"
+          onclick="logout()"
+        >
+          Logout
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex flex-col justify-center items-center mt-24 w-full px-4">
+      <!-- Loading Indicator -->
+      <div
+        class="loading-required-inverse flex flex-col items-center space-y-4"
+      >
+        <div
+          class="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"
+        ></div>
+        <p class="text-gray-600 font-medium">Loading products...</p>
+      </div>
+
+      <!-- Shopping Interface -->
+      <div
+        id="shopping-interface"
+        class="hidden w-full max-w-7xl px-4 mt-8 mb-24"
+      >
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div
+            class="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+            id="product-grid"
+          >
+            <!-- Product cards will be inserted here -->
+            <template id="product-template">
+              <div
+                class="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-shadow duration-300"
+              >
+                <div class="h-40 bg-gray-100 rounded-lg mb-4"></div>
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">
+                  Product Name
+                </h3>
+                <p class="text-gray-600 mb-4">Product description</p>
+                <div class="flex justify-between items-center">
+                  <span class="text-blue-600 font-bold text-xl">$99.99</span>
+                  <button
+                    class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors duration-200"
+                  >
+                    Add to Cart
+                  </button>
+                </div>
+              </div>
+            </template>
+          </div>
+
+          <!-- Shopping Basket -->
+          <div
+            class="md:col-span-1 bg-white p-6 rounded-xl shadow-md h-fit sticky top-24"
+          >
+            <h2 class="text-2xl font-bold mb-6 text-gray-800">Your Basket</h2>
+            <div id="basket-items" class="space-y-4 max-h-96 overflow-y-auto">
+              <!-- Basket items will be dynamically added here -->
+              <template id="basket-item-template">
+                <div
+                  class="flex justify-between items-center bg-gray-50 p-4 rounded-lg"
+                >
+                  <div>
+                    <h4 class="font-medium text-gray-800">Product Name</h4>
+                    <p class="text-sm text-gray-600">Qty: 1</p>
+                  </div>
+                  <div class="text-right">
+                    <p class="font-medium text-blue-600">$99.99</p>
+                    <button class="text-red-500 hover:text-red-600 text-sm">
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              </template>
+            </div>
+            <div class="mt-6 pt-6 border-t border-gray-200">
+              <div class="flex justify-between mb-4">
+                <span class="font-bold text-gray-700">Total:</span>
+                <span id="basket-total" class="font-bold text-blue-600"
+                  >$0.00</span
+                >
+              </div>
+              <button
+                id="clear-basket"
+                class="w-full bg-red-500 hover:bg-red-600 text-white font-medium py-3 px-6 rounded-xl transition-all duration-200 transform hover:scale-[1.02] active:scale-100 shadow-md mb-2"
+                onclick="clearBasket()"
+              >
+                Clear Basket
+              </button>
+              <button
+                id="purchase-button"
+                class="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-6 rounded-xl transition-all duration-200 transform hover:scale-[1.02] active:scale-100 shadow-md"
+                onclick="checkoutItems()"
+              >
+                Checkout Now
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer
+      class="fixed bottom-0 left-0 w-full bg-gray-800 text-white py-4 px-6 flex flex-col sm:flex-row items-center justify-between shadow-lg"
+    >
+      <div class="flex items-center space-x-3 mb-3 sm:mb-0">
+        <span class="text-sm font-medium">Response Time:</span>
+        <span id="response-time" class="text-sm bg-gray-700 px-2 py-1 rounded"
+          >Calculating...</span
+        >
+        <span class="text-sm">ms</span>
+      </div>
+
+      <div
+        class="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-4"
+      >
+        <div class="flex items-center space-x-2">
+          <span class="text-sm font-medium">Session Token:</span>
+          <span
+            id="session-token"
+            class="text-sm font-mono bg-gray-700 px-2 py-1 rounded truncate max-w-[160px]"
+            >None</span
+          >
+        </div>
+        <div class="flex items-center space-x-2">
+          <span class="text-sm font-medium">Session Expiry:</span>
+          <span
+            id="session-expiry"
+            class="text-sm font-mono bg-gray-700 px-2 py-1 rounded"
+            >None</span
+          >
+        </div>
+      </div>
+    </footer>
+
+    <script src="utils.js"></script>
+    <script src="basket.js"></script>
+    <script src="main.js"></script>
+    <style>
+      .font-roboto {
+        font-family: "Roboto", sans-serif;
+      }
+      #basket-items::-webkit-scrollbar {
+        width: 6px;
+      }
+      #basket-items::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 4px;
+      }
+      #basket-items::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 4px;
+      }
+    </style>
+  </body>
+</html>
