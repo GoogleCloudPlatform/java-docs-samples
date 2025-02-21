@@ -61,24 +61,24 @@ public class AuthExampleIT {
     assertTrue(output.contains("Buckets:"));
   }
 
-  @Ignore("Temporarily disabled due to failing test (Issue #10023).")
   @Test
   public void testAuthApiKey() throws IOException, IllegalStateException {
-    //TODO: Re-enable this test after fixing issue #10023.
     String projectId = ServiceOptions.getDefaultProjectId();
-    String keyDisplayName = "Test API Key";
+    java.util.Random random = new java.util.Random();
+    String keyDisplayName = "Test API Key " + random.nextInt();
     String service = "language.googleapis.com";
     String method = "google.cloud.language.v2.LanguageService.AnalyzeSentiment";
     Key apiKey = null;
     try {
       apiKey = AuthTestUtils.createTestApiKey(projectId, keyDisplayName, service, method);
-
+      assertNotNull(apiKey);
+      assert
       String output = ApiKeyAuthExample.authenticateUsingApiKey(apiKey.getKeyString());
 
       assertTrue(output.contains("magnitude:"));
     } finally {
       if (apiKey != null) {
-        AuthTestUtils.deleteTestApiKey(apiKey.getName());
+       // AuthTestUtils.deleteTestApiKey(apiKey.getName());
       }
     }
   }
