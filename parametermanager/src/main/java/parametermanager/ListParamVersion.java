@@ -27,14 +27,16 @@ import java.io.IOException;
 /** Class to list parameter versions using the Parameter Manager SDK for GCP. */
 public class ListParamVersion {
 
-  /**
-   * Lists all versions of a specified parameter.
-   *
-   * @param projectId The ID of the project where the parameter is located.
-   * @param parameterId The ID of the parameter for which the version is to be listed.
-   * @return ListParameterVersionsPagedResponse containing the parameter versions.
-   * @throws IOException If there is an issue with the API request.
-   */
+  public static void main(String[] args) throws IOException {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "your-project-id";
+    String parameterId = "your-parameter-id";
+
+    // Call the method to list parameter versions.
+    listParamVersion(projectId, parameterId);
+  }
+
+  // This is an example snippet that list all parameter versions
   public static ListParameterVersionsPagedResponse listParamVersion(
       String projectId, String parameterId) throws IOException {
     // Initialize the client that will be used to send requests. This client only needs to be
@@ -64,15 +66,6 @@ public class ListParamVersion {
 
       return response;
     }
-  }
-
-  public static void main(String[] args) throws IOException {
-    // TODO: Replace these variables before running the sample.
-    String projectId = "your-project-id";
-    String parameterId = "your-parameter-id";
-
-    // Call the method to list parameter versions.
-    listParamVersion(projectId, parameterId);
   }
 }
 // [END parametermanager_list_param_version]
