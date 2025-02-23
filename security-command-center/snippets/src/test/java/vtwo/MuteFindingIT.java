@@ -51,6 +51,7 @@ import vtwo.muteconfig.DeleteMuteRule;
 import vtwo.muteconfig.GetMuteRule;
 import vtwo.muteconfig.ListMuteRules;
 import vtwo.muteconfig.SetMuteFinding;
+import vtwo.muteconfig.SetMuteUndefinedFinding;
 import vtwo.muteconfig.SetUnmuteFinding;
 import vtwo.muteconfig.UpdateMuteRule;
 import vtwo.source.CreateSource;
@@ -74,9 +75,8 @@ public class MuteFindingIT {
   private static ByteArrayOutputStream stdOut;
 
   @Rule
-  public final MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(
-      MAX_ATTEMPT_COUNT,
-      INITIAL_BACKOFF_MILLIS);
+  public final MultipleAttemptsRule multipleAttemptsRule =
+      new MultipleAttemptsRule(MAX_ATTEMPT_COUNT, INITIAL_BACKOFF_MILLIS);
 
   // Check if the required environment variables are set.
   public static void requireEnvVar(String envVarName) {
@@ -104,12 +104,22 @@ public class MuteFindingIT {
 
     // Create findings within the source.
     String uuid = UUID.randomUUID().toString().split("-")[0];
-    FINDING_1 = CreateFindings.createFinding(ORGANIZATION_ID, LOCATION, "testfindingv2" + uuid,
-        SOURCE.getName().split("/")[3], Optional.of("MEDIUM_RISK_ONE"));
+    FINDING_1 =
+        CreateFindings.createFinding(
+            ORGANIZATION_ID,
+            LOCATION,
+            "testfindingv2" + uuid,
+            SOURCE.getName().split("/")[3],
+            Optional.of("MEDIUM_RISK_ONE"));
 
     uuid = UUID.randomUUID().toString().split("-")[0];
-    FINDING_2 = CreateFindings.createFinding(ORGANIZATION_ID, LOCATION, "testfindingv2" + uuid,
-        SOURCE.getName().split("/")[3], Optional.empty());
+    FINDING_2 =
+        CreateFindings.createFinding(
+            ORGANIZATION_ID,
+            LOCATION,
+            "testfindingv2" + uuid,
+            SOURCE.getName().split("/")[3],
+            Optional.empty());
 
     stdOut = null;
     System.setOut(out);
@@ -132,9 +142,7 @@ public class MuteFindingIT {
   public static ListFindingsPagedResponse getAllFindings(String sourceName) throws IOException {
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
 
-      ListFindingsRequest request = ListFindingsRequest.newBuilder()
-          .setParent(sourceName)
-          .build();
+      ListFindingsRequest request = ListFindingsRequest.newBuilder().setParent(sourceName).build();
 
       return client.listFindings(request);
     }
@@ -173,18 +181,20 @@ public class MuteFindingIT {
   }
 
   @Test
-  public void testMuteUnmuteFinding() throws IOException {
+  public void testSetMuteFinding() throws IOException {
     Finding finding = SetMuteFinding.setMute(FINDING_1.getName());
     assertThat(finding.getMute()).isEqualTo(Mute.MUTED);
     finding = SetUnmuteFinding.setUnmute(FINDING_1.getName());
     assertThat(finding.getMute()).isEqualTo(Mute.UNMUTED);
+    finding = SetMuteUndefinedFinding.setMuteUndefined(FINDING_1.getName());
+    assertThat(finding.getMute()).isEqualTo(Mute.UNDEFINED);
   }
 
   @Test
   public void testBulkMuteFindings() throws IOException, ExecutionException, InterruptedException {
     // Mute findings that belong to this project.
-    BulkMuteFindings.bulkMute(PROJECT_ID, LOCATION,
-        String.format("resource.project_display_name=\"%s\"", PROJECT_ID));
+    BulkMuteFindings.bulkMute(
+        PROJECT_ID, LOCATION, String.format("resource.project_display_name=\"%s\"", PROJECT_ID));
 
     // Get all findings in the source to check if they are muted.
     ListFindingsPagedResponse response =
