@@ -24,7 +24,7 @@ limitations under the License.
   <parent>
     <groupId>com.google.cloud.samples</groupId>
     <artifactId>shared-configuration</artifactId>
-    <version>1.2.0</version>
+    <version>1.2.2</version>
   </parent>
   <dependencyManagement>
     <dependencies>
@@ -43,7 +43,7 @@ limitations under the License.
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <maven.compiler.target>17</maven.compiler.target>
     <maven.compiler.source>17</maven.compiler.source>
-    <spring-boot.version>3.2.2</spring-boot.version>
+    <spring-boot.version>3.4.2</spring-boot.version>
   </properties>
   <dependencies>
     <dependency>
@@ -84,7 +84,7 @@ limitations under the License.
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>jib-maven-plugin</artifactId>
-        <version>3.4.0</version>
+        <version>3.4.4</version>
         <configuration>
           <to>
             <image>gcr.io/PROJECT_ID/helloworld</image>
