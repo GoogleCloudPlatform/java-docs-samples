@@ -17,14 +17,14 @@
 package com.example.dataflow;
 
 // [START dataflow_bigquery_read_projection_and_filtering]
-import com.google.api.services.bigquery.model.TableRow;
-import java.util.Arrays;
+import com.google.common.collect.ImmutableMap;
+import java.util.List;
 import org.apache.beam.sdk.Pipeline;
-import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO;
-import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.TypedRead;
+import org.apache.beam.sdk.managed.Managed;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
 import org.apache.beam.sdk.transforms.MapElements;
-import org.apache.beam.sdk.values.TypeDescriptor;
+import org.apache.beam.sdk.values.Row;
+import org.apache.beam.sdk.values.TypeDescriptors;
 
 public class BigQueryReadWithProjectionAndFiltering {
   public static void main(String[] args) {
@@ -36,28 +36,30 @@ public class BigQueryReadWithProjectionAndFiltering {
         .withValidation()
         .as(ExamplePipelineOptions.class);
 
+    String tableSpec = String.format("%s:%s.%s",
+        options.getProjectId(),
+        options.getDatasetName(),
+        options.getTableName());
+
+    ImmutableMap<String, Object> config = ImmutableMap.<String, Object>builder()
+        .put("table", tableSpec)
+        .put("row_restriction", "age > 18")
+        .put("fields", List.of("user_name", "age"))
+        .build();
+
     // Create a pipeline and apply transforms.
     Pipeline pipeline = Pipeline.create(options);
     pipeline
-        .apply(BigQueryIO.readTableRows()
-            // Read rows from a specified table.
-            .from(String.format("%s:%s.%s",
-                options.getProjectId(),
-                options.getDatasetName(),
-                options.getTableName()))
-            .withMethod(TypedRead.Method.DIRECT_READ)
-            .withSelectedFields(Arrays.asList("user_name", "age"))
-            .withRowRestriction("age > 18")
-        )
-        // The output from the previous step is a PCollection<TableRow>.
+        .apply(Managed.read(Managed.BIGQUERY).withConfig(config)).getSinglePCollection()
         .apply(MapElements
-            .into(TypeDescriptor.of(TableRow.class))
-            // Use TableRow to access individual fields in the row.
-            .via((TableRow row) -> {
-              var name = (String) row.get("user_name");
-              var age = row.get("age");
-              System.out.printf("Name: %s, Age: %s%n", name, age);
-              return row;
+            .into(TypeDescriptors.strings())
+            // Access individual fields in the row.
+            .via((Row row) -> {
+              String output = String.format("Name: %s, Age: %s%n",
+                  row.getString("user_name"),
+                  row.getInt64("age"));
+              System.out.println(output);
+              return output;
             }));
     pipeline.run().waitUntilFinish();
   }
