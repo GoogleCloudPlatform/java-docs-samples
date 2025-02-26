@@ -37,7 +37,6 @@ public class GetDatasetAccessPolicyIT {
   private PrintStream out;
   private PrintStream originalPrintStream;
 
-  // TODO: Check getenv vs. requireEnvVar
   private static final String GOOGLE_CLOUD_PROJECT = System.getenv("GOOGLE_CLOUD_PROJECT");
 
   private static void requireEnvVar(String varName) {
@@ -59,16 +58,16 @@ public class GetDatasetAccessPolicyIT {
     System.setOut(out);
     datasetName = RemoteBigQueryHelper.generateDatasetName();
 
-    // Create a dataset in order to get its ACL policy
+    // Create a dataset in order to get its ACL policy.
     CreateDataset.createDataset(GOOGLE_CLOUD_PROJECT, datasetName);
   }
 
   @After
   public void tearDown() {
-    // Clean up
+    // Clean up.
     DeleteDataset.deleteDataset(GOOGLE_CLOUD_PROJECT, datasetName);
 
-    // Restores print statements to the original output stream
+    // Restores print statements to the original output stream.
     System.out.flush();
     System.setOut(originalPrintStream);
     log.log(Level.INFO, "\n" + bout.toString());

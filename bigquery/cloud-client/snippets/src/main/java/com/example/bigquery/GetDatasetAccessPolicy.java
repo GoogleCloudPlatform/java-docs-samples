@@ -30,7 +30,7 @@ public class GetDatasetAccessPolicy {
 
   public static void main(String[] args) {
     // TODO(developer): Replace these variables before running the sample.
-    // Project and dataset from which to get the access policy
+    // Project and dataset from which to get the access policy.
     String projectId = "MY_PROJECT_ID";
     String datasetName = "MY_DATASET_NAME";
     getDatasetAccessPolicy(projectId, datasetName);
@@ -46,7 +46,7 @@ public class GetDatasetAccessPolicy {
       DatasetId datasetId = DatasetId.of(projectId, datasetName);
       Dataset dataset = bigquery.getDataset(datasetId);
 
-      // Show ACL details
+      // Show ACL details.
       // Find more information about ACL and the Acl Class here:
       // https://cloud.google.com/storage/docs/access-control/lists
       // https://cloud.google.com/java/docs/reference/google-cloud-bigquery/latest/com.google.cloud.bigquery.Acl

@@ -65,11 +65,11 @@ public class CreateViewIT {
     originalPrintStream = System.out;
     System.setOut(out);
 
-    // Create temporary dataset
+    // Create temporary dataset.
     datasetName = RemoteBigQueryHelper.generateDatasetName();
     CreateDataset.createDataset(GOOGLE_CLOUD_PROJECT, datasetName);
 
-    // Create temporary table
+    // Create temporary table.
     tableName = "table_test_" + UUID.randomUUID().toString().substring(0, 8);
     Schema schema =
         Schema.of(
@@ -78,18 +78,18 @@ public class CreateViewIT {
             Field.of("booleanField", StandardSQLTypeName.BOOL));
     CreateTable.createTable(GOOGLE_CLOUD_PROJECT, datasetName, tableName, schema);
 
-    // Generate view name
+    // Generate view name.
     viewName = "view_test_" + UUID.randomUUID().toString().substring(0, 8);
   }
 
   @After
   public void tearDown() {
-    // Clean up
+    // Clean up.
     DeleteTable.deleteTable(GOOGLE_CLOUD_PROJECT, datasetName, viewName);
     DeleteTable.deleteTable(GOOGLE_CLOUD_PROJECT, datasetName, tableName);
     DeleteDataset.deleteDataset(GOOGLE_CLOUD_PROJECT, datasetName);
 
-    // Restores print statements to the original output stream
+    // Restores print statements to the original output stream.
     System.out.flush();
     System.setOut(originalPrintStream);
     log.log(Level.INFO, "\n" + bout.toString());
@@ -98,8 +98,7 @@ public class CreateViewIT {
   @Test
   public void testCreateView() {
     String query =
-        String.format(
-            "SELECT timestampField, stringField, booleanField FROM %s.%s", datasetName, tableName);
+        String.format("SELECT stringField, booleanField FROM %s.%s", datasetName, tableName);
     CreateView.createView(GOOGLE_CLOUD_PROJECT, datasetName, viewName, query);
     assertThat(bout.toString()).contains(viewName + "\" created successfully");
   }

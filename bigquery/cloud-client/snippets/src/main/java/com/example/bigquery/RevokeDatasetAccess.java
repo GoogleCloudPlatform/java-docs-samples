@@ -32,38 +32,40 @@ public class RevokeDatasetAccess {
 
   public static void main(String[] args) {
     // TODO(developer): Replace these variables before running the sample.
-    // Project and dataset from which to get the access policy
+    // Project and dataset from which to get the access policy.
     String projectId = "MY_PROJECT_ID";
     String datasetName = "MY_DATASET_NAME";
-    // Create a new Entity with type Group and email "user-or-group-to-remove@example.com"
+
+    // Create a new Entity with the corresponding type and email
+    // "user-or-group-to-remove@example.com"
     // For more information on the types of Entities available see:
     // https://cloud.google.com/java/docs/reference/google-cloud-bigquery/latest/com.google.cloud.bigquery.Acl.Entity
     // and
     // https://cloud.google.com/java/docs/reference/google-cloud-bigquery/latest/com.google.cloud.bigquery.Acl.Entity.Type
-    Entity entity = new Group("user-or-group-to-remove@example.com");
+    Entity entity = new Group("group-to-remove@example.com");
 
     revokeDatasetAccess(projectId, datasetName, entity);
   }
 
   public static void revokeDatasetAccess(String projectId, String datasetName, Entity entity) {
     try {
-      // Initialize client that will be used to send requests. This client only needs to be created
-      // once, and can be reused for multiple requests.
+      // Initialize client that will be used to send requests. This client only needs
+      // to be created once, and can be reused for multiple requests.
       BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
 
       // Create datasetId with the projectId and the datasetName.
       DatasetId datasetId = DatasetId.of(projectId, datasetName);
       Dataset dataset = bigquery.getDataset(datasetId);
 
-      // To revoke access to a dataset, remove elements from the Acl list
-      // Remove the entity from the ACLs list
+      // To revoke access to a dataset, remove elements from the Acl list.
       // Find more information about ACL and the Acl Class here:
       // https://cloud.google.com/storage/docs/access-control/lists
       // https://cloud.google.com/java/docs/reference/google-cloud-bigquery/latest/com.google.cloud.bigquery.Acl
+      // Remove the entity from the ACLs list.
       List<Acl> acls =
           dataset.getAcl().stream().filter(acl -> !acl.getEntity().equals(entity)).toList();
 
-      // Update the ACLs by setting the new list
+      // Update the ACLs by setting the new list.
       bigquery.update(dataset.toBuilder().setAcl(acls).build());
       System.out.println("ACLs of \"" + datasetName + "\" updated successfully");
     } catch (BigQueryException e) {

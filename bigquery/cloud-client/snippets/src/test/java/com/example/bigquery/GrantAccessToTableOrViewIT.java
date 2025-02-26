@@ -65,11 +65,11 @@ public class GrantAccessToTableOrViewIT {
     originalPrintStream = System.out;
     System.setOut(out);
 
-    // Create temporary dataset
+    // Create temporary dataset.
     datasetName = RemoteBigQueryHelper.generateDatasetName();
     CreateDataset.createDataset(GOOGLE_CLOUD_PROJECT, datasetName);
 
-    // Create temporary table
+    // Create temporary table.
     tableName = "grant_access_to_table_test_" + UUID.randomUUID().toString().substring(0, 8);
     Schema schema =
         Schema.of(
@@ -77,7 +77,7 @@ public class GrantAccessToTableOrViewIT {
             Field.of("isBooleanField", StandardSQLTypeName.BOOL));
     CreateTable.createTable(GOOGLE_CLOUD_PROJECT, datasetName, tableName, schema);
 
-    // Create a temporary view
+    // Create a temporary view.
     viewName = "grant_access_to_view_test_" + UUID.randomUUID().toString().substring(0, 8);
     String query =
         String.format("SELECT stringField, isBooleanField FROM %s.%s", datasetName, tableName);
@@ -86,12 +86,12 @@ public class GrantAccessToTableOrViewIT {
 
   @After
   public void tearDown() {
-    // Clean up
-    DeleteTable.deleteTable(GOOGLE_CLOUD_PROJECT, datasetName, tableName);
+    // Clean up.
     DeleteTable.deleteTable(GOOGLE_CLOUD_PROJECT, datasetName, viewName);
+    DeleteTable.deleteTable(GOOGLE_CLOUD_PROJECT, datasetName, tableName);
     DeleteDataset.deleteDataset(GOOGLE_CLOUD_PROJECT, datasetName);
 
-    // Restores print statements to the original output stream
+    // Restores print statements to the original output stream.
     System.out.flush();
     System.setOut(originalPrintStream);
     log.log(Level.INFO, bout.toString());

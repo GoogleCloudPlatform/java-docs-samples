@@ -38,7 +38,7 @@ public class GrantAccessToDataset {
     // Create a new ACL granting the READER role to the group "user-or-group-to-add@example.com"
     // For more information on the types of ACLs available see:
     // https://cloud.google.com/storage/docs/access-control/lists
-    Acl newEntry = Acl.of(new Group("user-or-group-to-add@example.com"), Role.READER);
+    Acl newEntry = Acl.of(new Group("group-to-add@example.com"), Role.READER);
 
     grantAccessToDataset(projectId, datasetName, newEntry);
   }
@@ -53,11 +53,11 @@ public class GrantAccessToDataset {
       DatasetId datasetId = DatasetId.of(projectId, datasetName);
       Dataset dataset = bigquery.getDataset(datasetId);
 
-      // Get a copy of the ACLs list from the dataset and append the new entry
+      // Get a copy of the ACLs list from the dataset and append the new entry.
       List<Acl> acls = new ArrayList<>(dataset.getAcl());
       acls.add(newEntry);
 
-      // Update the ACLs by setting the new list
+      // Update the ACLs by setting the new list.
       Dataset updatedDataset = bigquery.update(dataset.toBuilder().setAcl(acls).build());
       System.out.println(
           "ACLs of dataset \""

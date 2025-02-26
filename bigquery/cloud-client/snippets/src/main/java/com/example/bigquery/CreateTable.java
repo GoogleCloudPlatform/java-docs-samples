@@ -48,8 +48,8 @@ public class CreateTable {
   public static void createTable(
       String projectId, String datasetName, String tableName, Schema schema) {
     try {
-      // Initialize client that will be used to send requests. This client only needs to be created
-      // once, and can be reused for multiple requests.
+      // Initialize client that will be used to send requests. This client only needs
+      // to be created once, and can be reused for multiple requests.
       BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
 
       // Create table identity given the projectId, the datasetName and the tableName.

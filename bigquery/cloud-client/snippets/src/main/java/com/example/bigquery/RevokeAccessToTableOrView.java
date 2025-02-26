@@ -42,20 +42,20 @@ public class RevokeAccessToTableOrView {
   public static void revokeAccessToTableOrView(
       String projectId, String datasetName, String resourceName) {
     try {
-      // Initialize client that will be used to send requests. This client only needs to be created
-      // once, and can be reused for multiple requests.
+      // Initialize client that will be used to send requests. This client only needs
+      // to be created once, and can be reused for multiple requests.
       BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
 
       // Create table identity given the projectId, the datasetName and the resourceName.
       TableId tableId = TableId.of(projectId, datasetName, resourceName);
 
-      // Remove identity from bindings and replace it in the current IAM policy
+      // Remove identity from bindings and replace it in the current IAM policy.
       Policy policy = bigquery.getIamPolicy(tableId);
       Map<Role, Set<Identity>> binding = new HashMap<>(policy.getBindings());
       binding.remove(Role.of("roles/bigquery.dataViewer"));
       policy.toBuilder().setBindings(binding).build();
 
-      // Update the IAM policy by setting the new one
+      // Update the IAM policy by setting the new one.
       bigquery.setIamPolicy(tableId, policy);
 
       System.out.println("IAM policy of resource \"" + resourceName + "\" updated successfully");

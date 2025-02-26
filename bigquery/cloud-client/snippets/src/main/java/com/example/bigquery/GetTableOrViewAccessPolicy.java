@@ -28,24 +28,24 @@ public class GetTableOrViewAccessPolicy {
 
   public static void main(String[] args) {
     // TODO(developer): Replace these variables before running the sample.
-    // Project, dataset and resource (table or view) from which to get the access policy
+    // Project, dataset and resource (table or view) from which to get the access policy.
     String projectId = "MY_PROJECT_ID";
     String datasetName = "MY_DATASET_NAME";
-    String resourceName = "MY_TABLE_NAME";
+    String resourceName = "MY_RESOURCE_NAME";
     getTableOrViewAccessPolicy(projectId, datasetName, resourceName);
   }
 
   public static void getTableOrViewAccessPolicy(
       String projectId, String datasetName, String resourceName) {
     try {
-      // Initialize client that will be used to send requests. This client only needs to be created
-      // once, and can be reused for multiple requests.
+      // Initialize client that will be used to send requests. This client only needs
+      // to be created once, and can be reused for multiple requests.
       BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
 
       // Create table identity given the projectId, the datasetName and the resourceName.
       TableId tableId = TableId.of(projectId, datasetName, resourceName);
 
-      // Get the table IAM policy
+      // Get the table IAM policy.
       Policy policy = bigquery.getIamPolicy(tableId);
 
       // Show policy details.

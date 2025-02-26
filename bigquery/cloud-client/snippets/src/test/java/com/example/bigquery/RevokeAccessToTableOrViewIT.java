@@ -65,11 +65,11 @@ public class RevokeAccessToTableOrViewIT {
     originalPrintStream = System.out;
     System.setOut(out);
 
-    // Create temporary dataset
+    // Create temporary dataset.
     datasetName = RemoteBigQueryHelper.generateDatasetName();
     CreateDataset.createDataset(GOOGLE_CLOUD_PROJECT, datasetName);
 
-    // Create temporary table and grant access to it
+    // Create temporary table and grant access to it.
     tableName = "revoke_access_to_table_test_" + UUID.randomUUID().toString().substring(0, 8);
     Schema schema =
         Schema.of(
@@ -78,7 +78,7 @@ public class RevokeAccessToTableOrViewIT {
     CreateTable.createTable(GOOGLE_CLOUD_PROJECT, datasetName, tableName, schema);
     GrantAccessToTableOrView.grantAccessToTableOrView(GOOGLE_CLOUD_PROJECT, datasetName, tableName);
 
-    // Create a temporary view and grant access to it
+    // Create a temporary view and grant access to it.
     viewName = "revoke_access_to_view_test" + UUID.randomUUID().toString().substring(0, 8);
     String query =
         String.format("SELECT stringField, isBooleanField FROM %s.%s", datasetName, tableName);
@@ -88,11 +88,11 @@ public class RevokeAccessToTableOrViewIT {
 
   @After
   public void tearDown() {
-    // Clean up
+    // Clean up.
     DeleteTable.deleteTable(GOOGLE_CLOUD_PROJECT, datasetName, tableName);
     DeleteDataset.deleteDataset(GOOGLE_CLOUD_PROJECT, datasetName);
 
-    // Restores print statements to the original output stream
+    // Restores print statements to the original output stream.
     System.out.flush();
     System.setOut(originalPrintStream);
     log.log(Level.INFO, bout.toString());

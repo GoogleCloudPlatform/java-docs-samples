@@ -35,27 +35,26 @@ public class CreateView {
     String tableName = "MY_TABLE_NAME";
     String viewName = "MY_VIEW_NAME";
     String query =
-        String.format(
-            "SELECT TimestampField, StringField, BooleanField FROM %s.%s", datasetName, tableName);
+        String.format("SELECT StringField, BooleanField FROM %s.%s", datasetName, tableName);
     createView(projectId, datasetName, viewName, query);
   }
 
   public static void createView(
       String projectId, String datasetName, String viewName, String query) {
     try {
-      // Initialize client that will be used to send requests. This client only needs to be created
-      // once, and can be reused for multiple requests.
+      // Initialize client that will be used to send requests. This client only needs
+      // to be created once, and can be reused for multiple requests.
       BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
 
-      // Create table identity given the projectId, the datasetName and the tableName.
+      // Create table identity given the projectId, the datasetName and the viewName.
       TableId tableId = TableId.of(projectId, datasetName, viewName);
 
-      // Create view definition to generate the table information
+      // Create view definition to generate the table information.
       ViewDefinition viewDefinition =
           ViewDefinition.newBuilder(query).setUseLegacySql(false).build();
       TableInfo tableInfo = TableInfo.of(tableId, viewDefinition);
 
-      // Create view
+      // Create view.
       Table view = bigquery.create(tableInfo);
       System.out.println("View \"" + view.getTableId().getTable() + "\" created successfully");
     } catch (BigQueryException e) {

@@ -57,16 +57,16 @@ public class CreateDatasetIT {
     originalPrintStream = System.out;
     System.setOut(out);
 
-    // Generate dataset name
+    // Generate dataset name.
     datasetName = RemoteBigQueryHelper.generateDatasetName();
   }
 
   @After
   public void tearDown() {
-    // Clean up
+    // Clean up.
     DeleteDataset.deleteDataset(GOOGLE_CLOUD_PROJECT, datasetName);
 
-    // Restores print statements to the original output stream
+    // Restores print statements to the original output stream.
     System.out.flush();
     System.setOut(originalPrintStream);
     log.log(Level.INFO, "\n" + bout.toString());

@@ -29,7 +29,7 @@ public class GrantAccessToTableOrView {
 
   public static void main(String[] args) {
     // TODO(developer): Replace these variables before running the sample.
-    // Project, dataset and resource (table or view) from which to get the access policy
+    // Project, dataset and resource (table or view) from which to get the access policy.
     String projectId = "MY_PROJECT_ID";
     String datasetName = "MY_DATASET_NAME";
     String resourceName = "MY_TABLE_NAME";
@@ -39,22 +39,20 @@ public class GrantAccessToTableOrView {
   public static void grantAccessToTableOrView(
       String projectId, String datasetName, String resourceName) {
     try {
-      // Initialize client that will be used to send requests. This client only needs to be created
-      // once, and can be reused for multiple requests.
+      // Initialize client that will be used to send requests. This client only needs
+      // to be created once, and can be reused for multiple requests.
       BigQuery bigquery = BigQueryOptions.getDefaultInstance().getService();
 
       // Create table identity given the projectId, the datasetName and the resourceName.
       TableId tableId = TableId.of(projectId, datasetName, resourceName);
 
-      // Add new identity to current IAM policy
+      // Add new user identity to current IAM policy.
       Policy policy = bigquery.getIamPolicy(tableId);
       policy.toBuilder()
-          .addIdentity(
-              Role.of("roles/bigquery.dataViewer"),
-              Identity.user("user-or-group-to-add@example.com"))
+          .addIdentity(Role.of("roles/bigquery.dataViewer"), Identity.user("user-add@example.com"))
           .build();
 
-      // Update the IAM policy by setting the new one
+      // Update the IAM policy by setting the new one.
       bigquery.setIamPolicy(tableId, policy);
 
       System.out.println("IAM policy of resource \"" + resourceName + "\" updated successfully");
