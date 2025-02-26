@@ -57,6 +57,9 @@ public class RevokeDatasetAccess {
 
       // To revoke access to a dataset, remove elements from the Acl list
       // Remove the entity from the ACLs list
+      // Find more information about ACL and the Acl Class here:
+      // https://cloud.google.com/storage/docs/access-control/lists
+      // https://cloud.google.com/java/docs/reference/google-cloud-bigquery/latest/com.google.cloud.bigquery.Acl
       List<Acl> acls =
           dataset.getAcl().stream().filter(acl -> !acl.getEntity().equals(entity)).toList();
 

@@ -24,6 +24,7 @@ import com.google.cloud.bigquery.BigQueryException;
 import com.google.cloud.bigquery.BigQueryOptions;
 import com.google.cloud.bigquery.Dataset;
 import com.google.cloud.bigquery.DatasetId;
+import java.util.List;
 
 public class GetDatasetAccessPolicy {
 
@@ -45,15 +46,14 @@ public class GetDatasetAccessPolicy {
       DatasetId datasetId = DatasetId.of(projectId, datasetName);
       Dataset dataset = bigquery.getDataset(datasetId);
 
-      // Show Acl details
-      // Find more information about the Acl Class here:
+      // Show ACL details
+      // Find more information about ACL and the Acl Class here:
+      // https://cloud.google.com/storage/docs/access-control/lists
       // https://cloud.google.com/java/docs/reference/google-cloud-bigquery/latest/com.google.cloud.bigquery.Acl
+      List<Acl> acls = dataset.getAcl();
       System.out.println(
-          "ACLs in dataset "
-              + dataset.getDatasetId().getDataset()
-              + ":\n"
-              + dataset.getAcl().toString());
-      for (Acl acl : dataset.getAcl()) {
+          "ACLs in dataset " + dataset.getDatasetId().getDataset() + ":\n" + acls.toString());
+      for (Acl acl : acls) {
         System.out.println();
         System.out.println("Role: " + acl.getRole());
         System.out.println("Entity: " + acl.getEntity());
