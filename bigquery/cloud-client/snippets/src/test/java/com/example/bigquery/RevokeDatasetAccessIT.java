@@ -20,8 +20,8 @@ import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.TestCase.assertNotNull;
 
 import com.google.cloud.bigquery.Acl;
+import com.google.cloud.bigquery.Acl.Group;
 import com.google.cloud.bigquery.Acl.Role;
-import com.google.cloud.bigquery.Acl.User;
 import com.google.cloud.bigquery.testing.RemoteBigQueryHelper;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -63,7 +63,7 @@ public class RevokeDatasetAccessIT {
 
     // Create a dataset
     CreateDataset.createDataset(GOOGLE_CLOUD_PROJECT, datasetName);
-    Acl newAclEntry = Acl.of(new User("cloud-developer-relations@google.com"), Role.READER);
+    Acl newAclEntry = Acl.of(new Group("cloud-developer-relations@google.com"), Role.READER);
 
     // Add new ACL entry in order to remove it
     GrantAccessToDataset.grantAccessToDataset(GOOGLE_CLOUD_PROJECT, datasetName, newAclEntry);
@@ -83,7 +83,7 @@ public class RevokeDatasetAccessIT {
   @Test
   public void revokeDatasetAccess() {
     RevokeDatasetAccess.revokeDatasetAccess(
-        GOOGLE_CLOUD_PROJECT, datasetName, new User("cloud-developer-relations@google.com"));
-    assertThat(bout.toString()).contains("ACLs of " + datasetName + " updated successfully");
+        GOOGLE_CLOUD_PROJECT, datasetName, new Group("cloud-developer-relations@google.com"));
+    assertThat(bout.toString()).contains("ACLs of \"" + datasetName + "\" updated successfully");
   }
 }

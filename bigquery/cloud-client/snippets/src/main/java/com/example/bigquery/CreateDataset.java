@@ -47,7 +47,7 @@ public class CreateDataset {
       // Create Dataset
       Dataset dataset = bigquery.create(datasetInfo);
       System.out.println(
-          "Dataset " + dataset.getDatasetId().getDataset() + " created successfully");
+          "Dataset \"" + dataset.getDatasetId().getDataset() + "\" created successfully");
     } catch (BigQueryException e) {
       System.out.println("Dataset was not created. \n" + e.toString());
     }

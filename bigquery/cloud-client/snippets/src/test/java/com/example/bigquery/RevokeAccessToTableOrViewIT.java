@@ -111,6 +111,6 @@ public class RevokeAccessToTableOrViewIT {
     RevokeAccessToTableOrView.revokeAccessToTableOrView(
         GOOGLE_CLOUD_PROJECT, datasetName, viewName);
     assertThat(bout.toString())
-        .contains("IAM policy of resource " + viewName + " updated successfully");
+        .contains("IAM policy of resource \"" + viewName + "\" updated successfully");
   }
 }

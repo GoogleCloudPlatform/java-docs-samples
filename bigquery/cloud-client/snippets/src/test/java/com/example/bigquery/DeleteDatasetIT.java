@@ -74,6 +74,6 @@ public class DeleteDatasetIT {
   public void deleteDataset() {
     DeleteDataset.deleteDataset(GOOGLE_CLOUD_PROJECT, datasetName);
 
-    assertThat(bout.toString()).contains(datasetName + " deleted successfully");
+    assertThat(bout.toString()).contains(datasetName + "\" deleted successfully");
   }
 }

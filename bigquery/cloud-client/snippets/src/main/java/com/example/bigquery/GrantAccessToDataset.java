@@ -18,8 +18,8 @@ package com.example.bigquery;
 
 // [START bigquery_grant_access_to_dataset]
 import com.google.cloud.bigquery.Acl;
+import com.google.cloud.bigquery.Acl.Group;
 import com.google.cloud.bigquery.Acl.Role;
-import com.google.cloud.bigquery.Acl.User;
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.BigQueryException;
 import com.google.cloud.bigquery.BigQueryOptions;
@@ -35,10 +35,10 @@ public class GrantAccessToDataset {
     // Project and dataset from which to get the access policy
     String projectId = "MY_PROJECT_ID";
     String datasetName = "MY_DATASET_NAME";
-    // Create a new ACL granting the READER role to "user-or-group-to-add@example.com"
+    // Create a new ACL granting the READER role to the group "user-or-group-to-add@example.com"
     // For more information on the types of ACLs available see:
     // https://cloud.google.com/storage/docs/access-control/lists
-    Acl newEntry = Acl.of(new User("user-or-group-to-add@example.com"), Role.READER);
+    Acl newEntry = Acl.of(new Group("user-or-group-to-add@example.com"), Role.READER);
 
     grantAccessToDataset(projectId, datasetName, newEntry);
   }
@@ -60,9 +60,9 @@ public class GrantAccessToDataset {
       // Update the ACLs by setting the new list
       Dataset updatedDataset = bigquery.update(dataset.toBuilder().setAcl(acls).build());
       System.out.println(
-          "ACLs of dataset "
+          "ACLs of dataset \""
               + updatedDataset.getDatasetId().getDataset()
-              + " updated successfully");
+              + "\" updated successfully");
     } catch (BigQueryException e) {
       System.out.println("ACLs were not updated \n" + e.toString());
     }

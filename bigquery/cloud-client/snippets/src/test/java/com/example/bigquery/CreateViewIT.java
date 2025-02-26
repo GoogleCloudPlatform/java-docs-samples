@@ -101,6 +101,6 @@ public class CreateViewIT {
         String.format(
             "SELECT timestampField, stringField, booleanField FROM %s.%s", datasetName, tableName);
     CreateView.createView(GOOGLE_CLOUD_PROJECT, datasetName, viewName, query);
-    assertThat(bout.toString()).contains(viewName + " created successfully");
+    assertThat(bout.toString()).contains(viewName + "\" created successfully");
   }
 }

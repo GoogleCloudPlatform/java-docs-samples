@@ -108,6 +108,6 @@ public class GrantAccessToTableOrViewIT {
   public void testGrantAccessToTableOrView_grantAccessToView() {
     GrantAccessToTableOrView.grantAccessToTableOrView(GOOGLE_CLOUD_PROJECT, datasetName, viewName);
     assertThat(bout.toString())
-        .contains("IAM policy of resource " + viewName + " created successfully");
+        .contains("IAM policy of resource \"" + viewName + "\" updated successfully");
   }
 }

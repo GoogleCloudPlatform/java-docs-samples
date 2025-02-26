@@ -110,6 +110,6 @@ public class GetTableOrViewAccessPolicyIT {
     GetTableOrViewAccessPolicy.getTableOrViewAccessPolicy(
         GOOGLE_CLOUD_PROJECT, datasetName, viewName);
     assertThat(bout.toString())
-        .contains("IAM policy info of resource " + viewName + " retrieved succesfully");
+        .contains("IAM policy info of resource \"" + viewName + "\" retrieved succesfully");
   }
 }

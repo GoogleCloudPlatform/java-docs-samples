@@ -51,8 +51,8 @@ public class GetDatasetAccessPolicy {
       // https://cloud.google.com/storage/docs/access-control/lists
       // https://cloud.google.com/java/docs/reference/google-cloud-bigquery/latest/com.google.cloud.bigquery.Acl
       List<Acl> acls = dataset.getAcl();
-      System.out.println(
-          "ACLs in dataset " + dataset.getDatasetId().getDataset() + ":\n" + acls.toString());
+      System.out.println("ACLs in dataset \"" + dataset.getDatasetId().getDataset() + "\":");
+      System.out.println(acls.toString());
       for (Acl acl : acls) {
         System.out.println();
         System.out.println("Role: " + acl.getRole());

@@ -60,7 +60,7 @@ public class CreateTable {
 
       // Create table
       Table table = bigquery.create(tableInfo);
-      System.out.println("Table " + table.getTableId().getTable() + " created successfully");
+      System.out.println("Table \"" + table.getTableId().getTable() + "\" created successfully");
     } catch (BigQueryException e) {
       System.out.println("Table was not created. \n" + e.toString());
     }

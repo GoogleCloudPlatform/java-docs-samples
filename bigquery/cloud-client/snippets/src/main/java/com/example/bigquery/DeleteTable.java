@@ -44,7 +44,7 @@ public class DeleteTable {
       // Delete the table.
       boolean success = bigquery.delete(tableId);
       if (success) {
-        System.out.println("Table " + tableName + " deleted successfully");
+        System.out.println("Table \"" + tableName + "\" deleted successfully");
       } else {
         System.out.println("Table was not found");
       }

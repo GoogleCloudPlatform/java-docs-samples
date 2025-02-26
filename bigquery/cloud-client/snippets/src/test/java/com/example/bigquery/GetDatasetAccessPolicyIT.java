@@ -78,6 +78,6 @@ public class GetDatasetAccessPolicyIT {
   public void getDatasetAccessPolicy() {
     // Get dataset ACLs
     GetDatasetAccessPolicy.getDatasetAccessPolicy(GOOGLE_CLOUD_PROJECT, datasetName);
-    assertThat(bout.toString()).contains("ACLs in dataset " + datasetName);
+    assertThat(bout.toString()).contains("ACLs in dataset \"" + datasetName);
   }
 }

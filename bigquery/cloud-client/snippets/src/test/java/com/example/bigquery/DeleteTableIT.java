@@ -84,6 +84,6 @@ public class DeleteTableIT {
   public void testDeleteTable() {
     // Delete the table that was just created
     DeleteTable.deleteTable(GOOGLE_CLOUD_PROJECT, datasetName, tableName);
-    assertThat(bout.toString()).contains(tableName + " deleted successfully");
+    assertThat(bout.toString()).contains(tableName + "\" deleted successfully");
   }
 }

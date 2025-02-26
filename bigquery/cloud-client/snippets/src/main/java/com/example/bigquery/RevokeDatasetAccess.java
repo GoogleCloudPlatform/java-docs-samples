@@ -65,7 +65,7 @@ public class RevokeDatasetAccess {
 
       // Update the ACLs by setting the new list
       bigquery.update(dataset.toBuilder().setAcl(acls).build());
-      System.out.println("ACLs of " + datasetName + " updated successfully");
+      System.out.println("ACLs of \"" + datasetName + "\" updated successfully");
     } catch (BigQueryException e) {
       System.out.println("ACLs were not updated \n" + e.toString());
     }

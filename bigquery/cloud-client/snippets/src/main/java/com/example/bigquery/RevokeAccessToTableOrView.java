@@ -58,7 +58,7 @@ public class RevokeAccessToTableOrView {
       // Update the IAM policy by setting the new one
       bigquery.setIamPolicy(tableId, policy);
 
-      System.out.println("IAM policy of resource " + resourceName + " updated successfully");
+      System.out.println("IAM policy of resource \"" + resourceName + "\" updated successfully");
     } catch (BigQueryException e) {
       System.out.println("IAM policy was not updated. \n" + e.toString());
     }

@@ -20,8 +20,8 @@ import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.TestCase.assertNotNull;
 
 import com.google.cloud.bigquery.Acl;
+import com.google.cloud.bigquery.Acl.Group;
 import com.google.cloud.bigquery.Acl.Role;
-import com.google.cloud.bigquery.Acl.User;
 import com.google.cloud.bigquery.testing.RemoteBigQueryHelper;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -78,10 +78,10 @@ public class GrantAccessToDatasetIT {
 
   @Test
   public void grantAccessToDataset() {
-    Acl newAclEntry = Acl.of(new User("cloud-developer-relations@google.com"), Role.READER);
+    Acl newAclEntry = Acl.of(new Group("cloud-developer-relations@google.com"), Role.READER);
     // Modify dataset's ACL
     GrantAccessToDataset.grantAccessToDataset(GOOGLE_CLOUD_PROJECT, datasetName, newAclEntry);
     assertThat(bout.toString())
-        .contains("ACLs of dataset " + datasetName + " updated successfully");
+        .contains("ACLs of dataset \"" + datasetName + "\" updated successfully");
   }
 }

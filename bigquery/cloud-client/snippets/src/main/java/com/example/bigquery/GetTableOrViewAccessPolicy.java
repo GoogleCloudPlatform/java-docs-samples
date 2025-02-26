@@ -51,7 +51,8 @@ public class GetTableOrViewAccessPolicy {
       // Show policy details.
       // Find more information about the Policy Class here:
       // https://cloud.google.com/java/docs/reference/google-cloud-core/latest/com.google.cloud.Policy
-      System.out.println("IAM policy info of resource " + resourceName + " retrieved succesfully");
+      System.out.println(
+          "IAM policy info of resource \"" + resourceName + "\" retrieved succesfully");
       System.out.println();
       System.out.println("IAM policy info: " + policy.toString());
     } catch (BigQueryException e) {

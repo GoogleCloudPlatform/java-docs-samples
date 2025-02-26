@@ -75,6 +75,6 @@ public class CreateDatasetIT {
   @Test
   public void testCreateDataset() {
     CreateDataset.createDataset(GOOGLE_CLOUD_PROJECT, datasetName);
-    assertThat(bout.toString()).contains(datasetName + " created successfully");
+    assertThat(bout.toString()).contains(datasetName + "\" created successfully");
   }
 }

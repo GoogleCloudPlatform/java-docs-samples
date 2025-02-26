@@ -57,7 +57,7 @@ public class CreateView {
 
       // Create view
       Table view = bigquery.create(tableInfo);
-      System.out.println("View " + view.getTableId().getTable() + " created successfully");
+      System.out.println("View \"" + view.getTableId().getTable() + "\" created successfully");
     } catch (BigQueryException e) {
       System.out.println("View was not created. \n" + e.toString());
     }

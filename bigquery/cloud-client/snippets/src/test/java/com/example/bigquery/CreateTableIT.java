@@ -89,6 +89,6 @@ public class CreateTableIT {
             Field.of("stringField", StandardSQLTypeName.STRING),
             Field.of("booleanField", StandardSQLTypeName.BOOL));
     CreateTable.createTable(GOOGLE_CLOUD_PROJECT, datasetName, tableName, schema);
-    assertThat(bout.toString()).contains(tableName + " created successfully");
+    assertThat(bout.toString()).contains(tableName + "\" created successfully");
   }
 }

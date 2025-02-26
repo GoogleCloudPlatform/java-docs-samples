@@ -44,7 +44,7 @@ public class DeleteDataset {
       // Delete dataset.
       boolean success = bigquery.delete(datasetId, DatasetDeleteOption.deleteContents());
       if (success) {
-        System.out.println("Dataset" + datasetName + " deleted successfully");
+        System.out.println("Dataset \"" + datasetName + "\" deleted successfully");
       } else {
         System.out.println("Dataset was not found");
       }
