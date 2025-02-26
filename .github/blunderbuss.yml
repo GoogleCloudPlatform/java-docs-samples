@@ -67,6 +67,10 @@ assign_issues_by:
   to:
   - GoogleCloudPlatform/api-pubsub-and-pubsublite
 - labels:
+  - "api: parametermanager"
+  to:
+  - GoogleCloudPlatform/cloud-parameters-team
+- labels:
   - "api: mediatranslation"
   - "api: media"
   to:
@@ -116,6 +120,10 @@ assign_prs_by:
   - 'api: cloudsql'
   to:
   - GoogleCloudPlatform/cloud-sql-connectors
+- labels:
+  - 'api: parametermanager'
+  to:
+  - GoogleCloudPlatform/cloud-parameters-team
 - labels:
   - 'api: spanner'
   to:
