@@ -20,7 +20,7 @@ package com.example.bigquery;
 
 import com.google.cloud.bigquery.Acl;
 import com.google.cloud.bigquery.Acl.Entity;
-import com.google.cloud.bigquery.Acl.User;
+import com.google.cloud.bigquery.Acl.Group;
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.BigQueryException;
 import com.google.cloud.bigquery.BigQueryOptions;
@@ -35,12 +35,12 @@ public class RevokeDatasetAccess {
     // Project and dataset from which to get the access policy
     String projectId = "MY_PROJECT_ID";
     String datasetName = "MY_DATASET_NAME";
-    // Create a new Entity with type User and email "user-or-group-to-remove@example.com"
+    // Create a new Entity with type Group and email "user-or-group-to-remove@example.com"
     // For more information on the types of Entities available see:
     // https://cloud.google.com/java/docs/reference/google-cloud-bigquery/latest/com.google.cloud.bigquery.Acl.Entity
     // and
     // https://cloud.google.com/java/docs/reference/google-cloud-bigquery/latest/com.google.cloud.bigquery.Acl.Entity.Type
-    Entity entity = new User("user-or-group-to-remove@example.com");
+    Entity entity = new Group("user-or-group-to-remove@example.com");
 
     revokeDatasetAccess(projectId, datasetName, entity);
   }
