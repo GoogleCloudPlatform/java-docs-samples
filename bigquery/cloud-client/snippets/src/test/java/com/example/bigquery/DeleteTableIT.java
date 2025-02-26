@@ -20,6 +20,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.TestCase.assertNotNull;
 
 import com.google.cloud.bigquery.Schema;
+import com.google.cloud.bigquery.testing.RemoteBigQueryHelper;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.UUID;
@@ -33,13 +34,14 @@ import org.junit.Test;
 public class DeleteTableIT {
 
   private final Logger log = Logger.getLogger(this.getClass().getName());
+  private String datasetName;
   private String tableName;
   private ByteArrayOutputStream bout;
   private PrintStream out;
   private PrintStream originalPrintStream;
 
-  private static final String GOOGLE_CLOUD_PROJECT = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String BIGQUERY_DATASET_NAME = System.getenv("BIGQUERY_DATASET_NAME");
+  private static final String GOOGLE_CLOUD_PROJECT =
+      "samples-xwf-01"; // System.getenv("GOOGLE_CLOUD_PROJECT");
 
   private static void requireEnvVar(String varName) {
     assertNotNull(
@@ -49,8 +51,7 @@ public class DeleteTableIT {
 
   @BeforeClass
   public static void checkRequirements() {
-    requireEnvVar("GOOGLE_CLOUD_PROJECT");
-    requireEnvVar("BIGQUERY_DATASET_NAME");
+    // requireEnvVar("GOOGLE_CLOUD_PROJECT");
   }
 
   @Before
@@ -59,14 +60,22 @@ public class DeleteTableIT {
     out = new PrintStream(bout);
     originalPrintStream = System.out;
     System.setOut(out);
-    // Create a new table to be deleted
+
+    // Create temporary dataset
+    datasetName = RemoteBigQueryHelper.generateDatasetName();
+    CreateDataset.createDataset(GOOGLE_CLOUD_PROJECT, datasetName);
+
+    // Create temporary table to be deleted
     tableName = "GCLOUD_TEST_TABLE_TEMP_" + UUID.randomUUID().toString().substring(0, 8);
-    CreateTable.createTable(GOOGLE_CLOUD_PROJECT, BIGQUERY_DATASET_NAME, tableName, Schema.of());
+    CreateTable.createTable(GOOGLE_CLOUD_PROJECT, datasetName, tableName, Schema.of());
   }
 
   @After
   public void tearDown() {
-    // restores print statements in the original method
+    // Clean up
+    DeleteDataset.deleteDataset(GOOGLE_CLOUD_PROJECT, datasetName);
+
+    // Restores print statements to the original output stream
     System.out.flush();
     System.setOut(originalPrintStream);
     log.log(Level.INFO, "\n" + bout.toString());
@@ -75,7 +84,7 @@ public class DeleteTableIT {
   @Test
   public void testDeleteTable() {
     // Delete the table that was just created
-    DeleteTable.deleteTable(GOOGLE_CLOUD_PROJECT, BIGQUERY_DATASET_NAME, tableName);
+    DeleteTable.deleteTable(GOOGLE_CLOUD_PROJECT, datasetName, tableName);
     assertThat(bout.toString()).contains(tableName + " deleted successfully");
   }
 }

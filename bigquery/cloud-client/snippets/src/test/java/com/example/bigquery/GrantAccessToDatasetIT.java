@@ -60,7 +60,8 @@ public class GrantAccessToDatasetIT {
     originalPrintStream = System.out;
     System.setOut(out);
     datasetName = RemoteBigQueryHelper.generateDatasetName();
-    // Create a dataset in order to modify its ACL
+
+    // Create a dataset in order to modify its ACL policy
     CreateDataset.createDataset(GOOGLE_CLOUD_PROJECT, datasetName);
   }
 
@@ -68,7 +69,8 @@ public class GrantAccessToDatasetIT {
   public void tearDown() {
     // Clean up
     DeleteDataset.deleteDataset(GOOGLE_CLOUD_PROJECT, datasetName);
-    // restores print statements in the original method
+
+    // Restores print statements to the original output stream
     System.out.flush();
     System.setOut(originalPrintStream);
     log.log(Level.INFO, "\n" + bout.toString());

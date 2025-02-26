@@ -22,6 +22,7 @@ import static junit.framework.TestCase.assertNotNull;
 import com.google.cloud.bigquery.Field;
 import com.google.cloud.bigquery.Schema;
 import com.google.cloud.bigquery.StandardSQLTypeName;
+import com.google.cloud.bigquery.testing.RemoteBigQueryHelper;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.UUID;
@@ -35,14 +36,15 @@ import org.junit.Test;
 public class CreateViewIT {
 
   private final Logger log = Logger.getLogger(this.getClass().getName());
+  private String datasetName;
   private String tableName;
   private String viewName;
   private ByteArrayOutputStream bout;
   private PrintStream out;
   private PrintStream originalPrintStream;
 
-  private static final String GOOGLE_CLOUD_PROJECT = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String BIGQUERY_DATASET_NAME = System.getenv("BIGQUERY_DATASET_NAME");
+  private static final String GOOGLE_CLOUD_PROJECT =
+      "samples-xwf-01"; // System.getenv("GOOGLE_CLOUD_PROJECT");
 
   private static String requireEnvVar(String varName) {
     String value = System.getenv(varName);
@@ -54,8 +56,7 @@ public class CreateViewIT {
 
   @BeforeClass
   public static void checkRequirements() {
-    requireEnvVar("GOOGLE_CLOUD_PROJECT");
-    requireEnvVar("BIGQUERY_DATASET_NAME");
+    // requireEnvVar("GOOGLE_CLOUD_PROJECT");
   }
 
   @Before
@@ -65,23 +66,31 @@ public class CreateViewIT {
     originalPrintStream = System.out;
     System.setOut(out);
 
-    tableName = "MY_TABLE_NAME_TEST_" + UUID.randomUUID().toString().substring(0, 8);
-    viewName = "MY_VIEW_NAME_TEST_" + UUID.randomUUID().toString().substring(0, 8);
+    // Create temporary dataset
+    datasetName = RemoteBigQueryHelper.generateDatasetName();
+    CreateDataset.createDataset(GOOGLE_CLOUD_PROJECT, datasetName);
 
+    // Create temporary table
+    tableName = "MY_TABLE_NAME_TEST_" + UUID.randomUUID().toString().substring(0, 8);
     Schema schema =
         Schema.of(
             Field.of("timestampField", StandardSQLTypeName.TIMESTAMP),
             Field.of("stringField", StandardSQLTypeName.STRING),
             Field.of("booleanField", StandardSQLTypeName.BOOL));
-    CreateTable.createTable(GOOGLE_CLOUD_PROJECT, BIGQUERY_DATASET_NAME, tableName, schema);
+    CreateTable.createTable(GOOGLE_CLOUD_PROJECT, datasetName, tableName, schema);
+
+    // Generate view name
+    viewName = "MY_VIEW_NAME_TEST_" + UUID.randomUUID().toString().substring(0, 8);
   }
 
   @After
   public void tearDown() {
     // Clean up
-    DeleteTable.deleteTable(GOOGLE_CLOUD_PROJECT, BIGQUERY_DATASET_NAME, viewName);
-    DeleteTable.deleteTable(GOOGLE_CLOUD_PROJECT, BIGQUERY_DATASET_NAME, tableName);
-    // restores print statements in the original method
+    DeleteTable.deleteTable(GOOGLE_CLOUD_PROJECT, datasetName, viewName);
+    DeleteTable.deleteTable(GOOGLE_CLOUD_PROJECT, datasetName, tableName);
+    DeleteDataset.deleteDataset(GOOGLE_CLOUD_PROJECT, datasetName);
+
+    // Restores print statements to the original output stream
     System.out.flush();
     System.setOut(originalPrintStream);
     log.log(Level.INFO, "\n" + bout.toString());
@@ -91,9 +100,8 @@ public class CreateViewIT {
   public void testCreateView() {
     String query =
         String.format(
-            "SELECT timestampField, stringField, booleanField FROM %s.%s",
-            BIGQUERY_DATASET_NAME, tableName);
-    CreateView.createView(GOOGLE_CLOUD_PROJECT, BIGQUERY_DATASET_NAME, viewName, query);
+            "SELECT timestampField, stringField, booleanField FROM %s.%s", datasetName, tableName);
+    CreateView.createView(GOOGLE_CLOUD_PROJECT, datasetName, viewName, query);
     assertThat(bout.toString()).contains(viewName + " created successfully");
   }
 }

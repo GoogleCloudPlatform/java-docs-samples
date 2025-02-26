@@ -22,6 +22,7 @@ import static junit.framework.TestCase.assertNotNull;
 import com.google.cloud.bigquery.Field;
 import com.google.cloud.bigquery.Schema;
 import com.google.cloud.bigquery.StandardSQLTypeName;
+import com.google.cloud.bigquery.testing.RemoteBigQueryHelper;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.UUID;
@@ -35,14 +36,15 @@ import org.junit.Test;
 public class RevokeAccessToTableOrViewIT {
 
   private final Logger log = Logger.getLogger(this.getClass().getName());
+  private String datasetName;
   private String tableName;
   private String viewName;
   private ByteArrayOutputStream bout;
   private PrintStream out;
   private PrintStream originalPrintStream;
 
-  private static final String GOOGLE_CLOUD_PROJECT = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String BIGQUERY_DATASET_NAME = System.getenv("BIGQUERY_DATASET_NAME");
+  private static final String GOOGLE_CLOUD_PROJECT =
+      "samples-xwf-01"; // System.getenv("GOOGLE_CLOUD_PROJECT");
 
   private static String requireEnvVar(String varName) {
     String value = System.getenv(varName);
@@ -54,8 +56,7 @@ public class RevokeAccessToTableOrViewIT {
 
   @BeforeClass
   public static void checkRequirements() {
-    requireEnvVar("GOOGLE_CLOUD_PROJECT");
-    requireEnvVar("BIGQUERY_DATASET_NAME");
+    // requireEnvVar("GOOGLE_CLOUD_PROJECT");
   }
 
   @Before
@@ -65,31 +66,34 @@ public class RevokeAccessToTableOrViewIT {
     originalPrintStream = System.out;
     System.setOut(out);
 
-    // Create a temporary table and grant access to it
+    // Create temporary dataset
+    datasetName = RemoteBigQueryHelper.generateDatasetName();
+    CreateDataset.createDataset(GOOGLE_CLOUD_PROJECT, datasetName);
+
+    // Create temporary table and grant access to it
     tableName = "CREATE_POLICY_TABLE_TEST_" + UUID.randomUUID().toString().substring(0, 8);
     Schema schema =
         Schema.of(
             Field.of("stringField", StandardSQLTypeName.STRING),
             Field.of("isBooleanField", StandardSQLTypeName.BOOL));
-    CreateTable.createTable(GOOGLE_CLOUD_PROJECT, BIGQUERY_DATASET_NAME, tableName, schema);
-    GrantAccessToTableOrView.grantAccessToTableOrView(
-        GOOGLE_CLOUD_PROJECT, BIGQUERY_DATASET_NAME, tableName);
+    CreateTable.createTable(GOOGLE_CLOUD_PROJECT, datasetName, tableName, schema);
+    GrantAccessToTableOrView.grantAccessToTableOrView(GOOGLE_CLOUD_PROJECT, datasetName, tableName);
 
     // Create a temporary view and grant access to it
     viewName = "CREATE_POLICY_VIEW_TEST_" + UUID.randomUUID().toString().substring(0, 8);
     String query =
-        String.format(
-            "SELECT stringField, isBooleanField FROM %s.%s", BIGQUERY_DATASET_NAME, tableName);
-    CreateView.createView(GOOGLE_CLOUD_PROJECT, BIGQUERY_DATASET_NAME, viewName, query);
-    GrantAccessToTableOrView.grantAccessToTableOrView(
-        GOOGLE_CLOUD_PROJECT, BIGQUERY_DATASET_NAME, viewName);
+        String.format("SELECT stringField, isBooleanField FROM %s.%s", datasetName, tableName);
+    CreateView.createView(GOOGLE_CLOUD_PROJECT, datasetName, viewName, query);
+    GrantAccessToTableOrView.grantAccessToTableOrView(GOOGLE_CLOUD_PROJECT, datasetName, viewName);
   }
 
   @After
   public void tearDown() {
     // Clean up
-    DeleteTable.deleteTable(GOOGLE_CLOUD_PROJECT, BIGQUERY_DATASET_NAME, tableName);
-    // restores print statements in the original method
+    DeleteTable.deleteTable(GOOGLE_CLOUD_PROJECT, datasetName, tableName);
+    DeleteDataset.deleteDataset(GOOGLE_CLOUD_PROJECT, datasetName);
+
+    // Restores print statements to the original output stream
     System.out.flush();
     System.setOut(originalPrintStream);
     log.log(Level.INFO, bout.toString());
@@ -98,7 +102,7 @@ public class RevokeAccessToTableOrViewIT {
   @Test
   public void testRevokeAccessToTableOrView_revokeAccessToTable() {
     RevokeAccessToTableOrView.revokeAccessToTableOrView(
-        GOOGLE_CLOUD_PROJECT, BIGQUERY_DATASET_NAME, tableName);
+        GOOGLE_CLOUD_PROJECT, datasetName, tableName);
     assertThat(bout.toString())
         .contains("IAM policy of resource " + tableName + " updated successfully");
   }
@@ -106,7 +110,7 @@ public class RevokeAccessToTableOrViewIT {
   @Test
   public void testRevokeAccessToTableOrView_revokeAccessToView() {
     RevokeAccessToTableOrView.revokeAccessToTableOrView(
-        GOOGLE_CLOUD_PROJECT, BIGQUERY_DATASET_NAME, viewName);
+        GOOGLE_CLOUD_PROJECT, datasetName, viewName);
     assertThat(bout.toString())
         .contains("IAM policy of resource " + viewName + " updated successfully");
   }
