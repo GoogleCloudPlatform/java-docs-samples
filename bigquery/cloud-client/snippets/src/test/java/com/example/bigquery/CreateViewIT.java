@@ -70,7 +70,7 @@ public class CreateViewIT {
     CreateDataset.createDataset(GOOGLE_CLOUD_PROJECT, datasetName);
 
     // Create temporary table
-    tableName = "MY_TABLE_NAME_TEST_" + UUID.randomUUID().toString().substring(0, 8);
+    tableName = "table_test_" + UUID.randomUUID().toString().substring(0, 8);
     Schema schema =
         Schema.of(
             Field.of("timestampField", StandardSQLTypeName.TIMESTAMP),
@@ -79,7 +79,7 @@ public class CreateViewIT {
     CreateTable.createTable(GOOGLE_CLOUD_PROJECT, datasetName, tableName, schema);
 
     // Generate view name
-    viewName = "MY_VIEW_NAME_TEST_" + UUID.randomUUID().toString().substring(0, 8);
+    viewName = "view_test_" + UUID.randomUUID().toString().substring(0, 8);
   }
 
   @After

@@ -67,7 +67,7 @@ public class CreateTableIT {
     CreateDataset.createDataset(GOOGLE_CLOUD_PROJECT, datasetName);
 
     // Generate table name
-    tableName = "MY_TABLE_NAME_" + UUID.randomUUID().toString().replace("-", "_");
+    tableName = "table_test" + UUID.randomUUID().toString().replace("-", "_");
   }
 
   @After

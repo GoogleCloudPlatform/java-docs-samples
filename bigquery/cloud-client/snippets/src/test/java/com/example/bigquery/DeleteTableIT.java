@@ -65,7 +65,7 @@ public class DeleteTableIT {
     CreateDataset.createDataset(GOOGLE_CLOUD_PROJECT, datasetName);
 
     // Create temporary table to be deleted
-    tableName = "GCLOUD_TEST_TABLE_TEMP_" + UUID.randomUUID().toString().substring(0, 8);
+    tableName = "table_test_" + UUID.randomUUID().toString().substring(0, 8);
     CreateTable.createTable(GOOGLE_CLOUD_PROJECT, datasetName, tableName, Schema.of());
   }
 

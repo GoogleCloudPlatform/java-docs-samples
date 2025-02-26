@@ -70,7 +70,7 @@ public class RevokeAccessToTableOrViewIT {
     CreateDataset.createDataset(GOOGLE_CLOUD_PROJECT, datasetName);
 
     // Create temporary table and grant access to it
-    tableName = "CREATE_POLICY_TABLE_TEST_" + UUID.randomUUID().toString().substring(0, 8);
+    tableName = "revoke_access_to_table_test_" + UUID.randomUUID().toString().substring(0, 8);
     Schema schema =
         Schema.of(
             Field.of("stringField", StandardSQLTypeName.STRING),
@@ -79,7 +79,7 @@ public class RevokeAccessToTableOrViewIT {
     GrantAccessToTableOrView.grantAccessToTableOrView(GOOGLE_CLOUD_PROJECT, datasetName, tableName);
 
     // Create a temporary view and grant access to it
-    viewName = "CREATE_POLICY_VIEW_TEST_" + UUID.randomUUID().toString().substring(0, 8);
+    viewName = "revoke_access_to_view_test" + UUID.randomUUID().toString().substring(0, 8);
     String query =
         String.format("SELECT stringField, isBooleanField FROM %s.%s", datasetName, tableName);
     CreateView.createView(GOOGLE_CLOUD_PROJECT, datasetName, viewName, query);

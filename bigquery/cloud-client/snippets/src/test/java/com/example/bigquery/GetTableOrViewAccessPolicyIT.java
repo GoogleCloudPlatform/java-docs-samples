@@ -70,7 +70,7 @@ public class GetTableOrViewAccessPolicyIT {
     CreateDataset.createDataset(GOOGLE_CLOUD_PROJECT, datasetName);
 
     // Create temporary table
-    tableName = "CREATE_POLICY_TABLE_TEST_" + UUID.randomUUID().toString().substring(0, 8);
+    tableName = "get_access_policy_table_test_" + UUID.randomUUID().toString().substring(0, 8);
     Schema schema =
         Schema.of(
             Field.of("stringField", StandardSQLTypeName.STRING),
@@ -78,7 +78,7 @@ public class GetTableOrViewAccessPolicyIT {
     CreateTable.createTable(GOOGLE_CLOUD_PROJECT, datasetName, tableName, schema);
 
     // Create a temporary view
-    viewName = "CREATE_POLICY_VIEW_TEST_" + UUID.randomUUID().toString().substring(0, 8);
+    viewName = "get_access_policy_view_test_" + UUID.randomUUID().toString().substring(0, 8);
     String query =
         String.format("SELECT stringField, isBooleanField FROM %s.%s", datasetName, tableName);
     CreateView.createView(GOOGLE_CLOUD_PROJECT, datasetName, viewName, query);
