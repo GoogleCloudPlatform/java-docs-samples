@@ -42,8 +42,7 @@ public class CreateTableIT {
   private PrintStream out;
   private PrintStream originalPrintStream;
 
-  private static final String GOOGLE_CLOUD_PROJECT =
-      "samples-xwf-01"; // System.getenv("GOOGLE_CLOUD_PROJECT");
+  private static final String GOOGLE_CLOUD_PROJECT = System.getenv("GOOGLE_CLOUD_PROJECT");
 
   private static void requireEnvVar(String varName) {
     assertNotNull(
@@ -53,7 +52,7 @@ public class CreateTableIT {
 
   @BeforeClass
   public static void checkRequirements() {
-    // requireEnvVar("GOOGLE_CLOUD_PROJECT");
+    requireEnvVar("GOOGLE_CLOUD_PROJECT");
   }
 
   @Before
