@@ -19,6 +19,8 @@ package com.example.bigquery;
 import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.TestCase.assertNotNull;
 
+import com.google.cloud.Identity;
+import com.google.cloud.Role;
 import com.google.cloud.bigquery.Field;
 import com.google.cloud.bigquery.Schema;
 import com.google.cloud.bigquery.StandardSQLTypeName;
@@ -39,6 +41,8 @@ public class GrantAccessToTableOrViewIT {
   private String datasetName;
   private String tableName;
   private String viewName;
+  private Role role;
+  private Identity identity;
   private ByteArrayOutputStream bout;
   private PrintStream out;
   private PrintStream originalPrintStream;
@@ -82,6 +86,10 @@ public class GrantAccessToTableOrViewIT {
     String query =
         String.format("SELECT stringField, isBooleanField FROM %s.%s", datasetName, tableName);
     CreateView.createView(GOOGLE_CLOUD_PROJECT, datasetName, viewName, query);
+
+    // Role and identity to add to policy.
+    role = Role.of("roles/bigquery.dataViewer");
+    identity = Identity.group("cloud-developer-relations@google.com");
   }
 
   @After
@@ -99,14 +107,16 @@ public class GrantAccessToTableOrViewIT {
 
   @Test
   public void testGrantAccessToTableOrView_grantAccessToTable() {
-    GrantAccessToTableOrView.grantAccessToTableOrView(GOOGLE_CLOUD_PROJECT, datasetName, tableName);
+    GrantAccessToTableOrView.grantAccessToTableOrView(
+        GOOGLE_CLOUD_PROJECT, datasetName, tableName, role, identity);
     assertThat(bout.toString())
-        .contains("IAM policy of resource " + tableName + " created successfully");
+        .contains("IAM policy of resource \"" + tableName + "\" updated successfully");
   }
 
   @Test
   public void testGrantAccessToTableOrView_grantAccessToView() {
-    GrantAccessToTableOrView.grantAccessToTableOrView(GOOGLE_CLOUD_PROJECT, datasetName, viewName);
+    GrantAccessToTableOrView.grantAccessToTableOrView(
+        GOOGLE_CLOUD_PROJECT, datasetName, viewName, role, identity);
     assertThat(bout.toString())
         .contains("IAM policy of resource \"" + viewName + "\" updated successfully");
   }

@@ -25,6 +25,7 @@ import com.google.cloud.bigquery.BigQueryException;
 import com.google.cloud.bigquery.BigQueryOptions;
 import com.google.cloud.bigquery.TableId;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -36,11 +37,15 @@ public class RevokeAccessToTableOrView {
     String projectId = "MY_PROJECT_ID";
     String datasetName = "MY_DATASET_NAME";
     String resourceName = "MY_RESOURCE_NAME";
-    revokeAccessToTableOrView(projectId, datasetName, resourceName);
+    // Role to remove from the access policy
+    Role role = Role.of("roles/bigquery.dataViewer");
+    // Identity to remove from the access policy
+    Identity user = Identity.user("user-add@example.com");
+    revokeAccessToTableOrView(projectId, datasetName, resourceName, role, user);
   }
 
   public static void revokeAccessToTableOrView(
-      String projectId, String datasetName, String resourceName) {
+      String projectId, String datasetName, String resourceName, Role role, Identity identity) {
     try {
       // Initialize client that will be used to send requests. This client only needs
       // to be created once, and can be reused for multiple requests.
@@ -49,11 +54,33 @@ public class RevokeAccessToTableOrView {
       // Create table identity given the projectId, the datasetName and the resourceName.
       TableId tableId = TableId.of(projectId, datasetName, resourceName);
 
-      // Remove identity from bindings and replace it in the current IAM policy.
+      // Remove either identities or roles, or both from bindings and replace it in
+      // the current IAM policy.
       Policy policy = bigquery.getIamPolicy(tableId);
-      Map<Role, Set<Identity>> binding = new HashMap<>(policy.getBindings());
-      binding.remove(Role.of("roles/bigquery.dataViewer"));
-      policy.toBuilder().setBindings(binding).build();
+      // Create a copy of a inmutable map.
+      Map<Role, Set<Identity>> bindings = new HashMap<>(policy.getBindings());
+
+      // Remove all identities with a specific role.
+      bindings.remove(role);
+      // Update bindings.
+      policy = policy.toBuilder().setBindings(bindings).build();
+
+      // Remove one identity in all the existing roles.
+      for (Role roleKey : bindings.keySet()) {
+        if (bindings.get(roleKey).contains(identity)) {
+          // Create a copy of a inmutable set if the identity is present in the role.
+          Set<Identity> identities = new HashSet<>(bindings.get(roleKey));
+          // Remove identity.
+          identities.remove(identity);
+          bindings.put(roleKey, identities);
+          if (bindings.get(roleKey).isEmpty()) {
+            // Remove the role if it has no identities.
+            bindings.remove(roleKey);
+          }
+        }
+      }
+      // Update bindings.
+      policy = policy.toBuilder().setBindings(bindings).build();
 
       // Update the IAM policy by setting the new one.
       bigquery.setIamPolicy(tableId, policy);

@@ -19,6 +19,8 @@ package com.example.bigquery;
 import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.TestCase.assertNotNull;
 
+import com.google.cloud.Identity;
+import com.google.cloud.Role;
 import com.google.cloud.bigquery.Field;
 import com.google.cloud.bigquery.Schema;
 import com.google.cloud.bigquery.StandardSQLTypeName;
@@ -39,6 +41,9 @@ public class RevokeAccessToTableOrViewIT {
   private String datasetName;
   private String tableName;
   private String viewName;
+  private Role firstRole;
+  private Role secondRole;
+  private Identity identity;
   private ByteArrayOutputStream bout;
   private PrintStream out;
   private PrintStream originalPrintStream;
@@ -69,21 +74,36 @@ public class RevokeAccessToTableOrViewIT {
     datasetName = RemoteBigQueryHelper.generateDatasetName();
     CreateDataset.createDataset(GOOGLE_CLOUD_PROJECT, datasetName);
 
-    // Create temporary table and grant access to it.
+    // Create temporary table and view.
     tableName = "revoke_access_to_table_test_" + UUID.randomUUID().toString().substring(0, 8);
     Schema schema =
         Schema.of(
             Field.of("stringField", StandardSQLTypeName.STRING),
             Field.of("isBooleanField", StandardSQLTypeName.BOOL));
     CreateTable.createTable(GOOGLE_CLOUD_PROJECT, datasetName, tableName, schema);
-    GrantAccessToTableOrView.grantAccessToTableOrView(GOOGLE_CLOUD_PROJECT, datasetName, tableName);
-
-    // Create a temporary view and grant access to it.
-    viewName = "revoke_access_to_view_test" + UUID.randomUUID().toString().substring(0, 8);
+    viewName = "revoke_access_to_view_test_" + UUID.randomUUID().toString().substring(0, 8);
     String query =
         String.format("SELECT stringField, isBooleanField FROM %s.%s", datasetName, tableName);
     CreateView.createView(GOOGLE_CLOUD_PROJECT, datasetName, viewName, query);
-    GrantAccessToTableOrView.grantAccessToTableOrView(GOOGLE_CLOUD_PROJECT, datasetName, viewName);
+
+    // Role and identity to add to policy.
+    firstRole = Role.of("roles/bigquery.dataViewer");
+    identity = Identity.group("cloud-developer-relations@google.com");
+
+    // Grant access to table and view.
+    GrantAccessToTableOrView.grantAccessToTableOrView(
+        GOOGLE_CLOUD_PROJECT, datasetName, tableName, firstRole, identity);
+    GrantAccessToTableOrView.grantAccessToTableOrView(
+        GOOGLE_CLOUD_PROJECT, datasetName, viewName, firstRole, identity);
+
+    // Add a second role for identity.
+    secondRole = Role.of("roles/bigquery.dataEditor");
+
+    // Grant access to table and view.
+    GrantAccessToTableOrView.grantAccessToTableOrView(
+        GOOGLE_CLOUD_PROJECT, datasetName, tableName, secondRole, identity);
+    GrantAccessToTableOrView.grantAccessToTableOrView(
+        GOOGLE_CLOUD_PROJECT, datasetName, viewName, secondRole, identity);
   }
 
   @After
@@ -101,15 +121,15 @@ public class RevokeAccessToTableOrViewIT {
   @Test
   public void testRevokeAccessToTableOrView_revokeAccessToTable() {
     RevokeAccessToTableOrView.revokeAccessToTableOrView(
-        GOOGLE_CLOUD_PROJECT, datasetName, tableName);
+        GOOGLE_CLOUD_PROJECT, datasetName, tableName, firstRole, identity);
     assertThat(bout.toString())
-        .contains("IAM policy of resource " + tableName + " updated successfully");
+        .contains("IAM policy of resource \"" + tableName + "\" updated successfully");
   }
 
   @Test
   public void testRevokeAccessToTableOrView_revokeAccessToView() {
     RevokeAccessToTableOrView.revokeAccessToTableOrView(
-        GOOGLE_CLOUD_PROJECT, datasetName, viewName);
+        GOOGLE_CLOUD_PROJECT, datasetName, viewName, firstRole, identity);
     assertThat(bout.toString())
         .contains("IAM policy of resource \"" + viewName + "\" updated successfully");
   }

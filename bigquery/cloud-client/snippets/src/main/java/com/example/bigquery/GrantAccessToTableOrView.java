@@ -33,11 +33,15 @@ public class GrantAccessToTableOrView {
     String projectId = "MY_PROJECT_ID";
     String datasetName = "MY_DATASET_NAME";
     String resourceName = "MY_TABLE_NAME";
-    grantAccessToTableOrView(projectId, datasetName, resourceName);
+    // Role to add to the policy access
+    Role role = Role.of("roles/bigquery.dataViewer");
+    // Identity to add to the policy access
+    Identity identity = Identity.user("user-add@example.com");
+    grantAccessToTableOrView(projectId, datasetName, resourceName, role, identity);
   }
 
   public static void grantAccessToTableOrView(
-      String projectId, String datasetName, String resourceName) {
+      String projectId, String datasetName, String resourceName, Role role, Identity identity) {
     try {
       // Initialize client that will be used to send requests. This client only needs
       // to be created once, and can be reused for multiple requests.
@@ -48,9 +52,7 @@ public class GrantAccessToTableOrView {
 
       // Add new user identity to current IAM policy.
       Policy policy = bigquery.getIamPolicy(tableId);
-      policy.toBuilder()
-          .addIdentity(Role.of("roles/bigquery.dataViewer"), Identity.user("user-add@example.com"))
-          .build();
+      policy = policy.toBuilder().addIdentity(role, identity).build();
 
       // Update the IAM policy by setting the new one.
       bigquery.setIamPolicy(tableId, policy);
