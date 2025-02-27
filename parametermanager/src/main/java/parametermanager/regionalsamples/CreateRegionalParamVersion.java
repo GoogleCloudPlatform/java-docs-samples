@@ -75,7 +75,7 @@ public class CreateRegionalParamVersion {
       ParameterVersion createdParameterVersion =
           client.createParameterVersion(parameterName.toString(), parameterVersion, versionId);
       System.out.printf(
-          "Created regional parameter version %s\n", createdParameterVersion.getName());
+          "Created regional parameter version: %s\n", createdParameterVersion.getName());
 
       return createdParameterVersion;
     }

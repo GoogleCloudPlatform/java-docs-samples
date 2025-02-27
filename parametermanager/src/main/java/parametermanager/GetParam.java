@@ -47,9 +47,10 @@ public class GetParam {
 
       // Get the parameter.
       Parameter parameter = client.getParameter(parameterName.toString());
+      // Find more details for the Parameter object here:
+      // https://cloud.google.com/secret-manager/parameter-manager/docs/reference/rest/v1/projects.locations.parameters#Parameter
       System.out.printf(
-          "Retrieved parameter %s with labels: %s\n",
-          parameter.getName(), parameter.getLabelsMap());
+          "Found the parameter %s with format: %s\n", parameter.getName(), parameter.getFormat());
 
       return parameter;
     }

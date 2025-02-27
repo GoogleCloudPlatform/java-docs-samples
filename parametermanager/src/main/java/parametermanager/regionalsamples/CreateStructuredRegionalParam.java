@@ -64,7 +64,9 @@ public class CreateStructuredRegionalParam {
       // Create the regional parameter.
       Parameter createdParameter =
           client.createParameter(location.toString(), parameter, parameterId);
-      System.out.printf("Created regional parameter %s\n", createdParameter.getName());
+      System.out.printf(
+          "Created regional parameter %s with format %s\n",
+          createdParameter.getName(), createdParameter.getFormat());
 
       return createdParameter;
     }

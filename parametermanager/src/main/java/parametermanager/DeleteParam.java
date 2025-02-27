@@ -46,7 +46,7 @@ public class DeleteParam {
 
       // Delete the parameter.
       client.deleteParameter(parameterName);
-      System.out.printf("Deleted parameter %s\n", parameterName.toString());
+      System.out.printf("Deleted parameter: %s\n", parameterName.toString());
     }
   }
 }

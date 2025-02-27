@@ -16,7 +16,7 @@
 
 package parametermanager;
 
-// [START parametermanager_list_param]
+// [START parametermanager_list_params]
 
 import com.google.cloud.parametermanager.v1.LocationName;
 import com.google.cloud.parametermanager.v1.ParameterManagerClient;
@@ -24,18 +24,18 @@ import com.google.cloud.parametermanager.v1.ParameterManagerClient.ListParameter
 import java.io.IOException;
 
 /** Class to demonstrate listing parameter using the parameter manager SDK for GCP. */
-public class ListParam {
+public class ListParams {
 
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
 
     // Call the method to list parameters.
-    listParam(projectId);
+    listParams(projectId);
   }
 
   // This is an example snippet for listing all parameters in given project.
-  public static ListParametersPagedResponse listParam(String projectId) throws IOException {
+  public static ListParametersPagedResponse listParams(String projectId) throws IOException {
     // Initialize the client that will be used to send requests. This client only
     // needs to be created once, and can be reused for multiple requests.
     try (ParameterManagerClient client = ParameterManagerClient.create()) {
@@ -50,10 +50,12 @@ public class ListParam {
       // List all parameters.
       response
           .iterateAll()
-          .forEach(parameter -> System.out.printf("Parameter: %s\n", parameter.getName()));
+          .forEach(parameter ->
+                  System.out.printf("Found parameter %s with format %s\n",
+                          parameter.getName(), parameter.getFormat()));
 
       return response;
     }
   }
 }
-// [END parametermanager_list_param]
+// [END parametermanager_list_params]

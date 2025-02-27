@@ -330,7 +330,7 @@ public class SnippetsIT {
     ParameterName parameterName = TEST_PARAMETER_NAME;
     CreateParam.createParam(parameterName.getProject(), parameterName.getParameter());
 
-    assertThat(stdOut.toString()).contains("Created parameter");
+    assertThat(stdOut.toString()).contains("Created parameter:");
   }
 
   @Test
@@ -383,7 +383,7 @@ public class SnippetsIT {
     ParameterName parameterName = TEST_PARAMETER_NAME_TO_GET;
     GetParam.getParam(parameterName.getProject(), parameterName.getParameter());
 
-    assertThat(stdOut.toString()).contains("Retrieved parameter");
+    assertThat(stdOut.toString()).contains("Found the parameter");
   }
 
   @Test
@@ -394,24 +394,25 @@ public class SnippetsIT {
         parameterVersionName.getParameter(),
         parameterVersionName.getParameterVersion());
 
-    assertThat(stdOut.toString()).contains("Retrieved parameter version");
+    assertThat(stdOut.toString()).contains("Found parameter version");
+    assertThat(stdOut.toString()).contains("Payload: " + JSON_PAYLOAD);
   }
 
   @Test
-  public void testListParam() throws IOException {
+  public void testListParams() throws IOException {
     ParameterName parameterName = TEST_PARAMETER_NAME_TO_GET;
-    ListParam.listParam(parameterName.getProject());
+    ListParams.listParams(parameterName.getProject());
 
-    assertThat(stdOut.toString()).contains("Parameter");
+    assertThat(stdOut.toString()).contains("Found parameter");
   }
 
   @Test
   public void testListParamVersions() throws IOException {
     ParameterVersionName parameterVersionName = TEST_PARAMETER_VERSION_NAME_TO_GET;
-    ListParamVersion.listParamVersion(
+    ListParamVersions.listParamVersions(
         parameterVersionName.getProject(), parameterVersionName.getParameter());
 
-    assertThat(stdOut.toString()).contains("Parameter version");
+    assertThat(stdOut.toString()).contains("Found parameter version");
   }
 
   @Test
@@ -444,7 +445,7 @@ public class SnippetsIT {
         parameterVersionName.getParameter(),
         parameterVersionName.getParameterVersion());
 
-    assertThat(stdOut.toString()).contains("Deleted parameter version");
+    assertThat(stdOut.toString()).contains("Deleted parameter version:");
   }
 
   @Test
@@ -452,7 +453,7 @@ public class SnippetsIT {
     ParameterName parameterName = TEST_PARAMETER_NAME_TO_DELETE;
     DeleteParam.deleteParam(parameterName.getProject(), parameterName.getParameter());
 
-    assertThat(stdOut.toString()).contains("Deleted parameter");
+    assertThat(stdOut.toString()).contains("Deleted parameter:");
   }
 
   @Test
@@ -463,6 +464,6 @@ public class SnippetsIT {
         parameterVersionName.getParameter(),
         parameterVersionName.getParameterVersion());
 
-    assertThat(stdOut.toString()).contains("Parameter version");
+    assertThat(stdOut.toString()).contains("Rendered parameter version payload");
   }
 }

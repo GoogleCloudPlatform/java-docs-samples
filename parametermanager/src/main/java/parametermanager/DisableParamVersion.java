@@ -66,7 +66,9 @@ public class DisableParamVersion {
       // Update the parameter version to disable it.
       ParameterVersion disabledParameterVersion =
           client.updateParameterVersion(parameterVersion, fieldMask);
-      System.out.printf("Disabled parameter version %s\n", disabledParameterVersion.getName());
+      System.out.printf(
+          "Disabled parameter version %s for parameter %s\n",
+          disabledParameterVersion.getName(), parameterId);
 
       return disabledParameterVersion;
     }

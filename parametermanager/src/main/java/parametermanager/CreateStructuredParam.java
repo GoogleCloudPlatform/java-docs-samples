@@ -56,7 +56,9 @@ public class CreateStructuredParam {
       // Create the parameter.
       Parameter createdParameter =
           client.createParameter(location.toString(), parameter, parameterId);
-      System.out.printf("Created parameter %s\n", createdParameter.getName());
+      System.out.printf(
+          "Created parameter %s with format %s\n",
+          createdParameter.getName(), createdParameter.getFormat());
 
       return createdParameter;
     }

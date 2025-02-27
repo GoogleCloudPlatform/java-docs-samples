@@ -61,8 +61,8 @@ public class RenderRegionalParamVersion {
       RenderParameterVersionResponse response =
           client.renderParameterVersion(parameterVersionName.toString());
       System.out.printf(
-          "Regional parameter version %s with rendered data: %s\n",
-          response.getParameterVersion(), response.getRenderedPayload().toStringUtf8());
+          "Rendered regional parameter version payload: %s\n",
+          response.getRenderedPayload().toStringUtf8());
 
       return response;
     }

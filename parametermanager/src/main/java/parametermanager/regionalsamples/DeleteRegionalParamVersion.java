@@ -57,7 +57,8 @@ public class DeleteRegionalParamVersion {
 
       // Delete the parameter version.
       client.deleteParameterVersion(parameterVersionName.toString());
-      System.out.printf("Deleted regional parameter version %s\n", parameterVersionName.toString());
+      System.out.printf(
+          "Deleted regional parameter version: %s\n", parameterVersionName.toString());
     }
   }
 }

@@ -73,7 +73,8 @@ public class EnableRegionalParamVersion {
       ParameterVersion enabledParameterVersion =
           client.updateParameterVersion(parameterVersion, fieldMask);
       System.out.printf(
-          "Enabled regional parameter version %s\n", enabledParameterVersion.getName());
+          "Enabled regional parameter version %s for regional parameter %s\n",
+          enabledParameterVersion.getName(), parameterId);
 
       return enabledParameterVersion;
     }

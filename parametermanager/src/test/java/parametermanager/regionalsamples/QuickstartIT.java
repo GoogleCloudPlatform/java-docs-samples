@@ -40,8 +40,6 @@ public class QuickstartIT {
   private static final String LOCATION_ID = System.getenv("GOOGLE_CLOUD_PROJECT_LOCATION");
   private static final String PARAMETER_ID = "java-quickstart-" + UUID.randomUUID();
   private static final String VERSION_ID = "java-quickstart-" + UUID.randomUUID();
-  private static final String JSON_PAYLOAD =
-      "{\"username\": \"test-user\", \"host\": \"localhost\"}";
 
   @BeforeClass
   public static void beforeAll() {
@@ -83,8 +81,9 @@ public class QuickstartIT {
 
     try {
       RegionalQuickstart.regionalQuickstart(
-          PROJECT_ID, LOCATION_ID, PARAMETER_ID, VERSION_ID, JSON_PAYLOAD);
-      assertThat(redirected.toString()).contains(JSON_PAYLOAD);
+          PROJECT_ID, LOCATION_ID, PARAMETER_ID, VERSION_ID);
+      assertThat(redirected.toString()).contains(
+              "{\"username\": \"test-user\", \"host\": \"localhost\"}");
     } finally {
       System.setOut(originalOut);
     }

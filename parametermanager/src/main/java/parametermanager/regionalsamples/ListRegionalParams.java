@@ -16,7 +16,7 @@
 
 package parametermanager.regionalsamples;
 
-// [START parametermanager_list_regional_param]
+// [START parametermanager_list_regional_params]
 
 import com.google.cloud.parametermanager.v1.LocationName;
 import com.google.cloud.parametermanager.v1.ParameterManagerClient;
@@ -25,7 +25,7 @@ import com.google.cloud.parametermanager.v1.ParameterManagerSettings;
 import java.io.IOException;
 
 /** Class to demonstrate listing parameters regionally using the Parameter Manager SDK for GCP. */
-public class ListRegionalParam {
+public class ListRegionalParams {
 
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
@@ -33,11 +33,11 @@ public class ListRegionalParam {
     String locationId = "your-location-id";
 
     // Call the method to list parameters regionally.
-    listRegionalParam(projectId, locationId);
+    listRegionalParams(projectId, locationId);
   }
 
   // This is an example snippet that list all parameters in a given region.
-  public static ListParametersPagedResponse listRegionalParam(String projectId, String locationId)
+  public static ListParametersPagedResponse listRegionalParams(String projectId, String locationId)
       throws IOException {
     // Endpoint to call the regional parameter manager server
     String apiEndpoint = String.format("parametermanager.%s.rep.googleapis.com:443", locationId);
@@ -56,10 +56,12 @@ public class ListRegionalParam {
       // List all parameters.
       response
           .iterateAll()
-          .forEach(parameter -> System.out.printf("Parameter: %s\n", parameter.getName()));
+          .forEach(parameter ->
+                  System.out.printf("Found regional parameter %s with format %s\n",
+                          parameter.getName(), parameter.getFormat()));
 
       return response;
     }
   }
 }
-// [END parametermanager_list_regional_param]
+// [END parametermanager_list_regional_params]

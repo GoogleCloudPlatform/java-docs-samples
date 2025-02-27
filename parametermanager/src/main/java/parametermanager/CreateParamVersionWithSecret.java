@@ -74,7 +74,7 @@ public class CreateParamVersionWithSecret {
       // Create the parameter version in the Parameter Manager.
       ParameterVersion createdParameterVersion =
           client.createParameterVersion(parameterName.toString(), parameterVersion, versionId);
-      System.out.printf("Created parameter version %s\n", createdParameterVersion.getName());
+      System.out.printf("Created parameter version: %s\n", createdParameterVersion.getName());
 
       return createdParameterVersion;
     }

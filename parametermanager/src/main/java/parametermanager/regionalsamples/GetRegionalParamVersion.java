@@ -60,10 +60,14 @@ public class GetRegionalParamVersion {
       // Get the parameter version.
       ParameterVersion parameterVersion =
           client.getParameterVersion(parameterVersionName.toString());
+      // Find more details for the Parameter Version object here:
+      // https://cloud.google.com/secret-manager/parameter-manager/docs/reference/rest/v1/projects.locations.parameters.versions#ParameterVersion
       System.out.printf(
-          "Retrieved regional parameter version %s with data: %s\n",
-          parameterVersion.getName(), parameterVersion.getPayload().getData().toStringUtf8());
-
+          "Found regional parameter version %s with state %s\n",
+          parameterVersion.getName(), (parameterVersion.getDisabled() ? "disabled" : "enabled"));
+      if (!parameterVersion.getDisabled()) {
+        System.out.printf("Payload: %s", parameterVersion.getPayload().getData().toStringUtf8());
+      }
       return parameterVersion;
     }
   }

@@ -60,7 +60,7 @@ public class CreateRegionalParam {
       // Create the regional parameter.
       Parameter createdParameter =
           client.createParameter(location.toString(), parameter, parameterId);
-      System.out.printf("Created regional parameter %s\n", createdParameter.getName());
+      System.out.printf("Created regional parameter: %s\n", createdParameter.getName());
 
       return createdParameter;
     }

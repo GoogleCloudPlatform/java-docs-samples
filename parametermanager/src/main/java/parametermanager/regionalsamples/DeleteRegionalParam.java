@@ -55,7 +55,7 @@ public class DeleteRegionalParam {
 
       // Delete the parameter.
       client.deleteParameter(parameterName.toString());
-      System.out.printf("Deleted regional parameter %s\n", parameterName.toString());
+      System.out.printf("Deleted regional parameter: %s\n", parameterName.toString());
     }
   }
 }

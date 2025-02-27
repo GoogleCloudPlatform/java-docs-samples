@@ -37,16 +37,15 @@ public class RegionalQuickstart {
     String locationId = "your-location-id";
     String parameterId = "your-parameter-id";
     String versionId = "your-version-id";
-    String jsonPayload = "{\"username\": \"test-user\", \"host\": \"localhost\"}";
 
     // Run the quickstart method
-    regionalQuickstart(projectId, locationId, parameterId, versionId, jsonPayload);
+    regionalQuickstart(projectId, locationId, parameterId, versionId);
   }
 
   // This is an example snippet that demonstrates basic capabilities in the regional Parameter
   // Manager API
   public static void regionalQuickstart(
-      String projectId, String locationId, String parameterId, String versionId, String jsonPayload)
+      String projectId, String locationId, String parameterId, String versionId)
       throws Exception {
     // Endpoint to call the regional parameter manager server
     String apiEndpoint = String.format("parametermanager.%s.rep.googleapis.com:443", locationId);
@@ -69,12 +68,15 @@ public class RegionalQuickstart {
       // Create the regional parameter.
       Parameter createdParameter =
           client.createParameter(location.toString(), parameter, parameterId);
-      System.out.printf("Created regional parameter %s\n", createdParameter.getName());
+      System.out.printf(
+          "Created regional parameter %s with format %s\n",
+          createdParameter.getName(), createdParameter.getFormat());
 
       // Step 2: Create a parameter version with JSON payload containing a secret reference.
       // Build the parameter name.
       ParameterName parameterName = ParameterName.of(projectId, locationId, parameterId);
 
+      String jsonPayload = "{\"username\": \"test-user\", \"host\": \"localhost\"}";
       // Convert the JSON payload string to ByteString.
       ByteString byteStringPayload = ByteString.copyFromUtf8(jsonPayload);
 
@@ -100,7 +102,7 @@ public class RegionalQuickstart {
       // Render the parameter version.
       ParameterVersion response = client.getParameterVersion(parameterVersionName.toString());
       System.out.printf(
-          "Regional parameter version %s with rendered data: %s\n",
+          "Retrieved regional parameter version %s with rendered payload: %s\n",
           response.getName(), response.getPayload().getData().toStringUtf8());
     }
   }

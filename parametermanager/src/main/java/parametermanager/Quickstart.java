@@ -35,15 +35,14 @@ public class Quickstart {
     String projectId = "your-project-id";
     String parameterId = "your-parameter-id";
     String versionId = "your-version-id";
-    String jsonPayload = "{\"username\": \"test-user\", \"host\": \"localhost\"}";
 
     // Run the quickstart method
-    quickstart(projectId, parameterId, versionId, jsonPayload);
+    quickstart(projectId, parameterId, versionId);
   }
 
   // This is an example snippet of how to use the basic capabilities in the Parameter Manager API.
   public static void quickstart(
-      String projectId, String parameterId, String versionId, String jsonPayload) throws Exception {
+      String projectId, String parameterId, String versionId) throws Exception {
 
     // Initialize the client that will be used to send requests. This client only needs to be
     // created once, and can be reused for multiple requests.
@@ -62,12 +61,15 @@ public class Quickstart {
       // Create the parameter.
       Parameter createdParameter =
           client.createParameter(location.toString(), parameter, parameterId);
-      System.out.printf("Created parameter %s\n", createdParameter.getName());
+      System.out.printf(
+          "Created parameter %s with format %s\n",
+          createdParameter.getName(), createdParameter.getFormat());
 
       // Step 2: Create a parameter version with JSON payload containing a secret reference.
       // Build the parameter name.
       ParameterName parameterName = ParameterName.of(projectId, locationId, parameterId);
 
+      String jsonPayload = "{\"username\": \"test-user\", \"host\": \"localhost\"}";
       // Convert the JSON payload string to ByteString.
       ByteString byteStringPayload = ByteString.copyFromUtf8(jsonPayload);
 
@@ -92,7 +94,7 @@ public class Quickstart {
       // Render the parameter version.
       ParameterVersion response = client.getParameterVersion(parameterVersionName.toString());
       System.out.printf(
-          "Parameter version %s with rendered data: %s\n",
+          "Parameter version %s with payload: %s\n",
           response.getName(), response.getPayload().getData().toStringUtf8());
     }
   }

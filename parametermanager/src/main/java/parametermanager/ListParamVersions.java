@@ -14,42 +14,37 @@
  * limitations under the License.
  */
 
-package parametermanager.regionalsamples;
+package parametermanager;
 
-// [START parametermanager_list_regional_param_version]
+// [START parametermanager_list_param_versions]
 
 import com.google.cloud.parametermanager.v1.ListParameterVersionsRequest;
 import com.google.cloud.parametermanager.v1.ParameterManagerClient;
 import com.google.cloud.parametermanager.v1.ParameterManagerClient.ListParameterVersionsPagedResponse;
-import com.google.cloud.parametermanager.v1.ParameterManagerSettings;
 import com.google.cloud.parametermanager.v1.ParameterName;
 import java.io.IOException;
 
-/** Class to list parameter versions regionally using the Parameter Manager SDK for GCP. */
-public class ListRegionalParamVersion {
+/** Class to list parameter versions using the Parameter Manager SDK for GCP. */
+public class ListParamVersions {
 
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
-    String locationId = "your-location-id";
     String parameterId = "your-parameter-id";
 
-    // Call the method to list parameter versions regionally.
-    listRegionalParamVersion(projectId, locationId, parameterId);
+    // Call the method to list parameter versions.
+    listParamVersions(projectId, parameterId);
   }
 
-  // This is an example snippet that list all parameter versions regionally
-  public static ListParameterVersionsPagedResponse listRegionalParamVersion(
-      String projectId, String locationId, String parameterId) throws IOException {
-    // Endpoint to call the regional parameter manager server
-    String apiEndpoint = String.format("parametermanager.%s.rep.googleapis.com:443", locationId);
-    ParameterManagerSettings parameterManagerSettings =
-        ParameterManagerSettings.newBuilder().setEndpoint(apiEndpoint).build();
-
+  // This is an example snippet that list all parameter versions
+  public static ListParameterVersionsPagedResponse listParamVersions(
+      String projectId, String parameterId) throws IOException {
     // Initialize the client that will be used to send requests. This client only needs to be
     // created once,
     // and can be reused for multiple requests.
-    try (ParameterManagerClient client = ParameterManagerClient.create(parameterManagerSettings)) {
+    try (ParameterManagerClient client = ParameterManagerClient.create()) {
+      String locationId = "global";
+
       // Build the parameter name from the project and parameter ID.
       ParameterName parameterName = ParameterName.of(projectId, locationId, parameterId);
 
@@ -66,11 +61,11 @@ public class ListRegionalParamVersion {
           .forEach(
               version ->
                   System.out.printf(
-                      "Parameter version: %s, Disabled: %s\n",
-                      version.getName(), version.getDisabled()));
+                      "Found parameter version %s with state %s\n",
+                      version.getName(), (version.getDisabled() ? "disabled" : "enabled")));
 
       return response;
     }
   }
 }
-// [END parametermanager_list_regional_param_version]
+// [END parametermanager_list_param_versions]

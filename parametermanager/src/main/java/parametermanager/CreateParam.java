@@ -51,7 +51,7 @@ public class CreateParam {
       // Create the parameter.
       Parameter createdParameter =
           client.createParameter(location.toString(), parameter, parameterId);
-      System.out.printf("Created parameter %s\n", createdParameter.getName());
+      System.out.printf("Created parameter: %s\n", createdParameter.getName());
 
       return createdParameter;
     }

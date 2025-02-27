@@ -54,8 +54,8 @@ public class RenderParamVersion {
       RenderParameterVersionResponse response =
           client.renderParameterVersion(parameterVersionName.toString());
       System.out.printf(
-          "Parameter version %s with rendered data: %s\n",
-          response.getParameterVersion(), response.getRenderedPayload().toStringUtf8());
+          "Rendered parameter version payload: %s\n",
+          response.getRenderedPayload().toStringUtf8());
 
       return response;
     }

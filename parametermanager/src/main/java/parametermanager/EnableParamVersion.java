@@ -66,7 +66,9 @@ public class EnableParamVersion {
       // Update the parameter version to enable it.
       ParameterVersion enabledParameterVersion =
           client.updateParameterVersion(parameterVersion, fieldMask);
-      System.out.printf("Enabled parameter version %s\n", enabledParameterVersion.getName());
+      System.out.printf(
+          "Enabled parameter version %s for parameter %s\n",
+          enabledParameterVersion.getName(), parameterId);
 
       return enabledParameterVersion;
     }

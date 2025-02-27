@@ -385,7 +385,7 @@ public class SnippetsIT {
     CreateRegionalParam.createRegionalParam(
         parameterName.getProject(), parameterName.getLocation(), parameterName.getParameter());
 
-    assertThat(stdOut.toString()).contains("Created regional parameter");
+    assertThat(stdOut.toString()).contains("Created regional parameter:");
   }
 
   @Test
@@ -410,7 +410,7 @@ public class SnippetsIT {
         parameterVersionName.getParameterVersion(),
         PAYLOAD);
 
-    assertThat(stdOut.toString()).contains("Created regional parameter version");
+    assertThat(stdOut.toString()).contains("Created regional parameter version:");
   }
 
   @Test
@@ -423,7 +423,7 @@ public class SnippetsIT {
         parameterVersionName.getParameterVersion(),
         JSON_PAYLOAD);
 
-    assertThat(stdOut.toString()).contains("Created regional parameter version");
+    assertThat(stdOut.toString()).contains("Created regional parameter version:");
   }
 
   @Test
@@ -436,7 +436,7 @@ public class SnippetsIT {
         parameterVersionName.getParameterVersion(),
         SECRET_ID);
 
-    assertThat(stdOut.toString()).contains("Created regional parameter version");
+    assertThat(stdOut.toString()).contains("Created regional parameter version:");
   }
 
   @Test
@@ -445,7 +445,7 @@ public class SnippetsIT {
     GetRegionalParam.getRegionalParam(
         parameterName.getProject(), parameterName.getLocation(), parameterName.getParameter());
 
-    assertThat(stdOut.toString()).contains("Retrieved regional parameter");
+    assertThat(stdOut.toString()).contains("Found the regional parameter");
   }
 
   @Test
@@ -457,26 +457,27 @@ public class SnippetsIT {
         parameterVersionName.getParameter(),
         parameterVersionName.getParameterVersion());
 
-    assertThat(stdOut.toString()).contains("Retrieved regional parameter version");
+    assertThat(stdOut.toString()).contains("Found regional parameter version");
+    assertThat(stdOut.toString()).contains("Payload: " + JSON_PAYLOAD);
   }
 
   @Test
   public void testListRegionalParameters() throws IOException {
     ParameterName parameterName = TEST_PARAMETER_NAME_TO_GET;
-    ListRegionalParam.listRegionalParam(parameterName.getProject(), parameterName.getLocation());
+    ListRegionalParams.listRegionalParams(parameterName.getProject(), parameterName.getLocation());
 
-    assertThat(stdOut.toString()).contains("Parameter");
+    assertThat(stdOut.toString()).contains("Found regional parameter");
   }
 
   @Test
   public void testListRegionalParameterVersions() throws IOException {
     ParameterVersionName parameterVersionName = TEST_PARAMETER_VERSION_NAME_TO_GET;
-    ListRegionalParamVersion.listRegionalParamVersion(
+    ListRegionalParamVersions.listRegionalParamVersions(
         parameterVersionName.getProject(),
         parameterVersionName.getLocation(),
         parameterVersionName.getParameter());
 
-    assertThat(stdOut.toString()).contains("Parameter version");
+    assertThat(stdOut.toString()).contains("Found regional parameter version");
   }
 
   @Test
@@ -512,7 +513,7 @@ public class SnippetsIT {
         parameterVersionName.getParameter(),
         parameterVersionName.getParameterVersion());
 
-    assertThat(stdOut.toString()).contains("Deleted regional parameter version");
+    assertThat(stdOut.toString()).contains("Deleted regional parameter version:");
   }
 
   @Test
@@ -521,7 +522,7 @@ public class SnippetsIT {
     DeleteRegionalParam.deleteRegionalParam(
         parameterName.getProject(), parameterName.getLocation(), parameterName.getParameter());
 
-    assertThat(stdOut.toString()).contains("Deleted regional parameter");
+    assertThat(stdOut.toString()).contains("Deleted regional parameter:");
   }
 
   @Test
@@ -533,6 +534,6 @@ public class SnippetsIT {
         parameterVersionName.getParameter(),
         parameterVersionName.getParameterVersion());
 
-    assertThat(stdOut.toString()).contains("Regional parameter version");
+    assertThat(stdOut.toString()).contains("Rendered regional parameter version payload");
   }
 }

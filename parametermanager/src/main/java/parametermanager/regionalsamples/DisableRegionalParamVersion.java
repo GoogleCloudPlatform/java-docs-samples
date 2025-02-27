@@ -73,7 +73,8 @@ public class DisableRegionalParamVersion {
       ParameterVersion disabledParameterVersion =
           client.updateParameterVersion(parameterVersion, fieldMask);
       System.out.printf(
-          "Disabled regional parameter version %s\n", disabledParameterVersion.getName());
+          "Disabled regional parameter version %s for regional parameter %s\n",
+          disabledParameterVersion.getName(), parameterId);
 
       return disabledParameterVersion;
     }

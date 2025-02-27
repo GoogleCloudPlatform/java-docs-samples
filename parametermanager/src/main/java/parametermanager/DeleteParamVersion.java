@@ -52,7 +52,7 @@ public class DeleteParamVersion {
 
       // Delete the parameter version.
       client.deleteParameterVersion(parameterVersionName);
-      System.out.printf("Deleted parameter version %s\n", parameterVersionName.toString());
+      System.out.printf("Deleted parameter version: %s\n", parameterVersionName.toString());
     }
   }
 }
