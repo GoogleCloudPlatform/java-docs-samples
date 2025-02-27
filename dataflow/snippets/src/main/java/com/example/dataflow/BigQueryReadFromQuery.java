@@ -17,14 +17,14 @@
 package com.example.dataflow;
 
 // [START dataflow_bigquery_read_query]
-import com.google.api.services.bigquery.model.TableRow;
+import com.google.common.collect.ImmutableMap;
 import org.apache.beam.sdk.Pipeline;
-import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO;
-import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.TypedRead;
+import org.apache.beam.sdk.managed.Managed;
 import org.apache.beam.sdk.options.PipelineOptions;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
 import org.apache.beam.sdk.transforms.MapElements;
-import org.apache.beam.sdk.values.TypeDescriptor;
+import org.apache.beam.sdk.values.Row;
+import org.apache.beam.sdk.values.TypeDescriptors;
 
 public class BigQueryReadFromQuery {
   public static void main(String[] args) {
@@ -39,20 +39,23 @@ public class BigQueryReadFromQuery {
     PipelineOptions options = PipelineOptionsFactory.fromArgs(args)
         .withValidation().create();
 
+    ImmutableMap<String, Object> config = ImmutableMap.<String, Object>builder()
+        .put("query", queryString)
+        .build();
+
     // Create a pipeline and apply transforms.
     Pipeline pipeline = Pipeline.create(options);
     pipeline
-        // Read the query results into TableRow objects.
-        .apply(BigQueryIO.readTableRows()
-            .fromQuery(queryString)
-            .usingStandardSql()
-            .withMethod(TypedRead.Method.DIRECT_READ))
-        // The output from the previous step is a PCollection<TableRow>.
+        .apply(Managed.read(Managed.BIGQUERY).withConfig(config)).getSinglePCollection()
         .apply(MapElements
-            .into(TypeDescriptor.of(TableRow.class))
-            .via((TableRow row) -> {
-              System.out.printf("Repo: %s, commits: %s%n", row.get("repo"), row.get("count"));
-              return row;
+            .into(TypeDescriptors.strings())
+            // Access individual fields in the row.
+            .via((Row row) -> {
+              String output = String.format("Repo: %s, commits: %d%n",
+                  row.getString("repo"),
+                  row.getInt64("count"));
+              System.out.println(output);
+              return output;
             }));
     pipeline.run().waitUntilFinish();
   }

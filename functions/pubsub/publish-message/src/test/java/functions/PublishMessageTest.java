@@ -70,12 +70,12 @@ public class PublishMessageTest {
   }
 
   @Test
-  public void functionsPubsubPublish_shouldFailWithoutParameters() throws IOException {
+  public void functionsPubsubPublish_shouldFailWithoutParameters()
+      throws IOException, InterruptedException {
     new PublishMessage().service(request, response);
 
     writerOut.flush();
-    assertThat(responseOut.toString()).isEqualTo(
-        "Missing 'topic' and/or 'message' parameter(s).");
+    assertThat(responseOut.toString()).isEqualTo("Missing 'topic' and/or 'message' parameter(s).");
   }
 
   @Test
@@ -86,8 +86,8 @@ public class PublishMessageTest {
     new PublishMessage().service(request, response);
 
     writerOut.flush();
-    assertThat(logHandler.getStoredLogRecords().get(0).getMessage()).isEqualTo(
-        "Publishing message to topic: " + FUNCTIONS_TOPIC);
+    assertThat(logHandler.getStoredLogRecords().get(0).getMessage())
+        .isEqualTo("Publishing message to topic: " + FUNCTIONS_TOPIC);
     assertThat(responseOut.toString()).isEqualTo("Message published.");
   }
 }

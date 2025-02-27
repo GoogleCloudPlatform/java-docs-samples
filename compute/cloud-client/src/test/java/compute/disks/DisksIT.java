@@ -18,7 +18,8 @@ package compute.disks;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
-import static compute.Util.getZone;
+import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import com.google.cloud.compute.v1.AttachedDisk;
 import com.google.cloud.compute.v1.AttachedDiskInitializeParams;
@@ -32,13 +33,17 @@ import com.google.cloud.compute.v1.Instance;
 import com.google.cloud.compute.v1.InstancesClient;
 import com.google.cloud.compute.v1.NetworkInterface;
 import com.google.cloud.compute.v1.Operation;
+import com.google.cloud.compute.v1.Operation.Status;
 import com.google.cloud.compute.v1.Snapshot;
 import com.google.cloud.compute.v1.SnapshotsClient;
 import compute.DeleteInstance;
 import compute.Util;
+import compute.snapshotschedule.CreateSnapshotSchedule;
+import compute.snapshotschedule.DeleteSnapshotSchedule;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.lang.Error;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -46,7 +51,6 @@ import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import org.junit.Assert;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -61,9 +65,8 @@ import org.junit.runners.JUnit4;
 public class DisksIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static String ZONE = "asia-south1-a";
-
-  private static String REGION;
+  private static final String ZONE = "us-west1-a";
+  private static final String REGION = ZONE.substring(0, ZONE.length() - 2);
   private static String INSTANCE_NAME;
   private static String DISK_NAME;
   private static String DISK_NAME_2;
@@ -71,11 +74,18 @@ public class DisksIT {
   private static String EMPTY_DISK_NAME;
   private static String SNAPSHOT_NAME;
   private static String DISK_TYPE;
-
   private static String ZONAL_BLANK_DISK;
-
   private static String REGIONAL_BLANK_DISK;
-
+  private static String REGIONAL_REPLICATED_DISK;
+  private static final List<String> replicaZones = Arrays.asList(
+          String.format("projects/%s/zones/%s-a", PROJECT_ID, REGION),
+          String.format("projects/%s/zones/%s-b", PROJECT_ID, REGION));
+  private static String SECONDARY_REGIONAL_DISK;
+  private static String SECONDARY_DISK;
+  private static final long DISK_SIZE = 10L;
+  private static String SECONDARY_CUSTOM_DISK;
+  private static String DISK_WITH_SNAPSHOT_SCHEDULE;
+  private static String SNAPSHOT_SCHEDULE;
   private ByteArrayOutputStream stdOut;
 
   // Check if the required environment variables are set.
@@ -93,8 +103,6 @@ public class DisksIT {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
-    ZONE = getZone();
-    REGION = ZONE.substring(0, ZONE.length() - 2);
     String uuid = UUID.randomUUID().toString().split("-")[0];
     INSTANCE_NAME = "test-disks-" + uuid;
     DISK_NAME = "gcloud-test-disk-" + uuid;
@@ -105,33 +113,47 @@ public class DisksIT {
     DISK_TYPE = String.format("zones/%s/diskTypes/pd-ssd", ZONE);
     ZONAL_BLANK_DISK = "gcloud-test-disk-zattach-" + uuid;
     REGIONAL_BLANK_DISK = "gcloud-test-disk-rattach-" + uuid;
+    REGIONAL_REPLICATED_DISK = "gcloud-test-disk-replicated-" + uuid;
+    SECONDARY_REGIONAL_DISK = "gcloud-test-disk-secondary-regional-" + uuid;
+    SECONDARY_DISK = "gcloud-test-disk-secondary-" + uuid;
+    SECONDARY_CUSTOM_DISK = "gcloud-test-disk-custom-" + uuid;
+    DISK_WITH_SNAPSHOT_SCHEDULE = "gcloud-test-disk-shapshot-" + uuid;
+    SNAPSHOT_SCHEDULE = "gcloud-test-snapshot-schedule-" + uuid;
 
-    // Cleanup existing stale instances.
+    // Cleanup existing stale resources.
     Util.cleanUpExistingInstances("test-disks", PROJECT_ID, ZONE);
+    Util.cleanUpExistingDisks("gcloud-test-", PROJECT_ID, ZONE);
+    Util.cleanUpExistingDisks("gcloud-test-", PROJECT_ID, "us-central1-c");
+    Util.cleanUpExistingRegionalDisks(
+            "gcloud-test-disk-secondary-regional-", PROJECT_ID, "us-central1");
+    Util.cleanUpExistingRegionalDisks("gcloud-test-disk-", PROJECT_ID, REGION);
+    Util.cleanUpExistingSnapshots("gcloud-test-snapshot-", PROJECT_ID);
+    Util.cleanUpExistingSnapshotSchedule("gcloud-test-snapshot-schedule-", PROJECT_ID, REGION);
 
     // Create disk from image.
     Image debianImage = null;
     try (ImagesClient imagesClient = ImagesClient.create()) {
       debianImage = imagesClient.getFromFamily("debian-cloud", "debian-11");
     }
-    CreateDiskFromImage.createDiskFromImage(PROJECT_ID, ZONE, DISK_NAME, DISK_TYPE, 10,
+    CreateDiskFromImage.createDiskFromImage(PROJECT_ID, ZONE, DISK_NAME, DISK_TYPE, DISK_SIZE,
         debianImage.getSelfLink());
     assertThat(stdOut.toString()).contains("Disk created from image.");
 
     // Create disk from snapshot.
-    CreateDiskFromImage.createDiskFromImage(PROJECT_ID, ZONE, DISK_NAME_DUMMY, DISK_TYPE, 10,
+    CreateDiskFromImage.createDiskFromImage(PROJECT_ID, ZONE, DISK_NAME_DUMMY, DISK_TYPE, DISK_SIZE,
         debianImage.getSelfLink());
     TimeUnit.SECONDS.sleep(10);
     createDiskSnapshot(PROJECT_ID, ZONE, DISK_NAME_DUMMY, SNAPSHOT_NAME);
     String diskSnapshotLink = String.format("projects/%s/global/snapshots/%s", PROJECT_ID,
         SNAPSHOT_NAME);
     TimeUnit.SECONDS.sleep(5);
-    CreateDiskFromSnapshot.createDiskFromSnapshot(PROJECT_ID, ZONE, DISK_NAME_2, DISK_TYPE, 10,
+    CreateDiskFromSnapshot.createDiskFromSnapshot(
+        PROJECT_ID, ZONE, DISK_NAME_2, DISK_TYPE, DISK_SIZE,
         diskSnapshotLink);
     assertThat(stdOut.toString()).contains("Disk created.");
 
     // Create empty disk.
-    CreateEmptyDisk.createEmptyDisk(PROJECT_ID, ZONE, EMPTY_DISK_NAME, DISK_TYPE, 10);
+    CreateEmptyDisk.createEmptyDisk(PROJECT_ID, ZONE, EMPTY_DISK_NAME, DISK_TYPE, DISK_SIZE);
     assertThat(stdOut.toString()).contains("Empty disk created.");
 
     // Set Disk autodelete.
@@ -139,7 +161,8 @@ public class DisksIT {
     TimeUnit.SECONDS.sleep(10);
     SetDiskAutodelete.setDiskAutodelete(PROJECT_ID, ZONE, INSTANCE_NAME, DISK_NAME, true);
     assertThat(stdOut.toString()).contains("Disk autodelete field updated.");
-
+    CreateSnapshotSchedule.createSnapshotSchedule(PROJECT_ID, REGION, SNAPSHOT_SCHEDULE,
+            "description", 10, "US");
     // Create zonal and regional blank disks for testing attach and resize.
     createZonalDisk();
     createRegionalDisk();
@@ -172,6 +195,12 @@ public class DisksIT {
     DeleteDisk.deleteDisk(PROJECT_ID, ZONE, EMPTY_DISK_NAME);
     DeleteDisk.deleteDisk(PROJECT_ID, ZONE, ZONAL_BLANK_DISK);
     RegionalDelete.deleteRegionalDisk(PROJECT_ID, REGION, REGIONAL_BLANK_DISK);
+    RegionalDelete.deleteRegionalDisk(PROJECT_ID, REGION, REGIONAL_REPLICATED_DISK);
+    RegionalDelete.deleteRegionalDisk(PROJECT_ID, "us-central1", SECONDARY_REGIONAL_DISK);
+    DeleteDisk.deleteDisk(PROJECT_ID, "us-central1-c", SECONDARY_DISK);
+    DeleteDisk.deleteDisk(PROJECT_ID, "us-central1-c", SECONDARY_CUSTOM_DISK);
+    DeleteDisk.deleteDisk(PROJECT_ID, ZONE, DISK_WITH_SNAPSHOT_SCHEDULE);
+    DeleteSnapshotSchedule.deleteSnapshotSchedule(PROJECT_ID, REGION, SNAPSHOT_SCHEDULE);
 
     stdOut.close();
     System.setOut(out);
@@ -212,7 +241,7 @@ public class DisksIT {
               .setAutoDelete(false)
               .setBoot(true)
               .setInitializeParams(AttachedDiskInitializeParams.newBuilder()
-                  .setDiskSizeGb(10)
+                  .setDiskSizeGb(DISK_SIZE)
                   .setSourceImage(sourceImage)
                   .setDiskName(diskName)
                   .build())
@@ -241,17 +270,15 @@ public class DisksIT {
   public static void createZonalDisk()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     String diskType = String.format("zones/%s/diskTypes/pd-standard", ZONE);
-    CreateEmptyDisk.createEmptyDisk(PROJECT_ID, ZONE, ZONAL_BLANK_DISK, diskType, 12);
+    CreateEmptyDisk.createEmptyDisk(PROJECT_ID, ZONE, ZONAL_BLANK_DISK, diskType, DISK_SIZE);
   }
 
   public static void createRegionalDisk()
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     String diskType = String.format("regions/%s/diskTypes/pd-balanced", REGION);
-    List<String> replicaZones = Arrays.asList(
-        String.format("projects/%s/zones/%s-a", PROJECT_ID, REGION),
-        String.format("projects/%s/zones/%s-b", PROJECT_ID, REGION));
+
     RegionalCreateFromSource.createRegionalDisk(PROJECT_ID, REGION, replicaZones,
-        REGIONAL_BLANK_DISK, diskType, 11, Optional.empty(), Optional.empty());
+        REGIONAL_BLANK_DISK, diskType, 10, Optional.empty(), Optional.empty());
   }
 
   @BeforeEach
@@ -278,7 +305,7 @@ public class DisksIT {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
     // Test disk attach.
     Instance instance = Util.getInstance(PROJECT_ID, ZONE, INSTANCE_NAME);
-    Assert.assertEquals(1, instance.getDisksCount());
+    assertEquals(1, instance.getDisksCount());
 
     Disk zonalDisk = Util.getDisk(PROJECT_ID, ZONE, ZONAL_BLANK_DISK);
     Disk regionalDisk = Util.getRegionalDisk(PROJECT_ID, REGION, REGIONAL_BLANK_DISK);
@@ -298,9 +325,82 @@ public class DisksIT {
     ResizeRegionalDisk.resizeRegionalDisk(PROJECT_ID, regionalDisk.getRegion().split("regions/")[1],
         regionalDisk.getName(), 23);
 
-    Assert.assertEquals(22, Util.getDisk(PROJECT_ID, ZONE, ZONAL_BLANK_DISK).getSizeGb());
-    Assert.assertEquals(23,
+    assertEquals(22, Util.getDisk(PROJECT_ID, ZONE, ZONAL_BLANK_DISK).getSizeGb());
+    assertEquals(23,
         Util.getRegionalDisk(PROJECT_ID, REGION, REGIONAL_BLANK_DISK).getSizeGb());
   }
 
+  @Test
+  public void testCreateReplicatedDisk()
+          throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    Status status = CreateReplicatedDisk.createReplicatedDisk(PROJECT_ID, REGION,
+            replicaZones, REGIONAL_REPLICATED_DISK, 100, DISK_TYPE);
+
+    assertThat(status).isEqualTo(Status.DONE);
+    assertDoesNotThrow(() -> {
+      Disk disk = Util.getRegionalDisk(PROJECT_ID, REGION, REGIONAL_REPLICATED_DISK);
+      assertEquals(REGIONAL_REPLICATED_DISK, disk.getName());
+    });
+  }
+
+  @Test
+  public void testCreateDiskSecondaryRegional()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    String diskType = String.format(
+        "projects/%s/regions/%s/diskTypes/pd-balanced", PROJECT_ID, REGION);
+    Status status = CreateDiskSecondaryRegional.createDiskSecondaryRegional(
+        PROJECT_ID, PROJECT_ID, REGIONAL_BLANK_DISK, SECONDARY_REGIONAL_DISK,
+        REGION, "us-central1", DISK_SIZE,  diskType);
+
+    assertThat(status).isEqualTo(Status.DONE);
+    assertDoesNotThrow(() -> {
+      Disk disk = Util.getRegionalDisk(PROJECT_ID, "us-central1", SECONDARY_REGIONAL_DISK);
+      assertEquals(SECONDARY_REGIONAL_DISK, disk.getName());
+    });
+  }
+
+  @Test
+  public void testCreateDiskSecondaryZonal()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    String diskType = String.format(
+        "projects/%s/zones/%s/diskTypes/pd-ssd", PROJECT_ID, ZONE);
+    Status status = CreateDiskSecondaryZonal.createDiskSecondaryZonal(
+        PROJECT_ID, PROJECT_ID, EMPTY_DISK_NAME, SECONDARY_DISK, ZONE,
+        "us-central1-c", DISK_SIZE, diskType);
+
+    assertThat(status).isEqualTo(Status.DONE);
+    assertDoesNotThrow(() -> {
+      Disk disk = Util.getDisk(PROJECT_ID, "us-central1-c", SECONDARY_DISK);
+      assertEquals(SECONDARY_DISK, disk.getName());
+    });
+  }
+
+  @Test
+  public void testCreateSecondaryCustomDisk()
+      throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    String diskType =  String.format(
+        "projects/%s/zones/%s/diskTypes/pd-ssd", PROJECT_ID, ZONE);
+    Status status = CreateSecondaryCustomDisk.createSecondaryCustomDisk(
+        PROJECT_ID, PROJECT_ID, EMPTY_DISK_NAME, SECONDARY_CUSTOM_DISK, ZONE,
+        "us-central1-c", DISK_SIZE,  diskType);
+
+    assertThat(status).isEqualTo(Status.DONE);
+    assertDoesNotThrow(() -> {
+      Disk disk = Util.getDisk(PROJECT_ID, "us-central1-c", SECONDARY_CUSTOM_DISK);
+      assertEquals(SECONDARY_CUSTOM_DISK, disk.getName());
+    });
+  }
+
+  @Test
+  void testCreateDiskWithSnapshotSchedule()
+          throws IOException, ExecutionException, InterruptedException, TimeoutException {
+    Status status = CreateDiskWithSnapshotSchedule.createDiskWithSnapshotSchedule(
+            PROJECT_ID, ZONE, DISK_WITH_SNAPSHOT_SCHEDULE, SNAPSHOT_SCHEDULE);
+
+    assertThat(status).isEqualTo(Status.DONE);
+    assertDoesNotThrow(() -> {
+      Disk disk = Util.getDisk(PROJECT_ID, ZONE, DISK_WITH_SNAPSHOT_SCHEDULE);
+      assertEquals(DISK_WITH_SNAPSHOT_SCHEDULE, disk.getName());
+    });
+  }
 }

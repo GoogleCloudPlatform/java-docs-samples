@@ -30,6 +30,7 @@ import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -40,7 +41,8 @@ public class PublishMessage implements HttpFunction {
   private static final Logger logger = Logger.getLogger(PublishMessage.class.getName());
 
   @Override
-  public void service(HttpRequest request, HttpResponse response) throws IOException {
+  public void service(HttpRequest request, HttpResponse response)
+      throws IOException, InterruptedException {
     Optional<String> maybeTopicName = request.getFirstQueryParameter("topic");
     Optional<String> maybeMessage = request.getFirstQueryParameter("message");
 
@@ -72,6 +74,12 @@ public class PublishMessage implements HttpFunction {
     } catch (InterruptedException | ExecutionException e) {
       logger.log(Level.SEVERE, "Error publishing Pub/Sub message: " + e.getMessage(), e);
       responseMessage = "Error publishing Pub/Sub message; see logs for more info.";
+    } finally {
+      if (publisher != null) {
+        // When finished with the publisher, shutdown to free up resources.
+        publisher.shutdown();
+        publisher.awaitTermination(1, TimeUnit.MINUTES);
+      }
     }
 
     responseWriter.write(responseMessage);

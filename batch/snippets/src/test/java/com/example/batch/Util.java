@@ -109,7 +109,7 @@ public class Util {
     String[] jobName = job.getName().split("/");
     Instant startTime = Instant.now();
     while (WAIT_STATES.contains(job.getStatus().getState())) {
-      if (Instant.now().getEpochSecond() - startTime.getEpochSecond() > 900) {
+      if (Instant.now().getEpochSecond() - startTime.getEpochSecond() > 1200) {
         throw new Error("Timed out waiting for operation to complete.");
       }
       job = getJob(jobName[1], jobName[3], jobName[5]);

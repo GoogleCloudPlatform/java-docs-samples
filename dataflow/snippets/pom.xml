@@ -1,5 +1,5 @@
 <!--
- Copyright 2023 Google LLC.
+ Copyright 2023 Google LLC
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <apache_beam.version>2.58.0</apache_beam.version>
+    <apache_beam.version>2.62.0</apache_beam.version>
     <slf4j.version>2.0.12</slf4j.version>
     <parquet.version>1.14.0</parquet.version>
     <iceberg.version>1.4.2</iceberg.version>
@@ -118,7 +118,7 @@
           <groupId>com.google.apis</groupId>
           <artifactId>google-api-services-storage</artifactId>
         </exclusion>
-      </exclusions>     
+      </exclusions>
     </dependency>
 
 
@@ -163,11 +163,10 @@
       <version>${apache_beam.version}</version>
     </dependency>
     <dependency>
-      <!-- For sending Kafka messages in the integration test -->
+      <!-- For initializing the KafkaIO connector -->
       <groupId>org.apache.kafka</groupId>
       <artifactId>kafka-clients</artifactId>
       <version>3.8.0</version>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <!-- For running containerized Kafka instance in the integration test -->

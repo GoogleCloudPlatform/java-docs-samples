@@ -51,7 +51,12 @@ public class SnippetsIT {
   private static final String GEMINI_PRO = "gemini-1.5-pro-001";
   private static final String DATASTORE_ID = "grounding-test-datastore_1716831150046";
   private static final int MAX_ATTEMPT_COUNT = 3;
-  private static final int INITIAL_BACKOFF_MILLIS = 120000; // 2 minutes
+  private static final int INITIAL_BACKOFF_MILLIS = 120000;
+  private static final String TARGET_LANGUAGE_CODE = "fr";
+  private static final String TEXT_TO_TRANSLATE =  "Hello! How are you doing today?";
+
+
+  // 2 minutes
 
   @Rule
   public final MultipleAttemptsRule multipleAttemptsRule =
@@ -493,5 +498,14 @@ public class SnippetsIT {
     assertThat(recognizedObjects).contains("keyboard");
     assertThat(recognizedObjects).contains("passport");
     assertThat(recognizedObjects).contains("pot");
+  }
+
+  @Test
+  public void testGeminiTranslate() throws Exception {
+    String output = GeminiTranslate.geminiTranslate(
+        PROJECT_ID, LOCATION, GEMINI_PRO, TEXT_TO_TRANSLATE, TARGET_LANGUAGE_CODE);
+
+    assertThat(output).ignoringCase().contains("Bonjour");
+    assertThat(output).ignoringCase().contains("aujourd'hui");
   }
 }

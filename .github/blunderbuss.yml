@@ -24,7 +24,6 @@ assign_issues_by:
   - "api: cloudasset"
   to:
   - GoogleCloudPlatform/cloud-asset-analysis-team
-  - GoogleCloudPlatform/cloud-asset-platform-team
 - labels:
   - 'api: logging'
   - 'api: clouderrorreporting'
@@ -39,7 +38,7 @@ assign_issues_by:
 - labels:
   - 'api: cloudsql'
   to:
-  - GoogleCloudPlatform/infra-db-sdk
+  - GoogleCloudPlatform/cloud-sql-connectors
 - labels:
   - 'api: spanner'
   to:
@@ -63,14 +62,14 @@ assign_issues_by:
   to:
   - GoogleCloudPlatform/cloud-storage-dpes
 - labels:
-  - "api: cloudiot"
-  to:
-  - GoogleCloudPlatform/api-iot
-- labels:
   - "api: pubsub"
   - "api: pubsublite"
   to:
   - GoogleCloudPlatform/api-pubsub-and-pubsublite
+- labels:
+  - "api: parametermanager"
+  to:
+  - GoogleCloudPlatform/cloud-parameters-team
 - labels:
   - "api: mediatranslation"
   - "api: media"
@@ -93,10 +92,6 @@ assign_issues_by:
   - "api: appengine"
   to:
   - GoogleCloudPlatform/serverless-runtimes
-- labels:
-  - "api: cloudfunctions"
-  to:
-  - GoogleCloudPlatform/functions-framework-google
 - labels:
   - "api: bigquerydatatransfer"
   to:
@@ -110,7 +105,6 @@ assign_prs_by:
   - "api: cloudasset"
   to:
   - GoogleCloudPlatform/cloud-asset-analysis-team
-  - GoogleCloudPlatform/cloud-asset-platform-team
 - labels:
   - 'api: logging'
   - 'api: clouderrorreporting'
@@ -125,7 +119,11 @@ assign_prs_by:
 - labels:
   - 'api: cloudsql'
   to:
-  - GoogleCloudPlatform/infra-db-sdk
+  - GoogleCloudPlatform/cloud-sql-connectors
+- labels:
+  - 'api: parametermanager'
+  to:
+  - GoogleCloudPlatform/cloud-parameters-team
 - labels:
   - 'api: spanner'
   to:
@@ -148,10 +146,6 @@ assign_prs_by:
   - 'api: storagetransfer'
   to:
   - GoogleCloudPlatform/cloud-storage-dpes
-- labels:
-  - "api: cloudiot"
-  to:
-  - GoogleCloudPlatform/api-iot
 - labels:
   - "api: pubsub"
   - "api: pubsublite"
@@ -179,7 +173,3 @@ assign_prs_by:
   - "api: appengine"
   to:
   - GoogleCloudPlatform/serverless-runtimes
-- labels:
-  - "api: cloudfunctions"
-  to:
-  - GoogleCloudPlatform/functions-framework-google
