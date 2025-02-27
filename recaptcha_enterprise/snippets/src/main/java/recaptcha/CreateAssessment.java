@@ -36,9 +36,10 @@ public class CreateAssessment {
     String recaptchaAction = "action-name";
     String userIpAddress = "user-ip-address";
     String userAgent = "user-agent";
-    String ja3 = "ja3"
+    String ja3 = "ja3";
+    String ja4 = "ja4";
 
-    createAssessment(projectID, recaptchaSiteKey, token, recaptchaAction, userIpAddress, userAgent, ja3);
+    createAssessment(projectID, recaptchaSiteKey, token, recaptchaAction, userIpAddress, userAgent, ja3, ja4);
   }
 
   /**
@@ -53,9 +54,10 @@ public class CreateAssessment {
    * @param userIpAddress: IP address of the user sending a request.
    * @param userAgent: User agent is included in the HTTP request in the request header. 
    * @param ja3: JA3 associated with the request.
+   * @param ja4: JA4 associated with the request.
    */
   public static void createAssessment(
-      String projectID, String recaptchaSiteKey, String token, String recaptchaAction, String userIpAddress, String userAgent, String ja3)
+      String projectID, String recaptchaSiteKey, String token, String recaptchaAction, String userIpAddress, String userAgent, String ja3, String ja4)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -69,6 +71,7 @@ public class CreateAssessment {
           .setToken(token)
           .setUserIpAddress(userIpAddress)
           .setJa3(ja3)
+          .setJa4(ja4)
           .setUserAgent(userAgent)
           .build();
 

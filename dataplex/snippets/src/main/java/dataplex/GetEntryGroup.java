@@ -22,7 +22,6 @@ import com.google.cloud.dataplex.v1.EntryGroup;
 import com.google.cloud.dataplex.v1.EntryGroupName;
 import java.io.IOException;
 
-// Sample to get Entry Group
 public class GetEntryGroup {
 
   public static void main(String[] args) throws IOException {
@@ -36,15 +35,13 @@ public class GetEntryGroup {
     System.out.println("Entry group retrieved successfully: " + entryGroup.getName());
   }
 
+  // Method to retrieve Entry Group located in projectId, location and with entryGroupId
   public static EntryGroup getEntryGroup(String projectId, String location, String entryGroupId)
       throws IOException {
-    EntryGroupName entryGroupName = EntryGroupName.of(projectId, location, entryGroupId);
-
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources,
-    // or use "try-with-close" statement to do this automatically.
+    // once, and can be reused for multiple requests.
     try (CatalogServiceClient client = CatalogServiceClient.create()) {
+      EntryGroupName entryGroupName = EntryGroupName.of(projectId, location, entryGroupId);
       return client.getEntryGroup(entryGroupName);
     }
   }

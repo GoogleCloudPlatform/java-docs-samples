@@ -17,7 +17,6 @@
 package tpu;
 
 //[START tpu_queued_resources_get]
-
 import com.google.cloud.tpu.v2alpha1.GetQueuedResourceRequest;
 import com.google.cloud.tpu.v2alpha1.QueuedResource;
 import com.google.cloud.tpu.v2alpha1.TpuClient;
@@ -29,7 +28,7 @@ public class GetQueuedResource {
     // Project ID or project number of the Google Cloud project.
     String projectId = "YOUR_PROJECT_ID";
     // The zone in which the TPU was created.
-    String zone = "europe-west4-a";
+    String zone = "us-central1-f";
     // The name for your Queued Resource.
     String queuedResourceId = "QUEUED_RESOURCE_ID";
 

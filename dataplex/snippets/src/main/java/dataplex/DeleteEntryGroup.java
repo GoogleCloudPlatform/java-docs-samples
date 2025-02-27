@@ -20,7 +20,6 @@ package dataplex;
 import com.google.cloud.dataplex.v1.CatalogServiceClient;
 import com.google.cloud.dataplex.v1.EntryGroupName;
 
-// Sample to delete Entry Group
 public class DeleteEntryGroup {
 
   public static void main(String[] args) throws Exception {
@@ -34,15 +33,13 @@ public class DeleteEntryGroup {
     System.out.println("Successfully deleted entry group");
   }
 
+  // Method to delete Entry Group located in projectId, location and with entryGroupId
   public static void deleteEntryGroup(String projectId, String location, String entryGroupId)
       throws Exception {
-    EntryGroupName entryGroupName = EntryGroupName.of(projectId, location, entryGroupId);
-
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. After completing all of your requests, call
-    // the "close" method on the client to safely clean up any remaining background resources,
-    // or use "try-with-close" statement to do this automatically.
+    // once, and can be reused for multiple requests.
     try (CatalogServiceClient client = CatalogServiceClient.create()) {
+      EntryGroupName entryGroupName = EntryGroupName.of(projectId, location, entryGroupId);
       client.deleteEntryGroupAsync(entryGroupName).get();
     }
   }
