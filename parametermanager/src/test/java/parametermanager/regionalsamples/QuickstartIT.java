@@ -37,7 +37,8 @@ import org.junit.runners.JUnit4;
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 public class QuickstartIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String LOCATION_ID = System.getenv("GOOGLE_CLOUD_PROJECT_LOCATION");
+  private static final String LOCATION_ID =
+          System.getenv().getOrDefault("GOOGLE_CLOUD_PROJECT_LOCATION", "us-central1");
   private static final String PARAMETER_ID = "java-quickstart-" + UUID.randomUUID();
   private static final String VERSION_ID = "java-quickstart-" + UUID.randomUUID();
 

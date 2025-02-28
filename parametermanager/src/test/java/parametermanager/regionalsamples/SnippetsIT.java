@@ -56,7 +56,8 @@ import org.junit.runners.JUnit4;
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 public class SnippetsIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String LOCATION_ID = System.getenv("GOOGLE_CLOUD_PROJECT_LOCATION");
+  private static final String LOCATION_ID =
+          System.getenv().getOrDefault("GOOGLE_CLOUD_PROJECT_LOCATION", "us-central1");
   private static final String PAYLOAD = "test123";
   private static final String JSON_PAYLOAD =
       "{\"username\": \"test-user\", \"host\": \"localhost\"}";
