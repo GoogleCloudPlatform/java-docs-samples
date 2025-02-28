@@ -24,7 +24,7 @@ import com.google.cloud.parametermanager.v1.ParameterManagerClient.ListParameter
 import com.google.cloud.parametermanager.v1.ParameterManagerSettings;
 import java.io.IOException;
 
-/** Class to demonstrate listing parameters regionally using the Parameter Manager SDK for GCP. */
+/** Class to demonstrate listing parameters for a specified region using the Parameter Manager SDK for GCP. */
 public class ListRegionalParams {
 
   public static void main(String[] args) throws IOException {
