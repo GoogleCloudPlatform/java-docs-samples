@@ -25,7 +25,10 @@ import com.google.cloud.parametermanager.v1.ParameterManagerSettings;
 import com.google.cloud.parametermanager.v1.ParameterName;
 import java.io.IOException;
 
-/** Class to list parameter versions for a specified region using the Parameter Manager SDK for GCP. */
+/**
+ * Class to list parameter versions for a specified region using the Parameter Manager SDK
+ * for GCP.
+ */
 public class ListRegionalParamVersions {
 
   public static void main(String[] args) throws IOException {
