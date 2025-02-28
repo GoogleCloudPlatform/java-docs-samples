@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<!--
+  Copyright 2025 Google LLC
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Session Management</title>
+    <script src="verify.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body
+    class="bg-gray-100 min-h-screen flex flex-col justify-center items-center font-sans m-0 p-0"
+  >
+    <p class="loading-required-inverse">Loading...</p>
+    <h1 class="loading-required hidden text-2xl font-bold mb-4">Register</h1>
+    <form
+      id="register-form"
+      class="loading-required hidden bg-white p-8 rounded shadow-md w-96"
+      action="/auth/register"
+      method="post"
+    >
+      <div class="mb-4">
+        <label for="email" class="block text-gray-700 font-bold mb-2"
+          >Email:</label
+        >
+        <input
+          type="email"
+          id="email"
+          name="email"
+          required
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        />
+      </div>
+      <div class="mb-4">
+        <label for="username" class="block text-gray-700 font-bold mb-2"
+          >Username:</label
+        >
+        <input
+          type="text"
+          id="username"
+          name="username"
+          minlength="3"
+          maxlength="20"
+          required
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        />
+      </div>
+      <div class="mb-6">
+        <label for="password" class="block text-gray-700 font-bold mb-2"
+          >Password:</label
+        >
+        <input
+          type="password"
+          id="password"
+          name="password"
+          minlength="8"
+          maxlength="255"
+          required
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        />
+      </div>
+      <input
+        type="submit"
+        value="Register"
+        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
+      />
+      <a
+        href="/login"
+        class="w-full text-center text-sm mt-4 inline-block align-baseline font-bold text-blue-500 hover:text-blue-800"
+        >Already have an account?</a
+      >
+      <p id="error-message" class="text-red-500 text-center mt-4 m-0"></p>
+    </form>
+
+    <script>
+      verifyToken().then((data) => {
+        if (data) {
+          window.location.href = "/";
+          return;
+        }
+
+        // Unhide the elements
+        document.querySelectorAll(".loading-required").forEach((element) => {
+          element.classList.remove("hidden");
+        });
+
+        // Hide the loading message
+        document
+          .querySelector(".loading-required-inverse")
+          .classList.add("hidden");
+      });
+    </script>
+    <script>
+      // Handle register
+      document
+        .getElementById("register-form")
+        .addEventListener("submit", (event) => {
+          event.preventDefault();
+
+          const email = document.getElementById("email").value;
+          const username = document.getElementById("username").value;
+          const password = document.getElementById("password").value;
+
+          // Validate username regex
+          if (!/^[a-zA-Z0-9._-]+$/.test(username)) {
+            document.getElementById("error-message").textContent =
+              "Username must only contain letters, numbers, periods, underscores, and hyphens";
+            return;
+          }
+
+          fetch("/auth/register", {
+            method: "POST",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": window.location.origin,
+              "Access-Control-Allow-Methods": "POST",
+              "Access-Control-Allow-Credentials": "true",
+            },
+            body: JSON.stringify({
+              email: email,
+              username: username,
+              password: password,
+            }),
+          })
+            .then((response) => {
+              if (response.ok) {
+                window.location.href = "/login";
+              }
+
+              return response.text();
+            })
+            .then((response) => {
+              document.getElementById("error-message").textContent = response;
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+        });
+    </script>
+  </body>
+</html>
