@@ -35,7 +35,7 @@ public class CreateView {
     String tableName = "MY_TABLE_NAME";
     String viewName = "MY_VIEW_NAME";
     String query =
-        String.format("SELECT StringField, BooleanField FROM %s.%s", datasetName, tableName);
+        String.format("SELECT stringField, isBooleanField FROM %s.%s", datasetName, tableName);
     createView(projectId, datasetName, viewName, query);
   }
 

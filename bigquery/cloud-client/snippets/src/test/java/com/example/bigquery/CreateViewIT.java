@@ -73,9 +73,8 @@ public class CreateViewIT {
     tableName = "table_test_" + UUID.randomUUID().toString().substring(0, 8);
     Schema schema =
         Schema.of(
-            Field.of("timestampField", StandardSQLTypeName.TIMESTAMP),
             Field.of("stringField", StandardSQLTypeName.STRING),
-            Field.of("booleanField", StandardSQLTypeName.BOOL));
+            Field.of("isBooleanField", StandardSQLTypeName.BOOL));
     CreateTable.createTable(GOOGLE_CLOUD_PROJECT, datasetName, tableName, schema);
 
     // Generate view name.
@@ -98,7 +97,7 @@ public class CreateViewIT {
   @Test
   public void testCreateView() {
     String query =
-        String.format("SELECT stringField, booleanField FROM %s.%s", datasetName, tableName);
+        String.format("SELECT stringField, isBooleanField FROM %s.%s", datasetName, tableName);
     CreateView.createView(GOOGLE_CLOUD_PROJECT, datasetName, viewName, query);
     assertThat(bout.toString()).contains(viewName + "\" created successfully");
   }
