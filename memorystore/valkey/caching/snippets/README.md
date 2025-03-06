@@ -2,7 +2,7 @@
 
 This folder contains a samples in form of stand-alone snippets that demonstrate useful scenarios.
 
-## Prerequiites
+## Prerequisites
 
 Ensure the following setup is in place.
 
