@@ -28,7 +28,7 @@ valkey-cli
 
 ## Running the sample code
 
-Each example contains instructions on any prerequiite configuration.
+Each example contains instructions on any prerequisite configuration.
 
 ## Compile the app through Maven (optional)
 
