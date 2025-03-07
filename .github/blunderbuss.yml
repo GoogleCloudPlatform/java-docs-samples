@@ -60,7 +60,7 @@ assign_issues_by:
   - 'api: storage'
   - 'api: storagetransfer'
   to:
-  - GoogleCloudPlatform/cloud-storage-dpes
+  - GoogleCloudPlatform/gcs-sdk-team
 - labels:
   - "api: pubsub"
   - "api: pubsublite"
@@ -145,7 +145,7 @@ assign_prs_by:
   - 'api: storage'
   - 'api: storagetransfer'
   to:
-  - GoogleCloudPlatform/cloud-storage-dpes
+  - GoogleCloudPlatform/gcs-sdk-team
 - labels:
   - "api: pubsub"
   - "api: pubsublite"
