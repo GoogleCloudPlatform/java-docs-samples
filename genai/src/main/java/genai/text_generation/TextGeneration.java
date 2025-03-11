@@ -17,12 +17,14 @@
 package genai.text_generation;
 
 // [START googlegenaisdk_textgen_with_txt]
+
 import com.google.genai.Client;
 import com.google.genai.types.GenerateContentResponse;
 import java.io.IOException;
 import org.apache.http.HttpException;
 
 public class TextGeneration {
+
   public static void main(String[] args) throws IOException, HttpException {
     // TODO(Developer): Replace the below variables before running the sample.
     String modelId = "gemini-2.0-flash-001";
@@ -30,7 +32,8 @@ public class TextGeneration {
     generateContent(modelId, prompt);
   }
 
-  public static String generateContent(String modelId, String prompt) throws HttpException, IOException {
+  public static String generateContent(String modelId, String prompt)
+      throws HttpException, IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (Client client = new Client()) {

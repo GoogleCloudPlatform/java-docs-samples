@@ -36,13 +36,12 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-  <!-- [START googlegenaisdk_install_with_bom] -->
   <dependencies>
     <dependency>
       <groupId>com.google.genai</groupId>
       <artifactId>google-genai</artifactId>
+      <version>0.2.0</version>
     </dependency>
-    <!-- [END googlegenaisdk_install_with_bom] -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>

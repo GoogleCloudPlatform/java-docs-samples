@@ -31,7 +31,7 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class TextGenerationIT {
 
-  private String MODEL_ID="gemini-2.0-flash-001";
+  private final String MODEL_ID = "gemini-2.0-flash-001";
 
   // Check if the required environment variables are set.
   public static void requireEnvVar(String envVarName) {
@@ -42,10 +42,10 @@ public class TextGenerationIT {
 
   @BeforeClass
   public static void setUp() {
-      requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
-      requireEnvVar("GOOGLE_CLOUD_PROJECT");
-      requireEnvVar("GOOGLE_CLOUD_LOCATION");
-      requireEnvVar("GOOGLE_GENAI_USE_VERTEXAI");
+    requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
+    requireEnvVar("GOOGLE_CLOUD_PROJECT");
+    requireEnvVar("GOOGLE_CLOUD_LOCATION");
+    requireEnvVar("GOOGLE_GENAI_USE_VERTEXAI");
   }
 
   @Test
