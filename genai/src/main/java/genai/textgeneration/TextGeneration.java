@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package genai.text_generation;
+package genai.textgeneration;
 
 // [START googlegenaisdk_textgen_with_txt]
 

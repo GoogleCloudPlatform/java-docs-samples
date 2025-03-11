@@ -16,7 +16,7 @@
 
 // Tests for Gen AI SDK code samples.
 
-package genai.text_generation;
+package genai.textgeneration;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
@@ -31,7 +31,7 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class TextGenerationIT {
 
-  private final String MODEL_ID = "gemini-2.0-flash-001";
+  private static final String MODEL_ID = "gemini-2.0-flash-001";
 
   // Check if the required environment variables are set.
   public static void requireEnvVar(String envVarName) {
