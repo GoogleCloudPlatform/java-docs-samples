@@ -59,7 +59,7 @@ public class DeleteDatasetIT {
 
     // Create temporary dataset.
     datasetName = RemoteBigQueryHelper.generateDatasetName();
-    CreateDataset.createDataset(GOOGLE_CLOUD_PROJECT, datasetName);
+    Util.setUpTest_createDataset(GOOGLE_CLOUD_PROJECT, datasetName);
   }
 
   @After

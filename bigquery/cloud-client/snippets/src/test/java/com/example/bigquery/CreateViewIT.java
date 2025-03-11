@@ -67,7 +67,7 @@ public class CreateViewIT {
 
     // Create temporary dataset.
     datasetName = RemoteBigQueryHelper.generateDatasetName();
-    CreateDataset.createDataset(GOOGLE_CLOUD_PROJECT, datasetName);
+    Util.setUpTest_createDataset(GOOGLE_CLOUD_PROJECT, datasetName);
 
     // Create temporary table.
     tableName = "table_test_" + UUID.randomUUID().toString().substring(0, 8);
@@ -75,7 +75,7 @@ public class CreateViewIT {
         Schema.of(
             Field.of("stringField", StandardSQLTypeName.STRING),
             Field.of("isBooleanField", StandardSQLTypeName.BOOL));
-    CreateTable.createTable(GOOGLE_CLOUD_PROJECT, datasetName, tableName, schema);
+    Util.setUpTest_createTable(GOOGLE_CLOUD_PROJECT, datasetName, tableName, schema);
 
     // Generate view name.
     viewName = "view_test_" + UUID.randomUUID().toString().substring(0, 8);
@@ -84,9 +84,9 @@ public class CreateViewIT {
   @After
   public void tearDown() {
     // Clean up.
-    DeleteTable.deleteTable(GOOGLE_CLOUD_PROJECT, datasetName, viewName);
-    DeleteTable.deleteTable(GOOGLE_CLOUD_PROJECT, datasetName, tableName);
-    DeleteDataset.deleteDataset(GOOGLE_CLOUD_PROJECT, datasetName);
+    Util.tearDownTest_deleteTableOrView(GOOGLE_CLOUD_PROJECT, datasetName, viewName);
+    Util.tearDownTest_deleteTableOrView(GOOGLE_CLOUD_PROJECT, datasetName, tableName);
+    Util.tearDownTest_deleteDataset(GOOGLE_CLOUD_PROJECT, datasetName);
 
     // Restores print statements to the original output stream.
     System.out.flush();

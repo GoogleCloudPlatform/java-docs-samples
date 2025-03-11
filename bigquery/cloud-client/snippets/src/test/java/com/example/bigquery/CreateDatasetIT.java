@@ -64,7 +64,7 @@ public class CreateDatasetIT {
   @After
   public void tearDown() {
     // Clean up.
-    DeleteDataset.deleteDataset(GOOGLE_CLOUD_PROJECT, datasetName);
+    Util.tearDownTest_deleteDataset(GOOGLE_CLOUD_PROJECT, datasetName);
 
     // Restores print statements to the original output stream.
     System.out.flush();

@@ -64,7 +64,7 @@ public class CreateTableIT {
 
     // Create temporary dataset.
     datasetName = RemoteBigQueryHelper.generateDatasetName();
-    CreateDataset.createDataset(GOOGLE_CLOUD_PROJECT, datasetName);
+    Util.setUpTest_createDataset(GOOGLE_CLOUD_PROJECT, datasetName);
 
     // Generate table name.
     tableName = "table_test" + UUID.randomUUID().toString().substring(0, 8);
@@ -73,8 +73,8 @@ public class CreateTableIT {
   @After
   public void tearDown() {
     // Clean up
-    DeleteTable.deleteTable(GOOGLE_CLOUD_PROJECT, datasetName, tableName);
-    DeleteDataset.deleteDataset(GOOGLE_CLOUD_PROJECT, datasetName);
+    Util.tearDownTest_deleteTableOrView(GOOGLE_CLOUD_PROJECT, datasetName, tableName);
+    Util.tearDownTest_deleteDataset(GOOGLE_CLOUD_PROJECT, datasetName);
 
     // Restores print statements to the original output stream.
     System.out.flush();
