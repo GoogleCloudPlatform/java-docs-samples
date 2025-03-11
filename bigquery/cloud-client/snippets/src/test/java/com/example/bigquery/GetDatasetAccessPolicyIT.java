@@ -59,13 +59,13 @@ public class GetDatasetAccessPolicyIT {
     datasetName = RemoteBigQueryHelper.generateDatasetName();
 
     // Create a dataset in order to get its ACL policy.
-    CreateDataset.createDataset(GOOGLE_CLOUD_PROJECT, datasetName);
+    Util.setUpTest_createDataset(GOOGLE_CLOUD_PROJECT, datasetName);
   }
 
   @After
   public void tearDown() {
     // Clean up.
-    DeleteDataset.deleteDataset(GOOGLE_CLOUD_PROJECT, datasetName);
+    Util.tearDownTest_deleteDataset(GOOGLE_CLOUD_PROJECT, datasetName);
 
     // Restores print statements to the original output stream.
     System.out.flush();

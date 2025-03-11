@@ -62,7 +62,7 @@ public class RevokeDatasetAccessIT {
     datasetName = RemoteBigQueryHelper.generateDatasetName();
 
     // Create a dataset.
-    CreateDataset.createDataset(GOOGLE_CLOUD_PROJECT, datasetName);
+    Util.setUpTest_createDataset(GOOGLE_CLOUD_PROJECT, datasetName);
     Acl newAclEntry = Acl.of(new Group("cloud-developer-relations@google.com"), Role.READER);
 
     // Add new ACL entry in order to remove it.
@@ -72,7 +72,7 @@ public class RevokeDatasetAccessIT {
   @After
   public void tearDown() {
     // Clean up.
-    DeleteDataset.deleteDataset(GOOGLE_CLOUD_PROJECT, datasetName);
+    Util.tearDownTest_deleteDataset(GOOGLE_CLOUD_PROJECT, datasetName);
 
     // Restores print statements to the original output stream.
     System.out.flush();
