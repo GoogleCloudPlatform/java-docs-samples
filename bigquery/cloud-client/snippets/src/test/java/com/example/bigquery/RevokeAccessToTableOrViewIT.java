@@ -91,18 +91,18 @@ public class RevokeAccessToTableOrViewIT {
     identity = Identity.group("cloud-developer-relations@google.com");
 
     // Grant access to table and view.
-    GrantAccessToTableOrView.grantAccessToTableOrView(
+    Util.setUpTest_grantAccessToTableOrView(
         GOOGLE_CLOUD_PROJECT, datasetName, tableName, firstRole, identity);
-    GrantAccessToTableOrView.grantAccessToTableOrView(
+    Util.setUpTest_grantAccessToTableOrView(
         GOOGLE_CLOUD_PROJECT, datasetName, viewName, firstRole, identity);
 
     // Add a second role for identity.
     secondRole = Role.of("roles/bigquery.dataEditor");
 
     // Grant access to table and view.
-    GrantAccessToTableOrView.grantAccessToTableOrView(
+    Util.setUpTest_grantAccessToTableOrView(
         GOOGLE_CLOUD_PROJECT, datasetName, tableName, secondRole, identity);
-    GrantAccessToTableOrView.grantAccessToTableOrView(
+    Util.setUpTest_grantAccessToTableOrView(
         GOOGLE_CLOUD_PROJECT, datasetName, viewName, secondRole, identity);
   }
 
