@@ -72,7 +72,7 @@ public class RevokeAccessToTableOrViewIT {
 
     // Create temporary dataset.
     datasetName = RemoteBigQueryHelper.generateDatasetName();
-    CreateDataset.createDataset(GOOGLE_CLOUD_PROJECT, datasetName);
+    Util.setUpTest_createDataset(GOOGLE_CLOUD_PROJECT, datasetName);
 
     // Create temporary table and view.
     tableName = "revoke_access_to_table_test_" + UUID.randomUUID().toString().substring(0, 8);
@@ -80,11 +80,11 @@ public class RevokeAccessToTableOrViewIT {
         Schema.of(
             Field.of("stringField", StandardSQLTypeName.STRING),
             Field.of("isBooleanField", StandardSQLTypeName.BOOL));
-    CreateTable.createTable(GOOGLE_CLOUD_PROJECT, datasetName, tableName, schema);
+    Util.setUpTest_createTable(GOOGLE_CLOUD_PROJECT, datasetName, tableName, schema);
     viewName = "revoke_access_to_view_test_" + UUID.randomUUID().toString().substring(0, 8);
     String query =
         String.format("SELECT stringField, isBooleanField FROM %s.%s", datasetName, tableName);
-    CreateView.createView(GOOGLE_CLOUD_PROJECT, datasetName, viewName, query);
+    Util.setUpTest_createView(GOOGLE_CLOUD_PROJECT, datasetName, viewName, query);
 
     // Role and identity to add to policy.
     firstRole = Role.of("roles/bigquery.dataViewer");
@@ -109,8 +109,9 @@ public class RevokeAccessToTableOrViewIT {
   @After
   public void tearDown() {
     // Clean up.
-    DeleteTable.deleteTable(GOOGLE_CLOUD_PROJECT, datasetName, tableName);
-    DeleteDataset.deleteDataset(GOOGLE_CLOUD_PROJECT, datasetName);
+    Util.tearDownTest_deleteTableOrView(GOOGLE_CLOUD_PROJECT, datasetName, viewName);
+    Util.tearDownTest_deleteTableOrView(GOOGLE_CLOUD_PROJECT, datasetName, tableName);
+    Util.tearDownTest_deleteDataset(GOOGLE_CLOUD_PROJECT, datasetName);
 
     // Restores print statements to the original output stream.
     System.out.flush();
