@@ -1,4 +1,4 @@
-"v5litepod-4";"v5litepod-4";/*
+/*
  * Copyright 2024 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -43,7 +43,7 @@ public class CreateQueuedResourceWithNetwork {
     // The accelerator type that specifies the version and size of the Cloud TPU you want to create.
     // For more information about supported accelerator types for each TPU version,
     // see https://cloud.google.com/tpu/docs/system-architecture-tpu-vm#versions.
-    String tpuType = "v2-8";
+    String tpuType = "v5litepod-4";
     // Software version that specifies the version of the TPU runtime to install.
     // For more information see https://cloud.google.com/tpu/docs/runtimes
     String tpuSoftwareVersion = "v2-tpuv5-litepod";
