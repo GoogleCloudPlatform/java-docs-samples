@@ -66,7 +66,7 @@ public class RevokeDatasetAccessIT {
     Acl newAclEntry = Acl.of(new Group("cloud-developer-relations@google.com"), Role.READER);
 
     // Add new ACL entry in order to remove it.
-    GrantAccessToDataset.grantAccessToDataset(GOOGLE_CLOUD_PROJECT, datasetName, newAclEntry);
+    Util.setUpTest_grantAccessToDataset(GOOGLE_CLOUD_PROJECT, datasetName, newAclEntry);
   }
 
   @After
