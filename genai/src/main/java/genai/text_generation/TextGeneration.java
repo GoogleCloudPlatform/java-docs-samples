@@ -22,21 +22,26 @@ import com.google.genai.types.GenerateContentResponse;
 import java.io.IOException;
 import org.apache.http.HttpException;
 
-public class TxtgenWithTxt {
+public class TextGeneration {
   public static void main(String[] args) throws IOException, HttpException {
-    Client client = new Client();
+    // TODO(Developer): Replace the below variables before running the sample.
+    String modelId = "gemini-2.0-flash-001";
+    String prompt = "How does AI work?";
+    generateContent(modelId, prompt);
+  }
 
-    GenerateContentResponse response = client.models.generateContent(
-      "gemini-2.0-flash-001",
-      "How does AI work?",
-      null
-    );
-    System.out.println(response.text());
-    // Example response:
-    // Okay, let's break down how AI works. It's a broad field, so I'll focus on the ...
-    //
-    // Here's a simplified overview:
-    // ...
+  public static String generateContent(String modelId, String prompt) throws HttpException, IOException {
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests.
+    try (Client client = new Client()) {
+      GenerateContentResponse response = client.models.generateContent(modelId, prompt, null);
+      System.out.println(response.text());
+      // Example response:
+      // Okay, let's break down how AI works. It's a broad field, so I'll focus on the ...
+      // Here's a simplified overview:
+      // ...
+      return response.text();
+    }
   }
 }
 // [END googlegenaisdk_textgen_with_txt]

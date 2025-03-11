@@ -21,11 +21,9 @@ package genai.text_generation;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
 import org.apache.http.HttpException;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -33,9 +31,7 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class TextGenerationIT {
 
-  private ByteArrayOutputStream bout;
-  private PrintStream originalOut;
-
+  private String MODEL_ID="gemini-2.0-flash-001";
 
   // Check if the required environment variables are set.
   public static void requireEnvVar(String envVarName) {
@@ -44,21 +40,18 @@ public class TextGenerationIT {
         .isNotEmpty();
   }
 
-  @Before
-  public void setUp() {
-      originalOut = System.out;
-      bout = new ByteArrayOutputStream();
-      System.setOut(new PrintStream(bout));
+  @BeforeClass
+  public static void setUp() {
+      requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
+      requireEnvVar("GOOGLE_CLOUD_PROJECT");
+      requireEnvVar("GOOGLE_CLOUD_LOCATION");
+      requireEnvVar("GOOGLE_GENAI_USE_VERTEXAI");
   }
 
-    public void tearDown() {
-        System.setOut(originalOut);
-    }
-
   @Test
-  public void testTextgenWithTxt() throws IOException, HttpException {
-    TxtgenWithTxt.main(new String[]{});
-    tearDown();
-    assertThat(bout.toString()).isNotEmpty();
+  public void testTextGeneration() throws IOException, HttpException {
+    String prompt = "How does AI work?";
+    String response = TextGeneration.generateContent(MODEL_ID, prompt);
+    assertThat(response).isNotEmpty();
   }
 }
