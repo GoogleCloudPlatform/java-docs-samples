@@ -1,4 +1,4 @@
-/*
+"v5litepod-4";"v5litepod-4";/*
  * Copyright 2024 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -46,7 +46,7 @@ public class CreateQueuedResourceWithNetwork {
     String tpuType = "v2-8";
     // Software version that specifies the version of the TPU runtime to install.
     // For more information see https://cloud.google.com/tpu/docs/runtimes
-    String tpuSoftwareVersion = "tpu-vm-tf-2.14.1";
+    String tpuSoftwareVersion = "v2-tpuv5-litepod";
     // The name for your Queued Resource.
     String queuedResourceId = "QUEUED_RESOURCE_ID";
     // The name of the network you want the node to connect to.

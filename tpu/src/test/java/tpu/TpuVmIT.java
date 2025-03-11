@@ -1,4 +1,4 @@
-/*
+"v5litepod-4";"v5litepod-4";/*
  * Copyright 2024 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -56,7 +56,7 @@ public class TpuVmIT {
   private static final String NODE_NAME = "test-tpu";
   private static final String TPU_TYPE = "v2-8";
   private static final AcceleratorConfig.Type ACCELERATOR_TYPE = AcceleratorConfig.Type.V2;
-  private static final String TPU_SOFTWARE_VERSION = "tpu-vm-tf-2.14.1";
+  private static final String TPU_SOFTWARE_VERSION = "v2-tpuv5-litepod";
   private static final String TOPOLOGY = "2x2";
 
   @Test
