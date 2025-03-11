@@ -54,7 +54,7 @@ public class TpuVmIT {
   private static final String PROJECT_ID = "project-id";
   private static final String ZONE = "asia-east1-c";
   private static final String NODE_NAME = "test-tpu";
-  private static final String TPU_TYPE = "v2-8";
+  private static final String TPU_TYPE = "v5litepod-4";
   private static final AcceleratorConfig.Type ACCELERATOR_TYPE = AcceleratorConfig.Type.V2;
   private static final String TPU_SOFTWARE_VERSION = "v2-tpuv5-litepod";
   private static final String TOPOLOGY = "2x2";
