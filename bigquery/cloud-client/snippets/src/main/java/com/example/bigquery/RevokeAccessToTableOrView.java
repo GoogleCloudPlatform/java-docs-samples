@@ -57,7 +57,7 @@ public class RevokeAccessToTableOrView {
       // Remove either identities or roles, or both from bindings and replace it in
       // the current IAM policy.
       Policy policy = bigquery.getIamPolicy(tableId);
-      // Create a copy of a inmutable map.
+      // Create a copy of an immutable map.
       Map<Role, Set<Identity>> bindings = new HashMap<>(policy.getBindings());
 
       // Remove all identities with a specific role.
