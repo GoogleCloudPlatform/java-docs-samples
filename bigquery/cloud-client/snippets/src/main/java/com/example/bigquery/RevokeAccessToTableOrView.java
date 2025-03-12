@@ -68,7 +68,7 @@ public class RevokeAccessToTableOrView {
       // Remove one identity in all the existing roles.
       for (Role roleKey : bindings.keySet()) {
         if (bindings.get(roleKey).contains(identity)) {
-          // Create a copy of a inmutable set if the identity is present in the role.
+          // Create a copy of an immutable set if the identity is present in the role.
           Set<Identity> identities = new HashSet<>(bindings.get(roleKey));
           // Remove identity.
           identities.remove(identity);
