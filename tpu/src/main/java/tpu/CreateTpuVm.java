@@ -46,7 +46,7 @@ public class CreateTpuVm {
     String tpuType = "v2-8";
     // Software version that specifies the version of the TPU runtime to install.
     // For more information see https://cloud.google.com/tpu/docs/runtimes
-    String tpuSoftwareVersion = "tpu-vm-tf-2.14.1";
+    String tpuSoftwareVersion = "v2-tpuv5-litepod";
 
     createTpuVm(projectId, zone, nodeName, tpuType, tpuSoftwareVersion);
   }

@@ -53,8 +53,8 @@ public class QueuedResourceIT {
   private static final String PROJECT_ID = "project-id";
   private static final String ZONE = "europe-west4-a";
   private static final String NODE_NAME = "test-tpu";
-  private static final String TPU_TYPE = "v2-8";
-  private static final String TPU_SOFTWARE_VERSION = "tpu-vm-tf-2.14.1";
+  private static final String TPU_TYPE = "v5litepod-4";
+  private static final String TPU_SOFTWARE_VERSION = "v2-tpuv5-litepod";
   private static final String QUEUED_RESOURCE_NAME = "queued-resource";
   private static final String NETWORK_NAME = "default";
 
