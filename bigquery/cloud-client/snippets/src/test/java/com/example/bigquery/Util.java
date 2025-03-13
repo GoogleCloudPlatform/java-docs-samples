@@ -16,6 +16,7 @@
 
 package com.example.bigquery;
 
+import com.google.cloud.bigquery.Acl;
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.BigQuery.DatasetDeleteOption;
 import com.google.cloud.bigquery.BigQueryException;
@@ -30,6 +31,8 @@ import com.google.cloud.bigquery.TableDefinition;
 import com.google.cloud.bigquery.TableId;
 import com.google.cloud.bigquery.TableInfo;
 import com.google.cloud.bigquery.ViewDefinition;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Util {
 
@@ -72,5 +75,16 @@ public class Util {
       String projectId, String datasetName, String tableName) throws BigQueryException {
     TableId tableId = TableId.of(projectId, datasetName, tableName);
     return bigquery.delete(tableId);
+  }
+
+  public static Dataset setUpTest_grantAccessToDataset(
+      String projectId, String datasetName, Acl newEntry) throws BigQueryException {
+    DatasetId datasetId = DatasetId.of(projectId, datasetName);
+    Dataset dataset = bigquery.getDataset(datasetId);
+
+    List<Acl> acls = new ArrayList<>(dataset.getAcl());
+    acls.add(newEntry);
+
+    return bigquery.update(dataset.toBuilder().setAcl(acls).build());
   }
 }
