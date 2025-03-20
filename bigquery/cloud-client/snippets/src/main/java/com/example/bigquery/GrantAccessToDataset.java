@@ -18,6 +18,7 @@ package com.example.bigquery;
 
 // [START bigquery_grant_access_to_dataset]
 import com.google.cloud.bigquery.Acl;
+import com.google.cloud.bigquery.Acl.Entity;
 import com.google.cloud.bigquery.Acl.Group;
 import com.google.cloud.bigquery.Acl.Role;
 import com.google.cloud.bigquery.BigQuery;
@@ -35,15 +36,14 @@ public class GrantAccessToDataset {
     // Project and dataset from which to get the access policy
     String projectId = "MY_PROJECT_ID";
     String datasetName = "MY_DATASET_NAME";
-    // Create a new ACL granting the READER role to the group "user-or-group-to-add@example.com"
-    // For more information on the types of ACLs available see:
-    // https://cloud.google.com/storage/docs/access-control/lists
-    Acl newEntry = Acl.of(new Group("group-to-add@example.com"), Role.READER);
+    // Group to add to the ACL
+    String entityEmail = "group-to-add@example.com";
 
-    grantAccessToDataset(projectId, datasetName, newEntry);
+    grantAccessToDataset(projectId, datasetName, entityEmail);
   }
 
-  public static void grantAccessToDataset(String projectId, String datasetName, Acl newEntry) {
+  public static void grantAccessToDataset(
+      String projectId, String datasetName, String entityEmail) {
     try {
       // Initialize client that will be used to send requests. This client only needs to be created
       // once, and can be reused for multiple requests.
@@ -52,6 +52,20 @@ public class GrantAccessToDataset {
       // Create datasetId with the projectId and the datasetName.
       DatasetId datasetId = DatasetId.of(projectId, datasetName);
       Dataset dataset = bigquery.getDataset(datasetId);
+
+      // Create a new Entity with the corresponding type and email
+      // "user-or-group-to-add@example.com"
+      // For more information on the types of Entities available see:
+      // https://cloud.google.com/java/docs/reference/google-cloud-bigquery/latest/com.google.cloud.bigquery.Acl.Entity
+      // and
+      // https://cloud.google.com/java/docs/reference/google-cloud-bigquery/latest/com.google.cloud.bigquery.Acl.Entity.Type
+      Entity entity = new Group(entityEmail);
+
+      // Create a new ACL granting the READER role to the group with the entity email
+      // "user-or-group-to-add@example.com"
+      // For more information on the types of ACLs available see:
+      // https://cloud.google.com/storage/docs/access-control/lists
+      Acl newEntry = Acl.of(entity, Role.READER);
 
       // Get a copy of the ACLs list from the dataset and append the new entry.
       List<Acl> acls = new ArrayList<>(dataset.getAcl());

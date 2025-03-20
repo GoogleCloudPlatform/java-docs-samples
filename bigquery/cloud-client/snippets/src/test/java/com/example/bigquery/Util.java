@@ -17,6 +17,9 @@
 package com.example.bigquery;
 
 import com.google.cloud.bigquery.Acl;
+import com.google.cloud.bigquery.Acl.Entity;
+import com.google.cloud.bigquery.Acl.Group;
+import com.google.cloud.bigquery.Acl.Role;
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.BigQuery.DatasetDeleteOption;
 import com.google.cloud.bigquery.BigQueryException;
@@ -78,10 +81,12 @@ public class Util {
   }
 
   public static Dataset setUpTest_grantAccessToDataset(
-      String projectId, String datasetName, Acl newEntry) throws BigQueryException {
+      String projectId, String datasetName, String entityEmail) throws BigQueryException {
     DatasetId datasetId = DatasetId.of(projectId, datasetName);
     Dataset dataset = bigquery.getDataset(datasetId);
 
+    Entity entity = new Group(entityEmail);
+    Acl newEntry = Acl.of(entity, Role.READER);
     List<Acl> acls = new ArrayList<>(dataset.getAcl());
     acls.add(newEntry);
 

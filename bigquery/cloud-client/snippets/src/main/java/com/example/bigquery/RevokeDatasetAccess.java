@@ -35,19 +35,13 @@ public class RevokeDatasetAccess {
     // Project and dataset from which to get the access policy.
     String projectId = "MY_PROJECT_ID";
     String datasetName = "MY_DATASET_NAME";
+    // Group to remove from the ACL
+    String entityEmail = "group-to-remove@example.com";
 
-    // Create a new Entity with the corresponding type and email
-    // "user-or-group-to-remove@example.com"
-    // For more information on the types of Entities available see:
-    // https://cloud.google.com/java/docs/reference/google-cloud-bigquery/latest/com.google.cloud.bigquery.Acl.Entity
-    // and
-    // https://cloud.google.com/java/docs/reference/google-cloud-bigquery/latest/com.google.cloud.bigquery.Acl.Entity.Type
-    Entity entity = new Group("group-to-remove@example.com");
-
-    revokeDatasetAccess(projectId, datasetName, entity);
+    revokeDatasetAccess(projectId, datasetName, entityEmail);
   }
 
-  public static void revokeDatasetAccess(String projectId, String datasetName, Entity entity) {
+  public static void revokeDatasetAccess(String projectId, String datasetName, String entityEmail) {
     try {
       // Initialize client that will be used to send requests. This client only needs
       // to be created once, and can be reused for multiple requests.
@@ -56,6 +50,14 @@ public class RevokeDatasetAccess {
       // Create datasetId with the projectId and the datasetName.
       DatasetId datasetId = DatasetId.of(projectId, datasetName);
       Dataset dataset = bigquery.getDataset(datasetId);
+
+      // Create a new Entity with the corresponding type and email
+      // "user-or-group-to-remove@example.com"
+      // For more information on the types of Entities available see:
+      // https://cloud.google.com/java/docs/reference/google-cloud-bigquery/latest/com.google.cloud.bigquery.Acl.Entity
+      // and
+      // https://cloud.google.com/java/docs/reference/google-cloud-bigquery/latest/com.google.cloud.bigquery.Acl.Entity.Type
+      Entity entity = new Group(entityEmail);
 
       // To revoke access to a dataset, remove elements from the Acl list.
       // Find more information about ACL and the Acl Class here:
