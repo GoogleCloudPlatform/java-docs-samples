@@ -19,6 +19,10 @@ package com.example.bigquery;
 import com.google.cloud.Identity;
 import com.google.cloud.Policy;
 import com.google.cloud.Role;
+import com.google.cloud.bigquery.Acl;
+import com.google.cloud.bigquery.Acl.Entity;
+import com.google.cloud.bigquery.Acl.Group;
+import com.google.cloud.bigquery.Acl.Role;
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.BigQuery.DatasetDeleteOption;
 import com.google.cloud.bigquery.BigQueryException;
@@ -33,6 +37,8 @@ import com.google.cloud.bigquery.TableDefinition;
 import com.google.cloud.bigquery.TableId;
 import com.google.cloud.bigquery.TableInfo;
 import com.google.cloud.bigquery.ViewDefinition;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Util {
 
@@ -75,6 +81,19 @@ public class Util {
       String projectId, String datasetName, String tableName) throws BigQueryException {
     TableId tableId = TableId.of(projectId, datasetName, tableName);
     return bigquery.delete(tableId);
+  }
+
+  public static Dataset setUpTest_grantAccessToDataset(
+      String projectId, String datasetName, String entityEmail) throws BigQueryException {
+    DatasetId datasetId = DatasetId.of(projectId, datasetName);
+    Dataset dataset = bigquery.getDataset(datasetId);
+
+    Entity entity = new Group(entityEmail);
+    Acl newEntry = Acl.of(entity, Role.READER);
+    List<Acl> acls = new ArrayList<>(dataset.getAcl());
+    acls.add(newEntry);
+
+    return bigquery.update(dataset.toBuilder().setAcl(acls).build());
   }
 
   public static Policy setUpTest_grantAccessToTableOrView(
