@@ -27,13 +27,14 @@ public class RemoveMember {
     Policy policy = Policy.newBuilder().build();
     // TODO: Replace with your role.
     String role = "roles/existing-role";
-    // TODO: Replace with your member.
-    String member = "user:member-to-add@example.com";
+    // TODO: Replace with your principal.
+    // For examples, see https://cloud.google.com/iam/docs/principal-identifiers
+    String member = "principal-id";
 
     removeMember(policy, role, member);
   }
 
-  // Removes member from a role; removes binding if binding contains no members.
+  // Removes principal from a role; removes binding if binding contains no members.
   public static Policy removeMember(Policy policy, String role, String member) {
     // Creating new builder with all values copied from origin policy
     Policy.Builder policyBuilder = policy.toBuilder();
@@ -49,12 +50,12 @@ public class RemoveMember {
 
     if (binding != null && binding.getMembersList().contains(member)) {
       List<String> newMemberList = new ArrayList<>(binding.getMembersList());
-      // Removing member from a role
+      // Removing principal from the role
       newMemberList.remove(member);
 
       System.out.println("Member " + member + " removed from " + role);
 
-      // Adding all remaining members to create new binding
+      // Adding all remaining principals to create new binding
       Binding newBinding = binding.toBuilder()
               .clearMembers()
               .addAllMembers(newMemberList)
@@ -70,14 +71,14 @@ public class RemoveMember {
         newBindingList.add(newBinding);
       }
 
-      // Update the policy to remove the member.
+      // Update the policy to remove the principal.
       policyBuilder.clearBindings()
               .addAllBindings(newBindingList);
     }
 
     Policy updatedPolicy = policyBuilder.build();
 
-    System.out.println("Exising members: " + updatedPolicy.getBindingsList());
+    System.out.println("Exising principals: " + updatedPolicy.getBindingsList());
 
     return updatedPolicy;
   }
