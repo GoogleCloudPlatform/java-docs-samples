@@ -16,6 +16,9 @@
 
 package com.example.bigquery;
 
+import com.google.cloud.Identity;
+import com.google.cloud.Policy;
+import com.google.cloud.Role;
 import com.google.cloud.bigquery.Acl;
 import com.google.cloud.bigquery.Acl.Entity;
 import com.google.cloud.bigquery.Acl.Group;
@@ -91,5 +94,15 @@ public class Util {
     acls.add(newEntry);
 
     return bigquery.update(dataset.toBuilder().setAcl(acls).build());
+  }
+
+  public static Policy setUpTest_grantAccessToTableOrView(
+      String projectId, String datasetName, String resourceName, Role role, Identity identity)
+      throws BigQueryException {
+    TableId tableId = TableId.of(projectId, datasetName, resourceName);
+    Policy policy = bigquery.getIamPolicy(tableId);
+    policy = policy.toBuilder().addIdentity(role, identity).build();
+
+    return bigquery.setIamPolicy(tableId, policy);
   }
 }
