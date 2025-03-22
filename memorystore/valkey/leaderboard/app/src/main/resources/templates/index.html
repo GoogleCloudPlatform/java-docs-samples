@@ -1,0 +1,124 @@
+<!--
+  Copyright 2025 Google LLC
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Leaderboard</title>
+    <script src="main.js" type="module"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body
+    class="bg-white text-black font-sans flex flex-col min-h-screen max-h-screen"
+  >
+    <header class="sticky top-0 bg-white z-10 shadow-sm">
+      <h1 class="text-center text-4xl font-bold py-5">Leaderboard</h1>
+
+      <!-- Controls Section -->
+      <section class="border-y bg-gray-50">
+        <div class="max-w-2xl mx-auto px-4 py-4 space-y-4">
+          <div class="flex gap-3">
+            <select
+              id="filter"
+              class="flex-1 h-10 bg-white rounded-lg border px-3"
+            >
+              <option value="h2l">Descending</option>
+              <option value="l2h">Ascending</option>
+            </select>
+            <input
+              id="search"
+              type="text"
+              placeholder="Search names..."
+              class="flex-1 h-10 bg-white rounded-lg border px-3"
+            />
+          </div>
+
+          <div class="flex gap-3">
+            <input
+              id="username-input"
+              type="text"
+              placeholder="New name"
+              class="flex-1 h-10 bg-white rounded-lg border px-3"
+            />
+            <input
+              id="score-input"
+              type="number"
+              placeholder="Score"
+              class="w-24 h-10 bg-white rounded-lg border px-3"
+            />
+            <button
+              id="add-entry"
+              class="h-10 px-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+            >
+              Add
+            </button>
+          </div>
+        </div>
+      </section>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 overflow-y-auto">
+      <!-- Leaderboard Header -->
+      <div class="max-w-2xl mx-auto px-4 py-2">
+        <div
+          class="flex justify-between items-center text-gray-600 font-bold mb-2"
+        >
+          <span class="w-16">Rank</span>
+          <span class="flex-1">Name</span>
+          <span class="w-24 text-right">Score</span>
+        </div>
+      </div>
+
+      <!-- Entries List -->
+      <div
+        id="entries-container"
+        class="max-w-2xl mx-auto px-4 space-y-2"
+      ></div>
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="sticky bottom-0 bg-white border-t">
+      <div class="max-w-2xl mx-auto px-4 py-4">
+        <div class="flex items-center justify-between">
+          <!-- Pagination -->
+          <div class="flex items-center gap-4">
+            <button
+              id="prev-page"
+              class="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200"
+            >
+              ←
+            </button>
+            <span>Page <span id="page-number">1</span></span>
+            <button
+              id="next-page"
+              class="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200"
+            >
+              →
+            </button>
+          </div>
+
+          <!-- Analytics -->
+          <div class="flex items-center gap-4 text-sm text-gray-600">
+            <span>Cache: <span id="from-cache" class="font-bold">-</span></span>
+            <span
+              >Fetch: <span id="time-to-fetch" class="font-bold">-</span></span
+            >
+          </div>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
