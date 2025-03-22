@@ -32,28 +32,28 @@
   </parent>
 
   <properties>
-    <maven.compiler.target>11</maven.compiler.target>
-    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+    <maven.compiler.source>17</maven.compiler.source>
     <failOnMissingWebXml>false</failOnMissingWebXml>
   </properties>
 
   <dependencies>
     <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>javax.servlet-api</artifactId>
-      <version>4.0.1</version>
-      <type>jar</type>
+      <groupId>jakarta.servlet</groupId>
+      <artifactId>jakarta.servlet-api</artifactId>
+      <version>6.0.0</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>jstl</artifactId>
-      <version>1.2</version>
+      <groupId>org.glassfish.web</groupId>
+      <artifactId>jakarta.servlet.jsp.jstl</artifactId>
+      <version>3.0.1</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>com.microsoft.sqlserver</groupId>
-      <artifactId>mssql-jdbc</artifactId>
-      <version>12.6.0.jre11</version>
+      <groupId>com.mysql</groupId> <!-- TODO(glasnt): why the move from mssql in this sample? -->
+      <artifactId>mysql-connector-j</artifactId>
+      <version>9.1.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud.sql</groupId>
@@ -63,7 +63,7 @@
     <dependency>
       <groupId>com.zaxxer</groupId>
       <artifactId>HikariCP</artifactId>
-      <version>5.1.0</version>
+      <version>6.2.1</version>
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
@@ -83,18 +83,6 @@
       <version>1.4.0</version>
       <scope>test</scope>
     </dependency>
-    <!-- Only required for Cloud Functions Deployments -->
-    <dependency>
-      <groupId>com.google.cloud.functions.invoker</groupId>
-      <artifactId>java-function-invoker</artifactId>
-      <version>1.3.1</version>
-    </dependency>
-    <dependency>
-      <groupId>com.google.cloud.functions</groupId>
-      <artifactId>functions-framework-api</artifactId>
-      <version>1.1.0</version>
-      <scope>provided</scope>
-    </dependency>
   </dependencies>
 
   <build>
@@ -107,19 +95,9 @@
       <plugin>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
-        <version>11.0.20</version>
+        <version>11.0.24</version>
         <configuration>
           <scanIntervalSeconds>1</scanIntervalSeconds>
-        </configuration>
-      </plugin>
-      <!-- Only required for AppEngine Deployments -->
-      <plugin>
-        <groupId>com.google.cloud.tools</groupId>
-        <artifactId>appengine-maven-plugin</artifactId>
-        <version>2.8.0</version>
-        <configuration>
-          <deploy.projectId>GCLOUD_CONFIG</deploy.projectId>
-          <deploy.version>GCLOUD_CONFIG</deploy.version>
         </configuration>
       </plugin>
     </plugins>
