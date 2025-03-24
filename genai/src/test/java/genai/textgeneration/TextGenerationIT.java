@@ -40,8 +40,28 @@ public class TextGenerationIT {
         .isNotEmpty();
   }
 
+  // Helper function to set environment variables programmatically
+  public static void setEnvVariable(String key, String value) {
+    try {
+      Map<String, String> env = System.getenv();
+      Class<?> cl = env.getClass();
+      Field field = cl.getDeclaredField("m");
+      field.setAccessible(true);
+      @SuppressWarnings("unchecked")
+      Map<String, String> writableEnv = (Map<String, String>) field.get(env);
+      if (!writableEnv.containsKey(key)) {
+        writableEnv.put(key, value);
+      }
+    } catch (Exception e) {
+      throw new IllegalStateException("Failed to set environment variable", e);
+    }
+  }
+
   @BeforeClass
   public static void setUp() {
+    setEnvVariable("GOOGLE_CLOUD_LOCATION", "us-central1");
+    setEnvVariable("GOOGLE_GENAI_USE_VERTEXAI", "True");
+
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
     requireEnvVar("GOOGLE_CLOUD_LOCATION");
