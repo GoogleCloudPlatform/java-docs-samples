@@ -22,6 +22,10 @@ import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.Collections;
+import java.util.Map;
+
 import org.apache.http.HttpException;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -67,6 +71,7 @@ public class TextGenerationIT {
     requireEnvVar("GOOGLE_CLOUD_LOCATION");
     requireEnvVar("GOOGLE_GENAI_USE_VERTEXAI");
   }
+
 
   @Test
   public void testTextGeneration() throws IOException, HttpException {
