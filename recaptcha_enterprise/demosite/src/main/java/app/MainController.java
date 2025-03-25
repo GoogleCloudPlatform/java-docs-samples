@@ -318,6 +318,7 @@ public class MainController {
   }
 
   // Classify the action as BAD/ NOT_BAD based on conditions specified.
+  // See https://cloud.google.com/recaptcha/docs/interpret-assessment-website
   public static HashMap<String, String> checkForBadAction(Assessment assessmentResponse,
       String recaptchaAction) {
     String reason = "";
