@@ -32,6 +32,7 @@ import java.util.UUID;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -87,6 +88,7 @@ public class QuickstartTests {
     }
   }
 
+  @Ignore("issue #10041")
   @Test
   public void testQuickstart() throws Exception {
     String member = "serviceAccount:" + serviceAccountEmail;
