@@ -231,7 +231,7 @@ public class SnippetsIT {
     stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
   }
-  
+
   @After
   public void afterEach() {
     stdOut = null;
