@@ -26,13 +26,6 @@ import com.google.cloud.parametermanager.v1.ParameterName;
 import com.google.cloud.parametermanager.v1.ParameterVersion;
 import com.google.cloud.parametermanager.v1.ParameterVersionName;
 import com.google.cloud.parametermanager.v1.ParameterVersionPayload;
-import com.google.cloud.secretmanager.v1.AddSecretVersionRequest;
-import com.google.cloud.secretmanager.v1.ProjectName;
-import com.google.cloud.secretmanager.v1.Replication;
-import com.google.cloud.secretmanager.v1.Secret;
-import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
-import com.google.cloud.secretmanager.v1.SecretName;
-import com.google.cloud.secretmanager.v1.SecretPayload;
 import com.google.common.base.Strings;
 import com.google.iam.v1.Binding;
 import com.google.iam.v1.GetIamPolicyRequest;
@@ -73,9 +66,6 @@ public class SnippetsIT {
   private static ParameterName TEST_PARAMETER_NAME_TO_GET;
   private static ParameterVersionName TEST_PARAMETER_VERSION_NAME_TO_GET;
   private static ParameterVersionName TEST_PARAMETER_VERSION_NAME_TO_GET_1;
-  private static ParameterName TEST_PARAMETER_NAME_TO_RENDER;
-  private static ParameterVersionName TEST_PARAMETER_VERSION_NAME_TO_RENDER;
-  private static SecretName SECRET_NAME;
   private ByteArrayOutputStream stdOut;
 
   @BeforeClass
