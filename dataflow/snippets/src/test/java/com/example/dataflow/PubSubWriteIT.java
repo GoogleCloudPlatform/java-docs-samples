@@ -47,7 +47,7 @@ public class PubSubWriteIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
 
   private ByteArrayOutputStream bout;
-  private PrintStream out;
+  private final PrintStream originalOut = System.out;
   private String topicId;
   private String subscriptionId;
   TopicAdminClient topicAdminClient;
@@ -64,8 +64,7 @@ public class PubSubWriteIT {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
     bout = new ByteArrayOutputStream();
-    out = new PrintStream(bout);
-    System.setOut(out);
+    System.setOut(new PrintStream(bout));
 
     topicId = "test_topic_" + UUID.randomUUID().toString().substring(0, 8);
     subscriptionId = topicId + "-sub";
@@ -84,7 +83,7 @@ public class PubSubWriteIT {
   public void tearDown() {
     subscriptionAdminClient.deleteSubscription(SubscriptionName.of(PROJECT_ID, subscriptionId));
     topicAdminClient.deleteTopic(TopicName.of(PROJECT_ID, topicId));
-    System.setOut(null);
+    System.setOut(originalOut);
   }
 
   @Test

@@ -22,6 +22,7 @@ import com.google.cloud.video.stitcher.v1.ListSlatesRequest;
 import com.google.cloud.video.stitcher.v1.LocationName;
 import com.google.cloud.video.stitcher.v1.Slate;
 import com.google.cloud.video.stitcher.v1.VideoStitcherServiceClient;
+import com.google.cloud.video.stitcher.v1.VideoStitcherServiceClient.ListSlatesPagedResponse;
 import java.io.IOException;
 
 public class ListSlates {
@@ -34,10 +35,11 @@ public class ListSlates {
     listSlates(projectId, location);
   }
 
-  public static void listSlates(String projectId, String location) throws IOException {
+  // Lists the slates for a given project and location.
+  public static ListSlatesPagedResponse listSlates(String projectId, String location)
+      throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests. In this example, try-with-resources is used
-    // which automatically calls close() on the client to clean up resources.
+    // once, and can be reused for multiple requests.
     try (VideoStitcherServiceClient videoStitcherServiceClient =
         VideoStitcherServiceClient.create()) {
       ListSlatesRequest listSlatesRequest =
@@ -47,11 +49,12 @@ public class ListSlates {
 
       VideoStitcherServiceClient.ListSlatesPagedResponse response =
           videoStitcherServiceClient.listSlates(listSlatesRequest);
-      System.out.println("Slates:");
 
+      System.out.println("Slates:");
       for (Slate slate : response.iterateAll()) {
         System.out.println(slate.getName());
       }
+      return response;
     }
   }
 }

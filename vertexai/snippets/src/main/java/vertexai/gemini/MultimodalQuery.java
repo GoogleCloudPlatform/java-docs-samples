@@ -17,7 +17,6 @@
 package vertexai.gemini;
 
 // [START generativeaionvertexai_gemini_pro_example]
-// [START aiplatform_gemini_pro_example]
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
 import com.google.cloud.vertexai.generativeai.ContentMaker;
@@ -61,5 +60,4 @@ public class MultimodalQuery {
     }
   }
 }
-// [END aiplatform_gemini_pro_example]
 // [END generativeaionvertexai_gemini_pro_example]

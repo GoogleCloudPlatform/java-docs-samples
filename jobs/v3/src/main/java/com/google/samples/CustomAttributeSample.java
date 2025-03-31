@@ -46,7 +46,7 @@ public final class CustomAttributeSample {
   private static CloudTalentSolution talentSolutionClient =
       JobServiceQuickstart.getTalentSolutionClient();
 
-  // [START custom_attribute_job]
+  // [START job_custom_attribute_job]
 
   /** Generate a job with a custom attribute. */
   @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
@@ -77,9 +77,9 @@ public final class CustomAttributeSample {
     System.out.println("Job generated: " + job);
     return job;
   }
-  // [END custom_attribute_job]
+  // [END job_custom_attribute_job]
 
-  // [START custom_attribute_filter_string_value]
+  // [START job_custom_attribute_filter_string_value]
 
   /** CustomAttributeFilter on String value CustomAttribute */
   public static void filtersOnStringValueCustomAttribute()
@@ -111,9 +111,9 @@ public final class CustomAttributeSample {
     Thread.sleep(1000);
     System.out.printf("Custom search job results (String value): %s\n", response);
   }
-  // [END custom_attribute_filter_string_value]
+  // [END job_custom_attribute_filter_string_value]
 
-  // [START custom_attribute_filter_long_value]
+  // [START job_custom_attribute_filter_long_value]
 
   /** CustomAttributeFilter on Long value CustomAttribute */
   public static void filtersOnLongValueCustomAttribute() throws IOException, InterruptedException {
@@ -145,7 +145,7 @@ public final class CustomAttributeSample {
     Thread.sleep(1000);
     System.out.printf("Custom search job results (Long value): %s\n", response);
   }
-  // [END custom_attribute_filter_long_value]
+  // [END job_custom_attribute_filter_long_value]
 
   // [START job_custom_attribute_filter_multi_attributes]
 

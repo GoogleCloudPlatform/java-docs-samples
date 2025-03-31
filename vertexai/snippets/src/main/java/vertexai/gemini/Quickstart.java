@@ -17,7 +17,6 @@
 package vertexai.gemini;
 
 // [START generativeaionvertexai_gemini_get_started]
-// [START aiplatform_gemini_get_started]
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
 import com.google.cloud.vertexai.generativeai.ContentMaker;
@@ -43,7 +42,7 @@ public class Quickstart {
     // Initialize client that will be used to send requests. This client only needs
     // to be created once, and can be reused for multiple requests.
     try (VertexAI vertexAI = new VertexAI(projectId, location)) {
-      String imageUri = "gs://cloud-samples-data/vertex-ai/llm/prompts/landmark1.png";
+      String imageUri = "gs://generativeai-downloads/images/scones.jpg";
 
       GenerativeModel model = new GenerativeModel(modelName, vertexAI);
       GenerateContentResponse response = model.generateContent(ContentMaker.fromMultiModalData(
@@ -55,5 +54,4 @@ public class Quickstart {
     }
   }
 }
-// [END aiplatform_gemini_get_started]
 // [END generativeaionvertexai_gemini_get_started]

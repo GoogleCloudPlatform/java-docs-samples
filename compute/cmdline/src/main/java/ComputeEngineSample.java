@@ -128,7 +128,6 @@ public class ComputeEngineSample {
     System.exit(1);
   }
 
-  // [START list_instances]
   /**
    * Print available machine instances.
    *
@@ -154,9 +153,8 @@ public class ComputeEngineSample {
     }
     return found;
   }
-  // [END list_instances]
 
-  // [START create_instances]
+  // [START compute_create_instance]
   public static Operation startInstance(Compute compute, String instanceName) throws IOException {
     System.out.println("================== Starting New Instance ==================");
 
@@ -225,7 +223,8 @@ public class ComputeEngineSample {
     Compute.Instances.Insert insert = compute.instances().insert(PROJECT_ID, ZONE_NAME, instance);
     return insert.execute();
   }
-  // [END create_instances]
+
+  // [END compute_create_instance]
 
   private static Operation deleteInstance(Compute compute, String instanceName) throws Exception {
     System.out.println(
@@ -243,7 +242,7 @@ public class ComputeEngineSample {
     return url;
   }
 
-  // [START wait_until_complete]
+  // [START compute_wait_for_operation]
   /**
    * Wait until {@code operation} is completed.
    *
@@ -285,5 +284,5 @@ public class ComputeEngineSample {
     }
     return operation == null ? null : operation.getError();
   }
-  // [END wait_until_complete]
+  // [END compute_wait_for_operation]
 }

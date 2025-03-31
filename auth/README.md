@@ -35,16 +35,37 @@ You can then run a given `ClassName` via:
     mvn exec:java -Dexec.mainClass=com.google.cloud.auth.samples.AuthExample
         -Dexec.args="compute"
 
+### Analyze text sentiment using LanguageService API with API key authentication
+
+Create an API key via the [Google Cloud console:](https://developers.google.com/workspace/guides/create-credentials#api-key)
+
+Once you have an API key replace it in the main function in ApiKeyAuthExample and run the following command
+
+    mvn exec:java -Dexec.mainClass=com.google.cloud.auth.samples.ApiKeyAuthExample
+
 ## Downscoping with Credential Access Boundaries
 
 The same configuration above applies. 
 
-To run the samples for [Downscoping with Credential Access Boundaries](https://cloud.google.com/iam/docs/downscoping-short-lived-credentials)
-you must provide both a bucket name and object name under the TODO(developer): in the main method of `DownscopingExample`. 
+This section provides examples for [Downscoping with Credential Access Boundaries](https://cloud.google.com/iam/docs/downscoping-short-lived-credentials). 
+There are two examples demonstrating different ways to implement downscoping.
+
+**`DownscopedAccessTokenGenerator` and `DownscopedAccessTokenConsumer` Examples:**
+
+These examples demonstrate a common pattern for downscoping, using a token broker and consumer. 
+The `DownscopedAccessTokenGenerator` generates the downscoped access token using a client-side approach, and the `DownscopedAccessTokenConsumer` uses it to access Cloud Storage resources. 
+To run the `DownscopedAccessTokenConsumer`, you must provide a bucket name and object name under the `TODO(developer):` in the `main` method. 
+You can then run `DownscopedAccessTokenConsumer` via:
+
+    mvn exec:java -Dexec.mainClass=com.google.cloud.auth.samples.DownscopedAccessTokenConsumer
+
+**`DownscopingExample` Example:**
+
+This example demonstrates downscoping using a server-side approach. To run this example you must provide both a bucket name and object name under the TODO(developer): in the main method of `DownscopingExample`. 
 
 You can then run `DownscopingExample` via:
 
-	mvn exec:exec
+	mvn exec:java -Dexec.mainClass=com.google.cloud.auth.samples.DownscopingExample
 
 ## Tests
 Run all tests:

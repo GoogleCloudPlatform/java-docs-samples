@@ -72,6 +72,11 @@ public class ConnectorConnectionPoolFactory extends ConnectionPoolFactory {
     config.addDataSourceProperty("ipTypes", "PUBLIC,PRIVATE");
     // [START cloud_sql_postgres_servlet_connect_unix]
 
+    // cloudSqlRefreshStrategy set to "lazy" is used to perform a
+    // refresh when needed, rather than on a scheduled interval.
+    // This is recommended for serverless environments to
+    // avoid background refreshes from throttling CPU.
+    config.addDataSourceProperty("cloudSqlRefreshStrategy", "lazy");
 
     // ... Specify additional connection properties here.
     // [START_EXCLUDE]

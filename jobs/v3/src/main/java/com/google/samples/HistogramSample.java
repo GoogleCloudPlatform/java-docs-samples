@@ -37,7 +37,7 @@ public final class HistogramSample {
   private static CloudTalentSolution talentSolutionClient =
       JobServiceQuickstart.getTalentSolutionClient();
 
-  // [START histogram_search]
+  // [START job_histogram_search]
 
   /** Histogram search */
   public static void histogramSearch(String companyName) throws IOException, InterruptedException {
@@ -80,7 +80,7 @@ public final class HistogramSample {
 
     System.out.printf("Histogram search results: %s\n", searchJobsResponse);
   }
-  // [END histogram_search]
+  // [END job_histogram_search]
 
   public static void main(String... args) throws Exception {
     Company companyToBeCreated = BasicCompanySample.generateCompany();

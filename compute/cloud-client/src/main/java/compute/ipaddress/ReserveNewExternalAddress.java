@@ -43,7 +43,7 @@ public class ReserveNewExternalAddress {
     String projectId = "your-project-id";
     // Address name you want to use.
     String addressName = "your-address-name";
-    // 'IPV4' or 'IPV6' depending on the IP version. IPV6 if True. Option only for global regions.
+    // 'IPV4' or 'IPV6' depending on the IP version. IPV6 if True.
     boolean ipV6 = false;
     // 'STANDARD' or 'PREMIUM' network tier. Standard option available only in regional ip.
     boolean isPremium = false;
