@@ -27,6 +27,12 @@ import com.google.cloud.parametermanager.v1.ParameterName;
 import com.google.cloud.parametermanager.v1.ParameterVersion;
 import com.google.cloud.parametermanager.v1.ParameterVersionName;
 import com.google.cloud.parametermanager.v1.ParameterVersionPayload;
+import com.google.cloud.secretmanager.v1.AddSecretVersionRequest;
+import com.google.cloud.secretmanager.v1.Secret;
+import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
+import com.google.cloud.secretmanager.v1.SecretManagerServiceSettings;
+import com.google.cloud.secretmanager.v1.SecretName;
+import com.google.cloud.secretmanager.v1.SecretPayload;
 import com.google.common.base.Strings;
 import com.google.iam.v1.Binding;
 import com.google.iam.v1.GetIamPolicyRequest;
@@ -70,6 +76,9 @@ public class SnippetsIT {
   private static ParameterName TEST_PARAMETER_NAME_TO_GET;
   private static ParameterVersionName TEST_PARAMETER_VERSION_NAME_TO_GET;
   private static ParameterVersionName TEST_PARAMETER_VERSION_NAME_TO_GET_1;
+  private static ParameterName TEST_PARAMETER_NAME_TO_RENDER;
+  private static ParameterVersionName TEST_PARAMETER_VERSION_NAME_TO_RENDER;
+  private static SecretName SECRET_NAME;
   private ByteArrayOutputStream stdOut;
 
   @BeforeClass
@@ -259,6 +268,66 @@ public class SnippetsIT {
   public void afterEach() {
     stdOut = null;
     System.setOut(null);
+  }
+
+  @Test
+  public void testCreateRegionalParameter() throws IOException {
+    ParameterName parameterName = TEST_PARAMETER_NAME;
+    CreateRegionalParam.createRegionalParam(
+        parameterName.getProject(), parameterName.getLocation(), parameterName.getParameter());
+
+    assertThat(stdOut.toString()).contains("Created regional parameter:");
+  }
+
+  @Test
+  public void testCreateRegionalParameterWithFormat() throws IOException {
+    ParameterName parameterName = TEST_PARAMETER_NAME_WITH_FORMAT;
+    CreateStructuredRegionalParam.createStructuredRegionalParam(
+        parameterName.getProject(),
+        parameterName.getLocation(),
+        parameterName.getParameter(),
+        ParameterFormat.JSON);
+
+    assertThat(stdOut.toString()).contains("Created regional parameter");
+  }
+
+  @Test
+  public void testCreateRegionalParameterVersionUnformattedPayload() throws IOException {
+    ParameterVersionName parameterVersionName = TEST_PARAMETER_VERSION_NAME;
+    CreateRegionalParamVersion.createRegionalParamVersion(
+        parameterVersionName.getProject(),
+        parameterVersionName.getLocation(),
+        parameterVersionName.getParameter(),
+        parameterVersionName.getParameterVersion(),
+        PAYLOAD);
+
+    assertThat(stdOut.toString()).contains("Created regional parameter version:");
+  }
+
+  @Test
+  public void testCreateRegionalParameterVersionJSONPayload() throws IOException {
+    ParameterVersionName parameterVersionName = TEST_PARAMETER_VERSION_NAME_WITH_FORMAT;
+    CreateStructuredRegionalParamVersion.createStructuredRegionalParamVersion(
+        parameterVersionName.getProject(),
+        parameterVersionName.getLocation(),
+        parameterVersionName.getParameter(),
+        parameterVersionName.getParameterVersion(),
+        JSON_PAYLOAD);
+
+    assertThat(stdOut.toString()).contains("Created regional parameter version:");
+  }
+
+  @Test
+  public void testCreateRegionalParameterVersionSecretReference() throws IOException {
+    ParameterVersionName parameterVersionName = TEST_PARAMETER_VERSION_NAME_WITH_SECRET_REFERENCE;
+    CreateRegionalParamVersionWithSecret.createRegionalParamVersionWithSecret(
+        parameterVersionName.getProject(),
+        parameterVersionName.getLocation(),
+        parameterVersionName.getParameter(),
+        parameterVersionName.getParameterVersion(),
+        SECRET_ID);
+
+    assertThat(stdOut.toString()).contains("Created regional parameter version:");
   }
 
   @Test
