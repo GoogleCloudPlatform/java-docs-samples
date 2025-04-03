@@ -325,7 +325,6 @@ public class SnippetsIT {
     System.setOut(null);
   }
 
-
   @Test
   public void testGetParam() throws IOException {
     ParameterName parameterName = TEST_PARAMETER_NAME_TO_GET;
@@ -372,5 +371,58 @@ public class SnippetsIT {
         parameterVersionName.getParameterVersion());
 
     assertThat(stdOut.toString()).contains("Rendered parameter version payload");
+  }
+
+  @Test
+  public void testCreateParam() throws IOException {
+    ParameterName parameterName = TEST_PARAMETER_NAME;
+    CreateParam.createParam(parameterName.getProject(), parameterName.getParameter());
+
+    assertThat(stdOut.toString()).contains("Created parameter:");
+  }
+
+  @Test
+  public void testStructuredCreateParam() throws IOException {
+    ParameterName parameterName = TEST_PARAMETER_NAME_WITH_FORMAT;
+    CreateStructuredParam.createStructuredParameter(
+        parameterName.getProject(), parameterName.getParameter(), ParameterFormat.JSON);
+
+    assertThat(stdOut.toString()).contains("Created parameter");
+  }
+
+  @Test
+  public void testCreateParamVersion() throws IOException {
+    ParameterVersionName parameterVersionName = TEST_PARAMETER_VERSION_NAME;
+    CreateParamVersion.createParamVersion(
+        parameterVersionName.getProject(),
+        parameterVersionName.getParameter(),
+        parameterVersionName.getParameterVersion(),
+        PAYLOAD);
+
+    assertThat(stdOut.toString()).contains("Created parameter version");
+  }
+
+  @Test
+  public void testStructuredCreateParamVersion() throws IOException {
+    ParameterVersionName parameterVersionName = TEST_PARAMETER_VERSION_NAME_WITH_FORMAT;
+    CreateStructuredParamVersion.createStructuredParamVersion(
+        parameterVersionName.getProject(),
+        parameterVersionName.getParameter(),
+        parameterVersionName.getParameterVersion(),
+        JSON_PAYLOAD);
+
+    assertThat(stdOut.toString()).contains("Created parameter version");
+  }
+
+  @Test
+  public void testStructuredCreateParamVersionWithSecret() throws IOException {
+    ParameterVersionName parameterVersionName = TEST_PARAMETER_VERSION_NAME_WITH_SECRET_REFERENCE;
+    CreateParamVersionWithSecret.createParamVersionWithSecret(
+        parameterVersionName.getProject(),
+        parameterVersionName.getParameter(),
+        parameterVersionName.getParameterVersion(),
+        SECRET_ID);
+
+    assertThat(stdOut.toString()).contains("Created parameter version");
   }
 }
