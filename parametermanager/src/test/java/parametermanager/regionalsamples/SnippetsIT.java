@@ -432,4 +432,49 @@ public class SnippetsIT {
 
     assertThat(stdOut.toString()).contains("Rendered regional parameter version payload");
   }
+
+  @Test
+  public void testDisableRegionalParameterVersion() throws IOException {
+    ParameterVersionName parameterVersionName = TEST_PARAMETER_VERSION_NAME_TO_GET_1;
+    DisableRegionalParamVersion.disableRegionalParamVersion(
+        parameterVersionName.getProject(),
+        parameterVersionName.getLocation(),
+        parameterVersionName.getParameter(),
+        parameterVersionName.getParameterVersion());
+
+    assertThat(stdOut.toString()).contains("Disabled regional parameter version");
+  }
+
+  @Test
+  public void testEnableRegionalParameterVersion() throws IOException {
+    ParameterVersionName parameterVersionName = TEST_PARAMETER_VERSION_NAME_TO_GET_1;
+    EnableRegionalParamVersion.enableRegionalParamVersion(
+        parameterVersionName.getProject(),
+        parameterVersionName.getLocation(),
+        parameterVersionName.getParameter(),
+        parameterVersionName.getParameterVersion());
+
+    assertThat(stdOut.toString()).contains("Enabled regional parameter version");
+  }
+
+  @Test
+  public void testDeleteRegionalParameterVersion() throws IOException {
+    ParameterVersionName parameterVersionName = TEST_PARAMETER_VERSION_NAME_TO_DELETE;
+    DeleteRegionalParamVersion.deleteRegionalParamVersion(
+        parameterVersionName.getProject(),
+        parameterVersionName.getLocation(),
+        parameterVersionName.getParameter(),
+        parameterVersionName.getParameterVersion());
+
+    assertThat(stdOut.toString()).contains("Deleted regional parameter version:");
+  }
+
+  @Test
+  public void testDeleteRegionalParameter() throws IOException {
+    ParameterName parameterName = TEST_PARAMETER_NAME_TO_DELETE;
+    DeleteRegionalParam.deleteRegionalParam(
+        parameterName.getProject(), parameterName.getLocation(), parameterName.getParameter());
+
+    assertThat(stdOut.toString()).contains("Deleted regional parameter:");
+  }
 }
