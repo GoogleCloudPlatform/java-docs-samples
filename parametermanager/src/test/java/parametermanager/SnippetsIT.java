@@ -26,6 +26,13 @@ import com.google.cloud.parametermanager.v1.ParameterName;
 import com.google.cloud.parametermanager.v1.ParameterVersion;
 import com.google.cloud.parametermanager.v1.ParameterVersionName;
 import com.google.cloud.parametermanager.v1.ParameterVersionPayload;
+import com.google.cloud.secretmanager.v1.AddSecretVersionRequest;
+import com.google.cloud.secretmanager.v1.ProjectName;
+import com.google.cloud.secretmanager.v1.Replication;
+import com.google.cloud.secretmanager.v1.Secret;
+import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
+import com.google.cloud.secretmanager.v1.SecretName;
+import com.google.cloud.secretmanager.v1.SecretPayload;
 import com.google.common.base.Strings;
 import com.google.iam.v1.Binding;
 import com.google.iam.v1.GetIamPolicyRequest;
@@ -66,6 +73,9 @@ public class SnippetsIT {
   private static ParameterName TEST_PARAMETER_NAME_TO_GET;
   private static ParameterVersionName TEST_PARAMETER_VERSION_NAME_TO_GET;
   private static ParameterVersionName TEST_PARAMETER_VERSION_NAME_TO_GET_1;
+  private static ParameterName TEST_PARAMETER_NAME_TO_RENDER;
+  private static ParameterVersionName TEST_PARAMETER_VERSION_NAME_TO_RENDER;
+  private static SecretName SECRET_NAME;
   private ByteArrayOutputStream stdOut;
 
   @BeforeClass
@@ -133,6 +143,27 @@ public class SnippetsIT {
         TEST_PARAMETER_VERSION_NAME_TO_GET_1.getParameter(),
         TEST_PARAMETER_VERSION_NAME_TO_GET_1.getParameterVersion(),
         JSON_PAYLOAD);
+
+    // test render parameter version
+    TEST_PARAMETER_NAME_TO_RENDER = ParameterName.of(PROJECT_ID, "global", randomId());
+    SECRET_NAME = SecretName.of(PROJECT_ID, randomId());
+    Secret secret = createSecret(SECRET_NAME.getSecret());
+    addSecretVersion(secret);
+    Parameter testParameter =
+        createParameter(TEST_PARAMETER_NAME_TO_RENDER.getParameter(), ParameterFormat.JSON);
+    iamGrantAccess(SECRET_NAME, testParameter.getPolicyMember().getIamPolicyUidPrincipal());
+    TEST_PARAMETER_VERSION_NAME_TO_RENDER =
+        ParameterVersionName.of(
+            PROJECT_ID, "global", TEST_PARAMETER_NAME_TO_RENDER.getParameter(), randomId());
+    String payload =
+        String.format(
+            "{\"username\": \"test-user\","
+                + "\"password\": \"__REF__(//secretmanager.googleapis.com/%s/versions/latest)\"}",
+            SECRET_NAME.toString());
+    createParameterVersion(
+        TEST_PARAMETER_VERSION_NAME_TO_RENDER.getParameter(),
+        TEST_PARAMETER_VERSION_NAME_TO_RENDER.getParameterVersion(),
+        payload);
   }
 
   @AfterClass
@@ -152,6 +183,10 @@ public class SnippetsIT {
     deleteParameterVersion(TEST_PARAMETER_VERSION_NAME_TO_DELETE.toString());
     deleteParameter(TEST_PARAMETER_NAME_TO_DELETE_VERSION.toString());
     deleteParameter(TEST_PARAMETER_NAME_TO_DELETE.toString());
+
+    deleteParameterVersion(TEST_PARAMETER_VERSION_NAME_TO_RENDER.toString());
+    deleteParameter(TEST_PARAMETER_NAME_TO_RENDER.toString());
+    deleteSecret(SECRET_NAME.toString());
 
     deleteParameterVersion(TEST_PARAMETER_VERSION_NAME_TO_GET.toString());
     deleteParameterVersion(TEST_PARAMETER_VERSION_NAME_TO_GET_1.toString());
@@ -216,6 +251,68 @@ public class SnippetsIT {
     }
   }
 
+  private static Secret createSecret(String secretId) throws IOException {
+    ProjectName projectName = ProjectName.of(PROJECT_ID);
+    Secret secret =
+        Secret.newBuilder()
+            .setReplication(
+                Replication.newBuilder()
+                    .setAutomatic(Replication.Automatic.newBuilder().build())
+                    .build())
+            .build();
+
+    try (SecretManagerServiceClient client = SecretManagerServiceClient.create()) {
+      return client.createSecret(projectName.toString(), secretId, secret);
+    }
+  }
+
+  private static void addSecretVersion(Secret secret) throws IOException {
+    SecretName parent = SecretName.parse(secret.getName());
+    AddSecretVersionRequest request =
+        AddSecretVersionRequest.newBuilder()
+            .setParent(parent.toString())
+            .setPayload(
+                SecretPayload.newBuilder().setData(ByteString.copyFromUtf8(PAYLOAD)).build())
+            .build();
+    try (SecretManagerServiceClient client = SecretManagerServiceClient.create()) {
+      client.addSecretVersion(request);
+    }
+  }
+
+  private static void deleteSecret(String name) throws IOException {
+    try (SecretManagerServiceClient client = SecretManagerServiceClient.create()) {
+      client.deleteSecret(name);
+    } catch (com.google.api.gax.rpc.NotFoundException e) {
+      // Ignore not found error - parameter was already deleted
+    } catch (io.grpc.StatusRuntimeException e) {
+      if (e.getStatus().getCode() != io.grpc.Status.Code.NOT_FOUND) {
+        throw e;
+      }
+    }
+  }
+
+  private static void iamGrantAccess(SecretName secretName, String member) throws IOException {
+    try (SecretManagerServiceClient client = SecretManagerServiceClient.create()) {
+      Policy currentPolicy =
+          client.getIamPolicy(
+              GetIamPolicyRequest.newBuilder().setResource(secretName.toString()).build());
+
+      Binding binding =
+          Binding.newBuilder()
+              .setRole("roles/secretmanager.secretAccessor")
+              .addMembers(member)
+              .build();
+
+      Policy newPolicy = Policy.newBuilder().mergeFrom(currentPolicy).addBindings(binding).build();
+
+      client.setIamPolicy(
+          SetIamPolicyRequest.newBuilder()
+              .setResource(secretName.toString())
+              .setPolicy(newPolicy)
+              .build());
+    }
+  }
+
   @Before
   public void beforeEach() {
     stdOut = new ByteArrayOutputStream();
@@ -226,6 +323,54 @@ public class SnippetsIT {
   public void afterEach() {
     stdOut = null;
     System.setOut(null);
+  }
+
+  @Test
+  public void testGetParam() throws IOException {
+    ParameterName parameterName = TEST_PARAMETER_NAME_TO_GET;
+    GetParam.getParam(parameterName.getProject(), parameterName.getParameter());
+
+    assertThat(stdOut.toString()).contains("Found the parameter");
+  }
+
+  @Test
+  public void testGetParamVersion() throws IOException {
+    ParameterVersionName parameterVersionName = TEST_PARAMETER_VERSION_NAME_TO_GET;
+    GetParamVersion.getParamVersion(
+        parameterVersionName.getProject(),
+        parameterVersionName.getParameter(),
+        parameterVersionName.getParameterVersion());
+
+    assertThat(stdOut.toString()).contains("Found parameter version");
+    assertThat(stdOut.toString()).contains("Payload: " + JSON_PAYLOAD);
+  }
+
+  @Test
+  public void testListParams() throws IOException {
+    ParameterName parameterName = TEST_PARAMETER_NAME_TO_GET;
+    ListParams.listParams(parameterName.getProject());
+
+    assertThat(stdOut.toString()).contains("Found parameter");
+  }
+
+  @Test
+  public void testListParamVersions() throws IOException {
+    ParameterVersionName parameterVersionName = TEST_PARAMETER_VERSION_NAME_TO_GET;
+    ListParamVersions.listParamVersions(
+        parameterVersionName.getProject(), parameterVersionName.getParameter());
+
+    assertThat(stdOut.toString()).contains("Found parameter version");
+  }
+
+  @Test
+  public void testRenderParamVersion() throws IOException {
+    ParameterVersionName parameterVersionName = TEST_PARAMETER_VERSION_NAME_TO_RENDER;
+    RenderParamVersion.renderParamVersion(
+        parameterVersionName.getProject(),
+        parameterVersionName.getParameter(),
+        parameterVersionName.getParameterVersion());
+
+    assertThat(stdOut.toString()).contains("Rendered parameter version payload");
   }
 
   @Test
