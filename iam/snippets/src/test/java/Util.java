@@ -48,7 +48,7 @@ public class Util {
     return serviceAccount;
   }
 
-  public static void setUpTest_disableSertviceAccount(String projectId, String serviceAccountName)
+  public static void setUpTest_disableServiceAccount(String projectId, String serviceAccountName)
       throws IOException {
     String email = String.format("%s@%s.iam.gserviceaccount.com", serviceAccountName, projectId);
 
