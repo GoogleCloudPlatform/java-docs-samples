@@ -152,6 +152,32 @@ public class SnippetsIT {
         TEST_PARAMETER_VERSION_NAME_TO_GET_1.getParameter(),
         TEST_PARAMETER_VERSION_NAME_TO_GET_1.getParameterVersion(),
         JSON_PAYLOAD);
+
+    // test render parameter version
+    TEST_PARAMETER_NAME_TO_RENDER = ParameterName.of(PROJECT_ID, LOCATION_ID, randomId());
+    SECRET_NAME = SecretName.ofProjectLocationSecretName(PROJECT_ID, LOCATION_ID, randomId());
+    Secret secret = createSecret(SECRET_NAME.getSecret());
+    addSecretVersion(secret);
+    Parameter testParameter =
+        createParameter(TEST_PARAMETER_NAME_TO_RENDER.getParameter(), ParameterFormat.JSON);
+    iamGrantAccess(SECRET_NAME, testParameter.getPolicyMember().getIamPolicyUidPrincipal());
+    try {
+      Thread.sleep(60000);
+    } catch (InterruptedException e) {
+      throw new RuntimeException(e);
+    }
+    TEST_PARAMETER_VERSION_NAME_TO_RENDER =
+        ParameterVersionName.of(
+            PROJECT_ID, LOCATION_ID, TEST_PARAMETER_NAME_TO_RENDER.getParameter(), randomId());
+    String payload =
+        String.format(
+            "{\"username\": \"test-user\","
+                + "\"password\": \"__REF__(//secretmanager.googleapis.com/%s/versions/latest)\"}",
+            SECRET_NAME.toString());
+    createParameterVersion(
+        TEST_PARAMETER_VERSION_NAME_TO_RENDER.getParameter(),
+        TEST_PARAMETER_VERSION_NAME_TO_RENDER.getParameterVersion(),
+        payload);
   }
 
   @AfterClass
@@ -174,6 +200,10 @@ public class SnippetsIT {
     deleteParameterVersion(TEST_PARAMETER_VERSION_NAME_TO_DELETE.toString());
     deleteParameter(TEST_PARAMETER_NAME_TO_DELETE_VERSION.toString());
     deleteParameter(TEST_PARAMETER_NAME_TO_DELETE.toString());
+
+    deleteParameterVersion(TEST_PARAMETER_VERSION_NAME_TO_RENDER.toString());
+    deleteParameter(TEST_PARAMETER_NAME_TO_RENDER.toString());
+    deleteSecret(SECRET_NAME.toString());
 
     deleteParameterVersion(TEST_PARAMETER_VERSION_NAME_TO_GET.toString());
     deleteParameterVersion(TEST_PARAMETER_VERSION_NAME_TO_GET_1.toString());
@@ -258,6 +288,86 @@ public class SnippetsIT {
     }
   }
 
+  private static Secret createSecret(String secretId) throws IOException {
+    // Endpoint to call the regional parameter manager server
+    String apiEndpoint = String.format("secretmanager.%s.rep.googleapis.com:443", LOCATION_ID);
+    SecretManagerServiceSettings secretManagerServiceSettings =
+        SecretManagerServiceSettings.newBuilder().setEndpoint(apiEndpoint).build();
+
+    LocationName locationName = LocationName.of(PROJECT_ID, LOCATION_ID);
+    Secret secret = Secret.newBuilder().build();
+
+    try (SecretManagerServiceClient client =
+        SecretManagerServiceClient.create(secretManagerServiceSettings)) {
+      return client.createSecret(locationName.toString(), secretId, secret);
+    }
+  }
+
+  private static void addSecretVersion(Secret secret) throws IOException {
+    // Endpoint to call the regional parameter manager server
+    String apiEndpoint = String.format("secretmanager.%s.rep.googleapis.com:443", LOCATION_ID);
+    SecretManagerServiceSettings secretManagerServiceSettings =
+        SecretManagerServiceSettings.newBuilder().setEndpoint(apiEndpoint).build();
+
+    SecretName parent = SecretName.parse(secret.getName());
+    AddSecretVersionRequest request =
+        AddSecretVersionRequest.newBuilder()
+            .setParent(parent.toString())
+            .setPayload(
+                SecretPayload.newBuilder().setData(ByteString.copyFromUtf8(PAYLOAD)).build())
+            .build();
+    try (SecretManagerServiceClient client =
+        SecretManagerServiceClient.create(secretManagerServiceSettings)) {
+      client.addSecretVersion(request);
+    }
+  }
+
+  private static void deleteSecret(String name) throws IOException {
+    // Endpoint to call the regional parameter manager server
+    String apiEndpoint = String.format("secretmanager.%s.rep.googleapis.com:443", LOCATION_ID);
+    SecretManagerServiceSettings secretManagerServiceSettings =
+        SecretManagerServiceSettings.newBuilder().setEndpoint(apiEndpoint).build();
+
+    try (SecretManagerServiceClient client =
+        SecretManagerServiceClient.create(secretManagerServiceSettings)) {
+      client.deleteSecret(name);
+    } catch (com.google.api.gax.rpc.NotFoundException e) {
+      // Ignore not found error - parameter was already deleted
+    } catch (io.grpc.StatusRuntimeException e) {
+      if (e.getStatus().getCode() != io.grpc.Status.Code.NOT_FOUND) {
+        throw e;
+      }
+    }
+  }
+
+  private static void iamGrantAccess(SecretName secretName, String member) throws IOException {
+    // Endpoint to call the regional parameter manager server
+    String apiEndpoint = String.format("secretmanager.%s.rep.googleapis.com:443", LOCATION_ID);
+    SecretManagerServiceSettings secretManagerServiceSettings =
+        SecretManagerServiceSettings.newBuilder().setEndpoint(apiEndpoint).build();
+
+    try (SecretManagerServiceClient client =
+        SecretManagerServiceClient.create(secretManagerServiceSettings)) {
+      Policy currentPolicy =
+          client.getIamPolicy(
+              GetIamPolicyRequest.newBuilder().setResource(secretName.toString()).build());
+
+      Binding binding =
+          Binding.newBuilder()
+              .setRole("roles/secretmanager.secretAccessor")
+              .addMembers(member)
+              .build();
+
+      Policy newPolicy = Policy.newBuilder().mergeFrom(currentPolicy).addBindings(binding).build();
+
+      client.setIamPolicy(
+          SetIamPolicyRequest.newBuilder()
+              .setResource(secretName.toString())
+              .setPolicy(newPolicy)
+              .build());
+    }
+  }
+
   @Before
   public void beforeEach() {
     stdOut = new ByteArrayOutputStream();
@@ -268,6 +378,59 @@ public class SnippetsIT {
   public void afterEach() {
     stdOut = null;
     System.setOut(null);
+  }
+
+  @Test
+  public void testGetRegionalParameter() throws IOException {
+    ParameterName parameterName = TEST_PARAMETER_NAME_TO_GET;
+    GetRegionalParam.getRegionalParam(
+        parameterName.getProject(), parameterName.getLocation(), parameterName.getParameter());
+
+    assertThat(stdOut.toString()).contains("Found the regional parameter");
+  }
+
+  @Test
+  public void testGetRegionalParameterVersion() throws IOException {
+    ParameterVersionName parameterVersionName = TEST_PARAMETER_VERSION_NAME_TO_GET;
+    GetRegionalParamVersion.getRegionalParamVersion(
+        parameterVersionName.getProject(),
+        parameterVersionName.getLocation(),
+        parameterVersionName.getParameter(),
+        parameterVersionName.getParameterVersion());
+
+    assertThat(stdOut.toString()).contains("Found regional parameter version");
+    assertThat(stdOut.toString()).contains("Payload: " + JSON_PAYLOAD);
+  }
+
+  @Test
+  public void testListRegionalParameters() throws IOException {
+    ParameterName parameterName = TEST_PARAMETER_NAME_TO_GET;
+    ListRegionalParams.listRegionalParams(parameterName.getProject(), parameterName.getLocation());
+
+    assertThat(stdOut.toString()).contains("Found regional parameter");
+  }
+
+  @Test
+  public void testListRegionalParameterVersions() throws IOException {
+    ParameterVersionName parameterVersionName = TEST_PARAMETER_VERSION_NAME_TO_GET;
+    ListRegionalParamVersions.listRegionalParamVersions(
+        parameterVersionName.getProject(),
+        parameterVersionName.getLocation(),
+        parameterVersionName.getParameter());
+
+    assertThat(stdOut.toString()).contains("Found regional parameter version");
+  }
+
+  @Test
+  public void testRenderRegionalParameterVersion() throws IOException {
+    ParameterVersionName parameterVersionName = TEST_PARAMETER_VERSION_NAME_TO_RENDER;
+    RenderRegionalParamVersion.renderRegionalParamVersion(
+        parameterVersionName.getProject(),
+        parameterVersionName.getLocation(),
+        parameterVersionName.getParameter(),
+        parameterVersionName.getParameterVersion());
+
+    assertThat(stdOut.toString()).contains("Rendered regional parameter version payload");
   }
 
   @Test
