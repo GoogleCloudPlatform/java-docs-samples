@@ -26,13 +26,14 @@ public class AddMember {
     Policy policy = Policy.newBuilder().build();
     // TODO: Replace with your role.
     String role = "roles/existing-role";
-    // TODO: Replace with your member.
-    String member = "user:member-to-add@example.com";
+    // TODO: Replace with your principal.
+    // For examples, see https://cloud.google.com/iam/docs/principal-identifiers
+    String member = "principal-id";
 
     addMember(policy, role, member);
   }
 
-  // Adds a member to a pre-existing role.
+  // Adds a principal to a pre-existing role.
   public static Policy addMember(Policy policy, String role, String member) {
     List<Binding> newBindingsList = new ArrayList<>();
 
@@ -44,13 +45,13 @@ public class AddMember {
       }
     }
 
-    // Update the policy to add the member.
+    // Update the policy to add the principal.
     Policy updatedPolicy = policy.toBuilder()
             .clearBindings()
             .addAllBindings(newBindingsList)
             .build();
 
-    System.out.println("Added member: " + updatedPolicy.getBindingsList());
+    System.out.println("Added principal: " + updatedPolicy.getBindingsList());
 
     return updatedPolicy;
   }
