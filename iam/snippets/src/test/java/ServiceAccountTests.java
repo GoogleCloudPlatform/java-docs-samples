@@ -17,7 +17,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -28,26 +27,20 @@ import com.google.iam.admin.v1.ServiceAccountKey;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.time.Instant;
 import java.util.List;
-import java.util.UUID;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.FixMethodOrder;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.junit.runners.MethodSorters;
 
 @RunWith(JUnit4.class)
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ServiceAccountTests {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String SERVICE_ACCOUNT =
-          "service-account-" + UUID.randomUUID().toString().substring(0, 8);
-  private static String SERVICE_ACCOUNT_KEY_ID;
   private ByteArrayOutputStream bout;
   private final PrintStream originalOut = System.out;
 
@@ -55,8 +48,12 @@ public class ServiceAccountTests {
 
   private static void requireEnvVar(String varName) {
     assertNotNull(
-          System.getenv(varName),
-          String.format("Environment variable '%s' is required to perform these tests.", varName));
+        System.getenv(varName),
+        String.format("Environment variable '%s' is required to perform these tests.", varName));
+  }
+
+  private static String generateServiceAccountName() {
+    return "service-account-" + Instant.now().toEpochMilli();
   }
 
   @BeforeClass
@@ -78,139 +75,270 @@ public class ServiceAccountTests {
   }
 
   @Test
-  public void stage1_testServiceAccountCreate() throws IOException {
-    ServiceAccount serviceAccount = CreateServiceAccount
-            .createServiceAccount(PROJECT_ID, SERVICE_ACCOUNT);
+  public void testServiceAccount_createServiceAccount() throws IOException {
+    // Prepare
+    String serviceAccountName = generateServiceAccountName();
+
+    // Act
+    ServiceAccount serviceAccount =
+        CreateServiceAccount.createServiceAccount(PROJECT_ID, serviceAccountName);
     String got = bout.toString();
-    assertThat(got, containsString("Created service account: " + SERVICE_ACCOUNT));
+
+    // Assert
+    assertThat(got, containsString("Created service account: " + serviceAccountName));
     assertNotNull(serviceAccount);
-    assertThat(serviceAccount.getName(), containsString(SERVICE_ACCOUNT));
+    assertThat(serviceAccount.getName(), containsString(serviceAccountName));
 
+    // Cleanup
+    Util.tearDownTest_deleteServiceAccount(PROJECT_ID, serviceAccountName);
   }
 
   @Test
-  public void stage1_testServiceAccountsList() throws IOException {
+  public void testServiceAccount_listServiceAccounts() throws IOException, InterruptedException {
+    // Prepare
+    String serviceAccountName = generateServiceAccountName();
+    Util.setUpTest_createServiceAccount(PROJECT_ID, serviceAccountName);
+
+    // Act
     IAMClient.ListServiceAccountsPagedResponse response =
-            ListServiceAccounts.listServiceAccounts(PROJECT_ID);
+        ListServiceAccounts.listServiceAccounts(PROJECT_ID);
 
+    // Assert
     assertTrue(response.iterateAll().iterator().hasNext());
+
+    // Cleanup
+    Util.tearDownTest_deleteServiceAccount(PROJECT_ID, serviceAccountName);
   }
 
   @Test
-  public void stage2_testServiceAccountRename() throws IOException {
-    String renameTo = "your-new-display-name";
-    ServiceAccount serviceAccount = RenameServiceAccount
-            .renameServiceAccount(PROJECT_ID, SERVICE_ACCOUNT, renameTo);
+  public void testServiceAccount_getServiceAccount() throws IOException, InterruptedException {
+    // Prepare
+    String serviceAccountName = generateServiceAccountName();
+    Util.setUpTest_createServiceAccount(PROJECT_ID, serviceAccountName);
+
+    // Act
+    ServiceAccount account = GetServiceAccount.getServiceAccount(PROJECT_ID, serviceAccountName);
+
+    // Assert
+    assertTrue(account.getName().contains(serviceAccountName));
+    assertEquals(PROJECT_ID, account.getProjectId());
+
+    // Cleanup
+    Util.tearDownTest_deleteServiceAccount(PROJECT_ID, serviceAccountName);
+  }
+
+  @Test
+  public void testServiceAccount_renameServiceAccount() throws IOException, InterruptedException {
+    // Prepare
+    String serviceAccountName = generateServiceAccountName();
+    Util.setUpTest_createServiceAccount(PROJECT_ID, serviceAccountName);
+    String newServiceAccountName = "your-new-display-name";
+
+    // Act
+    ServiceAccount renamedServiceAccount =
+        RenameServiceAccount.renameServiceAccount(
+            PROJECT_ID, serviceAccountName, newServiceAccountName);
+
+    // Assert
     String got = bout.toString();
     assertThat(got, containsString("Updated display name"));
-    assertThat(got, containsString(renameTo));
-    assertNotNull(serviceAccount);
-    assertThat(renameTo, containsString(serviceAccount.getDisplayName()));
+    assertThat(got, containsString(newServiceAccountName));
+    assertNotNull(renamedServiceAccount);
+    assertThat(newServiceAccountName, containsString(renamedServiceAccount.getDisplayName()));
+
+    // Cleanup
+    Util.tearDownTest_deleteServiceAccount(PROJECT_ID, serviceAccountName);
   }
 
   @Test
-  public void stage2_testServiceAccountGet() throws IOException {
-    ServiceAccount account = GetServiceAccount.getServiceAccount(PROJECT_ID, SERVICE_ACCOUNT);
+  public void testServiceAccount_disableServiceAccount() throws IOException, InterruptedException {
+    // Prepare
+    String serviceAccountName = generateServiceAccountName();
+    Util.setUpTest_createServiceAccount(PROJECT_ID, serviceAccountName);
 
-    assertTrue(account.getName().contains(SERVICE_ACCOUNT));
-    assertEquals(PROJECT_ID, account.getProjectId());
-  }
+    // Act
+    DisableServiceAccount.disableServiceAccount(PROJECT_ID, serviceAccountName);
 
-  @Test
-  public void stage2_testServiceAccountKeyCreate() throws IOException {
-    ServiceAccountKey key = CreateServiceAccountKey.createKey(PROJECT_ID, SERVICE_ACCOUNT);
-    SERVICE_ACCOUNT_KEY_ID =  key.getName()
-            .substring(key.getName().lastIndexOf("/") + 1)
-            .trim();
-
-    assertNotNull(SERVICE_ACCOUNT_KEY_ID);
-  }
-
-  @Test
-  public void stage2_testServiceAccountKeyGet() throws IOException {
-    ServiceAccountKey key = GetServiceAccountKey
-            .getServiceAccountKey(PROJECT_ID, SERVICE_ACCOUNT, SERVICE_ACCOUNT_KEY_ID);
-
-    assertTrue(key.getName().contains(SERVICE_ACCOUNT_KEY_ID));
-    assertTrue(key.getName().contains(PROJECT_ID));
-    assertTrue(key.getName().contains(SERVICE_ACCOUNT));
-  }
-
-  @Test
-  public void stage2_testServiceAccountKeysList() throws IOException {
-    List<ServiceAccountKey> keys = ListServiceAccountKeys.listKeys(PROJECT_ID, SERVICE_ACCOUNT);
-
-    assertNotEquals(0, keys.size());
-    assertTrue(keys.stream()
-            .map(ServiceAccountKey::getName)
-            .anyMatch(keyName -> keyName.contains(SERVICE_ACCOUNT_KEY_ID)));
-  }
-
-  @Test
-  public void stage2_testServiceAccountKeyDisable() throws IOException {
-    DisableServiceAccountKey
-        .disableServiceAccountKey(PROJECT_ID, SERVICE_ACCOUNT, SERVICE_ACCOUNT_KEY_ID);
-    ServiceAccountKey key = GetServiceAccountKey
-            .getServiceAccountKey(PROJECT_ID, SERVICE_ACCOUNT, SERVICE_ACCOUNT_KEY_ID);
-
-    assertTrue(key.getName().contains(SERVICE_ACCOUNT_KEY_ID));
-    assertTrue(key.getDisabled());
-  }
-
-  @Test
-  public void stage2_testServiceAccountKeyEnable() throws IOException {
-    EnableServiceAccountKey
-        .enableServiceAccountKey(PROJECT_ID, SERVICE_ACCOUNT, SERVICE_ACCOUNT_KEY_ID);
-    ServiceAccountKey key = GetServiceAccountKey
-            .getServiceAccountKey(PROJECT_ID, SERVICE_ACCOUNT, SERVICE_ACCOUNT_KEY_ID);
-
-    assertTrue(key.getName().contains(SERVICE_ACCOUNT_KEY_ID));
-    assertFalse(key.getDisabled());
-  }
-
-  @Test
-  public void stage3_testServiceAccountKeyDelete() throws IOException {
-    DeleteServiceAccountKey.deleteKey(PROJECT_ID, SERVICE_ACCOUNT, SERVICE_ACCOUNT_KEY_ID);
-    String got = bout.toString();
-    assertThat(got, containsString("Deleted key:"));
-
-    bout.reset();
-    ListServiceAccountKeys.listKeys(PROJECT_ID, SERVICE_ACCOUNT);
-    got = bout.toString();
-    assertThat(got, !containsString(SERVICE_ACCOUNT_KEY_ID).matches(got));
-  }
-
-  @Test
-  public void stage4_testDisableServiceAccount() throws IOException {
-    DisableServiceAccount.disableServiceAccount(PROJECT_ID, SERVICE_ACCOUNT);
-    ServiceAccount serviceAccount = GetServiceAccount
-            .getServiceAccount(PROJECT_ID, SERVICE_ACCOUNT);
-
-    assertTrue(serviceAccount.getName().contains(SERVICE_ACCOUNT));
+    // Assert
+    ServiceAccount serviceAccount = Util.test_getServiceAccount(PROJECT_ID, serviceAccountName);
+    assertTrue(serviceAccount.getName().contains(serviceAccountName));
     assertEquals(PROJECT_ID, serviceAccount.getProjectId());
-    assertTrue(SERVICE_ACCOUNT, serviceAccount.getDisabled());
+    assertTrue(serviceAccountName, serviceAccount.getDisabled());
+
+    // Cleanup
+    Util.tearDownTest_deleteServiceAccount(PROJECT_ID, serviceAccountName);
   }
 
   @Test
-  public void stage5_testEnableServiceAccount() throws IOException {
-    EnableServiceAccount.enableServiceAccount(PROJECT_ID, SERVICE_ACCOUNT);
-    ServiceAccount serviceAccount = GetServiceAccount
-            .getServiceAccount(PROJECT_ID, SERVICE_ACCOUNT);
+  public void testServiceAccount_enableServiceAccount() throws IOException, InterruptedException {
+    // Prepare
+    String serviceAccountName = generateServiceAccountName();
+    Util.setUpTest_createServiceAccount(PROJECT_ID, serviceAccountName);
+    Util.setUpTest_disableServiceAccount(PROJECT_ID, serviceAccountName);
 
-    assertTrue(serviceAccount.getName().contains(SERVICE_ACCOUNT));
+    // Act
+    EnableServiceAccount.enableServiceAccount(PROJECT_ID, serviceAccountName);
+
+    // Assert
+    ServiceAccount serviceAccount = Util.test_getServiceAccount(PROJECT_ID, serviceAccountName);
+    assertTrue(serviceAccount.getName().contains(serviceAccountName));
     assertEquals(PROJECT_ID, serviceAccount.getProjectId());
-    assertFalse(SERVICE_ACCOUNT, serviceAccount.getDisabled());
+    assertFalse(serviceAccountName, serviceAccount.getDisabled());
+
+    // Cleanup
+    Util.tearDownTest_deleteServiceAccount(PROJECT_ID, serviceAccountName);
   }
 
   @Test
-  public void stage6_testServiceAccountDelete() throws IOException {
-    DeleteServiceAccount.deleteServiceAccount(PROJECT_ID, SERVICE_ACCOUNT);
+  public void testServiceAccount_deleteServiceAccount() throws IOException, InterruptedException {
+    // Prepare
+    String serviceAccountName = generateServiceAccountName();
+    Util.setUpTest_createServiceAccount(PROJECT_ID, serviceAccountName);
+
+    // Act
+    DeleteServiceAccount.deleteServiceAccount(PROJECT_ID, serviceAccountName);
+
+    // Assert
     String got = bout.toString();
     assertThat(got, containsString("Deleted service account:"));
-
     bout.reset();
-    ListServiceAccounts.listServiceAccounts(PROJECT_ID);
+    Util.test_listServiceAccounts(PROJECT_ID);
     got = bout.toString();
-    assertThat(got, !containsString(SERVICE_ACCOUNT).matches(got));
+    assertThat(got, !containsString(serviceAccountName).matches(got));
+  }
+
+  @Test
+  public void testServiceAccount_createKey() throws IOException, InterruptedException {
+    // Prepare
+    String serviceAccountName = generateServiceAccountName();
+    Util.setUpTest_createServiceAccount(PROJECT_ID, serviceAccountName);
+
+    // Act
+    ServiceAccountKey key = CreateServiceAccountKey.createKey(PROJECT_ID, serviceAccountName);
+
+    // Assert
+    String serviceAccountKeyId = Util.getServiceAccountKeyIdFromKey(key);
+    assertNotNull(serviceAccountKeyId);
+
+    // Cleanup
+    Util.tearDownTest_deleteServiceAccount(PROJECT_ID, serviceAccountName);
+  }
+
+  @Test
+  public void testServiceAccount_listKeys() throws IOException, InterruptedException {
+    // Prepare
+    String serviceAccountName = generateServiceAccountName();
+    Util.setUpTest_createServiceAccount(PROJECT_ID, serviceAccountName);
+    ServiceAccountKey setupKey =
+        Util.setUpTest_createServiceAccountKey(PROJECT_ID, serviceAccountName);
+    String serviceAccountKeyId = Util.getServiceAccountKeyIdFromKey(setupKey);
+
+    // Act
+    List<ServiceAccountKey> keys = ListServiceAccountKeys.listKeys(PROJECT_ID, serviceAccountName);
+
+    // Assert
+    assertFalse(keys.isEmpty());
+    assertTrue(keys.size() > 0);
+    assertTrue(
+        keys.stream()
+            .map(ServiceAccountKey::getName)
+            .anyMatch(keyName -> keyName.contains(serviceAccountKeyId)));
+
+    // Cleanup
+    Util.tearDownTest_deleteServiceAccount(PROJECT_ID, serviceAccountName);
+  }
+
+  @Test
+  public void testServiceAccount_getKey() throws IOException, InterruptedException {
+    // Prepare
+    String serviceAccountName = generateServiceAccountName();
+    Util.setUpTest_createServiceAccount(PROJECT_ID, serviceAccountName);
+    ServiceAccountKey setupKey =
+        Util.setUpTest_createServiceAccountKey(PROJECT_ID, serviceAccountName);
+    String serviceAccountKeyId = Util.getServiceAccountKeyIdFromKey(setupKey);
+
+    // Act
+    ServiceAccountKey key =
+        GetServiceAccountKey.getServiceAccountKey(
+            PROJECT_ID, serviceAccountName, serviceAccountKeyId);
+
+    // Assert
+    assertTrue(key.getName().contains(serviceAccountKeyId));
+    assertTrue(key.getName().contains(PROJECT_ID));
+    assertTrue(key.getName().contains(serviceAccountName));
+
+    // Cleanup
+    Util.tearDownTest_deleteServiceAccount(PROJECT_ID, serviceAccountName);
+  }
+
+  @Test
+  public void testServiceAccount_disableKey() throws IOException, InterruptedException {
+    // Prepare
+    String serviceAccountName = generateServiceAccountName();
+    Util.setUpTest_createServiceAccount(PROJECT_ID, serviceAccountName);
+    ServiceAccountKey setupKey =
+        Util.setUpTest_createServiceAccountKey(PROJECT_ID, serviceAccountName);
+    String serviceAccountKeyId = Util.getServiceAccountKeyIdFromKey(setupKey);
+
+    // Act
+    DisableServiceAccountKey.disableServiceAccountKey(
+        PROJECT_ID, serviceAccountName, serviceAccountKeyId);
+
+    // Assert
+    ServiceAccountKey key =
+        Util.test_getServiceAccountKey(PROJECT_ID, serviceAccountName, serviceAccountKeyId);
+    assertTrue(key.getName().contains(serviceAccountKeyId));
+    assertTrue(key.getDisabled());
+
+    // Cleanup
+    Util.tearDownTest_deleteServiceAccount(PROJECT_ID, serviceAccountName);
+  }
+
+  @Test
+  public void testServiceAccount_enableKey() throws IOException, InterruptedException {
+    // Prepare
+    String serviceAccountName = generateServiceAccountName();
+    Util.setUpTest_createServiceAccount(PROJECT_ID, serviceAccountName);
+    ServiceAccountKey setupKey =
+        Util.setUpTest_createServiceAccountKey(PROJECT_ID, serviceAccountName);
+    String serviceAccountKeyId = Util.getServiceAccountKeyIdFromKey(setupKey);
+    Util.setUpTest_disableServiceAccountKey(PROJECT_ID, serviceAccountName, serviceAccountKeyId);
+
+    // Act
+    EnableServiceAccountKey.enableServiceAccountKey(
+        PROJECT_ID, serviceAccountName, serviceAccountKeyId);
+
+    // Assert
+    ServiceAccountKey key =
+        Util.test_getServiceAccountKey(PROJECT_ID, serviceAccountName, serviceAccountKeyId);
+    assertTrue(key.getName().contains(serviceAccountKeyId));
+    assertFalse(key.getDisabled());
+
+    // Cleanup
+    Util.tearDownTest_deleteServiceAccount(PROJECT_ID, serviceAccountName);
+  }
+
+  @Test
+  public void testServiceAccount_deleteKey() throws IOException, InterruptedException {
+    // Prepare
+    String serviceAccountName = generateServiceAccountName();
+    Util.setUpTest_createServiceAccount(PROJECT_ID, serviceAccountName);
+    ServiceAccountKey setupKey =
+        Util.setUpTest_createServiceAccountKey(PROJECT_ID, serviceAccountName);
+    String serviceAccountKeyId = Util.getServiceAccountKeyIdFromKey(setupKey);
+
+    // Act
+    DeleteServiceAccountKey.deleteKey(PROJECT_ID, serviceAccountName, serviceAccountKeyId);
+
+    // Assert
+    String got = bout.toString();
+    assertThat(got, containsString("Deleted key:"));
+    bout.reset();
+    Util.test_listServiceAccountKeys(PROJECT_ID, serviceAccountName);
+    got = bout.toString();
+    assertThat(got, !containsString(serviceAccountKeyId).matches(got));
+
+    // Cleanup
+    Util.tearDownTest_deleteServiceAccount(PROJECT_ID, serviceAccountName);
   }
 }
