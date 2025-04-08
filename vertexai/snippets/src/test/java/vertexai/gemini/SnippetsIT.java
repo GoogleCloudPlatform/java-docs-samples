@@ -48,7 +48,7 @@ public class SnippetsIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String LOCATION = "us-central1";
   private static final String GEMINI_FLASH = "gemini-2.0-flash-001";
-  private static final String GEMINI_FLASH_1_5 = "gemini-1.5-flash-001";
+  private static final String GEMINI_FLASH_1_5 = "gemini-2.0-flash-001";
   private static final String DATASTORE_ID = "grounding-test-datastore_1716831150046";
   private static final int MAX_ATTEMPT_COUNT = 3;
   private static final int INITIAL_BACKOFF_MILLIS = 120000;
