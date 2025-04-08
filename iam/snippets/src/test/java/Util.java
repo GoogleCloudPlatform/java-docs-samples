@@ -168,11 +168,11 @@ public class Util {
         test_getServiceAccount(projectId, serviceAccountName);
         isAccountCreated = true;
       } catch (Exception e) {
-        Thread.sleep(time);
-        time *= 2;
         if (time > timeLimit) {
           break;
         }
+        Thread.sleep(time);
+        time *= 2;
       }
     }
   }
