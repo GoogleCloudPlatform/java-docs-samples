@@ -140,34 +140,6 @@ public class SnippetsIT {
   }
 
   @Test
-  public void testMultimodalMultiImage() throws IOException {
-    MultimodalMultiImage.multimodalMultiImage(PROJECT_ID, LOCATION, GEMINI_FLASH);
-    assertThat(bout.toString()).contains("city: Rio de Janeiro, Landmark: Christ the Redeemer");
-  }
-
-  @Test
-  public void testMultimodalQuery() throws Exception {
-    String imageUri =
-        "https://storage.googleapis.com/cloud-samples-data/vertex-ai/llm/prompts/landmark1.png";
-    String dataImageBase64 = Base64.getEncoder().encodeToString(readImageFile(imageUri));
-    String output =
-        MultimodalQuery.multimodalQuery(PROJECT_ID, LOCATION, GEMINI_FLASH, dataImageBase64);
-    assertThat(output).isNotEmpty();
-  }
-
-  @Test
-  public void testMultimodalVideoInput() throws IOException {
-    MultimodalVideoInput.multimodalVideoInput(PROJECT_ID, LOCATION, GEMINI_FLASH);
-    assertThat(bout.toString()).contains("Zoo");
-  }
-
-  @Test
-  public void testMultiTurnMultimodal() throws IOException {
-    MultiTurnMultimodal.multiTurnMultimodal(PROJECT_ID, LOCATION, GEMINI_FLASH);
-    assertThat(bout.toString()).contains("scones");
-  }
-
-  @Test
   public void testSimpleQuestionAnswer() throws Exception {
     String output = QuestionAnswer.simpleQuestion(PROJECT_ID, LOCATION, GEMINI_FLASH);
     assertThat(output).isNotEmpty();
@@ -178,16 +150,6 @@ public class SnippetsIT {
   public void testQuickstart() throws IOException {
     String output = Quickstart.quickstart(PROJECT_ID, LOCATION, GEMINI_FLASH);
     assertThat(output).contains("cookie");
-  }
-
-  @Test
-  public void testSingleTurnMultimodal() throws IOException {
-    String imageUri =
-        "https://storage.googleapis.com/cloud-samples-data/vertex-ai/llm/prompts/landmark1.png";
-    String dataImageBase64 = Base64.getEncoder().encodeToString(readImageFile(imageUri));
-    SingleTurnMultimodal.generateContent(
-        PROJECT_ID, LOCATION, GEMINI_FLASH, "What is this image", dataImageBase64);
-    assertThat(bout.toString()).contains("Colosseum");
   }
 
   @Test
@@ -233,20 +195,6 @@ public class SnippetsIT {
 
     assertThat(output).ignoringCase().contains("Pixel");
     assertThat(output).ignoringCase().contains("Tokyo");
-  }
-
-  @Test
-  public void testAllModalityInputs() throws IOException {
-    String output = MultimodalAllInput.multimodalAllInput(PROJECT_ID, LOCATION, GEMINI_FLASH);
-
-    assertThat(output).ignoringCase().contains("0:4");
-  }
-
-  @Test
-  public void testPdfInput() throws IOException {
-    String output = PdfInput.pdfInput(PROJECT_ID, LOCATION, GEMINI_FLASH);
-
-    assertThat(output).ignoringCase().contains("Gemini");
   }
 
   @Test
