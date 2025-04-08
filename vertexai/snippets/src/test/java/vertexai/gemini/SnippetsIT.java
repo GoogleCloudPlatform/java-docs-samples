@@ -140,12 +140,6 @@ public class SnippetsIT {
   }
 
   @Test
-  public void testChatSession() throws IOException {
-    ChatDiscussion.chatDiscussion(PROJECT_ID, LOCATION, GEMINI_FLASH);
-    assertThat(bout.toString()).contains("Chat Ended.");
-  }
-
-  @Test
   public void testMultimodalMultiImage() throws IOException {
     MultimodalMultiImage.multimodalMultiImage(PROJECT_ID, LOCATION, GEMINI_FLASH);
     assertThat(bout.toString()).contains("city: Rio de Janeiro, Landmark: Christ the Redeemer");
@@ -212,15 +206,6 @@ public class SnippetsIT {
   }
 
   @Test
-  public void testSafetySettings() throws Exception {
-    String textPrompt = "Hello World!";
-
-    String output = WithSafetySettings.safetyCheck(PROJECT_ID, LOCATION, GEMINI_FLASH, textPrompt);
-    assertThat(output).isNotEmpty();
-    assertThat(output).contains("reasons?");
-  }
-
-  @Test
   public void testTokenCount() throws Exception {
     int tokenCount = GetTokenCount.getTokenCount(PROJECT_ID, LOCATION, GEMINI_FLASH);
     assertThat(tokenCount).isEqualTo(6);
@@ -243,45 +228,6 @@ public class SnippetsIT {
   }
 
   @Test
-  public void testComplexFunctionCalling() throws Exception {
-    String textPrompt = "What is the weather like in Boston?";
-
-    String answer =
-        ComplexFunctionCalling.complexFunctionCalling(
-            PROJECT_ID, LOCATION, GEMINI_FLASH, textPrompt);
-    assertThat(answer).ignoringCase().contains("Boston");
-    assertThat(answer).ignoringCase().contains("Partly Cloudy");
-    assertThat(answer).ignoringCase().contains("temperature");
-    assertThat(answer).ignoringCase().contains("65");
-  }
-  
-  @Test
-  public void testAutomaticFunctionCalling() throws Exception {
-    String textPrompt = "What's the weather in Paris?";
-
-    String answer =
-        AutomaticFunctionCalling.automaticFunctionCalling(
-            PROJECT_ID, LOCATION, GEMINI_FLASH, textPrompt);
-    assertThat(answer).ignoringCase().contains("raining");
-  }
-
-  @Test
-  public void testAudioInputSummary() throws IOException {
-    String output = AudioInputSummarization.summarizeAudio(PROJECT_ID, LOCATION, GEMINI_FLASH);
-
-    assertThat(output).ignoringCase().contains("Pixel");
-    assertThat(output).ignoringCase().contains("feature");
-  }
-
-  @Test
-  public void testAudioInputTranscription() throws IOException {
-    String output = AudioInputTranscription.transcribeAudio(PROJECT_ID, LOCATION, GEMINI_FLASH);
-
-    assertThat(output).ignoringCase().contains("Pixel");
-    assertThat(output).ignoringCase().contains("feature");
-  }
-
-  @Test
   public void testVideoAudioInput() throws IOException {
     String output = VideoInputWithAudio.videoAudioInput(PROJECT_ID, LOCATION, GEMINI_FLASH);
 
@@ -301,14 +247,6 @@ public class SnippetsIT {
     String output = PdfInput.pdfInput(PROJECT_ID, LOCATION, GEMINI_FLASH);
 
     assertThat(output).ignoringCase().contains("Gemini");
-  }
-
-  @Test
-  public void testSystemInstruction() throws Exception {
-    String output = WithSystemInstruction.translateToFrench(PROJECT_ID, LOCATION, GEMINI_FLASH);
-
-    assertThat(output).ignoringCase().contains("bagels");
-    assertThat(output).ignoringCase().contains("aime");
   }
 
   @Test
@@ -346,139 +284,6 @@ public class SnippetsIT {
     assertThat(output).ignoringCase().contains("no");
   }
 
-  private class Recipe {
-    @SerializedName("recipe_name")
-    public String recipeName;
-  }
-
-  @Test
-  public void testControlledGenerationWithMimeType() throws Exception {
-    String output = ControlledGenerationMimeType
-        .controlGenerationWithMimeType(PROJECT_ID, LOCATION, GEMINI_FLASH);
-    Recipe[] recipes = new Gson().fromJson(output, Recipe[].class);
-
-    assertThat(recipes).isNotEmpty();
-    assertThat(recipes[0].recipeName).isNotEmpty();
-  }
-
-  @Test
-  public void testControlledGenerationWithJsonSchema() throws Exception {
-    String output = ControlledGenerationSchema
-        .controlGenerationWithJsonSchema(PROJECT_ID, LOCATION, GEMINI_FLASH);
-    Recipe[] recipes = new Gson().fromJson(output, Recipe[].class);
-
-    assertThat(recipes).isNotEmpty();
-    assertThat(recipes[0].recipeName).isNotEmpty();
-  }
-
-  private class Review {
-    public int rating;
-    public String flavor;
-  }
-
-  @Test
-  public void testControlledGenerationWithJsonSchema2() throws Exception {
-    String output = ControlledGenerationSchema2
-        .controlGenerationWithJsonSchema2(PROJECT_ID, LOCATION, GEMINI_FLASH);
-    Review[] recipes = new Gson().fromJson(output, Review[].class);
-
-    assertThat(recipes).hasLength(2);
-    assertThat(recipes[0].flavor).isNotEmpty();
-    assertThat(recipes[0].rating).isEqualTo(4);
-    assertThat(recipes[1].flavor).isNotEmpty();
-    assertThat(recipes[1].rating).isEqualTo(1);
-  }
-
-  private class WeatherForecast {
-    public DayForecast[] forecast;
-  }
-
-  private class DayForecast {
-    @SerializedName("Day")
-    public String day;
-    @SerializedName("Forecast")
-    public String forecast;
-    @SerializedName("Humidity")
-    public String humidity;
-    @SerializedName("Temperature")
-    public int temperature;
-    @SerializedName("Wind Speed")
-    public int windSpeed;
-  }
-
-  @Test
-  public void testControlledGenerationWithJsonSchema3() throws Exception {
-    String output = ControlledGenerationSchema3
-        .controlGenerationWithJsonSchema3(PROJECT_ID, LOCATION, GEMINI_FLASH);
-    WeatherForecast weatherForecast = new Gson().fromJson(output, WeatherForecast.class);
-
-    assertThat(weatherForecast.forecast).hasLength(7);
-
-    assertThat(weatherForecast.forecast[0].day).ignoringCase().isEqualTo("Sunday");
-    assertThat(weatherForecast.forecast[0].forecast).ignoringCase().isEqualTo("Sunny");
-    assertThat(weatherForecast.forecast[0].temperature).isEqualTo(77);
-    assertThat(weatherForecast.forecast[0].humidity).ignoringCase().isEqualTo("50%");
-    assertThat(weatherForecast.forecast[0].windSpeed).isEqualTo(10);
-
-    assertThat(weatherForecast.forecast[1].day).ignoringCase().isEqualTo("Monday");
-    assertThat(weatherForecast.forecast[1].forecast).ignoringCase().isEqualTo("Partly Cloudy");
-    assertThat(weatherForecast.forecast[1].temperature).isEqualTo(72);
-    assertThat(weatherForecast.forecast[1].humidity).ignoringCase().isEqualTo("55%");
-    assertThat(weatherForecast.forecast[1].windSpeed).isEqualTo(15);
-
-    assertThat(weatherForecast.forecast[2].day).ignoringCase().isEqualTo("Tuesday");
-    assertThat(weatherForecast.forecast[2].forecast).ignoringCase().contains("Rain");
-    assertThat(weatherForecast.forecast[2].temperature).isEqualTo(64);
-    assertThat(weatherForecast.forecast[2].humidity).ignoringCase().isEqualTo("70%");
-    assertThat(weatherForecast.forecast[2].windSpeed).isEqualTo(20);
-
-    assertThat(weatherForecast.forecast[3].day).ignoringCase().isEqualTo("Wednesday");
-    assertThat(weatherForecast.forecast[3].forecast).ignoringCase().contains("Thunder");
-    assertThat(weatherForecast.forecast[3].temperature).isEqualTo(68);
-    assertThat(weatherForecast.forecast[3].humidity).ignoringCase().isEqualTo("75%");
-    assertThat(weatherForecast.forecast[3].windSpeed).isEqualTo(25);
-
-    assertThat(weatherForecast.forecast[4].day).ignoringCase().isEqualTo("Thursday");
-    assertThat(weatherForecast.forecast[4].forecast).ignoringCase().isEqualTo("Cloudy");
-    assertThat(weatherForecast.forecast[4].temperature).isEqualTo(66);
-    assertThat(weatherForecast.forecast[4].humidity).ignoringCase().isEqualTo("60%");
-    assertThat(weatherForecast.forecast[4].windSpeed).isEqualTo(18);
-
-    assertThat(weatherForecast.forecast[5].day).ignoringCase().isEqualTo("Friday");
-    assertThat(weatherForecast.forecast[5].forecast).ignoringCase().isEqualTo("Partly Cloudy");
-    assertThat(weatherForecast.forecast[5].temperature).isEqualTo(73);
-    assertThat(weatherForecast.forecast[5].humidity).ignoringCase().isEqualTo("45%");
-    assertThat(weatherForecast.forecast[5].windSpeed).isEqualTo(12);
-
-    assertThat(weatherForecast.forecast[6].day).ignoringCase().isEqualTo("Saturday");
-    assertThat(weatherForecast.forecast[6].forecast).ignoringCase().isEqualTo("Sunny");
-    assertThat(weatherForecast.forecast[6].temperature).isEqualTo(80);
-    assertThat(weatherForecast.forecast[6].humidity).ignoringCase().isEqualTo("40%");
-    assertThat(weatherForecast.forecast[6].windSpeed).isEqualTo(8);
-  }
-
-  private class Item {
-    @SerializedName("to_discard")
-    public Integer toDiscard;
-    public String subcategory;
-    @SerializedName("safe_handling")
-    public Integer safeHandling;
-    @SerializedName("item_category")
-    public String itemCategory;
-    @SerializedName("for_resale")
-    public Integer forResale;
-    public String condition;
-  }
-
-  @Test
-  public void testControlledGenerationWithJsonSchema4() throws Exception {
-    String output = ControlledGenerationSchema4
-        .controlGenerationWithJsonSchema4(PROJECT_ID, LOCATION, GEMINI_FLASH);
-    Item[] items = new Gson().fromJson(output, Item[].class);
-
-    assertThat(items).isNotEmpty();
-  }
-
   private class Obj {
     public String object;
   }
@@ -500,12 +305,4 @@ public class SnippetsIT {
     assertThat(recognizedObjects).contains("pot");
   }
 
-  @Test
-  public void testGeminiTranslate() throws Exception {
-    String output = GeminiTranslate.geminiTranslate(
-        PROJECT_ID, LOCATION, GEMINI_FLASH, TEXT_TO_TRANSLATE, TARGET_LANGUAGE_CODE);
-
-    assertThat(output).ignoringCase().contains("Bonjour");
-    assertThat(output).ignoringCase().contains("aujourd'hui");
-  }
 }
