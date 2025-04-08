@@ -105,7 +105,8 @@ public class Util {
   }
 
   public static void setUpTest_disableServiceAccountKey(
-      String projectId, String serviceAccountName, String serviceAccountKeyId) throws IOException {
+      String projectId, String serviceAccountName, String serviceAccountKeyId)
+      throws IOException, InterruptedException {
     String email = String.format("%s@%s.iam.gserviceaccount.com", serviceAccountName, projectId);
     String name =
         String.format(
@@ -113,6 +114,7 @@ public class Util {
     try (IAMClient iamClient = IAMClient.create()) {
       iamClient.disableServiceAccountKey(name);
     }
+    awaitForServiceAccountKeyDisabling(projectId, serviceAccountName, serviceAccountKeyId);
   }
 
   public static String getServiceAccountKeyIdFromKey(ServiceAccountKey key) {
@@ -191,6 +193,23 @@ public class Util {
         if (time > timeLimit) {
           break;
         }
+        Thread.sleep(time);
+        time *= 2;
+      }
+    }
+  }
+
+  private static void awaitForServiceAccountKeyDisabling(
+      String projectId, String serviceAccountName, String serviceAccountKeyId)
+      throws IOException, InterruptedException {
+    boolean isKeyDisabled = false;
+    long time = 1000;
+    long timeLimit = 60000;
+    while (!isKeyDisabled && time <= timeLimit) {
+      ServiceAccountKey key =
+          test_getServiceAccountKey(projectId, serviceAccountName, serviceAccountKeyId);
+      isKeyDisabled = key.getDisabled();
+      if (!isKeyDisabled) {
         Thread.sleep(time);
         time *= 2;
       }
