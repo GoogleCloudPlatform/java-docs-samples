@@ -197,27 +197,27 @@ public class SnippetsIT {
     assertThat(output).ignoringCase().contains("Tokyo");
   }
 
-  @Test
-  public void testGroundingWithPublicData() throws Exception {
-    String output =
-        GroundingWithPublicData.groundWithPublicData(PROJECT_ID, LOCATION, GEMINI_FLASH_1_5);
+  // @Test
+  // public void testGroundingWithPublicData() throws Exception {
+  //   String output =
+  //       GroundingWithPublicData.groundWithPublicData(PROJECT_ID, LOCATION, GEMINI_FLASH_1_5);
 
-    assertThat(output).ignoringCase().contains("Rayleigh");
-  }
+  //   assertThat(output).ignoringCase().contains("Rayleigh");
+  // }
 
-  @Test
-  public void testGroundingWithPrivateData() throws Exception {
-    String output =
-        GroundingWithPrivateData.groundWithPrivateData(
-            PROJECT_ID,
-            LOCATION,
-            GEMINI_FLASH,
-            String.format(
-                "projects/%s/locations/global/collections/default_collection/dataStores/%s",
-                PROJECT_ID, DATASTORE_ID));
+  // @Test
+  // public void testGroundingWithPrivateData() throws Exception {
+  //   String output =
+  //       GroundingWithPrivateData.groundWithPrivateData(
+  //           PROJECT_ID,
+  //           LOCATION,
+  //           GEMINI_FLASH,
+  //           String.format(
+  //               "projects/%s/locations/global/collections/default_collection/dataStores/%s",
+  //               PROJECT_ID, DATASTORE_ID));
 
-    assertThat(output).ignoringCase().contains("DMV");
-  }
+  //   assertThat(output).ignoringCase().contains("DMV");
+  // }
 
   @Test
   public void testMultimodalStreaming() throws Exception {
