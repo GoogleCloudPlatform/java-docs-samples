@@ -326,6 +326,47 @@ public class SnippetsIT {
   }
 
   @Test
+  public void testDisableParamVersion() throws IOException {
+    ParameterVersionName parameterVersionName = TEST_PARAMETER_VERSION_NAME_TO_GET_1;
+    DisableParamVersion.disableParamVersion(
+        parameterVersionName.getProject(),
+        parameterVersionName.getParameter(),
+        parameterVersionName.getParameterVersion());
+
+    assertThat(stdOut.toString()).contains("Disabled parameter version");
+  }
+
+  @Test
+  public void testEnableParamVersion() throws IOException {
+    ParameterVersionName parameterVersionName = TEST_PARAMETER_VERSION_NAME_TO_GET_1;
+    EnableParamVersion.enableParamVersion(
+        parameterVersionName.getProject(),
+        parameterVersionName.getParameter(),
+        parameterVersionName.getParameterVersion());
+
+    assertThat(stdOut.toString()).contains("Enabled parameter version");
+  }
+
+  @Test
+  public void testDeleteParamVersion() throws IOException {
+    ParameterVersionName parameterVersionName = TEST_PARAMETER_VERSION_NAME_TO_DELETE;
+    DeleteParamVersion.deleteParamVersion(
+        parameterVersionName.getProject(),
+        parameterVersionName.getParameter(),
+        parameterVersionName.getParameterVersion());
+
+    assertThat(stdOut.toString()).contains("Deleted parameter version:");
+  }
+
+  @Test
+  public void testDeleteParam() throws IOException {
+    ParameterName parameterName = TEST_PARAMETER_NAME_TO_DELETE;
+    DeleteParam.deleteParam(parameterName.getProject(), parameterName.getParameter());
+
+    assertThat(stdOut.toString()).contains("Deleted parameter:");
+  }
+
+  @Test
   public void testGetParam() throws IOException {
     ParameterName parameterName = TEST_PARAMETER_NAME_TO_GET;
     GetParam.getParam(parameterName.getProject(), parameterName.getParameter());
