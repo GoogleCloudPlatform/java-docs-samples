@@ -27,8 +27,8 @@ import com.google.iam.admin.v1.ServiceAccountKey;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.time.Instant;
 import java.util.List;
+import java.util.UUID;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -53,7 +53,7 @@ public class ServiceAccountTests {
   }
 
   private static String generateServiceAccountName() {
-    return "service-account-" + Instant.now().toEpochMilli();
+    return "service-account-" + UUID.randomUUID().toString().substring(0, 8);
   }
 
   @BeforeClass
