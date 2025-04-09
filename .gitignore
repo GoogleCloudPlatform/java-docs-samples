@@ -71,3 +71,4 @@ terraform.tfstate*
 
 # PMD
 .pmdCache
+.qodo

@@ -50,9 +50,8 @@ public class Quickstart {
 
     // Endpoint to call the Model Armor server.
     String apiEndpoint = String.format("modelarmor.%s.rep.googleapis.com:443", locationId);
-    ModelArmorSettings modelArmorSettings =
-        ModelArmorSettings.newBuilder().setEndpoint(apiEndpoint).build();
-    
+    ModelArmorSettings.Builder builder = ModelArmorSettings.newBuilder();
+    ModelArmorSettings modelArmorSettings = builder.setEndpoint(apiEndpoint).build();
     // Initialize the client that will be used to send requests. This client only needs to be
     // created once, and can be reused for multiple requests.
     try (ModelArmorClient client = ModelArmorClient.create(modelArmorSettings)) {

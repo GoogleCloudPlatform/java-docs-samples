@@ -52,8 +52,8 @@ public class QuickstartIT {
   public static void afterAll() throws Exception {
     String apiEndpoint = String.format("modelarmor.%s.rep.googleapis.com:443", LOCATION_ID);
 
-    ModelArmorSettings modelArmorSettings = ModelArmorSettings.newBuilder().setEndpoint(apiEndpoint).build();
-
+    ModelArmorSettings.Builder builder = ModelArmorSettings.newBuilder();
+    ModelArmorSettings modelArmorSettings = builder.setEndpoint(apiEndpoint).build();
     try (ModelArmorClient client = ModelArmorClient.create(modelArmorSettings)) {
       // Delete the template created by quickstart.
       String templateName = TemplateName.of(PROJECT_ID, LOCATION_ID, TEMPLATE_ID).toString();
