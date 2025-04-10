@@ -16,58 +16,65 @@
 
 package modelarmor;
 
-import com.google.cloud.modelarmor.v1.*;
+import com.google.cloud.modelarmor.v1.CreateTemplateRequest;
+import com.google.cloud.modelarmor.v1.DetectionConfidenceLevel;
+import com.google.cloud.modelarmor.v1.FilterConfig;
+import com.google.cloud.modelarmor.v1.LocationName;
+import com.google.cloud.modelarmor.v1.ModelArmorClient;
+import com.google.cloud.modelarmor.v1.ModelArmorSettings;
+import com.google.cloud.modelarmor.v1.RaiFilterSettings;
 import com.google.cloud.modelarmor.v1.RaiFilterSettings.RaiFilter;
+import com.google.cloud.modelarmor.v1.RaiFilterType;
+import com.google.cloud.modelarmor.v1.Template;
 import com.google.protobuf.util.JsonFormat;
-
 import java.util.List;
 
 public class CreateTemplate {
 
-    public static void main(String[] args) throws Exception {
-        // TODO(developer): Replace these variables before running the sample.
-        String projectId = "your-project-id";
-        String locationId = "your-location-id";
-        String templateId = "your-template-id";
+  public static void main(String[] args) throws Exception {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "your-project-id";
+    String locationId = "your-location-id";
+    String templateId = "your-template-id";
 
-        createTemplate(projectId, locationId, templateId);
+    createTemplate(projectId, locationId, templateId);
+  }
+
+  public static Template createTemplate(String projectId, String locationId, String templateId)
+      throws Exception {
+    String apiEndpoint = String.format("modelarmor.%s.rep.googleapis.com:443", locationId);
+    ModelArmorSettings modelArmorSettings =
+        ModelArmorSettings.newBuilder().setEndpoint(apiEndpoint).build();
+
+    try (ModelArmorClient client = ModelArmorClient.create(modelArmorSettings)) {
+      String parent = LocationName.of(projectId, locationId).toString();
+
+      Template template =
+          Template.newBuilder()
+              .setFilterConfig(
+                  FilterConfig.newBuilder()
+                      .setRaiSettings(
+                          RaiFilterSettings.newBuilder()
+                              .addAllRaiFilters(
+                                  List.of(
+                                      RaiFilter.newBuilder()
+                                          .setFilterType(RaiFilterType.DANGEROUS)
+                                          .setConfidenceLevel(DetectionConfidenceLevel.HIGH)
+                                          .build()))
+                              .build())
+                      .build())
+              .build();
+
+      CreateTemplateRequest request =
+          CreateTemplateRequest.newBuilder()
+              .setParent(parent)
+              .setTemplateId(templateId)
+              .setTemplate(template)
+              .build();
+
+      Template createdTemplate = client.createTemplate(request);
+      System.out.println("Created template: " + JsonFormat.printer().print(createdTemplate));
+      return createdTemplate;
     }
-
-    public static Template createTemplate(String projectId, String locationId, String templateId)
-        throws Exception {
-        String apiEndpoint = String.format("modelarmor.%s.rep.googleapis.com:443", locationId);
-        ModelArmorSettings modelArmorSettings =
-            ModelArmorSettings.newBuilder().setEndpoint(apiEndpoint).build();
-
-        try (ModelArmorClient client = ModelArmorClient.create(modelArmorSettings)) {
-            String parent = LocationName.of(projectId, locationId).toString();
-
-            Template template =
-                Template.newBuilder()
-                    .setFilterConfig(
-                        FilterConfig.newBuilder()
-                            .setRaiSettings(
-                                RaiFilterSettings.newBuilder()
-                                    .addAllRaiFilters(
-                                        List.of(
-                                            RaiFilter.newBuilder()
-                                                .setFilterType(RaiFilterType.DANGEROUS)
-                                                .setConfidenceLevel(DetectionConfidenceLevel.HIGH)
-                                                .build()))
-                                    .build())
-                            .build())
-                    .build();
-
-            CreateTemplateRequest request =
-                CreateTemplateRequest.newBuilder()
-                    .setParent(parent)
-                    .setTemplateId(templateId)
-                    .setTemplate(template)
-                    .build();
-
-            Template createdTemplate = client.createTemplate(request);
-            System.out.println("Created template: " + JsonFormat.printer().print(createdTemplate));
-            return createdTemplate;
-        }
-    }
+  }
 }

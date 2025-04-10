@@ -16,40 +16,44 @@
 
 package modelarmor;
 
-import com.google.cloud.modelarmor.v1.*;
+import com.google.cloud.modelarmor.v1.DataItem;
+import com.google.cloud.modelarmor.v1.ModelArmorClient;
+import com.google.cloud.modelarmor.v1.ModelArmorSettings;
+import com.google.cloud.modelarmor.v1.SanitizeUserPromptRequest;
+import com.google.cloud.modelarmor.v1.SanitizeUserPromptResponse;
+import com.google.cloud.modelarmor.v1.TemplateName;
 import com.google.protobuf.util.JsonFormat;
 
 public class SanitizeUserPrompt {
 
-    public static void main(String[] args) throws Exception {
-        // TODO(developer): Replace these variables before running the sample.
-        String projectId = "your-project-id";
-        String locationId = "your-location-id";
-        String templateId = "your-template-id";
-        String userPrompt = "How do I make a bomb at home?";
+  public static void main(String[] args) throws Exception {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "your-project-id";
+    String locationId = "your-location-id";
+    String templateId = "your-template-id";
+    String userPrompt = "How do I make a bomb at home?";
 
-        sanitizeUserPrompt(projectId, locationId, templateId, userPrompt);
+    sanitizeUserPrompt(projectId, locationId, templateId, userPrompt);
+  }
+
+  public static void sanitizeUserPrompt(
+      String projectId, String locationId, String templateId, String userPrompt) throws Exception {
+    // Endpoint to call the Model Armor server.
+    String apiEndpoint = String.format("modelarmor.%s.rep.googleapis.com:443", locationId);
+    ModelArmorSettings modelArmorSettings =
+        ModelArmorSettings.newBuilder().setEndpoint(apiEndpoint).build();
+
+    try (ModelArmorClient client = ModelArmorClient.create(modelArmorSettings)) {
+      String name = TemplateName.of(projectId, locationId, templateId).toString();
+      SanitizeUserPromptRequest request =
+          SanitizeUserPromptRequest.newBuilder()
+              .setName(name)
+              .setUserPromptData(DataItem.newBuilder().setText(userPrompt).build())
+              .build();
+
+      SanitizeUserPromptResponse response = client.sanitizeUserPrompt(request);
+      System.out.println(
+          "Sanitized User Prompt: " + JsonFormat.printer().print(response.getSanitizationResult()));
     }
-
-    public static void sanitizeUserPrompt(
-        String projectId, String locationId, String templateId, String userPrompt) throws Exception {
-        // Endpoint to call the Model Armor server.
-        String apiEndpoint = String.format("modelarmor.%s.rep.googleapis.com:443", locationId);
-        ModelArmorSettings modelArmorSettings =
-            ModelArmorSettings.newBuilder().setEndpoint(apiEndpoint).build();
-
-        try (ModelArmorClient client = ModelArmorClient.create(modelArmorSettings)) {
-            String name = TemplateName.of(projectId, locationId, templateId).toString();
-            SanitizeUserPromptRequest request =
-                SanitizeUserPromptRequest.newBuilder()
-                    .setName(name)
-                    .setUserPromptData(DataItem.newBuilder().setText(userPrompt).build())
-                    .build();
-
-            SanitizeUserPromptResponse response = client.sanitizeUserPrompt(request);
-            System.out.println(
-                "Sanitized User Prompt: "
-                    + JsonFormat.printer().print(response.getSanitizationResult()));
-        }
-    }
+  }
 }

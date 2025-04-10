@@ -22,25 +22,25 @@ import com.google.cloud.modelarmor.v1.TemplateName;
 
 public class DeleteTemplate {
 
-    public static void main(String[] args) throws Exception {
-        // TODO(developer): Replace these variables before running the sample.
-        String projectId = "your-project-id";
-        String locationId = "your-location-id";
-        String templateId = "your-template-id";
+  public static void main(String[] args) throws Exception {
+    // TODO(developer): Replace these variables before running the sample.
+    String projectId = "your-project-id";
+    String locationId = "your-location-id";
+    String templateId = "your-template-id";
 
-        deleteTemplate(projectId, locationId, templateId);
+    deleteTemplate(projectId, locationId, templateId);
+  }
+
+  public static void deleteTemplate(String projectId, String locationId, String templateId)
+      throws Exception {
+    String apiEndpoint = String.format("modelarmor.%s.rep.googleapis.com:443", locationId);
+    ModelArmorSettings modelArmorSettings =
+        ModelArmorSettings.newBuilder().setEndpoint(apiEndpoint).build();
+
+    try (ModelArmorClient client = ModelArmorClient.create(modelArmorSettings)) {
+      String name = TemplateName.of(projectId, locationId, templateId).toString();
+      client.deleteTemplate(name);
+      System.out.println("Deleted template: " + name);
     }
-
-    public static void deleteTemplate(String projectId, String locationId, String templateId)
-        throws Exception {
-        String apiEndpoint = String.format("modelarmor.%s.rep.googleapis.com:443", locationId);
-        ModelArmorSettings modelArmorSettings =
-            ModelArmorSettings.newBuilder().setEndpoint(apiEndpoint).build();
-
-        try (ModelArmorClient client = ModelArmorClient.create(modelArmorSettings)) {
-            String name = TemplateName.of(projectId, locationId, templateId).toString();
-            client.deleteTemplate(name);
-            System.out.println("Deleted template: " + name);
-        }
-    }
+  }
 }
