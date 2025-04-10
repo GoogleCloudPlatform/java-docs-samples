@@ -1,0 +1,12 @@
+runtime: java
+env: flex
+runtime_config:
+  operating_system: ubuntu22
+  runtime_version: 17
+entrypoint: "java -jar jetty-jar-with-dependencies.jar sample.war"
+handlers:
+  - url: /.*
+    script: this field is required, but ignored
+
+manual_scaling:
+  instances: 1

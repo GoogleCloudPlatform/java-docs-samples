@@ -1,0 +1,7 @@
+runtime: custom
+env: flex
+instance_class: F1
+
+handlers:
+  - url: /.*
+    script: auto

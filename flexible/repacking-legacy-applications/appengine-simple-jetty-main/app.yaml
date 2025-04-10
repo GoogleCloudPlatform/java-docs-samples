@@ -1,0 +1,9 @@
+#runtime: java21
+runtime: java17
+env: standard
+
+entrypoint: 'java -jar jetty-jar-with-dependencies.jar sample.war'
+
+handlers:
+- url: /.*
+  script: this field is required, but ignored

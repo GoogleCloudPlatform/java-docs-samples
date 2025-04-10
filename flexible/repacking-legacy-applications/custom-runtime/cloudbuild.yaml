@@ -1,0 +1,22 @@
+steps:
+  # Step 1: Build the Docker image
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      - "build"
+      - "-t"
+      - "${_LOCATION}-docker.pkg.dev/${_PROJECT}/${_REPOSITORY}/my-java-app:v1"
+      - "."
+
+  # Step 2: Push the Docker image to Artifact Registry
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      - "push"
+      - "${_LOCATION}-docker.pkg.dev/${_PROJECT}/${_REPOSITORY}/my-java-app:v1"
+
+substitutions:
+  _LOCATION: "asia" # Change this based on your region (e.g., 'us', 'europe', 'asia')
+  _REPOSITORY: "test-app" # Replace with your Artifact Registry repository name
+  _PROJECT: "project-id" # Replace with your Google Cloud Project ID
+
+images:
+  - "${_LOCATION}-docker.pkg.dev/${_PROJECT}/${_REPOSITORY}/my-java-app:v1"
