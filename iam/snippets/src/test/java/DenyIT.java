@@ -37,7 +37,6 @@ import org.junit.runners.JUnit4;
 public class DenyIT {
 
   private static final String PROJECT_ID = System.getenv("IAM_PROJECT_ID");
-  private static final String GOOGLE_APPLICATION_CREDENTIALS = System.getenv("IAM_CREDENTIALS");
   private static String POLICY_ID;
 
   private ByteArrayOutputStream stdOut;
@@ -55,7 +54,6 @@ public class DenyIT {
     final PrintStream out = System.out;
     ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
-    requireEnvVar("IAM_CREDENTIALS");
     requireEnvVar("IAM_PROJECT_ID");
 
     POLICY_ID = "limit-project-deletion" + UUID.randomUUID();
