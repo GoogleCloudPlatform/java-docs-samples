@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Google LLC
+ * Copyright 2025 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 package modelarmor;
 
-//  TODO(nasit): Add region tags in all snippets.
 import com.google.cloud.modelarmor.v1.CreateTemplateRequest;
 import com.google.cloud.modelarmor.v1.DetectionConfidenceLevel;
 import com.google.cloud.modelarmor.v1.FilterConfig;
@@ -28,7 +27,6 @@ import com.google.cloud.modelarmor.v1.RaiFilterSettings.RaiFilter;
 import com.google.cloud.modelarmor.v1.RaiFilterType;
 import com.google.cloud.modelarmor.v1.Template;
 import com.google.protobuf.util.JsonFormat;
-import java.util.Arrays;
 import java.util.List;
 
 public class CreateTemplate {
