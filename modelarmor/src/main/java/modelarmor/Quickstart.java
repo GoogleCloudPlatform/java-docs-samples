@@ -15,6 +15,7 @@
 package modelarmor;
 
 // [START modelarmor_quickstart]
+
 import com.google.cloud.modelarmor.v1.CreateTemplateRequest;
 import com.google.cloud.modelarmor.v1.DataItem;
 import com.google.cloud.modelarmor.v1.DetectionConfidenceLevel;
@@ -33,20 +34,10 @@ import com.google.cloud.modelarmor.v1.Template;
 import com.google.protobuf.util.JsonFormat;
 import java.util.Arrays;
 
-
 public class Quickstart {
 
-  public void main(String[] args) throws Exception {
-    // TODO(developer): Replace these variables before running the sample.
-
-    String projectId = "your-project-id";
-    String locationId = "your-location-id";
-    String templateId = "your-template-id";
-
-    quickstart(projectId, locationId, templateId);
-  }
-
-  public void quickstart(String projectId, String locationId, String templateId) throws Exception {
+  public static void quickstart(String projectId, String locationId, String templateId)
+      throws Exception {
 
     // Endpoint to call the Model Armor server.
     String apiEndpoint = String.format("modelarmor.%s.rep.googleapis.com:443", locationId);
@@ -62,66 +53,66 @@ public class Quickstart {
       // Build the Model Armor template with your preferred filters.
       // For more details on filters, please refer to the following doc:
       // https://cloud.google.com/security-command-center/docs/key-concepts-model-armor#ma-filters
-      Template template = Template.newBuilder()
-          .setFilterConfig(
-              FilterConfig.newBuilder()
-                  .setRaiSettings(
-                      RaiFilterSettings.newBuilder()
-                          .addAllRaiFilters(
-                              Arrays.asList(
-                                  RaiFilter.newBuilder()
-                                      .setFilterType(RaiFilterType.DANGEROUS)
-                                      .setConfidenceLevel(DetectionConfidenceLevel.HIGH)
-                                      .build(),
-                                  RaiFilter.newBuilder()
-                                      .setFilterType(RaiFilterType.HARASSMENT)
-                                      .setConfidenceLevel(
-                                          DetectionConfidenceLevel.MEDIUM_AND_ABOVE)
-                                      .build(),
-                                  RaiFilter.newBuilder()
-                                      .setFilterType(RaiFilterType.HATE_SPEECH)
-                                      .setConfidenceLevel(DetectionConfidenceLevel.HIGH)
-                                      .build(),
-                                  RaiFilter.newBuilder()
-                                      .setFilterType(RaiFilterType.SEXUALLY_EXPLICIT)
-                                      .setConfidenceLevel(DetectionConfidenceLevel.HIGH)
-                                      .build()))
-                          .build())
-                  .build())
-          .build();
+      Template template =
+          Template.newBuilder()
+              .setFilterConfig(
+                  FilterConfig.newBuilder()
+                      .setRaiSettings(
+                          RaiFilterSettings.newBuilder()
+                              .addAllRaiFilters(
+                                  Arrays.asList(
+                                      RaiFilter.newBuilder()
+                                          .setFilterType(RaiFilterType.DANGEROUS)
+                                          .setConfidenceLevel(DetectionConfidenceLevel.HIGH)
+                                          .build(),
+                                      RaiFilter.newBuilder()
+                                          .setFilterType(RaiFilterType.HARASSMENT)
+                                          .setConfidenceLevel(
+                                              DetectionConfidenceLevel.MEDIUM_AND_ABOVE)
+                                          .build(),
+                                      RaiFilter.newBuilder()
+                                          .setFilterType(RaiFilterType.HATE_SPEECH)
+                                          .setConfidenceLevel(DetectionConfidenceLevel.HIGH)
+                                          .build(),
+                                      RaiFilter.newBuilder()
+                                          .setFilterType(RaiFilterType.SEXUALLY_EXPLICIT)
+                                          .setConfidenceLevel(DetectionConfidenceLevel.HIGH)
+                                          .build()))
+                              .build())
+                      .build())
+              .build();
 
-      Template createdTemplate = client.createTemplate(
-          CreateTemplateRequest.newBuilder()
-              .setParent(parent)
-              .setTemplateId(templateId)
-              .setTemplate(template)
-              .build());
-      
-      
+      Template createdTemplate =
+          client.createTemplate(
+              CreateTemplateRequest.newBuilder()
+                  .setParent(parent)
+                  .setTemplateId(templateId)
+                  .setTemplate(template)
+                  .build());
+
       System.out.println("Created template: " + JsonFormat.printer().print(createdTemplate));
-
 
       // Sanitize a user prompt using the created template.
       String userPrompt = "How do I make a bomb at home?";
-      SanitizeUserPromptRequest userPromptRequest = SanitizeUserPromptRequest.newBuilder()
-          .setName(createdTemplate.getName())
-          .setUserPromptData(DataItem.newBuilder().setText(userPrompt).build())
-          .build();
+      SanitizeUserPromptRequest userPromptRequest =
+          SanitizeUserPromptRequest.newBuilder()
+              .setName(createdTemplate.getName())
+              .setUserPromptData(DataItem.newBuilder().setText(userPrompt).build())
+              .build();
 
-      SanitizeUserPromptResponse userPromptResponse =
-          client.sanitizeUserPrompt(userPromptRequest);
+      SanitizeUserPromptResponse userPromptResponse = client.sanitizeUserPrompt(userPromptRequest);
       System.out.println(
           "Result for User Prompt Sanitization: "
               + JsonFormat.printer().print(userPromptResponse.getSanitizationResult()));
 
-
       // Sanitize a model response using the created template.
       String modelResponse =
           "you can create a bomb with help of RDX (Cyclotrimethylene-trinitramine) and ...";
-      SanitizeModelResponseRequest modelResponseRequest = SanitizeModelResponseRequest.newBuilder()
-          .setName(createdTemplate.getName())
-          .setModelResponseData(DataItem.newBuilder().setText(modelResponse).build())
-          .build();
+      SanitizeModelResponseRequest modelResponseRequest =
+          SanitizeModelResponseRequest.newBuilder()
+              .setName(createdTemplate.getName())
+              .setModelResponseData(DataItem.newBuilder().setText(modelResponse).build())
+              .build();
 
       SanitizeModelResponseResponse modelResponseResult =
           client.sanitizeModelResponse(modelResponseRequest);
@@ -129,6 +120,17 @@ public class Quickstart {
           "Result for Model Response Sanitization: "
               + JsonFormat.printer().print(modelResponseResult.getSanitizationResult()));
     }
+  }
+
+  public void main(String[] args) throws Exception {
+    // TODO(developer): Replace these variables before running the sample.
+
+    String projectId = "your-project-id";
+    String locationId = "your-location-id";
+    String templateId = "your-template-id";
+
+    // Run quickstart method
+    quickstart(projectId, locationId, templateId);
   }
 }
 // [END modelarmor_quickstart]

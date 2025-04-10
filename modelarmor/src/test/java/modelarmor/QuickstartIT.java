@@ -17,6 +17,7 @@
 package modelarmor;
 
 import static com.google.common.truth.Truth.assertThat;
+import static junit.framework.TestCase.assertNotNull;
 
 import com.google.cloud.modelarmor.v1.DeleteTemplateRequest;
 import com.google.cloud.modelarmor.v1.ModelArmorClient;
@@ -33,7 +34,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/** Integration (system) tests for {@link Quickstart}. */
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 public class QuickstartIT {
@@ -42,11 +42,20 @@ public class QuickstartIT {
   private static final String LOCATION_ID = "us-central1"; // Or your preferred region
   private static final String TEMPLATE_ID = "java-quickstart-" + UUID.randomUUID().toString();
 
-  @BeforeClass
-  public static void beforeAll() {
-    Assert.assertFalse("missing GOOGLE_CLOUD_PROJECT", Strings.isNullOrEmpty(PROJECT_ID));
-    Assert.assertFalse("missing GOOGLE_CLOUD_PROJECT_LOCATION", Strings.isNullOrEmpty(LOCATION_ID));
+  private static String requireEnvVar(String varName) {
+    String value = System.getenv(varName);
+    assertNotNull(
+            "Environment variable " + varName + " is required to perform these tests.",
+            System.getenv(varName));
+    return value;
   }
+
+  @BeforeClass
+  public static void checkRequirements() {
+    requireEnvVar("GOOGLE_CLOUD_PROJECT");
+    requireEnvVar("GOOGLE_CLOUD_PROJECT_LOCATION");
+  }
+
 
   @AfterClass
   public static void afterAll() throws Exception {
