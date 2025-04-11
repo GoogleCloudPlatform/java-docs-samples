@@ -30,7 +30,7 @@ public class Quickstart {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-google-cloud-project-id";
     String location = "us-central1";
-    String modelName = "gemini-1.5-flash-001";
+    String modelName = "gemini-2.0-flash-001";
 
     String output = quickstart(projectId, location, modelName);
     System.out.println(output);
