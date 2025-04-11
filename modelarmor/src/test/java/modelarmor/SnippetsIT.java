@@ -105,4 +105,11 @@ public class SnippetsIT {
     assertThat(stdOut.toString()).contains("Created template with metadata");
     DeleteTemplate.deleteTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
   }
+
+  @Test
+  public void testDeleteModelArmorTemplate() throws Exception {
+    CreateTemplate.createTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
+    DeleteTemplate.deleteTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
+    assertThat(stdOut.toString()).contains("Deleted template");
+  }
 }
