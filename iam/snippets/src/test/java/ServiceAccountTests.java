@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.Assert.assertEquals;
@@ -216,7 +217,7 @@ public class ServiceAccountTests {
     bout.reset();
     Util.test_listServiceAccounts(PROJECT_ID);
     got = bout.toString();
-    assertThat(got, !containsString(serviceAccountName).matches(got));
+    assertThat(got, not(containsString(serviceAccountName)));
   }
 
   @Test
@@ -360,7 +361,7 @@ public class ServiceAccountTests {
       bout.reset();
       Util.test_listServiceAccountKeys(PROJECT_ID, serviceAccountName);
       got = bout.toString();
-      assertThat(got, !containsString(serviceAccountKeyId).matches(got));
+      assertThat(got, not(containsString(serviceAccountKeyId)));
     } finally {
       // Cleanup
       Util.tearDownTest_deleteServiceAccount(PROJECT_ID, serviceAccountName);
