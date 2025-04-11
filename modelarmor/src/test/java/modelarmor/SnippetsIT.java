@@ -97,7 +97,7 @@ public class SnippetsIT {
   public void testListModelArmorTemplates() throws Exception {
     CreateTemplate.createTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
     ListTemplates.listTemplates(PROJECT_ID, LOCATION);
-    assertThat(stdOut.toString()).contains("Retrived Templates");
+    assertThat(stdOut.toString()).contains("Retrieved Templates");
     DeleteTemplate.deleteTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
   }
 

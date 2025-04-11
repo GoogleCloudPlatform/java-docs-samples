@@ -16,14 +16,28 @@
 
 package modelarmor;
 
+/**
+ * This class demonstrates how to retrieve a template using the Model Armor API.
+ *
+ * @author [Your Name]
+ */
 import com.google.cloud.modelarmor.v1.ModelArmorClient;
 import com.google.cloud.modelarmor.v1.ModelArmorSettings;
 import com.google.cloud.modelarmor.v1.Template;
 import com.google.cloud.modelarmor.v1.TemplateName;
 import com.google.protobuf.util.JsonFormat;
 
+// [START modelarmor_get_template]
+
+/** This class contains a main method that retrieves a template using the Model Armor API. */
 public class GetTemplate {
 
+  /**
+   * Main method that calls the getTemplate method to retrieve a template.
+   *
+   * @param args command line arguments (not used)
+   * @throws Exception if an error occurs during template retrieval
+   */
   public static void main(String[] args) throws Exception {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
@@ -33,16 +47,34 @@ public class GetTemplate {
     getTemplate(projectId, locationId, templateId);
   }
 
+  /**
+   * Retrieves a template using the Model Armor API.
+   *
+   * @param projectId the ID of the project
+   * @param locationId the ID of the location
+   * @param templateId the ID of the template
+   * @throws Exception if an error occurs during template retrieval
+   */
   public static void getTemplate(String projectId, String locationId, String templateId)
       throws Exception {
+    // Construct the API endpoint URL
     String apiEndpoint = String.format("modelarmor.%s.rep.googleapis.com:443", locationId);
+
+    // Create a Model Armor settings object with the API endpoint
     ModelArmorSettings modelArmorSettings =
         ModelArmorSettings.newBuilder().setEndpoint(apiEndpoint).build();
 
     try (ModelArmorClient client = ModelArmorClient.create(modelArmorSettings)) {
+      // Construct the template name
       String name = TemplateName.of(projectId, locationId, templateId).toString();
+
+      // Retrieve the template using the Model Armor client
       Template template = client.getTemplate(name);
+
+      // Print the retrieved template
       System.out.println("Retrieved template: " + JsonFormat.printer().print(template));
     }
   }
 }
+
+// [END modelarmor_get_template]
