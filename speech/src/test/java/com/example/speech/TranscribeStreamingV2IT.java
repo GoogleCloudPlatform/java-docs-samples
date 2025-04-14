@@ -33,7 +33,7 @@ public class TranscribeStreamingV2IT {
     @Test
     public void testTranscribeStreamingV2_Success() throws IOException {
         // Create a dummy audio file for testing
-        String testFilePath = "/Users/amirx/IdeaProjects/java-docs-samples/speech/resources/speech_snippets_resources_audio.wav";
+        String testFilePath = "./src/test/resources/speech_snippets_resources_audio.wav";
 
         // Call the method to test
         List<StreamingRecognizeResponse> responses = TranscribeStreamingV2.transcribeStreamingV2(testFilePath);
