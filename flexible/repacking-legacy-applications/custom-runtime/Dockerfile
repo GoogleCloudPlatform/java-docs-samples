@@ -12,7 +12,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-# [START appengine_custom_dockerfile_yaml]
+# [START appengine_flexible_custom_runtime]
+
 # Use Maven to build the project with JDK 8
 FROM maven:3.8.6-openjdk-8 AS build
 
@@ -39,4 +40,4 @@ EXPOSE 8080
 
 # Start Jetty correctly
 CMD ["java", "-Djetty.base=/var/lib/jetty", "-jar", "/usr/local/jetty/start.jar"]
-# [END appengine_custom_dockerfile_yaml]
+# [END appengine_flexible_custom_runtime]
