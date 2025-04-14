@@ -19,11 +19,15 @@ package modelarmor;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertEquals;
 
+import com.google.api.gax.rpc.NotFoundException;
+import com.google.cloud.modelarmor.v1.SdpBasicConfig.SdpBasicConfigEnforcement;
+import com.google.cloud.modelarmor.v1.Template;
+import com.google.cloud.modelarmor.v1.TemplateName;
+import com.google.common.base.Strings;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Random;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -33,19 +37,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import com.google.api.gax.rpc.NotFoundException;
-import com.google.cloud.modelarmor.v1.SdpBasicConfig.SdpBasicConfigEnforcement;
-import com.google.cloud.modelarmor.v1.Template;
-import com.google.cloud.modelarmor.v1.TemplateName;
-import com.google.common.base.Strings;
-
 /** Integration (system) tests for {@link Snippets}. */
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 public class SnippetsIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String LOCATION_ID = System.getenv().getOrDefault("GOOGLE_CLOUD_PROJECT_LOCATION",
-      "us-central1");
+  private static final String LOCATION_ID = System.getenv()
+      .getOrDefault("GOOGLE_CLOUD_PROJECT_LOCATION", "us-central1");
   private static String TEST_TEMPLATE_ID;
   private static String TEST_TEMPLATE_NAME;
   private ByteArrayOutputStream stdOut;
@@ -91,7 +89,8 @@ public class SnippetsIT {
 
   @Test
   public void testCreateModelArmorTemplate() throws IOException {
-    Template createdTemplate = CreateTemplate.createTemplate(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
+    Template createdTemplate = CreateTemplate.createTemplate(PROJECT_ID, LOCATION_ID,
+        TEST_TEMPLATE_ID);
 
     assertThat(stdOut.toString()).contains("Created template:");
     assertEquals(createdTemplate.getName(), TEST_TEMPLATE_NAME);
@@ -99,8 +98,8 @@ public class SnippetsIT {
 
   @Test
   public void testCreateModelArmorTemplateWithBasicSDP() throws IOException {
-    Template createdTemplate = CreateTemplateWithBasicSdp.createTemplateWithBasicSdp(PROJECT_ID, LOCATION_ID,
-        TEST_TEMPLATE_ID);
+    Template createdTemplate = CreateTemplateWithBasicSdp.createTemplateWithBasicSdp(PROJECT_ID,
+        LOCATION_ID, TEST_TEMPLATE_ID);
 
     assertThat(stdOut.toString()).contains("Created template with basic SDP filter:");
     assertEquals(createdTemplate.getName(), TEST_TEMPLATE_NAME);
@@ -110,8 +109,8 @@ public class SnippetsIT {
 
   @Test
   public void testCreateModelArmorTemplateWithLabels() throws IOException {
-    Template createdTemplate = CreateTemplateWithLabels.createTemplateWithLabels(PROJECT_ID, LOCATION_ID,
-        TEST_TEMPLATE_ID);
+    Template createdTemplate = CreateTemplateWithLabels.createTemplateWithLabels(PROJECT_ID,
+        LOCATION_ID, TEST_TEMPLATE_ID);
 
     assertThat(stdOut.toString()).contains("Created template with labels:");
     assertEquals(createdTemplate.getName(), TEST_TEMPLATE_NAME);
@@ -119,8 +118,8 @@ public class SnippetsIT {
 
   @Test
   public void testCreateModelArmorTemplateWithMetadata() throws IOException {
-    Template createdTemplate = CreateTemplateWithMetadata.createTemplateWithMetadata(PROJECT_ID, LOCATION_ID,
-        TEST_TEMPLATE_ID);
+    Template createdTemplate = CreateTemplateWithMetadata.createTemplateWithMetadata(PROJECT_ID,
+        LOCATION_ID, TEST_TEMPLATE_ID);
 
     assertThat(stdOut.toString()).contains("Created template with metadata:");
     assertEquals(createdTemplate.getName(), TEST_TEMPLATE_NAME);

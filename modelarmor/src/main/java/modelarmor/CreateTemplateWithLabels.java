@@ -16,11 +16,6 @@
 
 package modelarmor;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 // [START modelarmor_create_template_with_labels]
 
 import com.google.cloud.modelarmor.v1.CreateTemplateRequest;
@@ -33,6 +28,10 @@ import com.google.cloud.modelarmor.v1.RaiFilterSettings;
 import com.google.cloud.modelarmor.v1.RaiFilterSettings.RaiFilter;
 import com.google.cloud.modelarmor.v1.RaiFilterType;
 import com.google.cloud.modelarmor.v1.Template;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class CreateTemplateWithLabels {
 
@@ -45,10 +44,11 @@ public class CreateTemplateWithLabels {
     createTemplateWithLabels(projectId, locationId, templateId);
   }
 
-  public static Template createTemplateWithLabels(
-      String projectId, String locationId, String templateId) throws IOException {
+  public static Template createTemplateWithLabels(String projectId, String locationId,
+      String templateId) throws IOException {
     String apiEndpoint = String.format("modelarmor.%s.rep.googleapis.com:443", locationId);
-    ModelArmorSettings modelArmorSettings = ModelArmorSettings.newBuilder().setEndpoint(apiEndpoint).build();
+    ModelArmorSettings modelArmorSettings = ModelArmorSettings.newBuilder().setEndpoint(apiEndpoint)
+        .build();
 
     try (ModelArmorClient client = ModelArmorClient.create(modelArmorSettings)) {
       String parent = LocationName.of(projectId, locationId).toString();
@@ -60,28 +60,18 @@ public class CreateTemplateWithLabels {
       // Configure Responsible AI filter with multiple categories and their confidence
       // levels.
       RaiFilterSettings raiFilterSettings = RaiFilterSettings.newBuilder()
-          .addAllRaiFilters(
-              List.of(
-                  RaiFilter.newBuilder()
-                      .setFilterType(RaiFilterType.DANGEROUS)
-                      .setConfidenceLevel(DetectionConfidenceLevel.HIGH)
-                      .build(),
-                  RaiFilter.newBuilder()
-                      .setFilterType(RaiFilterType.HATE_SPEECH)
-                      .setConfidenceLevel(DetectionConfidenceLevel.HIGH)
-                      .build(),
-                  RaiFilter.newBuilder()
-                      .setFilterType(RaiFilterType.SEXUALLY_EXPLICIT)
-                      .setConfidenceLevel(DetectionConfidenceLevel.LOW_AND_ABOVE)
-                      .build(),
-                  RaiFilter.newBuilder()
-                      .setFilterType(RaiFilterType.HARASSMENT)
-                      .setConfidenceLevel(DetectionConfidenceLevel.MEDIUM_AND_ABOVE)
-                      .build()))
+          .addAllRaiFilters(List.of(
+              RaiFilter.newBuilder().setFilterType(RaiFilterType.DANGEROUS)
+                  .setConfidenceLevel(DetectionConfidenceLevel.HIGH).build(),
+              RaiFilter.newBuilder().setFilterType(RaiFilterType.HATE_SPEECH)
+                  .setConfidenceLevel(DetectionConfidenceLevel.HIGH).build(),
+              RaiFilter.newBuilder().setFilterType(RaiFilterType.SEXUALLY_EXPLICIT)
+                  .setConfidenceLevel(DetectionConfidenceLevel.LOW_AND_ABOVE).build(),
+              RaiFilter.newBuilder().setFilterType(RaiFilterType.HARASSMENT)
+                  .setConfidenceLevel(DetectionConfidenceLevel.MEDIUM_AND_ABOVE).build()))
           .build();
 
-      FilterConfig modelArmorFilter = FilterConfig.newBuilder()
-          .setRaiSettings(raiFilterSettings)
+      FilterConfig modelArmorFilter = FilterConfig.newBuilder().setRaiSettings(raiFilterSettings)
           .build();
 
       // Create Labels.
@@ -89,16 +79,11 @@ public class CreateTemplateWithLabels {
       labels.put("key1", "value1");
       labels.put("key2", "value2");
 
-      Template template = Template.newBuilder()
-          .setFilterConfig(modelArmorFilter)
-          .putAllLabels(labels)
-          .build();
+      Template template = Template.newBuilder().setFilterConfig(modelArmorFilter)
+          .putAllLabels(labels).build();
 
-      CreateTemplateRequest request = CreateTemplateRequest.newBuilder()
-          .setParent(parent)
-          .setTemplateId(templateId)
-          .setTemplate(template)
-          .build();
+      CreateTemplateRequest request = CreateTemplateRequest.newBuilder().setParent(parent)
+          .setTemplateId(templateId).setTemplate(template).build();
 
       Template createdTemplate = client.createTemplate(request);
       System.out.println("Created template with labels: " + createdTemplate.getName());

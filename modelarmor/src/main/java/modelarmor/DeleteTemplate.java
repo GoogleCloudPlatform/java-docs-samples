@@ -18,11 +18,10 @@ package modelarmor;
 
 // [START modelarmor_delete_template]
 
-import java.io.IOException;
-
 import com.google.cloud.modelarmor.v1.ModelArmorClient;
 import com.google.cloud.modelarmor.v1.ModelArmorSettings;
 import com.google.cloud.modelarmor.v1.TemplateName;
+import java.io.IOException;
 
 public class DeleteTemplate {
 
@@ -38,7 +37,8 @@ public class DeleteTemplate {
   public static void deleteTemplate(String projectId, String locationId, String templateId)
       throws IOException {
     String apiEndpoint = String.format("modelarmor.%s.rep.googleapis.com:443", locationId);
-    ModelArmorSettings modelArmorSettings = ModelArmorSettings.newBuilder().setEndpoint(apiEndpoint).build();
+    ModelArmorSettings modelArmorSettings = ModelArmorSettings.newBuilder().setEndpoint(apiEndpoint)
+        .build();
 
     try (ModelArmorClient client = ModelArmorClient.create(modelArmorSettings)) {
       String name = TemplateName.of(projectId, locationId, templateId).toString();

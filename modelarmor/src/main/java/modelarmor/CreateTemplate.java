@@ -16,9 +16,6 @@
 
 package modelarmor;
 
-import java.io.IOException;
-import java.util.List;
-
 // [START modelarmor_create_template]
 
 import com.google.cloud.modelarmor.v1.CreateTemplateRequest;
@@ -31,6 +28,8 @@ import com.google.cloud.modelarmor.v1.RaiFilterSettings;
 import com.google.cloud.modelarmor.v1.RaiFilterSettings.RaiFilter;
 import com.google.cloud.modelarmor.v1.RaiFilterType;
 import com.google.cloud.modelarmor.v1.Template;
+import java.io.IOException;
+import java.util.List;
 
 public class CreateTemplate {
 
@@ -46,7 +45,8 @@ public class CreateTemplate {
   public static Template createTemplate(String projectId, String locationId, String templateId)
       throws IOException {
     String apiEndpoint = String.format("modelarmor.%s.rep.googleapis.com:443", locationId);
-    ModelArmorSettings modelArmorSettings = ModelArmorSettings.newBuilder().setEndpoint(apiEndpoint).build();
+    ModelArmorSettings modelArmorSettings = ModelArmorSettings.newBuilder().setEndpoint(apiEndpoint)
+        .build();
 
     try (ModelArmorClient client = ModelArmorClient.create(modelArmorSettings)) {
       String parent = LocationName.of(projectId, locationId).toString();
@@ -58,39 +58,24 @@ public class CreateTemplate {
       // Configure Responsible AI filter with multiple categories and their confidence
       // levels.
       RaiFilterSettings raiFilterSettings = RaiFilterSettings.newBuilder()
-          .addAllRaiFilters(
-              List.of(
-                  RaiFilter.newBuilder()
-                      .setFilterType(RaiFilterType.DANGEROUS)
-                      .setConfidenceLevel(DetectionConfidenceLevel.HIGH)
-                      .build(),
-                  RaiFilter.newBuilder()
-                      .setFilterType(RaiFilterType.HATE_SPEECH)
-                      .setConfidenceLevel(DetectionConfidenceLevel.HIGH)
-                      .build(),
-                  RaiFilter.newBuilder()
-                      .setFilterType(RaiFilterType.SEXUALLY_EXPLICIT)
-                      .setConfidenceLevel(DetectionConfidenceLevel.LOW_AND_ABOVE)
-                      .build(),
-                  RaiFilter.newBuilder()
-                      .setFilterType(RaiFilterType.HARASSMENT)
-                      .setConfidenceLevel(DetectionConfidenceLevel.MEDIUM_AND_ABOVE)
-                      .build()))
+          .addAllRaiFilters(List.of(
+              RaiFilter.newBuilder().setFilterType(RaiFilterType.DANGEROUS)
+                  .setConfidenceLevel(DetectionConfidenceLevel.HIGH).build(),
+              RaiFilter.newBuilder().setFilterType(RaiFilterType.HATE_SPEECH)
+                  .setConfidenceLevel(DetectionConfidenceLevel.HIGH).build(),
+              RaiFilter.newBuilder().setFilterType(RaiFilterType.SEXUALLY_EXPLICIT)
+                  .setConfidenceLevel(DetectionConfidenceLevel.LOW_AND_ABOVE).build(),
+              RaiFilter.newBuilder().setFilterType(RaiFilterType.HARASSMENT)
+                  .setConfidenceLevel(DetectionConfidenceLevel.MEDIUM_AND_ABOVE).build()))
           .build();
 
-      FilterConfig modelArmorFilter = FilterConfig.newBuilder()
-          .setRaiSettings(raiFilterSettings)
+      FilterConfig modelArmorFilter = FilterConfig.newBuilder().setRaiSettings(raiFilterSettings)
           .build();
 
-      Template template = Template.newBuilder()
-          .setFilterConfig(modelArmorFilter)
-          .build();
+      Template template = Template.newBuilder().setFilterConfig(modelArmorFilter).build();
 
-      CreateTemplateRequest request = CreateTemplateRequest.newBuilder()
-          .setParent(parent)
-          .setTemplateId(templateId)
-          .setTemplate(template)
-          .build();
+      CreateTemplateRequest request = CreateTemplateRequest.newBuilder().setParent(parent)
+          .setTemplateId(templateId).setTemplate(template).build();
 
       Template createdTemplate = client.createTemplate(request);
       System.out.println("Created template: " + createdTemplate.getName());

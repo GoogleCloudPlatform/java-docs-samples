@@ -16,8 +16,6 @@
 
 package modelarmor;
 
-import java.io.IOException;
-
 // [START modelarmor_create_template_with_basic_sdp]
 
 import com.google.cloud.modelarmor.v1.CreateTemplateRequest;
@@ -29,6 +27,7 @@ import com.google.cloud.modelarmor.v1.SdpBasicConfig;
 import com.google.cloud.modelarmor.v1.SdpBasicConfig.SdpBasicConfigEnforcement;
 import com.google.cloud.modelarmor.v1.SdpFilterSettings;
 import com.google.cloud.modelarmor.v1.Template;
+import java.io.IOException;
 
 public class CreateTemplateWithBasicSdp {
 
@@ -41,10 +40,11 @@ public class CreateTemplateWithBasicSdp {
     createTemplateWithBasicSdp(projectId, locationId, templateId);
   }
 
-  public static Template createTemplateWithBasicSdp(
-      String projectId, String locationId, String templateId) throws IOException {
+  public static Template createTemplateWithBasicSdp(String projectId, String locationId,
+      String templateId) throws IOException {
     String apiEndpoint = String.format("modelarmor.%s.rep.googleapis.com:443", locationId);
-    ModelArmorSettings modelArmorSettings = ModelArmorSettings.newBuilder().setEndpoint(apiEndpoint).build();
+    ModelArmorSettings modelArmorSettings = ModelArmorSettings.newBuilder().setEndpoint(apiEndpoint)
+        .build();
 
     try (ModelArmorClient client = ModelArmorClient.create(modelArmorSettings)) {
       String parent = LocationName.of(projectId, locationId).toString();
@@ -55,26 +55,17 @@ public class CreateTemplateWithBasicSdp {
 
       // Configure Basic SDP Filter.
       SdpBasicConfig basicSdpConfig = SdpBasicConfig.newBuilder()
-          .setFilterEnforcement(SdpBasicConfigEnforcement.ENABLED)
+          .setFilterEnforcement(SdpBasicConfigEnforcement.ENABLED).build();
+
+      SdpFilterSettings sdpSettings = SdpFilterSettings.newBuilder().setBasicConfig(basicSdpConfig)
           .build();
 
-      SdpFilterSettings sdpSettings = SdpFilterSettings.newBuilder()
-          .setBasicConfig(basicSdpConfig)
-          .build();
+      FilterConfig modelArmorFilter = FilterConfig.newBuilder().setSdpSettings(sdpSettings).build();
 
-      FilterConfig modelArmorFilter = FilterConfig.newBuilder()
-          .setSdpSettings(sdpSettings)
-          .build();
+      Template template = Template.newBuilder().setFilterConfig(modelArmorFilter).build();
 
-      Template template = Template.newBuilder()
-          .setFilterConfig(modelArmorFilter)
-          .build();
-
-      CreateTemplateRequest request = CreateTemplateRequest.newBuilder()
-          .setParent(parent)
-          .setTemplateId(templateId)
-          .setTemplate(template)
-          .build();
+      CreateTemplateRequest request = CreateTemplateRequest.newBuilder().setParent(parent)
+          .setTemplateId(templateId).setTemplate(template).build();
 
       Template createdTemplate = client.createTemplate(request);
       System.out.println("Created template with basic SDP filter: " + createdTemplate.getName());
