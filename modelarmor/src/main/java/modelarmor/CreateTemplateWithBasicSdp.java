@@ -40,8 +40,8 @@ public class CreateTemplateWithBasicSdp {
     createTemplateWithBasicSdp(projectId, locationId, templateId);
   }
 
-  public static Template createTemplateWithBasicSdp(String projectId, String locationId,
-      String templateId) throws IOException {
+  public static Template createTemplateWithBasicSdp(
+      String projectId, String locationId, String templateId) throws IOException {
     String apiEndpoint = String.format("modelarmor.%s.rep.googleapis.com:443", locationId);
     ModelArmorSettings modelArmorSettings = ModelArmorSettings.newBuilder().setEndpoint(apiEndpoint)
         .build();
@@ -55,17 +55,26 @@ public class CreateTemplateWithBasicSdp {
 
       // Configure Basic SDP Filter.
       SdpBasicConfig basicSdpConfig = SdpBasicConfig.newBuilder()
-          .setFilterEnforcement(SdpBasicConfigEnforcement.ENABLED).build();
-
-      SdpFilterSettings sdpSettings = SdpFilterSettings.newBuilder().setBasicConfig(basicSdpConfig)
+          .setFilterEnforcement(SdpBasicConfigEnforcement.ENABLED)
           .build();
 
-      FilterConfig modelArmorFilter = FilterConfig.newBuilder().setSdpSettings(sdpSettings).build();
+      SdpFilterSettings sdpSettings = SdpFilterSettings.newBuilder()
+          .setBasicConfig(basicSdpConfig)
+          .build();
 
-      Template template = Template.newBuilder().setFilterConfig(modelArmorFilter).build();
+      FilterConfig modelArmorFilter = FilterConfig.newBuilder()
+          .setSdpSettings(sdpSettings)
+          .build();
 
-      CreateTemplateRequest request = CreateTemplateRequest.newBuilder().setParent(parent)
-          .setTemplateId(templateId).setTemplate(template).build();
+      Template template = Template.newBuilder()
+          .setFilterConfig(modelArmorFilter)
+          .build();
+
+      CreateTemplateRequest request = CreateTemplateRequest.newBuilder()
+          .setParent(parent)
+          .setTemplateId(templateId)
+          .setTemplate(template)
+          .build();
 
       Template createdTemplate = client.createTemplate(request);
       System.out.println("Created template with basic SDP filter: " + createdTemplate.getName());

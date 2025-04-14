@@ -43,8 +43,8 @@ public class CreateTemplateWithMetadata {
     createTemplateWithMetadata(projectId, locationId, templateId);
   }
 
-  public static Template createTemplateWithMetadata(String projectId, String locationId,
-      String templateId) throws IOException {
+  public static Template createTemplateWithMetadata(
+      String projectId, String locationId, String templateId) throws IOException {
     String apiEndpoint = String.format("modelarmor.%s.rep.googleapis.com:443", locationId);
     ModelArmorSettings modelArmorSettings = ModelArmorSettings.newBuilder().setEndpoint(apiEndpoint)
         .build();
@@ -58,32 +58,50 @@ public class CreateTemplateWithMetadata {
 
       // Configure Responsible AI filter with multiple categories and their confidence
       // levels.
-      RaiFilterSettings raiFilterSettings = RaiFilterSettings.newBuilder()
-          .addAllRaiFilters(List.of(
-              RaiFilter.newBuilder().setFilterType(RaiFilterType.DANGEROUS)
-                  .setConfidenceLevel(DetectionConfidenceLevel.HIGH).build(),
-              RaiFilter.newBuilder().setFilterType(RaiFilterType.HATE_SPEECH)
-                  .setConfidenceLevel(DetectionConfidenceLevel.HIGH).build(),
-              RaiFilter.newBuilder().setFilterType(RaiFilterType.SEXUALLY_EXPLICIT)
-                  .setConfidenceLevel(DetectionConfidenceLevel.LOW_AND_ABOVE).build(),
-              RaiFilter.newBuilder().setFilterType(RaiFilterType.HARASSMENT)
-                  .setConfidenceLevel(DetectionConfidenceLevel.MEDIUM_AND_ABOVE).build()))
-          .build();
+      RaiFilterSettings raiFilterSettings =
+          RaiFilterSettings.newBuilder()
+              .addAllRaiFilters(
+                  List.of(
+                      RaiFilter.newBuilder()
+                          .setFilterType(RaiFilterType.DANGEROUS)
+                          .setConfidenceLevel(DetectionConfidenceLevel.HIGH)
+                          .build(),
+                      RaiFilter.newBuilder()
+                          .setFilterType(RaiFilterType.HATE_SPEECH)
+                          .setConfidenceLevel(DetectionConfidenceLevel.HIGH)
+                          .build(),
+                      RaiFilter.newBuilder()
+                          .setFilterType(RaiFilterType.SEXUALLY_EXPLICIT)
+                          .setConfidenceLevel(DetectionConfidenceLevel.LOW_AND_ABOVE)
+                          .build(),
+                      RaiFilter.newBuilder()
+                          .setFilterType(RaiFilterType.HARASSMENT)
+                          .setConfidenceLevel(DetectionConfidenceLevel.MEDIUM_AND_ABOVE)
+                          .build()))
+              .build();
 
-      FilterConfig modelArmorFilter = FilterConfig.newBuilder().setRaiSettings(raiFilterSettings)
+      FilterConfig modelArmorFilter = FilterConfig.newBuilder()
+          .setRaiSettings(raiFilterSettings)
           .build();
 
       // For more details about metadata, refer to the following documentation:
       // https://cloud.google.com/security-command-center/docs/reference/model-armor/rest/v1/projects.locations.templates#templatemetadata
       TemplateMetadata templateMetadata = TemplateMetadata.newBuilder()
-          .setIgnorePartialInvocationFailures(true).setLogSanitizeOperations(true)
-          .setCustomPromptSafetyErrorCode(500).build();
+          .setIgnorePartialInvocationFailures(true)
+          .setLogSanitizeOperations(true)
+          .setCustomPromptSafetyErrorCode(500)
+          .build();
 
-      Template template = Template.newBuilder().setFilterConfig(modelArmorFilter)
-          .setTemplateMetadata(templateMetadata).build();
+      Template template = Template.newBuilder()
+          .setFilterConfig(modelArmorFilter)
+          .setTemplateMetadata(templateMetadata)
+          .build();
 
-      CreateTemplateRequest request = CreateTemplateRequest.newBuilder().setParent(parent)
-          .setTemplateId(templateId).setTemplate(template).build();
+      CreateTemplateRequest request = CreateTemplateRequest.newBuilder()
+          .setParent(parent)
+          .setTemplateId(templateId)
+          .setTemplate(template)
+          .build();
 
       Template createdTemplate = client.createTemplate(request);
       System.out.println("Created template with metadata: " + createdTemplate.getName());
