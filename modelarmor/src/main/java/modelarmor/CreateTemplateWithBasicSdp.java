@@ -16,23 +16,23 @@
 
 package modelarmor;
 
+import java.io.IOException;
+
+// [START modelarmor_create_template_with_basic_sdp]
+
 import com.google.cloud.modelarmor.v1.CreateTemplateRequest;
-import com.google.cloud.modelarmor.v1.DetectionConfidenceLevel;
 import com.google.cloud.modelarmor.v1.FilterConfig;
 import com.google.cloud.modelarmor.v1.LocationName;
 import com.google.cloud.modelarmor.v1.ModelArmorClient;
 import com.google.cloud.modelarmor.v1.ModelArmorSettings;
-import com.google.cloud.modelarmor.v1.RaiFilterSettings;
-import com.google.cloud.modelarmor.v1.RaiFilterSettings.RaiFilter;
-import com.google.cloud.modelarmor.v1.RaiFilterType;
+import com.google.cloud.modelarmor.v1.SdpBasicConfig;
+import com.google.cloud.modelarmor.v1.SdpBasicConfig.SdpBasicConfigEnforcement;
+import com.google.cloud.modelarmor.v1.SdpFilterSettings;
 import com.google.cloud.modelarmor.v1.Template;
-import com.google.protobuf.util.JsonFormat;
-import java.util.Arrays;
-import java.util.List;
 
 public class CreateTemplateWithBasicSdp {
 
-  public static void main(String[] args) throws Exception {
+  public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     String locationId = "your-location-id";
@@ -41,41 +41,46 @@ public class CreateTemplateWithBasicSdp {
     createTemplateWithBasicSdp(projectId, locationId, templateId);
   }
 
-  public static void createTemplateWithBasicSdp(
-      String projectId, String locationId, String templateId) throws Exception {
+  public static Template createTemplateWithBasicSdp(
+      String projectId, String locationId, String templateId) throws IOException {
     String apiEndpoint = String.format("modelarmor.%s.rep.googleapis.com:443", locationId);
-    ModelArmorSettings modelArmorSettings =
-        ModelArmorSettings.newBuilder().setEndpoint(apiEndpoint).build();
+    ModelArmorSettings modelArmorSettings = ModelArmorSettings.newBuilder().setEndpoint(apiEndpoint).build();
 
     try (ModelArmorClient client = ModelArmorClient.create(modelArmorSettings)) {
       String parent = LocationName.of(projectId, locationId).toString();
 
-      Template template =
-          Template.newBuilder()
-              .setFilterConfig(
-                  FilterConfig.newBuilder()
-                      .setRaiSettings(
-                          RaiFilterSettings.newBuilder()
-                              .addAllRaiFilters(
-                                  List.of(
-                                      RaiFilter.newBuilder()
-                                          .setFilterType(RaiFilterType.DANGEROUS)
-                                          .setConfidenceLevel(DetectionConfidenceLevel.HIGH)
-                                          .build()))
-                              .build())
-                      .build())
-              .build();
+      // Build the Model Armor template with your preferred filters.
+      // For more details on filters, please refer to the following doc:
+      // https://cloud.google.com/security-command-center/docs/key-concepts-model-armor#ma-filters
 
-      CreateTemplateRequest request =
-          CreateTemplateRequest.newBuilder()
-              .setParent(parent)
-              .setTemplateId(templateId)
-              .setTemplate(template)
-              .build();
+      // Configure Basic SDP Filter.
+      SdpBasicConfig basicSdpConfig = SdpBasicConfig.newBuilder()
+          .setFilterEnforcement(SdpBasicConfigEnforcement.ENABLED)
+          .build();
+
+      SdpFilterSettings sdpSettings = SdpFilterSettings.newBuilder()
+          .setBasicConfig(basicSdpConfig)
+          .build();
+
+      FilterConfig modelArmorFilter = FilterConfig.newBuilder()
+          .setSdpSettings(sdpSettings)
+          .build();
+
+      Template template = Template.newBuilder()
+          .setFilterConfig(modelArmorFilter)
+          .build();
+
+      CreateTemplateRequest request = CreateTemplateRequest.newBuilder()
+          .setParent(parent)
+          .setTemplateId(templateId)
+          .setTemplate(template)
+          .build();
 
       Template createdTemplate = client.createTemplate(request);
-      System.out.println(
-          "Created template with basic sdp: " + JsonFormat.printer().print(createdTemplate));
+      System.out.println("Created template with basic SDP filter: " + createdTemplate.getName());
+
+      return createdTemplate;
     }
   }
 }
+// [END modelarmor_create_template_with_basic_sdp]

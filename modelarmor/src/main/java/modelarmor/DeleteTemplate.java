@@ -16,13 +16,17 @@
 
 package modelarmor;
 
+// [START modelarmor_delete_template]
+
+import java.io.IOException;
+
 import com.google.cloud.modelarmor.v1.ModelArmorClient;
 import com.google.cloud.modelarmor.v1.ModelArmorSettings;
 import com.google.cloud.modelarmor.v1.TemplateName;
 
 public class DeleteTemplate {
 
-  public static void main(String[] args) throws Exception {
+  public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     String locationId = "your-location-id";
@@ -32,14 +36,17 @@ public class DeleteTemplate {
   }
 
   public static void deleteTemplate(String projectId, String locationId, String templateId)
-      throws Exception {
+      throws IOException {
     String apiEndpoint = String.format("modelarmor.%s.rep.googleapis.com:443", locationId);
-    ModelArmorSettings modelArmorSettings =
-        ModelArmorSettings.newBuilder().setEndpoint(apiEndpoint).build();
+    ModelArmorSettings modelArmorSettings = ModelArmorSettings.newBuilder().setEndpoint(apiEndpoint).build();
+
     try (ModelArmorClient client = ModelArmorClient.create(modelArmorSettings)) {
       String name = TemplateName.of(projectId, locationId, templateId).toString();
+
+      // Note: Ensure that the template you are deleting isn't used by any models.
       client.deleteTemplate(name);
       System.out.println("Deleted template: " + name);
     }
   }
 }
+// [END modelarmor_delete_template]
