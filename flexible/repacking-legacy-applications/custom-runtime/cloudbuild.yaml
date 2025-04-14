@@ -11,7 +11,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-
+# [START cloudbuild_yaml]
 steps:
   # Step 1: Build the Docker image
   - name: "gcr.io/cloud-builders/docker"
@@ -34,3 +34,4 @@ substitutions:
 
 images:
   - "${_LOCATION}-docker.pkg.dev/${_PROJECT}/${_REPOSITORY}/my-java-app:v1"
+# [END cloudbuild_yaml]
