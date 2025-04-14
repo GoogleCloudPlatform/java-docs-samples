@@ -16,7 +16,7 @@
 
 package com.example.speech;
 
-// [START TranscribeStreamingV2]
+// [START speech_to_text_transcribe_streaming_v2]
 
 import com.google.api.gax.rpc.BidiStream;
 import com.google.cloud.speech.v2.*;
@@ -89,17 +89,6 @@ public class TranscribeStreamingV2 {
             for (StreamingRecognizeRequest request : requests) {
                 stream1.send(request);
             }
-            for (int i = 0; i < requests.size(); i++) {
-                StreamingRecognizeRequest request = requests.get(i);
-                System.out.println("Request " + (i + 1) + ": " + request);
-                // You might want to print specific parts of the request, like the audio or config, rather than the entire object
-                if (request.hasAudio()) {
-                    System.out.println("Audio: " + request.getAudio().size() + " bytes");
-                }
-                if (request.hasStreamingConfig()) {
-                    System.out.println("Streaming Config: " + request.getStreamingConfig());
-                }
-            }
             stream1.closeSend();
 
             Iterator<StreamingRecognizeResponse> responseIterator = stream1.iterator();
@@ -120,4 +109,4 @@ public class TranscribeStreamingV2 {
         List<StreamingRecognizeResponse> responses = transcribeStreamingV2("./resources/brooklyn_bridge.wav");
     }
 }
-// [END TranscribeStreamingV2]
+// [END speech_to_text_transcribe_streaming_v2]
