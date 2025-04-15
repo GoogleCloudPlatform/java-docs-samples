@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package com.example.appengine.jetty;
 
-// [START gae_java11_server]
+// [START gae_java21_server]
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.webapp.Configuration.ClassList;
 import org.eclipse.jetty.webapp.WebAppContext;
@@ -61,4 +61,4 @@ public class Main {
     server.join();
   }
 }
-// [END gae_java11_server]
+// [END gae_java21_server]

@@ -19,7 +19,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.example.appengine</groupId>
   <artifactId>simple-jetty-main</artifactId>
-  <name>simplejettymain-j17</name>
+  <name>simplejettymain-j21</name>
   <version>1</version>
   <packaging>jar</packaging>
 
@@ -35,12 +35,12 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>17</maven.compiler.source>
-    <maven.compiler.target>17</maven.compiler.target>
+    <maven.compiler.source>21</maven.compiler.source>
+    <maven.compiler.target>21</maven.compiler.target>
     <jetty.version>9.4.56.v20240826</jetty.version>
   </properties>
 
-  <!-- [START gae_java11_server_dependencies] -->
+  <!-- [START gae_java21_server_dependencies] -->
   <dependencies>
     <!-- Embedded Jetty dependencies -->
     <dependency>
@@ -71,12 +71,12 @@
       <version>${jetty.version}</version>
     </dependency>
   </dependencies>
-  <!-- [END gae_java11_server_dependencies] -->
+  <!-- [END gae_java21_server_dependencies] -->
 
   <build>
     <plugins>
       <!-- Exec Maven Plugin provides goals to help execute Main class locally -->
-      <!-- [START gae_java11_exec_plugin] -->
+      <!-- [START gae_java21_exec_plugin] -->
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -104,42 +104,7 @@
         </executions>
       </plugin>
 
-<!--      <plugin>-->
-<!--        <groupId>org.codehaus.mojo</groupId>-->
-<!--        <artifactId>exec-maven-plugin</artifactId>-->
-<!--        <version>3.1.1</version>-->
-<!--        <executions>-->
-<!--          <execution>-->
-<!--            <goals>-->
-<!--              <goal>java</goal>-->
-<!--            </goals>-->
-<!--          </execution>-->
-<!--        </executions>-->
-<!--        <configuration>-->
-<!--          <mainClass>com.example.appengine.jetty.Main</mainClass>-->
-<!--        </configuration>-->
-<!--      </plugin>-->
-
-<!--      <plugin>-->
-<!--        <groupId>org.apache.maven.plugins</groupId>-->
-<!--        <artifactId>maven-dependency-plugin</artifactId>-->
-<!--        <version>3.1.1</version>-->
-<!--        <executions>-->
-<!--          <execution>-->
-<!--            <id>copy</id>-->
-<!--            <phase>prepare-package</phase>-->
-<!--            <goals>-->
-<!--              <goal>copy-dependencies</goal>-->
-<!--            </goals>-->
-<!--            <configuration>-->
-<!--              <outputDirectory>-->
-<!--                ${project.build.directory}/appengine-staging-->
-<!--              </outputDirectory>-->
-<!--            </configuration>-->
-<!--          </execution>-->
-<!--        </executions>-->
-<!--      </plugin>-->
-      <!-- [END gae_java11_exec_plugin] -->
+      <!-- [END gae_java21_exec_plugin] -->
 
     </plugins>
   </build>
