@@ -32,13 +32,14 @@
     <artifactId>shared-configuration</artifactId>
     <version>1.2.0</version>
   </parent>
-
+  <!-- [START gae_java21_properties] -->
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>21</maven.compiler.source>
     <maven.compiler.target>21</maven.compiler.target>
     <jetty.version>9.4.56.v20240826</jetty.version>
   </properties>
+  <!-- [END gae_java21_properties] -->
 
   <!-- [START gae_java21_server_dependencies] -->
   <dependencies>

@@ -13,12 +13,16 @@
 #  limitations under the License.
 
 # [START gae_flex_repackage_yaml]
-runtime: java21
-env: standard
-
-entrypoint: 'java -jar jetty-jar-with-dependencies.jar sample.war'
-
+runtime: java
+env: flex
+runtime_config:
+  operating_system: ubuntu22
+  runtime_version: 21
+entrypoint: "java -jar jetty-jar-with-dependencies.jar sample.war"
 handlers:
-- url: /.*
-  script: this field is required, but ignored
+  - url: /.*
+    script: this field is required, but ignored
+
+manual_scaling:
+  instances: 1
 # [END gae_flex_repackage_yaml]
