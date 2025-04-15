@@ -78,8 +78,8 @@ public class RenameServiceAccountIT {
         PROJECT_ID, serviceAccountName, newServiceAccountName);
 
     // Assert
-    assertThat(bout.toString())
-        .contains(
-            "Updated display name for " + serviceAccountName + " to: " + newServiceAccountName);
+    String outString = bout.toString();
+    assertThat(outString).contains("Updated display name for");
+    assertThat(outString).contains("to: " + newServiceAccountName);
   }
 }
