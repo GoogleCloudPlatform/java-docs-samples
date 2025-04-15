@@ -39,7 +39,6 @@ import org.junit.runners.JUnit4;
 
 /** Integration (system) tests for {@link Snippets}. */
 @RunWith(JUnit4.class)
-@SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 public class SnippetsIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String LOCATION_ID = System.getenv()
