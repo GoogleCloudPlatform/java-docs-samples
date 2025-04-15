@@ -72,8 +72,8 @@ public class ListServiceAccountKeysIT {
     // Cleanup test
     Util.tearDownTest_deleteServiceAccount(PROJECT_ID, serviceAccountName);
 
+    System.out.flush();
     System.setOut(originalOut);
-    bout.reset();
   }
 
   @Test
@@ -83,7 +83,6 @@ public class ListServiceAccountKeysIT {
 
     // Assert
     assertFalse(keys.isEmpty());
-    assertTrue(keys.size() > 0);
     assertTrue(
         keys.stream()
             .map(ServiceAccountKey::getName)

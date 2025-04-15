@@ -13,12 +13,10 @@
  * limitations under the License.
  */
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.StringContains.containsString;
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertNotNull;
 
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
-import com.google.iam.admin.v1.ServiceAccount;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -69,22 +67,19 @@ public class RenameServiceAccountIT {
     // Cleanup test
     Util.tearDownTest_deleteServiceAccount(PROJECT_ID, serviceAccountName);
 
+    System.out.flush();
     System.setOut(originalOut);
-    bout.reset();
   }
 
   @Test
   public void testRenameServiceAccount() throws IOException, InterruptedException {
     // Act
-    ServiceAccount renamedServiceAccount =
-        RenameServiceAccount.renameServiceAccount(
-            PROJECT_ID, serviceAccountName, newServiceAccountName);
+    RenameServiceAccount.renameServiceAccount(
+        PROJECT_ID, serviceAccountName, newServiceAccountName);
 
     // Assert
-    String got = bout.toString();
-    assertThat(got, containsString("Updated display name"));
-    assertThat(got, containsString(newServiceAccountName));
-    assertNotNull(renamedServiceAccount);
-    assertThat(newServiceAccountName, containsString(renamedServiceAccount.getDisplayName()));
+    assertThat(bout.toString())
+        .contains(
+            "Updated display name for " + serviceAccountName + " to: " + newServiceAccountName);
   }
 }

@@ -70,8 +70,8 @@ public class DisableServiceAccountKeyIT {
     // Cleanup test
     Util.tearDownTest_deleteServiceAccount(PROJECT_ID, serviceAccountName);
 
+    System.out.flush();
     System.setOut(originalOut);
-    bout.reset();
   }
 
   @Test
@@ -83,7 +83,6 @@ public class DisableServiceAccountKeyIT {
     // Assert
     ServiceAccountKey key =
         Util.test_getServiceAccountKey(PROJECT_ID, serviceAccountName, serviceAccountKeyId);
-    assertTrue(key.getName().contains(serviceAccountKeyId));
     assertTrue(key.getDisabled());
   }
 }

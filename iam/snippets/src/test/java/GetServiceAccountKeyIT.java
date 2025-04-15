@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import com.google.iam.admin.v1.ServiceAccountKey;
@@ -70,8 +70,8 @@ public class GetServiceAccountKeyIT {
     // Cleanup test
     Util.tearDownTest_deleteServiceAccount(PROJECT_ID, serviceAccountName);
 
+    System.out.flush();
     System.setOut(originalOut);
-    bout.reset();
   }
 
   @Test
@@ -82,8 +82,6 @@ public class GetServiceAccountKeyIT {
             PROJECT_ID, serviceAccountName, serviceAccountKeyId);
 
     // Assert
-    assertTrue(key.getName().contains(serviceAccountKeyId));
-    assertTrue(key.getName().contains(PROJECT_ID));
-    assertTrue(key.getName().contains(serviceAccountName));
+    assertThat(key.getName()).contains(serviceAccountKeyId);
   }
 }

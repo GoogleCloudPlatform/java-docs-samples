@@ -13,10 +13,9 @@
  * limitations under the License.
  */
 
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
-import com.google.cloud.iam.admin.v1.IAMClient;
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -66,17 +65,16 @@ public class ListServiceAccountsIT {
     // Cleanup test
     Util.tearDownTest_deleteServiceAccount(PROJECT_ID, serviceAccountName);
 
+    System.out.flush();
     System.setOut(originalOut);
-    bout.reset();
   }
 
   @Test
   public void testListServiceAccounts() throws IOException, InterruptedException {
     // Act
-    IAMClient.ListServiceAccountsPagedResponse response =
-        ListServiceAccounts.listServiceAccounts(PROJECT_ID);
+    ListServiceAccounts.listServiceAccounts(PROJECT_ID);
 
     // Assert
-    assertTrue(response.iterateAll().iterator().hasNext());
+    assertThat(bout.toString()).contains("Name: " + serviceAccountName);
   }
 }

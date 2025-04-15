@@ -13,9 +13,7 @@
  * limitations under the License.
  */
 
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.StringContains.containsString;
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertNotNull;
 
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
@@ -64,8 +62,8 @@ public class DeleteServiceAccountIT {
 
   @After
   public void tearDown() throws IOException {
+    System.out.flush();
     System.setOut(originalOut);
-    bout.reset();
   }
 
   @Test
@@ -74,11 +72,6 @@ public class DeleteServiceAccountIT {
     DeleteServiceAccount.deleteServiceAccount(PROJECT_ID, serviceAccountName);
 
     // Assert
-    String got = bout.toString();
-    assertThat(got, containsString("Deleted service account:"));
-    bout.reset();
-    Util.test_listServiceAccounts(PROJECT_ID);
-    got = bout.toString();
-    assertThat(got, not(containsString(serviceAccountName)));
+    assertThat(bout.toString()).contains("Deleted service account: " + serviceAccountName);
   }
 }

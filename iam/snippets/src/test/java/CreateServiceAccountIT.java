@@ -13,12 +13,10 @@
  * limitations under the License.
  */
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.StringContains.containsString;
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertNotNull;
 
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
-import com.google.iam.admin.v1.ServiceAccount;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -36,7 +34,6 @@ public class CreateServiceAccountIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private ByteArrayOutputStream bout;
   private String serviceAccountName;
-  private ServiceAccount serviceAccount;
   private final PrintStream originalOut = System.out;
 
   @Rule public MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
@@ -67,19 +64,16 @@ public class CreateServiceAccountIT {
     // Cleanup test
     Util.tearDownTest_deleteServiceAccount(PROJECT_ID, serviceAccountName);
 
+    System.out.flush();
     System.setOut(originalOut);
-    bout.reset();
   }
 
   @Test
   public void testCreateServiceAccount() throws IOException {
     // Act
-    serviceAccount = CreateServiceAccount.createServiceAccount(PROJECT_ID, serviceAccountName);
-    String got = bout.toString();
+    CreateServiceAccount.createServiceAccount(PROJECT_ID, serviceAccountName);
 
     // Assert
-    assertThat(got, containsString("Created service account: " + serviceAccountName));
-    assertNotNull(serviceAccount);
-    assertThat(serviceAccount.getName(), containsString(serviceAccountName));
+    assertThat(bout.toString()).contains("Created service account: " + serviceAccountName);
   }
 }

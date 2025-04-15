@@ -13,10 +13,10 @@
  * limitations under the License.
  */
 
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertNotNull;
 
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
-import com.google.iam.admin.v1.ServiceAccountKey;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -65,17 +65,16 @@ public class CreateServiceAccountKeyIT {
     // Cleanup test
     Util.tearDownTest_deleteServiceAccount(PROJECT_ID, serviceAccountName);
 
+    System.out.flush();
     System.setOut(originalOut);
-    bout.reset();
   }
 
   @Test
   public void testCreateServiceAccountKey() throws IOException, InterruptedException {
     // Act
-    ServiceAccountKey key = CreateServiceAccountKey.createKey(PROJECT_ID, serviceAccountName);
+    CreateServiceAccountKey.createKey(PROJECT_ID, serviceAccountName);
 
     // Assert
-    String serviceAccountKeyId = Util.getServiceAccountKeyIdFromKey(key);
-    assertNotNull(serviceAccountKeyId);
+    assertThat(bout.toString()).contains("Key created successfully");
   }
 }

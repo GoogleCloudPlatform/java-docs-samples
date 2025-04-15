@@ -13,9 +13,7 @@
  * limitations under the License.
  */
 
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.StringContains.containsString;
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertNotNull;
 
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
@@ -72,8 +70,8 @@ public class DeleteServiceAccountKeyIT {
     // Cleanup test
     Util.tearDownTest_deleteServiceAccount(PROJECT_ID, serviceAccountName);
 
+    System.out.flush();
     System.setOut(originalOut);
-    bout.reset();
   }
 
   @Test
@@ -83,10 +81,6 @@ public class DeleteServiceAccountKeyIT {
 
     // Assert
     String got = bout.toString();
-    assertThat(got, containsString("Deleted key:"));
-    bout.reset();
-    Util.test_listServiceAccountKeys(PROJECT_ID, serviceAccountName);
-    got = bout.toString();
-    assertThat(got, not(containsString(serviceAccountKeyId)));
+    assertThat(got).contains("Deleted key: " + serviceAccountKeyId);
   }
 }

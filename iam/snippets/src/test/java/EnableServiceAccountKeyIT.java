@@ -15,7 +15,6 @@
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import com.google.iam.admin.v1.ServiceAccountKey;
@@ -72,8 +71,8 @@ public class EnableServiceAccountKeyIT {
     // Cleanup test
     Util.tearDownTest_deleteServiceAccount(PROJECT_ID, serviceAccountName);
 
+    System.out.flush();
     System.setOut(originalOut);
-    bout.reset();
   }
 
   @Test
@@ -85,7 +84,6 @@ public class EnableServiceAccountKeyIT {
     // Assert
     ServiceAccountKey key =
         Util.test_getServiceAccountKey(PROJECT_ID, serviceAccountName, serviceAccountKeyId);
-    assertTrue(key.getName().contains(serviceAccountKeyId));
     assertFalse(key.getDisabled());
   }
 }

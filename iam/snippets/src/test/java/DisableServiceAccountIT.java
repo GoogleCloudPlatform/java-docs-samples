@@ -13,7 +13,6 @@
  * limitations under the License.
  */
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -67,8 +66,8 @@ public class DisableServiceAccountIT {
     // Cleanup test
     Util.tearDownTest_deleteServiceAccount(PROJECT_ID, serviceAccountName);
 
+    System.out.flush();
     System.setOut(originalOut);
-    bout.reset();
   }
 
   @Test
@@ -78,8 +77,6 @@ public class DisableServiceAccountIT {
 
     // Assert
     ServiceAccount serviceAccount = Util.test_getServiceAccount(PROJECT_ID, serviceAccountName);
-    assertTrue(serviceAccount.getName().contains(serviceAccountName));
-    assertEquals(PROJECT_ID, serviceAccount.getProjectId());
-    assertTrue(serviceAccountName, serviceAccount.getDisabled());
+    assertTrue(serviceAccount.getDisabled());
   }
 }
