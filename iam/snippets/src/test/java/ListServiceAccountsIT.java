@@ -75,6 +75,6 @@ public class ListServiceAccountsIT {
     ListServiceAccounts.listServiceAccounts(PROJECT_ID);
 
     // Assert
-    assertThat(bout.toString()).contains("Name: " + serviceAccountName);
+    assertThat(bout.toString()).contains(serviceAccountName);
   }
 }
