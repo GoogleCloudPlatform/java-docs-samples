@@ -87,7 +87,7 @@ public class SnippetsIT {
   }
 
   @Test
-  public void testGetModelArmorTemplate() throws Exception {
+  public void testGetModelArmorTemplate() throws IOException {
     CreateTemplate.createTemplate(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
     Template retrievedTemplate = GetTemplate.getTemplate(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
 
@@ -96,7 +96,7 @@ public class SnippetsIT {
   }
 
   @Test
-  public void testListModelArmorTemplates() throws Exception {
+  public void testListModelArmorTemplates() throws IOException {
     CreateTemplate.createTemplate(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
 
     ListTemplates.listTemplates(PROJECT_ID, LOCATION_ID);
@@ -111,7 +111,7 @@ public class SnippetsIT {
   }
 
   @Test
-  public void testListTemplatesWithFilter() throws Exception {
+  public void testListTemplatesWithFilter() throws IOException {
     CreateTemplate.createTemplate(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
     String filter = "name=\"projects/" + PROJECT_ID + "/locations/" + LOCATION_ID + "/"
         + TEST_TEMPLATE_ID + "\"";
