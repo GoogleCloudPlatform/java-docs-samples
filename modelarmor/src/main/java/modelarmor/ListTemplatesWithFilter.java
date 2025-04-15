@@ -12,77 +12,61 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
 
 package modelarmor;
 
-/**
- * This class demonstrates how to list templates with a filter using the Model Armor API.
- *
- * @author [Your Name]
- */
+// [START modelarmor_list_templates_with_filter]
+
 import com.google.cloud.modelarmor.v1.ListTemplatesRequest;
 import com.google.cloud.modelarmor.v1.LocationName;
 import com.google.cloud.modelarmor.v1.ModelArmorClient;
+import com.google.cloud.modelarmor.v1.ModelArmorClient.ListTemplatesPagedResponse;
 import com.google.cloud.modelarmor.v1.ModelArmorSettings;
-import com.google.cloud.modelarmor.v1.Template;
-import com.google.protobuf.util.JsonFormat;
+import java.io.IOException;
 
-// [START modelarmor_list_templates_with_filter]
-
-/**
- * This class contains a main method that lists templates with a filter using the Model Armor API.
- */
 public class ListTemplatesWithFilter {
 
-  /**
-   * Main method that calls the listTemplatesWithFilter method to list templates with a filter.
-   *
-   * @param args command line arguments (not used)
-   * @throws Exception if an error occurs during template listing
-   */
-  public static void main(String[] args) throws Exception {
+  public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
+
     String projectId = "your-project-id";
     String locationId = "your-location-id";
-    String templateId = "your-template-id";
+    // Filter to applied.
+    // Example: "name=\"projects/your-project-id/locations/us-central1/your-template-id\""
+    String filter = "your-filter-condition";
 
-    listTemplatesWithFilter(projectId, locationId, templateId);
+    listTemplatesWithFilter(projectId, locationId, filter);
   }
 
-  /**
-   * Lists templates with a filter using the Model Armor API.
-   *
-   * @param projectId the ID of the project
-   * @param locationId the ID of the location
-   * @param templateId the ID of the template
-   * @throws Exception if an error occurs during template listing
-   */
-  public static void listTemplatesWithFilter(String projectId, String locationId, String templateId)
-      throws Exception {
-    // Construct the API endpoint URL
+  public static ListTemplatesPagedResponse listTemplatesWithFilter(String projectId,
+      String locationId, String filter) throws IOException {
+    // Construct the API endpoint URL.
     String apiEndpoint = String.format("modelarmor.%s.rep.googleapis.com:443", locationId);
 
-    // Create a Model Armor settings object with the API endpoint
-    ModelArmorSettings modelArmorSettings =
-        ModelArmorSettings.newBuilder().setEndpoint(apiEndpoint).build();
+    ModelArmorSettings modelArmorSettings = ModelArmorSettings.newBuilder().setEndpoint(apiEndpoint)
+        .build();
 
+    // Initialize the client that will be used to send requests. This client
+    // only needs to be created once, and can be reused for multiple requests.
     try (ModelArmorClient client = ModelArmorClient.create(modelArmorSettings)) {
-      // Construct the parent resource name
+      // Build the parent name.
       String parent = LocationName.of(projectId, locationId).toString();
 
-      // Construct the filter string
-      String filter = String.format("name=\"%s/templates/%s\"", parent, templateId);
+      ListTemplatesRequest request = ListTemplatesRequest.newBuilder()
+          .setParent(parent)
+          .setFilter(filter)
+          .build();
 
-      // Create a list templates request object with the filter
-      ListTemplatesRequest request =
-          ListTemplatesRequest.newBuilder().setParent(parent).setFilter(filter).build();
+      // List all templates.
+      ListTemplatesPagedResponse pagedResponse = client.listTemplates(request);
+      pagedResponse.iterateAll().forEach(template -> {
+        System.out.printf("Template %s\n", template.getName());
+      });
 
-      // List templates using the Model Armor client
-      for (Template template : client.listTemplates(request).iterateAll()) {
-        // Print each retrieved template
-        System.out.println("Template with filter: " + JsonFormat.printer().print(template));
-      }
+      return pagedResponse;
     }
   }
 }
+
+// [END modelarmor_list_templates_with_filter]

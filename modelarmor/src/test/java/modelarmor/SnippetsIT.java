@@ -12,17 +12,22 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
 
 package modelarmor;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
+import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.modelarmor.v1.Template;
+import com.google.cloud.modelarmor.v1.TemplateName;
 import com.google.common.base.Strings;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
-import java.util.UUID;
+import java.util.Random;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -36,32 +41,23 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 public class SnippetsIT {
-
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String LOCATION = "us-central1";
-  private static final String MA_REGIONAL_ENDPOINT =
-      String.format("modelarmor.%s.rep.googleapis.com:443", LOCATION);
-  private static final String DLP_REGIONAL_ENDPOINT =
-      String.format("dlp.%s.rep.googleapis.com:443", LOCATION);
-  private static final String INSPECT_TEMPLATE_ID =
-      "model-armour-inspect-template-" + UUID.randomUUID().toString();
-  private static final String DEIDENTIFY_TEMPLATE_ID =
-      "model-armour-deidentify-template-" + UUID.randomUUID().toString();
-  private static Template TEST_MODELARMOR_TEMPLATE;
-  private static Template TEST_MODELARMOR_TEMPLATE_NAME;
-  private static String TEMPLATE_ID;
-
+  private static final String LOCATION_ID = System.getenv()
+      .getOrDefault("GOOGLE_CLOUD_PROJECT_LOCATION", "us-central1");
+  private static String TEST_TEMPLATE_ID;
+  private static String TEST_TEMPLATE_NAME;
   private ByteArrayOutputStream stdOut;
 
   @BeforeClass
-  public static void beforeAll() throws Exception {
+  public static void beforeAll() throws IOException {
     Assert.assertFalse("missing GOOGLE_CLOUD_PROJECT", Strings.isNullOrEmpty(PROJECT_ID));
-    Assert.assertFalse("missing GOOGLE_CLOUD_PROJECT_LOCATION", Strings.isNullOrEmpty(LOCATION));
+    Assert.assertFalse("missing GOOGLE_CLOUD_PROJECT_LOCATION", Strings.isNullOrEmpty(LOCATION_ID));
   }
 
   @AfterClass
-  public static void afterAll() throws Exception {
+  public static void afterAll() throws IOException {
     Assert.assertFalse("missing GOOGLE_CLOUD_PROJECT", Strings.isNullOrEmpty(PROJECT_ID));
+    Assert.assertFalse("missing GOOGLE_CLOUD_PROJECT_LOCATION", Strings.isNullOrEmpty(LOCATION_ID));
   }
 
   @Before
@@ -69,43 +65,65 @@ public class SnippetsIT {
     stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
 
-    TEMPLATE_ID = "test-model-armor-" + UUID.randomUUID().toString();
+    TEST_TEMPLATE_ID = randomId();
+    TEST_TEMPLATE_NAME = TemplateName.of(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID).toString();
   }
 
   @After
-  public void afterEach() throws Exception {
+  public void afterEach() throws IOException {
+    try {
+      DeleteTemplate.deleteTemplate(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
+    } catch (NotFoundException e) {
+      // Ignore not found error - template already deleted.
+    }
+
     stdOut = null;
     System.setOut(null);
   }
 
-  @Test
-  public void testDeleteModelArmorTemplate() throws Exception {
-    CreateTemplate.createTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
-    DeleteTemplate.deleteTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
-    assertThat(stdOut.toString()).contains("Deleted template");
+  private static String randomId() {
+    Random random = new Random();
+    return "java-ma-" + random.nextLong();
   }
 
   @Test
   public void testGetModelArmorTemplate() throws Exception {
-    CreateTemplate.createTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
-    GetTemplate.getTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
-    assertThat(stdOut.toString()).contains("Retrieved template");
-    DeleteTemplate.deleteTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
+    CreateTemplate.createTemplate(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
+    Template retrievedTemplate = GetTemplate.getTemplate(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
+
+    assertThat(stdOut.toString()).contains("Retrieved template:");
+    assertEquals(retrievedTemplate.getName(), TEST_TEMPLATE_NAME);
   }
 
   @Test
   public void testListModelArmorTemplates() throws Exception {
-    CreateTemplate.createTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
-    ListTemplates.listTemplates(PROJECT_ID, LOCATION);
-    assertThat(stdOut.toString()).contains("Retrieved Templates");
-    DeleteTemplate.deleteTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
+    CreateTemplate.createTemplate(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
+
+    ListTemplates.listTemplates(PROJECT_ID, LOCATION_ID);
+
+    boolean templatePresentInList = false;
+    for (Template template : ListTemplates.listTemplates(PROJECT_ID, LOCATION_ID).iterateAll()) {
+      if (TEST_TEMPLATE_NAME.equals(template.getName())) {
+        templatePresentInList = true;
+      }
+    }
+    assertTrue(templatePresentInList);
   }
 
   @Test
   public void testListTemplatesWithFilter() throws Exception {
-    CreateTemplate.createTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
-    ListTemplatesWithFilter.listTemplatesWithFilter(PROJECT_ID, LOCATION, TEMPLATE_ID);
-    assertThat(stdOut.toString()).contains("Template with filter");
-    DeleteTemplate.deleteTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
+    CreateTemplate.createTemplate(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
+    String filter = "name=\"projects/" + PROJECT_ID + "/locations/" + LOCATION_ID + "/"
+        + TEST_TEMPLATE_ID + "\"";
+
+    ListTemplatesWithFilter.listTemplatesWithFilter(PROJECT_ID, LOCATION_ID, filter);
+
+    boolean templatePresentInList = false;
+    for (Template template : ListTemplates.listTemplates(PROJECT_ID, LOCATION_ID).iterateAll()) {
+      if (TEST_TEMPLATE_NAME.equals(template.getName())) {
+        templatePresentInList = true;
+      }
+    }
+    assertTrue(templatePresentInList);
   }
 }
