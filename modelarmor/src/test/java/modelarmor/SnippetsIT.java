@@ -12,17 +12,21 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
 
 package modelarmor;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.Assert.assertEquals;
 
+import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.modelarmor.v1.Template;
+import com.google.cloud.modelarmor.v1.TemplateName;
 import com.google.common.base.Strings;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
-import java.util.UUID;
+import java.util.Random;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -34,34 +38,24 @@ import org.junit.runners.JUnit4;
 
 /** Integration (system) tests for {@link Snippets}. */
 @RunWith(JUnit4.class)
-@SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 public class SnippetsIT {
-
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String LOCATION = "us-central1";
-  private static final String MA_REGIONAL_ENDPOINT =
-      String.format("modelarmor.%s.rep.googleapis.com:443", LOCATION);
-  private static final String DLP_REGIONAL_ENDPOINT =
-      String.format("dlp.%s.rep.googleapis.com:443", LOCATION);
-  private static final String INSPECT_TEMPLATE_ID =
-      "model-armour-inspect-template-" + UUID.randomUUID().toString();
-  private static final String DEIDENTIFY_TEMPLATE_ID =
-      "model-armour-deidentify-template-" + UUID.randomUUID().toString();
-  private static Template TEST_MODELARMOR_TEMPLATE;
-  private static Template TEST_MODELARMOR_TEMPLATE_NAME;
-  private static String TEMPLATE_ID;
-
+  private static final String LOCATION_ID = System.getenv()
+      .getOrDefault("GOOGLE_CLOUD_PROJECT_LOCATION", "us-central1");
+  private static String TEST_TEMPLATE_ID;
+  private static String TEST_TEMPLATE_NAME;
   private ByteArrayOutputStream stdOut;
 
   @BeforeClass
-  public static void beforeAll() throws Exception {
+  public static void beforeAll() throws IOException {
     Assert.assertFalse("missing GOOGLE_CLOUD_PROJECT", Strings.isNullOrEmpty(PROJECT_ID));
-    Assert.assertFalse("missing GOOGLE_CLOUD_PROJECT_LOCATION", Strings.isNullOrEmpty(LOCATION));
+    Assert.assertFalse("missing GOOGLE_CLOUD_PROJECT_LOCATION", Strings.isNullOrEmpty(LOCATION_ID));
   }
 
   @AfterClass
-  public static void afterAll() throws Exception {
+  public static void afterAll() throws IOException {
     Assert.assertFalse("missing GOOGLE_CLOUD_PROJECT", Strings.isNullOrEmpty(PROJECT_ID));
+    Assert.assertFalse("missing GOOGLE_CLOUD_PROJECT_LOCATION", Strings.isNullOrEmpty(LOCATION_ID));
   }
 
   @Before
@@ -69,45 +63,65 @@ public class SnippetsIT {
     stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
 
-    TEMPLATE_ID = "test-model-armor-" + UUID.randomUUID().toString();
+    TEST_TEMPLATE_ID = randomId();
+    TEST_TEMPLATE_NAME = TemplateName.of(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID).toString();
   }
 
   @After
-  public void afterEach() throws Exception {
+  public void afterEach() throws IOException {
+
+    try {
+      DeleteTemplate.deleteTemplate(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
+    } catch (NotFoundException e) {
+      // Ignore not found error - template already deleted.
+    }
+
     stdOut = null;
     System.setOut(null);
   }
 
-  @Test
-  public void testUpdateModelArmorTemplate() throws Exception {
-    CreateTemplate.createTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
-    UpdateTemplate.updateTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
-    assertThat(stdOut.toString()).contains("Updated template");
-    DeleteTemplate.deleteTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
+  private static String randomId() {
+    Random random = new Random();
+    return "java-ma-" + random.nextLong();
   }
 
   @Test
-  public void testUpdateModelArmorTemplateWithLabels() throws Exception {
-    CreateTemplate.createTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
-    UpdateTemplateLabels.updateTemplateLabels(PROJECT_ID, LOCATION, TEMPLATE_ID);
-    assertThat(stdOut.toString()).contains("Updated template labels");
-    DeleteTemplate.deleteTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
+  public void testUpdateModelArmorTemplate() throws IOException {
+    CreateTemplate.createTemplate(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
+
+    // Update the existing template.
+    Template updatedTemplate = UpdateTemplate.updateTemplate(PROJECT_ID, LOCATION_ID,
+        TEST_TEMPLATE_ID);
+
+    assertThat(stdOut.toString()).contains("Updated template:");
+    assertEquals(updatedTemplate.getName(), TEST_TEMPLATE_NAME);
   }
 
   @Test
-  public void testUpdateModelArmorTemplateWithMetadata() throws Exception {
-    CreateTemplate.createTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
-    UpdateTemplateMetadata.updateTemplateMetadata(PROJECT_ID, LOCATION, TEMPLATE_ID);
-    assertThat(stdOut.toString()).contains("Updated template metadata");
-    DeleteTemplate.deleteTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
+  public void testUpdateModelArmorTemplateWithLabels() throws IOException {
+    CreateTemplateWithLabels.createTemplateWithLabels(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
+
+    // Update the existing template.
+    Template updatedTemplate = UpdateTemplateWithLabels.updateTemplateWithLabels(PROJECT_ID,
+        LOCATION_ID, TEST_TEMPLATE_ID);
+
+    assertThat(stdOut.toString()).contains("Updated template labels:");
+    assertEquals(updatedTemplate.getName(), TEST_TEMPLATE_NAME);
   }
 
   @Test
-  public void testUpdateModelArmorTemplateWithMaskConfiguration() throws Exception {
-    CreateTemplate.createTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
-    UpdateTemplateWithMaskConfiguration.updateTemplateWithMaskConfiguration(
-        PROJECT_ID, LOCATION, TEMPLATE_ID);
-    assertThat(stdOut.toString()).contains("Updated template with mask configuration");
-    DeleteTemplate.deleteTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
+  public void testUpdateModelArmorTemplateWithMetadata() throws IOException {
+    CreateTemplateWithMetadata.createTemplateWithMetadata(PROJECT_ID, LOCATION_ID,
+        TEST_TEMPLATE_ID);
+
+    // Update the existing template.
+    Template updatedTemplate = UpdateTemplateWithMetadata.updateTemplateWithMetadata(PROJECT_ID,
+        LOCATION_ID, TEST_TEMPLATE_ID);
+
+    assertThat(stdOut.toString()).contains("Updated template metadata:");
+    assertEquals(updatedTemplate.getName(), TEST_TEMPLATE_NAME);
+    assertEquals(false, updatedTemplate.getTemplateMetadata().getIgnorePartialInvocationFailures());
+    assertEquals(false, updatedTemplate.getTemplateMetadata().getLogSanitizeOperations());
+    assertEquals(400, updatedTemplate.getTemplateMetadata().getCustomPromptSafetyErrorCode());
   }
 }

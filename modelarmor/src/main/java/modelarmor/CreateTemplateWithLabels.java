@@ -16,23 +16,24 @@
 
 package modelarmor;
 
-// [START modelarmor_update_template]
+// [START modelarmor_create_template_with_labels]
 
+import com.google.cloud.modelarmor.v1.CreateTemplateRequest;
 import com.google.cloud.modelarmor.v1.DetectionConfidenceLevel;
 import com.google.cloud.modelarmor.v1.FilterConfig;
+import com.google.cloud.modelarmor.v1.LocationName;
 import com.google.cloud.modelarmor.v1.ModelArmorClient;
 import com.google.cloud.modelarmor.v1.ModelArmorSettings;
 import com.google.cloud.modelarmor.v1.RaiFilterSettings;
 import com.google.cloud.modelarmor.v1.RaiFilterSettings.RaiFilter;
 import com.google.cloud.modelarmor.v1.RaiFilterType;
 import com.google.cloud.modelarmor.v1.Template;
-import com.google.cloud.modelarmor.v1.TemplateName;
-import com.google.cloud.modelarmor.v1.UpdateTemplateRequest;
-import com.google.protobuf.FieldMask;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class UpdateTemplate {
+public class CreateTemplateWithLabels {
 
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
@@ -44,25 +45,24 @@ public class UpdateTemplate {
     // Specify the template ID.
     String templateId = "your-template-id";
 
-    updateTemplate(projectId, locationId, templateId);
+    createTemplateWithLabels(projectId, locationId, templateId);
   }
 
-  public static Template updateTemplate(String projectId, String locationId, String templateId)
-      throws IOException {
-    // Construct the API endpoint URL.
+  public static Template createTemplateWithLabels(
+      String projectId, String locationId, String templateId) throws IOException {
     String apiEndpoint = String.format("modelarmor.%s.rep.googleapis.com:443", locationId);
     ModelArmorSettings modelArmorSettings = ModelArmorSettings.newBuilder().setEndpoint(apiEndpoint)
         .build();
 
-    // Initialize the client that will be used to send requests. This client
-    // only needs to be created once, and can be reused for multiple requests.
     try (ModelArmorClient client = ModelArmorClient.create(modelArmorSettings)) {
-      // Get the template name.
-      String name = TemplateName.of(projectId, locationId, templateId).toString();
+      String parent = LocationName.of(projectId, locationId).toString();
 
-      // Build the updated Model Armor template with modified filters.
+      // Build the Model Armor template with your preferred filters.
       // For more details on filters, please refer to the following doc:
       // https://cloud.google.com/security-command-center/docs/key-concepts-model-armor#ma-filters
+
+      // Configure Responsible AI filter with multiple categories and their confidence
+      // levels.
       RaiFilterSettings raiFilterSettings =
           RaiFilterSettings.newBuilder()
               .addAllRaiFilters(
@@ -73,14 +73,14 @@ public class UpdateTemplate {
                           .build(),
                       RaiFilter.newBuilder()
                           .setFilterType(RaiFilterType.HATE_SPEECH)
-                          .setConfidenceLevel(DetectionConfidenceLevel.MEDIUM_AND_ABOVE)
-                          .build(),
-                      RaiFilter.newBuilder()
-                          .setFilterType(RaiFilterType.HARASSMENT)
-                          .setConfidenceLevel(DetectionConfidenceLevel.MEDIUM_AND_ABOVE)
+                          .setConfidenceLevel(DetectionConfidenceLevel.HIGH)
                           .build(),
                       RaiFilter.newBuilder()
                           .setFilterType(RaiFilterType.SEXUALLY_EXPLICIT)
+                          .setConfidenceLevel(DetectionConfidenceLevel.LOW_AND_ABOVE)
+                          .build(),
+                      RaiFilter.newBuilder()
+                          .setFilterType(RaiFilterType.HARASSMENT)
                           .setConfidenceLevel(DetectionConfidenceLevel.MEDIUM_AND_ABOVE)
                           .build()))
               .build();
@@ -89,28 +89,27 @@ public class UpdateTemplate {
           .setRaiSettings(raiFilterSettings)
           .build();
 
+      // Create Labels.
+      Map<String, String> labels = new HashMap<>();
+      labels.put("key1", "value1");
+      labels.put("key2", "value2");
+
       Template template = Template.newBuilder()
-          .setName(name)
           .setFilterConfig(modelArmorFilter)
+          .putAllLabels(labels)
           .build();
 
-      // Create a field mask to specify which fields to update.
-      // Ref: https://protobuf.dev/reference/protobuf/google.protobuf/#field-mask
-      FieldMask updateMask = FieldMask.newBuilder()
-          .addPaths("filter_config.rai_settings")
-          .build();
-
-      UpdateTemplateRequest request = UpdateTemplateRequest.newBuilder()
+      CreateTemplateRequest request = CreateTemplateRequest.newBuilder()
+          .setParent(parent)
+          .setTemplateId(templateId)
           .setTemplate(template)
-          .setUpdateMask(updateMask)
           .build();
 
-      Template updatedTemplate = client.updateTemplate(request);
-      System.out.println("Updated template: " + updatedTemplate.getName());
+      Template createdTemplate = client.createTemplate(request);
+      System.out.println("Created template with labels: " + createdTemplate.getName());
 
-      return updatedTemplate;
+      return createdTemplate;
     }
   }
 }
-
-// [END modelarmor_update_template]
+// [END modelarmor_create_template_with_labels]
