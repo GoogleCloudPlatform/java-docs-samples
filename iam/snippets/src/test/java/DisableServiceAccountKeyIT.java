@@ -75,7 +75,7 @@ public class DisableServiceAccountKeyIT {
   }
 
   @Test
-  public void testServiceAccount_disableKey() throws IOException, InterruptedException {
+  public void testDisableServiceAccountKey() throws IOException, InterruptedException {
     // Act
     DisableServiceAccountKey.disableServiceAccountKey(
         PROJECT_ID, serviceAccountName, serviceAccountKeyId);

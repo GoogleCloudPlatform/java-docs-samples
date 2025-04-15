@@ -71,7 +71,7 @@ public class ListServiceAccountsIT {
   }
 
   @Test
-  public void testServiceAccount_listServiceAccounts() throws IOException, InterruptedException {
+  public void testListServiceAccounts() throws IOException, InterruptedException {
     // Act
     IAMClient.ListServiceAccountsPagedResponse response =
         ListServiceAccounts.listServiceAccounts(PROJECT_ID);

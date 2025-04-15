@@ -75,7 +75,7 @@ public class GetServiceAccountKeyIT {
   }
 
   @Test
-  public void testServiceAccount_getKey() throws IOException, InterruptedException {
+  public void testGetServiceAccountKey() throws IOException, InterruptedException {
     // Act
     ServiceAccountKey key =
         GetServiceAccountKey.getServiceAccountKey(

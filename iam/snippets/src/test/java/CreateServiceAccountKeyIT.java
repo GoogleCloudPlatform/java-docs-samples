@@ -70,7 +70,7 @@ public class CreateServiceAccountKeyIT {
   }
 
   @Test
-  public void testServiceAccount_createKey() throws IOException, InterruptedException {
+  public void testCreateServiceAccountKey() throws IOException, InterruptedException {
     // Act
     ServiceAccountKey key = CreateServiceAccountKey.createKey(PROJECT_ID, serviceAccountName);
 

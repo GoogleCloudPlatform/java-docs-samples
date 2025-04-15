@@ -72,7 +72,7 @@ public class GetServiceAccountIT {
   }
 
   @Test
-  public void testServiceAccount_getServiceAccount() throws IOException, InterruptedException {
+  public void testGetServiceAccount() throws IOException, InterruptedException {
     // Act
     ServiceAccount account = GetServiceAccount.getServiceAccount(PROJECT_ID, serviceAccountName);
 

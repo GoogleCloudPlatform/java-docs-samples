@@ -74,7 +74,7 @@ public class RenameServiceAccountIT {
   }
 
   @Test
-  public void testServiceAccount_renameServiceAccount() throws IOException, InterruptedException {
+  public void testRenameServiceAccount() throws IOException, InterruptedException {
     // Act
     ServiceAccount renamedServiceAccount =
         RenameServiceAccount.renameServiceAccount(

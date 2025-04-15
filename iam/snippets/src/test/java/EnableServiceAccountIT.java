@@ -74,7 +74,7 @@ public class EnableServiceAccountIT {
   }
 
   @Test
-  public void testServiceAccount_enableServiceAccount() throws IOException, InterruptedException {
+  public void testEnableServiceAccount() throws IOException, InterruptedException {
     // Act
     EnableServiceAccount.enableServiceAccount(PROJECT_ID, serviceAccountName);
 

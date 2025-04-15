@@ -72,7 +72,7 @@ public class DisableServiceAccountIT {
   }
 
   @Test
-  public void testServiceAccount_disableServiceAccount() throws IOException, InterruptedException {
+  public void testDisableServiceAccount() throws IOException, InterruptedException {
     // Act
     DisableServiceAccount.disableServiceAccount(PROJECT_ID, serviceAccountName);
 

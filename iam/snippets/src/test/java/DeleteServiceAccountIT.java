@@ -69,7 +69,7 @@ public class DeleteServiceAccountIT {
   }
 
   @Test
-  public void testServiceAccount_deleteServiceAccount() throws IOException, InterruptedException {
+  public void testDeleteServiceAccount() throws IOException, InterruptedException {
     // Act
     DeleteServiceAccount.deleteServiceAccount(PROJECT_ID, serviceAccountName);
 

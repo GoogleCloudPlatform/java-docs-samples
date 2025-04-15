@@ -77,7 +77,7 @@ public class DeleteServiceAccountKeyIT {
   }
 
   @Test
-  public void testServiceAccount_deleteKey() throws IOException, InterruptedException {
+  public void testDeleteServiceAccountKey() throws IOException, InterruptedException {
     // Act
     DeleteServiceAccountKey.deleteKey(PROJECT_ID, serviceAccountName, serviceAccountKeyId);
 

@@ -72,7 +72,7 @@ public class CreateServiceAccountIT {
   }
 
   @Test
-  public void testServiceAccount_createServiceAccount() throws IOException {
+  public void testCreateServiceAccount() throws IOException {
     // Act
     serviceAccount = CreateServiceAccount.createServiceAccount(PROJECT_ID, serviceAccountName);
     String got = bout.toString();

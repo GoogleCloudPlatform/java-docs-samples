@@ -77,7 +77,7 @@ public class ListServiceAccountKeysIT {
   }
 
   @Test
-  public void testServiceAccount_listKeys() throws IOException, InterruptedException {
+  public void testListServiceAccountKeys() throws IOException, InterruptedException {
     // Act
     List<ServiceAccountKey> keys = ListServiceAccountKeys.listKeys(PROJECT_ID, serviceAccountName);
 
