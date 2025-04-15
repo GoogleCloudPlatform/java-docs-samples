@@ -28,6 +28,7 @@ import com.google.iam.admin.v1.ServiceAccountKey;
 import com.google.iam.admin.v1.ServiceAccountName;
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 public class Util {
   public static ServiceAccount setUpTest_createServiceAccount(
@@ -158,6 +159,10 @@ public class Util {
       return iamClient.getServiceAccountKey(
           GetServiceAccountKeyRequest.newBuilder().setName(name).build());
     }
+  }
+
+  public static String generateServiceAccountName() {
+    return "service-account-" + UUID.randomUUID().toString().substring(0, 8);
   }
 
   private static void awaitForServiceAccountCreation(String projectId, String serviceAccountName)
