@@ -18,18 +18,17 @@ package modelarmor;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.modelarmor.v1.Template;
 import com.google.cloud.modelarmor.v1.TemplateName;
-import com.google.common.base.Strings;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Random;
 import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -46,16 +45,24 @@ public class SnippetsIT {
   private static String TEST_TEMPLATE_NAME;
   private ByteArrayOutputStream stdOut;
 
+  // Check if the required environment variables are set.
+  private static String requireEnvVar(String varName) {
+    String value = System.getenv(varName);
+    assertNotNull("Environment variable " + varName + " is required to run these tests.",
+        System.getenv(varName));
+    return value;
+  }
+
   @BeforeClass
-  public static void beforeAll() throws IOException {
-    Assert.assertFalse("missing GOOGLE_CLOUD_PROJECT", Strings.isNullOrEmpty(PROJECT_ID));
-    Assert.assertFalse("missing GOOGLE_CLOUD_PROJECT_LOCATION", Strings.isNullOrEmpty(LOCATION_ID));
+  public static void beforeAll() {
+    requireEnvVar("GOOGLE_CLOUD_PROJECT");
+    requireEnvVar("GOOGLE_CLOUD_PROJECT_LOCATION");
   }
 
   @AfterClass
   public static void afterAll() throws IOException {
-    Assert.assertFalse("missing GOOGLE_CLOUD_PROJECT", Strings.isNullOrEmpty(PROJECT_ID));
-    Assert.assertFalse("missing GOOGLE_CLOUD_PROJECT_LOCATION", Strings.isNullOrEmpty(LOCATION_ID));
+    requireEnvVar("GOOGLE_CLOUD_PROJECT");
+    requireEnvVar("GOOGLE_CLOUD_PROJECT_LOCATION");
   }
 
   @Before
