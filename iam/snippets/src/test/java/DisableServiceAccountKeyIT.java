@@ -81,8 +81,26 @@ public class DisableServiceAccountKeyIT {
         PROJECT_ID, serviceAccountName, serviceAccountKeyId);
 
     // Assert
+    waitForDisableServiceAccountKeyOperation(PROJECT_ID, serviceAccountName, serviceAccountKeyId);
     ServiceAccountKey key =
         Util.test_getServiceAccountKey(PROJECT_ID, serviceAccountName, serviceAccountKeyId);
     assertTrue(key.getDisabled());
+  }
+
+  private void waitForDisableServiceAccountKeyOperation(
+      String projectId, String serviceAccountName, String serviceAccountKeyId)
+      throws IOException, InterruptedException {
+    boolean isKeyDisabled = false;
+    long time = 1000;
+    long timeLimit = 60000;
+    while (!isKeyDisabled && time <= timeLimit) {
+      ServiceAccountKey key =
+          Util.test_getServiceAccountKey(projectId, serviceAccountName, serviceAccountKeyId);
+      isKeyDisabled = key.getDisabled();
+      if (!isKeyDisabled) {
+        Thread.sleep(time);
+        time *= 2;
+      }
+    }
   }
 }

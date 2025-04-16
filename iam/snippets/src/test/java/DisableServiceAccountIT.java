@@ -76,7 +76,23 @@ public class DisableServiceAccountIT {
     DisableServiceAccount.disableServiceAccount(PROJECT_ID, serviceAccountName);
 
     // Assert
+    waitForDisableServiceAccountOperation(PROJECT_ID, serviceAccountName);
     ServiceAccount serviceAccount = Util.test_getServiceAccount(PROJECT_ID, serviceAccountName);
     assertTrue(serviceAccount.getDisabled());
+  }
+
+  private static void waitForDisableServiceAccountOperation(
+      String projectId, String serviceAccountName) throws IOException, InterruptedException {
+    boolean isAccountDisabled = false;
+    long time = 1000;
+    long timeLimit = 60000;
+    while (!isAccountDisabled && time <= timeLimit) {
+      ServiceAccount serviceAccount = Util.test_getServiceAccount(projectId, serviceAccountName);
+      isAccountDisabled = serviceAccount.getDisabled();
+      if (!isAccountDisabled) {
+        Thread.sleep(time);
+        time *= 2;
+      }
+    }
   }
 }
