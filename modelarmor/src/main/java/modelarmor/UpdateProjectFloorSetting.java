@@ -14,8 +14,9 @@
  * limitations under the License.
 */
 
-// [START modelarmor_update_project_floor_settings]
 package modelarmor;
+
+// [START modelarmor_update_project_floor_settings]
 
 import com.google.cloud.modelarmor.v1.DetectionConfidenceLevel;
 import com.google.cloud.modelarmor.v1.FilterConfig;

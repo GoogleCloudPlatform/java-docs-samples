@@ -95,7 +95,7 @@ public class UpdateFolderFloorSetting {
       System.out.println("Updated floor setting for folder: " + folderId);
 
       return updatedFloorSetting;
-      }
+    }
   }
 }
 // [END modelarmor_update_folder_floor_settings]

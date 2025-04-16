@@ -33,17 +33,14 @@ public class GetProjectFloorSetting {
     getProjectFloorSetting(projectId);
   }
 
-  public static FloorSetting getProjectFloorSetting(String projectId)
-      throws IOException {
+  public static FloorSetting getProjectFloorSetting(String projectId) throws IOException {
 
     // Initialize client that will be used to send requests. This client only
     // needs to be created once, and can be reused for multiple requests.
     try (ModelArmorClient client = ModelArmorClient.create()) {
       String name = FloorSettingName.of(projectId, "global").toString();
 
-      GetFloorSettingRequest request = GetFloorSettingRequest.newBuilder()
-        .setName(name)
-        .build();
+      GetFloorSettingRequest request = GetFloorSettingRequest.newBuilder().setName(name).build();
 
       FloorSetting floorSetting = client.getFloorSetting(request);
       System.out.println("Fetched floor setting for project: " + projectId);

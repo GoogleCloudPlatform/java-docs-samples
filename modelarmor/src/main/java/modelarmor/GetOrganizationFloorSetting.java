@@ -33,8 +33,7 @@ public class GetOrganizationFloorSetting {
     getOrganizationFloorSetting(organizationId);
   }
 
-  public static FloorSetting getOrganizationFloorSetting(String organizationId)
-      throws IOException {
+  public static FloorSetting getOrganizationFloorSetting(String organizationId) throws IOException {
 
     // Initialize client that will be used to send requests. This client only
     // needs to be created once, and can be reused for multiple requests.
@@ -42,9 +41,7 @@ public class GetOrganizationFloorSetting {
       String name = FloorSettingName.ofOrganizationLocationName(organizationId, "global")
           .toString();
 
-      GetFloorSettingRequest request = GetFloorSettingRequest.newBuilder()
-        .setName(name)
-        .build();
+      GetFloorSettingRequest request = GetFloorSettingRequest.newBuilder().setName(name).build();
 
       FloorSetting floorSetting = client.getFloorSetting(request);
       System.out.println("Fetched floor setting for organization: " + organizationId);
