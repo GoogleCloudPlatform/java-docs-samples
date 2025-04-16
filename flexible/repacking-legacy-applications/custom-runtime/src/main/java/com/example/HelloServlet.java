@@ -24,11 +24,22 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @WebServlet("/hello")
-public class HelloServlet extends HttpServlet {
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html");
-        response.getWriter().println("<h1>Hello, World!</h1>");
-    }
+public final class HelloServlet extends HttpServlet {
+  /**
+   * This method handles GET requests to the /hello endpoint.
+   *
+   * <p>Subclasses should not override this method.
+   *
+   * @param request the HttpServletRequest object
+   * @param response the HttpServletResponse object
+   * @throws ServletException if a servlet-specific error occurs
+   * @throws IOException if an I/O error occurs
+   */
+  @Override
+  protected void doGet(
+      final HttpServletRequest request, final HttpServletResponse response)
+      throws ServletException, IOException {
+    response.setContentType("text/html");
+    response.getWriter().println("<h1>Hello, World!</h1>");
+  }
 }
