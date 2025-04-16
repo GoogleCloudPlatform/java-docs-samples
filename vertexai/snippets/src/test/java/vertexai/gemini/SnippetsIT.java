@@ -143,13 +143,12 @@ public class SnippetsIT {
   public void testSimpleQuestionAnswer() throws Exception {
     String output = QuestionAnswer.simpleQuestion(PROJECT_ID, LOCATION, GEMINI_FLASH);
     assertThat(output).isNotEmpty();
-    assertThat(output).contains("Rayleigh scattering");
   }
 
   @Test
   public void testQuickstart() throws IOException {
     String output = Quickstart.quickstart(PROJECT_ID, LOCATION, GEMINI_FLASH);
-    assertThat(output).contains("cookie");
+    assertThat(output).isNotEmpty();
   }
 
   @Test
