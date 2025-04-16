@@ -12,34 +12,44 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
 
 package modelarmor;
+
+// [START modelarmor_get_folder_floor_settings]
 
 import com.google.cloud.modelarmor.v1.FloorSetting;
 import com.google.cloud.modelarmor.v1.FloorSettingName;
 import com.google.cloud.modelarmor.v1.GetFloorSettingRequest;
 import com.google.cloud.modelarmor.v1.ModelArmorClient;
-import com.google.protobuf.util.JsonFormat;
+import java.io.IOException;
 
-public class GetFolderFloorSettings {
+public class GetFolderFloorSetting {
 
-  public static void main(String[] args) throws Exception {
+  public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String folderId = "your-folder-id";
 
-    getFolderFloorSettings(folderId);
+    getFolderFloorSetting(folderId);
   }
 
-  public static void getFolderFloorSettings(String folderId) throws Exception {
+  public static FloorSetting getFolderFloorSetting(String folderId)
+      throws IOException {
 
+    // Initialize client that will be used to send requests. This client only
+    // needs to be created once, and can be reused for multiple requests.
     try (ModelArmorClient client = ModelArmorClient.create()) {
       String name = FloorSettingName.of(folderId, "global").toString();
+
       GetFloorSettingRequest request = GetFloorSettingRequest.newBuilder()
-          .setName(name)
-          .build();
-      FloorSetting response = client.getFloorSetting(request);
-      System.out.println("Folder Floor Settings: " + JsonFormat.printer().print(response));
+        .setName(name)
+        .build();
+
+      FloorSetting floorSetting = client.getFloorSetting(request);
+      System.out.println("Fetched floor setting for folder: " + folderId);
+
+      return floorSetting;
     }
   }
 }
+// [END modelarmor_get_folder_floor_settings]

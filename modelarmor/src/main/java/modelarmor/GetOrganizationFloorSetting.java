@@ -12,33 +12,45 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
 
 package modelarmor;
+
+// [START modelarmor_get_organization_floor_settings]
 
 import com.google.cloud.modelarmor.v1.FloorSetting;
 import com.google.cloud.modelarmor.v1.FloorSettingName;
 import com.google.cloud.modelarmor.v1.GetFloorSettingRequest;
 import com.google.cloud.modelarmor.v1.ModelArmorClient;
-import com.google.protobuf.util.JsonFormat;
+import java.io.IOException;
 
-public class GetOrganizationFloorSettings {
+public class GetOrganizationFloorSetting {
 
-  public static void main(String[] args) throws Exception {
+  public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String organizationId = "your-organization-id";
 
-    getOrganizationFloorSettings(organizationId);
+    getOrganizationFloorSetting(organizationId);
   }
 
-  public static void getOrganizationFloorSettings(String organizationId) throws Exception {
+  public static FloorSetting getOrganizationFloorSetting(String organizationId)
+      throws IOException {
 
+    // Initialize client that will be used to send requests. This client only
+    // needs to be created once, and can be reused for multiple requests.
     try (ModelArmorClient client = ModelArmorClient.create()) {
-      String name =
-          FloorSettingName.ofOrganizationLocationName(organizationId, "global").toString();
-      GetFloorSettingRequest request = GetFloorSettingRequest.newBuilder().setName(name).build();
-      FloorSetting response = client.getFloorSetting(request);
-      System.out.println("Organization Floor Settings: " + JsonFormat.printer().print(response));
+      String name = FloorSettingName.ofOrganizationLocationName(organizationId, "global")
+          .toString();
+
+      GetFloorSettingRequest request = GetFloorSettingRequest.newBuilder()
+        .setName(name)
+        .build();
+
+      FloorSetting floorSetting = client.getFloorSetting(request);
+      System.out.println("Fetched floor setting for organization: " + organizationId);
+
+      return floorSetting;
     }
   }
 }
+// [END modelarmor_get_organization_floor_settings]
