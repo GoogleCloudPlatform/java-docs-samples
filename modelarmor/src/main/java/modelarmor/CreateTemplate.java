@@ -35,8 +35,12 @@ public class CreateTemplate {
 
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
+
+    // Specify the Google Project ID.
     String projectId = "your-project-id";
+    // Specify the location ID. For example, us-central1. 
     String locationId = "your-location-id";
+    // Specify the template ID.
     String templateId = "your-template-id";
 
     createTemplate(projectId, locationId, templateId);
@@ -44,10 +48,14 @@ public class CreateTemplate {
 
   public static Template createTemplate(String projectId, String locationId, String templateId)
       throws IOException {
+
+    // Construct the API endpoint URL.
     String apiEndpoint = String.format("modelarmor.%s.rep.googleapis.com:443", locationId);
     ModelArmorSettings modelArmorSettings = ModelArmorSettings.newBuilder().setEndpoint(apiEndpoint)
         .build();
 
+    // Initialize the client that will be used to send requests. This client
+    // only needs to be created once, and can be reused for multiple requests.
     try (ModelArmorClient client = ModelArmorClient.create(modelArmorSettings)) {
       String parent = LocationName.of(projectId, locationId).toString();
 
