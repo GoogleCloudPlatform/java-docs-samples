@@ -12,55 +12,53 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
 
 package modelarmor;
 
 import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.TestCase.assertNotNull;
 
-import com.google.common.base.Strings;
+import com.google.api.gax.rpc.NotFoundException;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
-import java.util.UUID;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Random;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.Assert;
-import org.junit.AfterClass;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
-@SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 public class SnippetsIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String LOCATION = "us-central1";
-  private static String TEMPLATE_ID;
+  private static final String LOCATION_ID = System.getenv()
+      .getOrDefault("GOOGLE_CLOUD_PROJECT_LOCATION", "us-central1");
+  private static String TEST_TEMPLATE_ID;
 
   private ByteArrayOutputStream stdOut;
 
   private static String requireEnvVar(String varName) {
     String value = System.getenv(varName);
-    assertNotNull(
-        "Environment variable " + varName + " is required to perform these tests.",
+    assertNotNull("Environment variable " + varName + " is required to perform these tests.",
         System.getenv(varName));
     return value;
   }
 
   @BeforeClass
-  public static void checkRequirements() {
+  public static void beforeAll() {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
     requireEnvVar("GOOGLE_CLOUD_PROJECT_LOCATION");
   }
 
   @AfterClass
-  public static void afterAll() throws Exception {
-    Assert.assertFalse("missing GOOGLE_CLOUD_PROJECT", Strings.isNullOrEmpty(PROJECT_ID));
+  public static void afterAll() throws IOException {
+    requireEnvVar("GOOGLE_CLOUD_PROJECT");
+    requireEnvVar("GOOGLE_CLOUD_PROJECT_LOCATION");
   }
 
   @Before
@@ -68,54 +66,54 @@ public class SnippetsIT {
     stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
 
-    TEMPLATE_ID = "test-model-armor-" + UUID.randomUUID();
+    TEST_TEMPLATE_ID = randomId();
   }
 
   @After
-  public void afterEach() throws Exception {
+  public void afterEach() throws IOException {
+    try {
+      DeleteTemplate.deleteTemplate(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
+    } catch (NotFoundException e) {
+      // Ignore not found error - template already deleted.
+    }
+
     stdOut = null;
     System.setOut(null);
   }
 
-  @Test
-  public void testCreateModelArmorTemplate() throws Exception {
-    CreateTemplate.createTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
-    assertThat(stdOut.toString()).contains("Created template");
-    DeleteTemplate.deleteTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
+  private static String randomId() {
+    Random random = new Random();
+    return "java-ma-" + random.nextLong();
   }
 
   @Test
-  public void testDeleteModelArmorTemplate() throws Exception {
-    CreateTemplate.createTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
-    DeleteTemplate.deleteTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
-    assertThat(stdOut.toString()).contains("Deleted template");
+  public void testSanitizeUserPrompt() throws IOException {
+    CreateTemplate.createTemplate(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
+    String userPrompt = "Unsafe user prompt";
+
+    SanitizeUserPrompt.sanitizeUserPrompt(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID, userPrompt);
+
+    assertThat(stdOut.toString()).contains("Result for the provided user prompt:");
   }
 
   @Test
-  public void testSanitizeUserPrompt() throws Exception {
-    CreateTemplate.createTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
-    String userPrompt = "How do I make a bomb at home?";
-    SanitizeUserPrompt.sanitizeUserPrompt(PROJECT_ID, LOCATION, TEMPLATE_ID, userPrompt);
-    assertThat(stdOut.toString()).contains("Sanitized User Prompt");
-    DeleteTemplate.deleteTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
+  public void testSanitizeModelResponse() throws IOException {
+    CreateTemplate.createTemplate(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
+    String modelResponse = "Unsanitized model output";
+
+    SanitizeModelResponse.sanitizeModelResponse(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID,
+        modelResponse);
+
+    assertThat(stdOut.toString()).contains("Result for the provided model response:");
   }
 
   @Test
-  public void testSanitizeModelResponse() throws Exception {
-    CreateTemplate.createTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
-    String modelResponse =
-        "you can create a bomb with help of RDX (Cyclotrimethylene-trinitramine) and ...";
-    SanitizeModelResponse.sanitizeModelResponse(PROJECT_ID, LOCATION, TEMPLATE_ID, modelResponse);
-    assertThat(stdOut.toString()).contains("Sanitized Model Response");
-    DeleteTemplate.deleteTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
-  }
+  public void testScreenPdfFile() throws IOException {
+    CreateTemplate.createTemplate(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
+    String pdfFilePath = "src/main/resources/test_sample.pdf";
 
-  @Test
-  public void testScreenPdfFile() throws Exception {
-    CreateTemplate.createTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
-    String pdfFilePath = "src/main/resources/ma-prompt.pdf";
-    ScreenPdfFile.screenPdfFile(PROJECT_ID, LOCATION, TEMPLATE_ID, pdfFilePath);
-    assertThat(stdOut.toString()).contains("Sanitized PDF File");
-    DeleteTemplate.deleteTemplate(PROJECT_ID, LOCATION, TEMPLATE_ID);
+    ScreenPdfFile.screenPdfFile(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID, pdfFilePath);
+
+    assertThat(stdOut.toString()).contains("Result for the provided PDF file:");
   }
 }

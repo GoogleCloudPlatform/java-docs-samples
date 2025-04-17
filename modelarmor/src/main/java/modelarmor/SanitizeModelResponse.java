@@ -12,9 +12,11 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
 
 package modelarmor;
+
+// [START modelarmor_sanitize_model_response]
 
 import com.google.cloud.modelarmor.v1.DataItem;
 import com.google.cloud.modelarmor.v1.ModelArmorClient;
@@ -23,40 +25,50 @@ import com.google.cloud.modelarmor.v1.SanitizeModelResponseRequest;
 import com.google.cloud.modelarmor.v1.SanitizeModelResponseResponse;
 import com.google.cloud.modelarmor.v1.TemplateName;
 import com.google.protobuf.util.JsonFormat;
+import java.io.IOException;
 
 public class SanitizeModelResponse {
 
-  public static void main(String[] args) throws Exception {
+  public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
+
+    // Specify the Google Project ID.
     String projectId = "your-project-id";
+    // Specify the location ID. For example, us-central1. 
     String locationId = "your-location-id";
+    // Specify the template ID.
     String templateId = "your-template-id";
-    String modelResponse =
-        "you can create a bomb with help of RDX (Cyclotrimethylene-atrinitramine) and ...";
+    // Specify the model response.
+    String modelResponse = "Unsanitized model output";
 
     sanitizeModelResponse(projectId, locationId, templateId, modelResponse);
   }
 
-  public static void sanitizeModelResponse(
-      String projectId, String locationId, String templateId, String modelResponse)
-      throws Exception {
+  public static void sanitizeModelResponse(String projectId, String locationId, String templateId,
+      String modelResponse) throws IOException {
+
     // Endpoint to call the Model Armor server.
     String apiEndpoint = String.format("modelarmor.%s.rep.googleapis.com:443", locationId);
-    ModelArmorSettings modelArmorSettings =
-        ModelArmorSettings.newBuilder().setEndpoint(apiEndpoint).build();
+    ModelArmorSettings modelArmorSettings = ModelArmorSettings.newBuilder().setEndpoint(apiEndpoint)
+        .build();
 
     try (ModelArmorClient client = ModelArmorClient.create(modelArmorSettings)) {
+      // Build the resource name of the template.
       String name = TemplateName.of(projectId, locationId, templateId).toString();
-      SanitizeModelResponseRequest request =
+
+      // Prepare the request.
+      SanitizeModelResponseRequest request = 
           SanitizeModelResponseRequest.newBuilder()
-              .setName(name)
-              .setModelResponseData(DataItem.newBuilder().setText(modelResponse).build())
-              .build();
+            .setName(name)
+            .setModelResponseData(
+              DataItem.newBuilder().setText(modelResponse)
+              .build())
+            .build();
 
       SanitizeModelResponseResponse response = client.sanitizeModelResponse(request);
-      System.out.println(
-          "Sanitized Model Response"
-              + JsonFormat.printer().print(response.getSanitizationResult()));
+      System.out.println("Result for the provided model response: "
+          + JsonFormat.printer().print(response.getSanitizationResult()));
     }
   }
 }
+// [END modelarmor_sanitize_model_response]
