@@ -34,11 +34,12 @@ import com.google.cloud.modelarmor.v1.SanitizeUserPromptRequest;
 import com.google.cloud.modelarmor.v1.SanitizeUserPromptResponse;
 import com.google.cloud.modelarmor.v1.Template;
 import com.google.protobuf.util.JsonFormat;
+import java.io.IOException;
 import java.util.List;
 
 public class Quickstart {
 
-  public void main(String[] args) throws Exception {
+  public void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
 
     // Specify the Google Project ID.
@@ -55,7 +56,7 @@ public class Quickstart {
   // This is an example to demonstrate how to use Model Armor to screen
   // user prompts and model responses using a Model Armor template.
   public static void quickstart(String projectId, String locationId, String templateId)
-      throws Exception {
+      throws IOException {
 
     // Endpoint to call the Model Armor server.
     String apiEndpoint = String.format("modelarmor.%s.rep.googleapis.com:443", locationId);
@@ -74,26 +75,27 @@ public class Quickstart {
 
       // Configure Responsible AI filter with multiple categories and their
       // confidence levels.
-      RaiFilterSettings raiFilterSettings = RaiFilterSettings.newBuilder()
-          .addAllRaiFilters(
-              List.of(
-                  RaiFilter.newBuilder()
-                      .setFilterType(RaiFilterType.DANGEROUS)
-                      .setConfidenceLevel(DetectionConfidenceLevel.HIGH)
-                      .build(),
-                  RaiFilter.newBuilder()
-                      .setFilterType(RaiFilterType.HATE_SPEECH)
-                      .setConfidenceLevel(DetectionConfidenceLevel.MEDIUM_AND_ABOVE)
-                      .build(),
-                  RaiFilter.newBuilder()
-                      .setFilterType(RaiFilterType.SEXUALLY_EXPLICIT)
-                      .setConfidenceLevel(DetectionConfidenceLevel.MEDIUM_AND_ABOVE)
-                      .build(),
-                  RaiFilter.newBuilder()
-                      .setFilterType(RaiFilterType.HARASSMENT)
-                      .setConfidenceLevel(DetectionConfidenceLevel.MEDIUM_AND_ABOVE)
-                      .build()))
-          .build();
+      RaiFilterSettings raiFilterSettings =
+          RaiFilterSettings.newBuilder()
+              .addAllRaiFilters(
+                  List.of(
+                      RaiFilter.newBuilder()
+                          .setFilterType(RaiFilterType.DANGEROUS)
+                          .setConfidenceLevel(DetectionConfidenceLevel.HIGH)
+                          .build(),
+                      RaiFilter.newBuilder()
+                          .setFilterType(RaiFilterType.HATE_SPEECH)
+                          .setConfidenceLevel(DetectionConfidenceLevel.MEDIUM_AND_ABOVE)
+                          .build(),
+                      RaiFilter.newBuilder()
+                          .setFilterType(RaiFilterType.SEXUALLY_EXPLICIT)
+                          .setConfidenceLevel(DetectionConfidenceLevel.MEDIUM_AND_ABOVE)
+                          .build(),
+                      RaiFilter.newBuilder()
+                          .setFilterType(RaiFilterType.HARASSMENT)
+                          .setConfidenceLevel(DetectionConfidenceLevel.MEDIUM_AND_ABOVE)
+                          .build()))
+              .build();
 
       FilterConfig modelArmorFilter =
           FilterConfig.newBuilder().setRaiSettings(raiFilterSettings).build();

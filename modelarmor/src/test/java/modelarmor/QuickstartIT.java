@@ -24,6 +24,7 @@ import com.google.cloud.modelarmor.v1.ModelArmorClient;
 import com.google.cloud.modelarmor.v1.ModelArmorSettings;
 import com.google.cloud.modelarmor.v1.TemplateName;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.UUID;
 import org.junit.AfterClass;
@@ -54,7 +55,7 @@ public class QuickstartIT {
   }
 
   @AfterClass
-  public static void afterAll() throws Exception {
+  public static void afterAll() throws IOException {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
     requireEnvVar("GOOGLE_CLOUD_PROJECT_LOCATION");
 
@@ -71,7 +72,7 @@ public class QuickstartIT {
   }
 
   @Test
-  public void quickstart_test() throws Exception {
+  public void quickstart_test() throws IOException {
     PrintStream originalOut = System.out;
     ByteArrayOutputStream redirected = new ByteArrayOutputStream();
 
