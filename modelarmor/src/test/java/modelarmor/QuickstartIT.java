@@ -51,13 +51,11 @@ public class QuickstartIT {
   @BeforeClass
   public static void checkRequirements() {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
-    requireEnvVar("GOOGLE_CLOUD_PROJECT_LOCATION");
   }
 
   @AfterClass
   public static void afterAll() throws IOException {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
-    requireEnvVar("GOOGLE_CLOUD_PROJECT_LOCATION");
 
     // Delete the template created by quickstart.
     String apiEndpoint = String.format("modelarmor.%s.rep.googleapis.com:443", LOCATION_ID);
