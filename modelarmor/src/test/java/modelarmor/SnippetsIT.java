@@ -56,13 +56,11 @@ public class SnippetsIT {
   @BeforeClass
   public static void beforeAll() {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
-    requireEnvVar("GOOGLE_CLOUD_PROJECT_LOCATION");
   }
 
   @AfterClass
   public static void afterAll() throws IOException {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
-    requireEnvVar("GOOGLE_CLOUD_PROJECT_LOCATION");
   }
 
   @Before
