@@ -12,7 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
 
 package modelarmor;
 
@@ -36,14 +36,14 @@ import org.junit.runners.JUnit4;
 public class QuickstartIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String LOCATION_ID = "us-central1"; // Or your preferred region
+  private static final String LOCATION_ID = System.getenv()
+      .getOrDefault("GOOGLE_CLOUD_PROJECT_LOCATION", "us-central1");
   private static final String TEMPLATE_ID = "java-quickstart-" + UUID.randomUUID().toString();
 
   private static String requireEnvVar(String varName) {
     String value = System.getenv(varName);
-    assertNotNull(
-            "Environment variable " + varName + " is required to perform these tests.",
-            System.getenv(varName));
+    assertNotNull("Environment variable " + varName + " is required to perform these tests.",
+        System.getenv(varName));
     return value;
   }
 
@@ -53,21 +53,20 @@ public class QuickstartIT {
     requireEnvVar("GOOGLE_CLOUD_PROJECT_LOCATION");
   }
 
-
   @AfterClass
   public static void afterAll() throws Exception {
+    requireEnvVar("GOOGLE_CLOUD_PROJECT");
+    requireEnvVar("GOOGLE_CLOUD_PROJECT_LOCATION");
+
+    // Delete the template created by quickstart.
     String apiEndpoint = String.format("modelarmor.%s.rep.googleapis.com:443", LOCATION_ID);
 
     ModelArmorSettings.Builder builder = ModelArmorSettings.newBuilder();
     ModelArmorSettings modelArmorSettings = builder.setEndpoint(apiEndpoint).build();
-    try (ModelArmorClient client = ModelArmorClient.create(modelArmorSettings)) {
-      // Delete the template created by quickstart.
-      String templateName = TemplateName.of(PROJECT_ID, LOCATION_ID, TEMPLATE_ID).toString();
 
-      client.deleteTemplate(
-          DeleteTemplateRequest.newBuilder()
-              .setName(templateName)
-              .build());
+    try (ModelArmorClient client = ModelArmorClient.create(modelArmorSettings)) {
+      String templateName = TemplateName.of(PROJECT_ID, LOCATION_ID, TEMPLATE_ID).toString();
+      client.deleteTemplate(DeleteTemplateRequest.newBuilder().setName(templateName).build());
     }
   }
 
@@ -79,9 +78,9 @@ public class QuickstartIT {
     System.setOut(new PrintStream(redirected));
 
     try {
-      new Quickstart().quickstart(PROJECT_ID, LOCATION_ID, TEMPLATE_ID);
-      assertThat(redirected.toString()).contains("Result for User Prompt Sanitization");
-      assertThat(redirected.toString()).contains("Result for Model Response Sanitization");
+      Quickstart.quickstart(PROJECT_ID, LOCATION_ID, TEMPLATE_ID);
+      assertThat(redirected.toString()).contains("Result for the provided user prompt:");
+      assertThat(redirected.toString()).contains("Result for the provided model response:");
     } finally {
       System.setOut(originalOut);
     }

@@ -32,10 +32,26 @@ import com.google.cloud.modelarmor.v1.SanitizeUserPromptRequest;
 import com.google.cloud.modelarmor.v1.SanitizeUserPromptResponse;
 import com.google.cloud.modelarmor.v1.Template;
 import com.google.protobuf.util.JsonFormat;
-import java.util.Arrays;
+import java.util.List;
 
 public class Quickstart {
 
+  public void main(String[] args) throws Exception {
+    // TODO(developer): Replace these variables before running the sample.
+
+    // Specify the Google Project ID.
+    String projectId = "your-project-id";
+    // Specify the location ID. For example, us-central1. 
+    String locationId = "your-location-id";
+    // Specify the template ID.
+    String templateId = "your-template-id";
+
+    // Run quickstart method.
+    quickstart(projectId, locationId, templateId);
+  }
+
+  // This is an example to demonstrate how to use Model Armor to screen
+  // user prompts and model responses using a Model Armor template.
   public static void quickstart(String projectId, String locationId, String templateId)
       throws Exception {
 
@@ -43,57 +59,58 @@ public class Quickstart {
     String apiEndpoint = String.format("modelarmor.%s.rep.googleapis.com:443", locationId);
     ModelArmorSettings.Builder builder = ModelArmorSettings.newBuilder();
     ModelArmorSettings modelArmorSettings = builder.setEndpoint(apiEndpoint).build();
-    // Initialize the client that will be used to send requests. This client only needs to be
-    // created once, and can be reused for multiple requests.
+
+    // Initialize the client that will be used to send requests. This client
+    // only needs to be created once, and can be reused for multiple requests.
     try (ModelArmorClient client = ModelArmorClient.create(modelArmorSettings)) {
 
       // Build the parent name from the project and location.
       String parent = LocationName.of(projectId, locationId).toString();
-
       // Build the Model Armor template with your preferred filters.
       // For more details on filters, please refer to the following doc:
       // https://cloud.google.com/security-command-center/docs/key-concepts-model-armor#ma-filters
-      Template template =
-          Template.newBuilder()
-              .setFilterConfig(
-                  FilterConfig.newBuilder()
-                      .setRaiSettings(
-                          RaiFilterSettings.newBuilder()
-                              .addAllRaiFilters(
-                                  Arrays.asList(
-                                      RaiFilter.newBuilder()
-                                          .setFilterType(RaiFilterType.DANGEROUS)
-                                          .setConfidenceLevel(DetectionConfidenceLevel.HIGH)
-                                          .build(),
-                                      RaiFilter.newBuilder()
-                                          .setFilterType(RaiFilterType.HARASSMENT)
-                                          .setConfidenceLevel(
-                                              DetectionConfidenceLevel.MEDIUM_AND_ABOVE)
-                                          .build(),
-                                      RaiFilter.newBuilder()
-                                          .setFilterType(RaiFilterType.HATE_SPEECH)
-                                          .setConfidenceLevel(DetectionConfidenceLevel.HIGH)
-                                          .build(),
-                                      RaiFilter.newBuilder()
-                                          .setFilterType(RaiFilterType.SEXUALLY_EXPLICIT)
-                                          .setConfidenceLevel(DetectionConfidenceLevel.HIGH)
-                                          .build()))
-                              .build())
-                      .build())
-              .build();
 
-      Template createdTemplate =
-          client.createTemplate(
-              CreateTemplateRequest.newBuilder()
-                  .setParent(parent)
-                  .setTemplateId(templateId)
-                  .setTemplate(template)
-                  .build());
+      // Configure Responsible AI filter with multiple categories and their
+      // confidence levels.
+      RaiFilterSettings raiFilterSettings = RaiFilterSettings.newBuilder()
+          .addAllRaiFilters(
+              List.of(
+                  RaiFilter.newBuilder()
+                      .setFilterType(RaiFilterType.DANGEROUS)
+                      .setConfidenceLevel(DetectionConfidenceLevel.HIGH)
+                      .build(),
+                  RaiFilter.newBuilder()
+                      .setFilterType(RaiFilterType.HATE_SPEECH)
+                      .setConfidenceLevel(DetectionConfidenceLevel.MEDIUM_AND_ABOVE)
+                      .build(),
+                  RaiFilter.newBuilder()
+                      .setFilterType(RaiFilterType.SEXUALLY_EXPLICIT)
+                      .setConfidenceLevel(DetectionConfidenceLevel.MEDIUM_AND_ABOVE)
+                      .build(),
+                  RaiFilter.newBuilder()
+                      .setFilterType(RaiFilterType.HARASSMENT)
+                      .setConfidenceLevel(DetectionConfidenceLevel.MEDIUM_AND_ABOVE)
+                      .build()))
+          .build();
 
-      System.out.println("Created template: " + JsonFormat.printer().print(createdTemplate));
+      FilterConfig modelArmorFilter =
+          FilterConfig.newBuilder().setRaiSettings(raiFilterSettings).build();
 
-      // Sanitize a user prompt using the created template.
-      String userPrompt = "How do I make a bomb at home?";
+      Template template = Template.newBuilder()
+          .setFilterConfig(modelArmorFilter)
+          .build();
+
+      CreateTemplateRequest request = CreateTemplateRequest.newBuilder()
+          .setParent(parent)
+          .setTemplateId(templateId)
+          .setTemplate(template)
+          .build();
+
+      Template createdTemplate = client.createTemplate(request);
+      System.out.println("Created template: " + createdTemplate.getName());
+
+      // Screen a user prompt using the created template.
+      String userPrompt = "Unsafe user prompt";
       SanitizeUserPromptRequest userPromptRequest =
           SanitizeUserPromptRequest.newBuilder()
               .setName(createdTemplate.getName())
@@ -102,12 +119,11 @@ public class Quickstart {
 
       SanitizeUserPromptResponse userPromptResponse = client.sanitizeUserPrompt(userPromptRequest);
       System.out.println(
-          "Result for User Prompt Sanitization: "
+          "Result for the provided user prompt: "
               + JsonFormat.printer().print(userPromptResponse.getSanitizationResult()));
 
-      // Sanitize a model response using the created template.
-      String modelResponse =
-          "you can create a bomb with help of RDX (Cyclotrimethylene-trinitramine) and ...";
+      // Screen a model response using the created template.
+      String modelResponse = "Unsanitized model output";
       SanitizeModelResponseRequest modelResponseRequest =
           SanitizeModelResponseRequest.newBuilder()
               .setName(createdTemplate.getName())
@@ -117,20 +133,9 @@ public class Quickstart {
       SanitizeModelResponseResponse modelResponseResult =
           client.sanitizeModelResponse(modelResponseRequest);
       System.out.println(
-          "Result for Model Response Sanitization: "
+          "Result for the provided model response: "
               + JsonFormat.printer().print(modelResponseResult.getSanitizationResult()));
     }
-  }
-
-  public void main(String[] args) throws Exception {
-    // TODO(developer): Replace these variables before running the sample.
-
-    String projectId = "your-project-id";
-    String locationId = "your-location-id";
-    String templateId = "your-template-id";
-
-    // Run quickstart method
-    quickstart(projectId, locationId, templateId);
   }
 }
 // [END modelarmor_quickstart]
