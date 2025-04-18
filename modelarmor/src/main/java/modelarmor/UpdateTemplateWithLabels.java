@@ -82,7 +82,7 @@ public class UpdateTemplateWithLabels {
               .build();
 
       Template updatedTemplate = client.updateTemplate(request);
-      System.out.println("Updated template labels: " + updatedTemplate.getName());
+      System.out.println("Updated labels of template: " + updatedTemplate.getName());
 
       return updatedTemplate;
     }

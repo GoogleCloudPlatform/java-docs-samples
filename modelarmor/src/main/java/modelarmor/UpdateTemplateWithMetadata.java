@@ -82,7 +82,7 @@ public class UpdateTemplateWithMetadata {
               .build();
 
       Template updatedTemplate = client.updateTemplate(request);
-      System.out.println("Updated template metadata: " + updatedTemplate.getName());
+      System.out.println("Updated metadata of template: " + updatedTemplate.getName());
 
       return updatedTemplate;
     }

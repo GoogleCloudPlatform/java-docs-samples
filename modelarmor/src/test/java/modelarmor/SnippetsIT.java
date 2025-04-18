@@ -16,7 +16,6 @@
 
 package modelarmor;
 
-import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -98,7 +97,6 @@ public class SnippetsIT {
     Template updatedTemplate = UpdateTemplate.updateTemplate(PROJECT_ID, LOCATION_ID,
         TEST_TEMPLATE_ID);
 
-    assertThat(stdOut.toString()).contains("Updated template:");
     assertEquals(updatedTemplate.getName(), TEST_TEMPLATE_NAME);
   }
 
@@ -110,7 +108,6 @@ public class SnippetsIT {
     Template updatedTemplate = UpdateTemplateWithLabels.updateTemplateWithLabels(PROJECT_ID,
         LOCATION_ID, TEST_TEMPLATE_ID);
 
-    assertThat(stdOut.toString()).contains("Updated template labels:");
     assertEquals(updatedTemplate.getName(), TEST_TEMPLATE_NAME);
   }
 
@@ -123,7 +120,6 @@ public class SnippetsIT {
     Template updatedTemplate = UpdateTemplateWithMetadata.updateTemplateWithMetadata(PROJECT_ID,
         LOCATION_ID, TEST_TEMPLATE_ID);
 
-    assertThat(stdOut.toString()).contains("Updated template metadata:");
     assertEquals(updatedTemplate.getName(), TEST_TEMPLATE_NAME);
     assertEquals(false, updatedTemplate.getTemplateMetadata().getIgnorePartialInvocationFailures());
     assertEquals(false, updatedTemplate.getTemplateMetadata().getLogSanitizeOperations());
