@@ -44,8 +44,8 @@ public class SanitizeModelResponse {
     sanitizeModelResponse(projectId, locationId, templateId, modelResponse);
   }
 
-  public static void sanitizeModelResponse(String projectId, String locationId, String templateId,
-      String modelResponse) throws IOException {
+  public static SanitizeModelResponseResponse sanitizeModelResponse(String projectId,
+      String locationId, String templateId, String modelResponse) throws IOException {
 
     // Endpoint to call the Model Armor server.
     String apiEndpoint = String.format("modelarmor.%s.rep.googleapis.com:443", locationId);
@@ -68,6 +68,8 @@ public class SanitizeModelResponse {
       SanitizeModelResponseResponse response = client.sanitizeModelResponse(request);
       System.out.println("Result for the provided model response: "
           + JsonFormat.printer().print(response.getSanitizationResult()));
+
+      return response;
     }
   }
 }

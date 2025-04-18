@@ -49,8 +49,8 @@ public class ScreenPdfFile {
     screenPdfFile(projectId, locationId, templateId, pdfFilePath);
   }
 
-  public static void screenPdfFile(String projectId, String locationId, String templateId,
-      String pdfFilePath) throws IOException {
+  public static SanitizeUserPromptResponse screenPdfFile(String projectId, String locationId,
+      String templateId, String pdfFilePath) throws IOException {
 
     // Endpoint to call the Model Armor server.
     String apiEndpoint = String.format("modelarmor.%s.rep.googleapis.com:443", locationId);
@@ -85,6 +85,8 @@ public class ScreenPdfFile {
       // Print the sanitization result.
       System.out.println("Result for the provided PDF file: "
           + JsonFormat.printer().print(response.getSanitizationResult()));
+
+      return response;
     }
   }
 }

@@ -44,8 +44,8 @@ public class SanitizeUserPrompt {
     sanitizeUserPrompt(projectId, locationId, templateId, userPrompt);
   }
 
-  public static void sanitizeUserPrompt(String projectId, String locationId, String templateId,
-      String userPrompt) throws IOException {
+  public static SanitizeUserPromptResponse sanitizeUserPrompt(String projectId, String locationId,
+      String templateId, String userPrompt) throws IOException {
 
     // Endpoint to call the Model Armor server.
     String apiEndpoint = String.format("modelarmor.%s.rep.googleapis.com:443", locationId);
@@ -66,6 +66,8 @@ public class SanitizeUserPrompt {
       SanitizeUserPromptResponse response = client.sanitizeUserPrompt(request);
       System.out.println("Result for the provided user prompt: "
           + JsonFormat.printer().print(response.getSanitizationResult()));
+      
+      return response;
     }
   }
 }

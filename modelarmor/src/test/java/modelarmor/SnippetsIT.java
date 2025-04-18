@@ -16,10 +16,13 @@
 
 package modelarmor;
 
-import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.TestCase.assertNotNull;
+import static org.junit.Assert.assertEquals;
 
 import com.google.api.gax.rpc.NotFoundException;
+import com.google.cloud.modelarmor.v1.FilterMatchState;
+import com.google.cloud.modelarmor.v1.SanitizeModelResponseResponse;
+import com.google.cloud.modelarmor.v1.SanitizeUserPromptResponse;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -52,13 +55,11 @@ public class SnippetsIT {
   @BeforeClass
   public static void beforeAll() {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
-    requireEnvVar("GOOGLE_CLOUD_PROJECT_LOCATION");
   }
 
   @AfterClass
   public static void afterAll() throws IOException {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
-    requireEnvVar("GOOGLE_CLOUD_PROJECT_LOCATION");
   }
 
   @Before
@@ -91,9 +92,11 @@ public class SnippetsIT {
     CreateTemplate.createTemplate(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
     String userPrompt = "Unsafe user prompt";
 
-    SanitizeUserPrompt.sanitizeUserPrompt(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID, userPrompt);
+    SanitizeUserPromptResponse response = SanitizeUserPrompt.sanitizeUserPrompt(PROJECT_ID,
+        LOCATION_ID, TEST_TEMPLATE_ID, userPrompt);
 
-    assertThat(stdOut.toString()).contains("Result for the provided user prompt:");
+    assertEquals(FilterMatchState.NO_MATCH_FOUND,
+        response.getSanitizationResult().getFilterMatchState());
   }
 
   @Test
@@ -101,10 +104,11 @@ public class SnippetsIT {
     CreateTemplate.createTemplate(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
     String modelResponse = "Unsanitized model output";
 
-    SanitizeModelResponse.sanitizeModelResponse(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID,
-        modelResponse);
+    SanitizeModelResponseResponse response = SanitizeModelResponse.sanitizeModelResponse(PROJECT_ID,
+        LOCATION_ID, TEST_TEMPLATE_ID, modelResponse);
 
-    assertThat(stdOut.toString()).contains("Result for the provided model response:");
+    assertEquals(FilterMatchState.NO_MATCH_FOUND,
+        response.getSanitizationResult().getFilterMatchState());
   }
 
   @Test
@@ -112,8 +116,10 @@ public class SnippetsIT {
     CreateTemplate.createTemplate(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
     String pdfFilePath = "src/main/resources/test_sample.pdf";
 
-    ScreenPdfFile.screenPdfFile(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID, pdfFilePath);
+    SanitizeUserPromptResponse response = ScreenPdfFile.screenPdfFile(PROJECT_ID, LOCATION_ID,
+        TEST_TEMPLATE_ID, pdfFilePath);
 
-    assertThat(stdOut.toString()).contains("Result for the provided PDF file:");
+    assertEquals(FilterMatchState.NO_MATCH_FOUND,
+        response.getSanitizationResult().getFilterMatchState());
   }
 }
