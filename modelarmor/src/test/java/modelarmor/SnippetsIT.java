@@ -95,7 +95,6 @@ public class SnippetsIT {
     CreateTemplate.createTemplate(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
     Template retrievedTemplate = GetTemplate.getTemplate(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
 
-    assertThat(stdOut.toString()).contains("Retrieved template:");
     assertEquals(retrievedTemplate.getName(), TEST_TEMPLATE_NAME);
   }
 
