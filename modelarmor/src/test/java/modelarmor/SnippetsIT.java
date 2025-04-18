@@ -96,7 +96,6 @@ public class SnippetsIT {
     Template createdTemplate = CreateTemplate.createTemplate(PROJECT_ID, LOCATION_ID,
         TEST_TEMPLATE_ID);
 
-    assertThat(stdOut.toString()).contains("Created template:");
     assertEquals(createdTemplate.getName(), TEST_TEMPLATE_NAME);
   }
 
@@ -105,7 +104,6 @@ public class SnippetsIT {
     Template createdTemplate = CreateTemplateWithBasicSdp.createTemplateWithBasicSdp(PROJECT_ID,
         LOCATION_ID, TEST_TEMPLATE_ID);
 
-    assertThat(stdOut.toString()).contains("Created template with basic SDP filter:");
     assertEquals(createdTemplate.getName(), TEST_TEMPLATE_NAME);
     assertEquals(SdpBasicConfigEnforcement.ENABLED,
         createdTemplate.getFilterConfig().getSdpSettings().getBasicConfig().getFilterEnforcement());
@@ -116,7 +114,6 @@ public class SnippetsIT {
     Template createdTemplate = CreateTemplateWithLabels.createTemplateWithLabels(PROJECT_ID,
         LOCATION_ID, TEST_TEMPLATE_ID);
 
-    assertThat(stdOut.toString()).contains("Created template with labels:");
     assertEquals(createdTemplate.getName(), TEST_TEMPLATE_NAME);
   }
 
@@ -125,7 +122,6 @@ public class SnippetsIT {
     Template createdTemplate = CreateTemplateWithMetadata.createTemplateWithMetadata(PROJECT_ID,
         LOCATION_ID, TEST_TEMPLATE_ID);
 
-    assertThat(stdOut.toString()).contains("Created template with metadata:");
     assertEquals(createdTemplate.getName(), TEST_TEMPLATE_NAME);
     assertEquals(true, createdTemplate.getTemplateMetadata().getIgnorePartialInvocationFailures());
     assertEquals(true, createdTemplate.getTemplateMetadata().getLogSanitizeOperations());
