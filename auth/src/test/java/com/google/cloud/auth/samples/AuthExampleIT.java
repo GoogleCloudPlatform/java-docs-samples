@@ -95,7 +95,7 @@ public class AuthExampleIT {
           System.out.println("API key not yet active, retrying...");
           try {
             Thread.sleep(delay);
-          } catch (InterruptedException ignored) {}
+          } catch (InterruptedException ignored) { }
         } else {
           throw e;
         }
