@@ -73,13 +73,35 @@ public class AuthExampleIT {
       apiKey = AuthTestUtils.createTestApiKey(projectId, keyDisplayName, service, method);
       assertNotNull(apiKey);
       System.out.println("key string " + apiKey.getKeyString());
-      String output = ApiKeyAuthExample.authenticateUsingApiKey(apiKey.getKeyString());
+      String output = authenticateUsingApiKeyWithRetry(apiKey.getKeyString());
       assertTrue(output.contains("magnitude:"));
     } finally {
       if (apiKey != null) {
         System.out.println("trying to delete " + apiKey.getKeyString());
-       // AuthTestUtils.deleteTestApiKey(apiKey.getName());
+        AuthTestUtils.deleteTestApiKey(apiKey.getName());
       }
     }
+  }
+
+  static String authenticateUsingApiKeyWithRetry(String apiKey) throws IOException {
+    int retries = 5;
+    int delay = 2000; // 2 seconds
+
+    for (int i = 0; i < retries; i++) {
+      try {
+        return ApiKeyAuthExample.authenticateUsingApiKey(apiKey);
+      } catch (IOException e) {
+        if (e.getMessage().contains("API key expired")) {
+          System.out.println("API key not yet active, retrying...");
+          try {
+            Thread.sleep(delay);
+          } catch (InterruptedException ignored) {}
+        } else {
+          throw e;
+        }
+      }
+    }
+
+    throw new IOException("API key never became active after retries.");
   }
 }
