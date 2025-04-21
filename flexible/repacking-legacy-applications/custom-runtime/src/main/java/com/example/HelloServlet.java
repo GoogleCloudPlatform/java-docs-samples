@@ -16,7 +16,7 @@
 
 package com.example;
 
-// [START gae_server]
+// [START gae_hello_world_servlet]
 
 import java.io.IOException;
 import javax.servlet.ServletException;
@@ -45,4 +45,4 @@ public final class HelloServlet extends HttpServlet {
     response.getWriter().println("<h1>Hello, World!</h1>");
   }
 }
-// [END gae_server]
+// [END gae_hello_world_servlet]
