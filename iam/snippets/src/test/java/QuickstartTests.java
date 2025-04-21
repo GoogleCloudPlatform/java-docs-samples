@@ -19,7 +19,11 @@ import static org.hamcrest.core.IsCollectionContaining.hasItem;
 import static org.junit.Assert.assertNotNull;
 
 import com.google.cloud.iam.admin.v1.IAMClient;
+import com.google.iam.admin.v1.CreateServiceAccountRequest;
+import com.google.iam.admin.v1.DeleteServiceAccountRequest;
+import com.google.iam.admin.v1.ProjectName;
 import com.google.iam.admin.v1.ServiceAccount;
+import com.google.iam.admin.v1.ServiceAccountName;
 import com.google.iam.v1.Binding;
 import com.google.iam.v1.Policy;
 import java.io.IOException;
@@ -54,16 +58,32 @@ public class QuickstartTests {
 
   // Creates a service account to use during the test
   @Before
-  public void setUp() throws IOException, InterruptedException {
-    ServiceAccount serviceAccount =
-        Util.setUpTest_createServiceAccount(PROJECT_ID, SERVICE_ACCOUNT);
-    serviceAccountEmail = serviceAccount.getEmail();
-  }
+  public void setUp() throws IOException {
+    try (IAMClient iamClient = IAMClient.create()) {
+      ServiceAccount serviceAccount = ServiceAccount
+              .newBuilder()
+              .setDisplayName("test-display-name")
+              .build();
+      CreateServiceAccountRequest request = CreateServiceAccountRequest.newBuilder()
+              .setName(ProjectName.of(PROJECT_ID).toString())
+              .setAccountId(SERVICE_ACCOUNT)
+              .setServiceAccount(serviceAccount)
+              .build();
+
+      serviceAccount = iamClient.createServiceAccount(request);
+      serviceAccountEmail = serviceAccount.getEmail();
+    }
 
   // Deletes the service account used in the test.
   @After
   public void tearDown() throws IOException {
-    Util.tearDownTest_deleteServiceAccount(PROJECT_ID, SERVICE_ACCOUNT);
+    try (IAMClient iamClient = IAMClient.create()) {
+      String serviceAccountName = SERVICE_ACCOUNT + "@" + PROJECT_ID + ".iam.gserviceaccount.com";
+      DeleteServiceAccountRequest request = DeleteServiceAccountRequest.newBuilder()
+              .setName(ServiceAccountName.of(PROJECT_ID, serviceAccountName).toString())
+              .build();
+      iamClient.deleteServiceAccount(request);
+    }
   }
 
   @Test
