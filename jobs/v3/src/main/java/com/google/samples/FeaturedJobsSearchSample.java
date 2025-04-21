@@ -43,7 +43,7 @@ public final class FeaturedJobsSearchSample {
   private static CloudTalentSolution talentSolutionClient =
       JobServiceQuickstart.getTalentSolutionClient();
 
-  // [START featured_job]
+  // [START job_generate_featured_job]
 
   /** Creates a job as featured. */
   public static Job generateFeaturedJob(String companyName) throws IOException {
@@ -64,9 +64,9 @@ public final class FeaturedJobsSearchSample {
     System.out.println("Job generated: " + job);
     return job;
   }
-  // [END featured_job]
+  // [END job_generate_featured_job]
 
-  // [START search_featured_job]
+  // [START job_search_featured_job]
 
   /** Searches featured jobs. */
   public static void searchFeaturedJobs(String companyName)
@@ -103,7 +103,7 @@ public final class FeaturedJobsSearchSample {
     Thread.sleep(1000);
     System.out.printf("Featured jobs results: %s\n", response);
   }
-  // [END search_featured_job]
+  // [END job_search_featured_job]
 
   public static void main(String... args) throws Exception {
     Company companyToBeCreated = BasicCompanySample.generateCompany();
