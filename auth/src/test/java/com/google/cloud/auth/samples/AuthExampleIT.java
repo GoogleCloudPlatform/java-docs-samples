@@ -21,6 +21,7 @@ import static org.junit.Assert.assertTrue;
 
 import com.google.api.apikeys.v2.Key;
 import com.google.cloud.ServiceOptions;
+import io.grpc.StatusRuntimeException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -90,7 +91,7 @@ public class AuthExampleIT {
     for (int i = 0; i < retries; i++) {
       try {
         return ApiKeyAuthExample.authenticateUsingApiKey(apiKey);
-      } catch (IOException e) {
+      } catch (StatusRuntimeException e) {
         if (e.getMessage().contains("API key expired")) {
           System.out.println("API key not yet active, retrying...");
           try {
