@@ -60,11 +60,10 @@ public class QuickstartTests {
   @Before
   public void setUp() throws IOException {
     try (IAMClient iamClient = IAMClient.create()) {
-      ServiceAccount serviceAccount = ServiceAccount
-              .newBuilder()
-              .setDisplayName("test-display-name")
-              .build();
-      CreateServiceAccountRequest request = CreateServiceAccountRequest.newBuilder()
+      ServiceAccount serviceAccount =
+          ServiceAccount.newBuilder().setDisplayName("test-display-name").build();
+      CreateServiceAccountRequest request =
+          CreateServiceAccountRequest.newBuilder()
               .setName(ProjectName.of(PROJECT_ID).toString())
               .setAccountId(SERVICE_ACCOUNT)
               .setServiceAccount(serviceAccount)
@@ -73,13 +72,15 @@ public class QuickstartTests {
       serviceAccount = iamClient.createServiceAccount(request);
       serviceAccountEmail = serviceAccount.getEmail();
     }
+  }
 
   // Deletes the service account used in the test.
   @After
   public void tearDown() throws IOException {
     try (IAMClient iamClient = IAMClient.create()) {
       String serviceAccountName = SERVICE_ACCOUNT + "@" + PROJECT_ID + ".iam.gserviceaccount.com";
-      DeleteServiceAccountRequest request = DeleteServiceAccountRequest.newBuilder()
+      DeleteServiceAccountRequest request =
+          DeleteServiceAccountRequest.newBuilder()
               .setName(ServiceAccountName.of(PROJECT_ID, serviceAccountName).toString())
               .build();
       iamClient.deleteServiceAccount(request);
