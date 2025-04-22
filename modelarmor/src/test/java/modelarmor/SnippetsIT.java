@@ -140,8 +140,8 @@ public class SnippetsIT {
 
   @After
   public void afterEach() throws IOException {
-    // stdOut = null;
-    // System.setOut(null);
+    stdOut = null;
+    System.setOut(null);
   }
 
   private static String randomId() {
