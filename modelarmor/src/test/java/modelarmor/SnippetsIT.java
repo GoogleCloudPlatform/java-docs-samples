@@ -19,10 +19,16 @@ package modelarmor;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertNotNull;
 
+import com.google.cloud.modelarmor.v1.FilterConfig;
+import com.google.cloud.modelarmor.v1.FloorSetting;
+import com.google.cloud.modelarmor.v1.FloorSettingName;
+import com.google.cloud.modelarmor.v1.ModelArmorClient;
+import com.google.cloud.modelarmor.v1.UpdateFloorSettingRequest;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -35,7 +41,15 @@ public class SnippetsIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String FOLDER_ID = System.getenv("MA_FOLDER_ID");
   private static final String ORGANIZATION_ID = System.getenv("MA_ORG_ID");
+  private static String projectFloorSettingName = FloorSettingName
+      .ofProjectLocationName(PROJECT_ID, "global").toString();
+  private static String folderFloorSettingName = FloorSettingName
+      .ofFolderLocationName(FOLDER_ID, "global").toString();
+  private static String organizationFloorSettingName = FloorSettingName
+      .ofOrganizationLocationName(ORGANIZATION_ID, "global").toString();
+  private static String[] floorSettingNames;
   private ByteArrayOutputStream stdOut;
+  private PrintStream originalOut;
 
   // Check if the required environment variables are set.
   private static String requireEnvVar(String varName) {
@@ -46,22 +60,54 @@ public class SnippetsIT {
   }
 
   @BeforeClass
-  public static void checkRequirements() {
+  public static void beforeAll() {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
     requireEnvVar("MA_FOLDER_ID");
     requireEnvVar("MA_ORG_ID");
   }
 
+  @AfterClass
+  public static void afterAll() throws IOException {
+    requireEnvVar("GOOGLE_CLOUD_PROJECT");
+    requireEnvVar("MA_FOLDER_ID");
+    requireEnvVar("MA_ORG_ID");
+
+    floorSettingNames = new String[] {
+        projectFloorSettingName, folderFloorSettingName, organizationFloorSettingName
+    };
+
+    resetFloorSettings();
+  }
+
   @Before
   public void beforeEach() {
+    originalOut = System.out;
     stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
   }
 
   @After
   public void afterEach() throws IOException {
+    System.setOut(originalOut);
     stdOut = null;
-    System.setOut(null);
+  }
+
+  private static void resetFloorSettings() throws IOException {
+    try (ModelArmorClient client = ModelArmorClient.create()) {
+      for (String name : floorSettingNames) {
+        FloorSetting floorSetting = FloorSetting.newBuilder()
+            .setName(name)
+            .setFilterConfig(FilterConfig.newBuilder().build())
+            .setEnableFloorSettingEnforcement(false)
+            .build();
+
+        UpdateFloorSettingRequest request = UpdateFloorSettingRequest.newBuilder()
+            .setFloorSetting(floorSetting)
+            .build();
+
+        client.updateFloorSetting(request);
+      }
+    }
   }
 
   @Test
