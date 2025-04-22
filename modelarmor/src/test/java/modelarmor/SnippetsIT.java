@@ -46,11 +46,13 @@ import com.google.privacy.dlp.v2.CreateDeidentifyTemplateRequest;
 import com.google.privacy.dlp.v2.CreateInspectTemplateRequest;
 import com.google.privacy.dlp.v2.DeidentifyConfig;
 import com.google.privacy.dlp.v2.DeidentifyTemplate;
+import com.google.privacy.dlp.v2.DeidentifyTemplateName;
 import com.google.privacy.dlp.v2.InfoType;
 import com.google.privacy.dlp.v2.InfoTypeTransformations;
 import com.google.privacy.dlp.v2.InfoTypeTransformations.InfoTypeTransformation;
 import com.google.privacy.dlp.v2.InspectConfig;
 import com.google.privacy.dlp.v2.InspectTemplate;
+import com.google.privacy.dlp.v2.InspectTemplateName;
 import com.google.privacy.dlp.v2.PrimitiveTransformation;
 import com.google.privacy.dlp.v2.ReplaceValueConfig;
 import com.google.privacy.dlp.v2.Value;
@@ -74,8 +76,8 @@ import org.junit.runners.JUnit4;
 public class SnippetsIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String LOCATION_ID = System.getenv()
-      .getOrDefault("GOOGLE_CLOUD_PROJECT_LOCATION", "us-central1");
+  private static final String LOCATION_ID =
+      System.getenv().getOrDefault("GOOGLE_CLOUD_PROJECT_LOCATION", "us-central1");
   private static final String MA_ENDPOINT =
       String.format("modelarmor.%s.rep.googleapis.com:443", LOCATION_ID);
   private static String TEST_RAI_TEMPLATE_ID;
@@ -84,6 +86,10 @@ public class SnippetsIT {
   private static String TEST_MALICIOUS_URI_TEMPLATE_ID;
   private static String TEST_BASIC_SDP_TEMPLATE_ID;
   private static String TEST_ADV_SDP_TEMPLATE_ID;
+  private static String TEST_INSPECT_TEMPLATE_ID;
+  private static String TEST_DEIDENTIFY_TEMPLATE_ID;
+  private static String TEST_INSPECT_TEMPLATE_NAME;
+  private static String TEST_DEIDENTIFY_TEMPLATE_NAME;
   private ByteArrayOutputStream stdOut;
   private static String[] templateToDelete;
 
@@ -104,6 +110,15 @@ public class SnippetsIT {
     TEST_MALICIOUS_URI_TEMPLATE_ID = randomId();
     TEST_BASIC_SDP_TEMPLATE_ID = randomId();
     TEST_ADV_SDP_TEMPLATE_ID = randomId();
+    TEST_INSPECT_TEMPLATE_ID = randomId();
+    TEST_DEIDENTIFY_TEMPLATE_ID = randomId();
+
+    TEST_INSPECT_TEMPLATE_NAME = InspectTemplateName
+        .ofProjectLocationInspectTemplateName(PROJECT_ID, LOCATION_ID, TEST_INSPECT_TEMPLATE_ID)
+        .toString();
+
+    TEST_DEIDENTIFY_TEMPLATE_NAME = DeidentifyTemplateName.ofProjectLocationDeidentifyTemplateName(
+        PROJECT_ID, LOCATION_ID, TEST_DEIDENTIFY_TEMPLATE_ID).toString();
 
     createMaliciousUriTemplate();
     createPiAndJailBreakTemplate();
@@ -130,6 +145,8 @@ public class SnippetsIT {
         // Ignore not found error - template already deleted.
       }
     }
+
+    deleteSdpTemplates();
   }
 
   @Before
@@ -211,7 +228,7 @@ public class SnippetsIT {
     return template;
   }
 
-  private static InspectTemplate createInspectTemplate() throws IOException {
+  private static InspectTemplate createInspectTemplate(String templateId) throws IOException {
     try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
       List<InfoType> infoTypes = Stream
           .of("PHONE_NUMBER", "EMAIL_ADDRESS", "US_INDIVIDUAL_TAXPAYER_IDENTIFICATION_NUMBER")
@@ -229,7 +246,7 @@ public class SnippetsIT {
       CreateInspectTemplateRequest createInspectTemplateRequest = CreateInspectTemplateRequest
           .newBuilder()
           .setParent(LocationName.of(PROJECT_ID, LOCATION_ID).toString())
-          .setTemplateId(randomId())
+          .setTemplateId(templateId)
           .setInspectTemplate(inspectTemplate)
           .build();
 
@@ -237,7 +254,7 @@ public class SnippetsIT {
     }
   }
 
-  private static DeidentifyTemplate createDeidentifyTemplate() throws IOException {
+  private static DeidentifyTemplate createDeidentifyTemplate(String templateId) throws IOException {
     try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
       // Specify replacement string to be used for the finding.
       ReplaceValueConfig replaceValueConfig = ReplaceValueConfig.newBuilder()
@@ -267,7 +284,7 @@ public class SnippetsIT {
       CreateDeidentifyTemplateRequest createDeidentifyTemplateRequest = 
           CreateDeidentifyTemplateRequest.newBuilder()
             .setParent(LocationName.of(PROJECT_ID, LOCATION_ID).toString())
-            .setTemplateId(randomId())
+            .setTemplateId(templateId)
             .setDeidentifyTemplate(deidentifyTemplate)
             .build();
 
@@ -276,9 +293,12 @@ public class SnippetsIT {
   }
 
   private static Template createAdvancedSdpTemplate() throws IOException {
+    createInspectTemplate(TEST_INSPECT_TEMPLATE_ID);
+    createDeidentifyTemplate(TEST_DEIDENTIFY_TEMPLATE_ID);
+
     SdpAdvancedConfig advancedSdpConfig = SdpAdvancedConfig.newBuilder()
-        .setInspectTemplate(createInspectTemplate().getName())
-        .setDeidentifyTemplate(createDeidentifyTemplate().getName())
+        .setInspectTemplate(TEST_INSPECT_TEMPLATE_NAME)
+        .setDeidentifyTemplate(TEST_DEIDENTIFY_TEMPLATE_NAME)
         .build();
 
     SdpFilterSettings sdpSettings = SdpFilterSettings.newBuilder()
@@ -320,6 +340,13 @@ public class SnippetsIT {
     try (ModelArmorClient client = ModelArmorClient.create(modelArmorSettings)) {
       String name = TemplateName.of(PROJECT_ID, LOCATION_ID, templateId).toString();
       client.deleteTemplate(name);
+    }
+  }
+
+  private static void deleteSdpTemplates() throws IOException {
+    try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
+      dlpServiceClient.deleteInspectTemplate(TEST_INSPECT_TEMPLATE_NAME);
+      dlpServiceClient.deleteDeidentifyTemplate(TEST_DEIDENTIFY_TEMPLATE_NAME);
     }
   }
 
