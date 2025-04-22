@@ -18,9 +18,9 @@ package modelarmor;
 
 import static junit.framework.TestCase.assertNotNull;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 
 import com.google.api.gax.rpc.NotFoundException;
+import com.google.cloud.dlp.v2.DlpServiceClient;
 import com.google.cloud.modelarmor.v1.CreateTemplateRequest;
 import com.google.cloud.modelarmor.v1.DetectionConfidenceLevel;
 import com.google.cloud.modelarmor.v1.FilterConfig;
@@ -35,18 +35,33 @@ import com.google.cloud.modelarmor.v1.PiAndJailbreakFilterSettings;
 import com.google.cloud.modelarmor.v1.PiAndJailbreakFilterSettings.PiAndJailbreakFilterEnforcement;
 import com.google.cloud.modelarmor.v1.SanitizeModelResponseResponse;
 import com.google.cloud.modelarmor.v1.SanitizeUserPromptResponse;
+import com.google.cloud.modelarmor.v1.SdpAdvancedConfig;
 import com.google.cloud.modelarmor.v1.SdpBasicConfig;
 import com.google.cloud.modelarmor.v1.SdpBasicConfig.SdpBasicConfigEnforcement;
 import com.google.cloud.modelarmor.v1.SdpFilterSettings;
 import com.google.cloud.modelarmor.v1.SdpFinding;
 import com.google.cloud.modelarmor.v1.Template;
 import com.google.cloud.modelarmor.v1.TemplateName;
+import com.google.privacy.dlp.v2.CreateDeidentifyTemplateRequest;
+import com.google.privacy.dlp.v2.CreateInspectTemplateRequest;
+import com.google.privacy.dlp.v2.DeidentifyConfig;
+import com.google.privacy.dlp.v2.DeidentifyTemplate;
+import com.google.privacy.dlp.v2.InfoType;
+import com.google.privacy.dlp.v2.InfoTypeTransformations;
+import com.google.privacy.dlp.v2.InfoTypeTransformations.InfoTypeTransformation;
+import com.google.privacy.dlp.v2.InspectConfig;
+import com.google.privacy.dlp.v2.InspectTemplate;
+import com.google.privacy.dlp.v2.PrimitiveTransformation;
+import com.google.privacy.dlp.v2.ReplaceValueConfig;
+import com.google.privacy.dlp.v2.Value;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -61,13 +76,14 @@ public class SnippetsIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String LOCATION_ID = System.getenv()
       .getOrDefault("GOOGLE_CLOUD_PROJECT_LOCATION", "us-central1");
-  private static final String MA_ENDPOINT = String.format("modelarmor.%s.rep.googleapis.com:443",
-      LOCATION_ID);
+  private static final String MA_ENDPOINT =
+      String.format("modelarmor.%s.rep.googleapis.com:443", LOCATION_ID);
   private static String TEST_RAI_TEMPLATE_ID;
   private static String TEST_CSAM_TEMPLATE_ID;
   private static String TEST_PI_JAILBREAK_TEMPLATE_ID;
   private static String TEST_MALICIOUS_URI_TEMPLATE_ID;
   private static String TEST_BASIC_SDP_TEMPLATE_ID;
+  private static String TEST_ADV_SDP_TEMPLATE_ID;
   private ByteArrayOutputStream stdOut;
   private static String[] templateToDelete;
 
@@ -87,10 +103,12 @@ public class SnippetsIT {
     TEST_PI_JAILBREAK_TEMPLATE_ID = randomId();
     TEST_MALICIOUS_URI_TEMPLATE_ID = randomId();
     TEST_BASIC_SDP_TEMPLATE_ID = randomId();
+    TEST_ADV_SDP_TEMPLATE_ID = randomId();
 
     createMaliciousUriTemplate();
     createPiAndJailBreakTemplate();
-    createBasicSDPTemplate();
+    createBasicSdpTemplate();
+    createAdvancedSdpTemplate();
     CreateTemplate.createTemplate(PROJECT_ID, LOCATION_ID, TEST_RAI_TEMPLATE_ID);
     CreateTemplate.createTemplate(PROJECT_ID, LOCATION_ID, TEST_CSAM_TEMPLATE_ID);
   }
@@ -102,7 +120,7 @@ public class SnippetsIT {
     // Delete templates after running tests.
     templateToDelete = new String[] {
         TEST_RAI_TEMPLATE_ID, TEST_CSAM_TEMPLATE_ID, TEST_MALICIOUS_URI_TEMPLATE_ID,
-        TEST_PI_JAILBREAK_TEMPLATE_ID, TEST_BASIC_SDP_TEMPLATE_ID
+        TEST_PI_JAILBREAK_TEMPLATE_ID, TEST_BASIC_SDP_TEMPLATE_ID, TEST_ADV_SDP_TEMPLATE_ID
     };
 
     for (String templateId : templateToDelete) {
@@ -122,8 +140,8 @@ public class SnippetsIT {
 
   @After
   public void afterEach() throws IOException {
-    stdOut = null;
-    System.setOut(null);
+    // stdOut = null;
+    // System.setOut(null);
   }
 
   private static String randomId() {
@@ -134,13 +152,19 @@ public class SnippetsIT {
   // Create Model Armor templates required for tests.
   private static Template createMaliciousUriTemplate() throws IOException {
     // Create a malicious URI filter template.
-    MaliciousUriFilterSettings maliciousUriFilterSettings = MaliciousUriFilterSettings.newBuilder()
-        .setFilterEnforcement(MaliciousUriFilterEnforcement.ENABLED).build();
+    MaliciousUriFilterSettings maliciousUriFilterSettings =
+        MaliciousUriFilterSettings.newBuilder()
+        .setFilterEnforcement(MaliciousUriFilterEnforcement.ENABLED)
+        .build();
 
     FilterConfig modelArmorFilter = FilterConfig.newBuilder()
-        .setMaliciousUriFilterSettings(maliciousUriFilterSettings).build();
+        .setMaliciousUriFilterSettings(maliciousUriFilterSettings)
+        .build();
 
-    Template template = Template.newBuilder().setFilterConfig(modelArmorFilter).build();
+    Template template = Template.newBuilder()
+        .setFilterConfig(modelArmorFilter)
+        .build();
+
     createTemplate(template, TEST_MALICIOUS_URI_TEMPLATE_ID);
     return template;
   }
@@ -148,36 +172,128 @@ public class SnippetsIT {
   private static Template createPiAndJailBreakTemplate() throws IOException {
     // Create a Pi and Jailbreak filter template.
     // Create a template with Prompt injection & Jailbreak settings.
-    PiAndJailbreakFilterSettings piAndJailbreakFilterSettings = PiAndJailbreakFilterSettings
-        .newBuilder().setFilterEnforcement(PiAndJailbreakFilterEnforcement.ENABLED)
-        .setConfidenceLevel(DetectionConfidenceLevel.MEDIUM_AND_ABOVE).build();
+    PiAndJailbreakFilterSettings piAndJailbreakFilterSettings = 
+        PiAndJailbreakFilterSettings.newBuilder()
+        .setFilterEnforcement(PiAndJailbreakFilterEnforcement.ENABLED)
+        .setConfidenceLevel(DetectionConfidenceLevel.MEDIUM_AND_ABOVE)
+        .build();
 
     FilterConfig modelArmorFilter = FilterConfig.newBuilder()
-        .setPiAndJailbreakFilterSettings(piAndJailbreakFilterSettings).build();
+        .setPiAndJailbreakFilterSettings(piAndJailbreakFilterSettings)
+        .build();
 
-    Template template = Template.newBuilder().setFilterConfig(modelArmorFilter).build();
+    Template template = Template.newBuilder()
+        .setFilterConfig(modelArmorFilter)
+        .build();
+
     createTemplate(template, TEST_PI_JAILBREAK_TEMPLATE_ID);
     return template;
   }
 
-  private static Template createBasicSDPTemplate() throws IOException {
-      SdpBasicConfig basicSdpConfig = SdpBasicConfig.newBuilder()
-          .setFilterEnforcement(SdpBasicConfigEnforcement.ENABLED)
-          .build();
+  private static Template createBasicSdpTemplate() throws IOException {
+    SdpBasicConfig basicSdpConfig = SdpBasicConfig.newBuilder()
+        .setFilterEnforcement(SdpBasicConfigEnforcement.ENABLED)
+        .build();
 
-      SdpFilterSettings sdpSettings = SdpFilterSettings.newBuilder()
-          .setBasicConfig(basicSdpConfig)
-          .build();
+    SdpFilterSettings sdpSettings = SdpFilterSettings.newBuilder()
+        .setBasicConfig(basicSdpConfig)
+        .build();
 
-      FilterConfig modelArmorFilter = FilterConfig.newBuilder()
-          .setSdpSettings(sdpSettings)
-          .build();
+    FilterConfig modelArmorFilter = FilterConfig.newBuilder()
+        .setSdpSettings(sdpSettings)
+        .build();
 
-      Template template = Template.newBuilder()
-          .setFilterConfig(modelArmorFilter)
-          .build();
-    
+    Template template = Template.newBuilder()
+        .setFilterConfig(modelArmorFilter)
+        .build();
+
     createTemplate(template, TEST_BASIC_SDP_TEMPLATE_ID);
+    return template;
+  }
+
+  private static InspectTemplate createInspectTemplate() throws IOException {
+    try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
+      List<InfoType> infoTypes = Stream
+          .of("PHONE_NUMBER", "EMAIL_ADDRESS", "US_INDIVIDUAL_TAXPAYER_IDENTIFICATION_NUMBER")
+          .map(it -> InfoType.newBuilder().setName(it).build())
+          .collect(Collectors.toList());
+
+      InspectConfig inspectConfig = InspectConfig.newBuilder()
+          .addAllInfoTypes(infoTypes)
+          .build();
+
+      InspectTemplate inspectTemplate = InspectTemplate.newBuilder()
+          .setInspectConfig(inspectConfig)
+          .build();
+
+      CreateInspectTemplateRequest createInspectTemplateRequest = CreateInspectTemplateRequest
+          .newBuilder()
+          .setParent(LocationName.of(PROJECT_ID, LOCATION_ID).toString())
+          .setTemplateId(randomId())
+          .setInspectTemplate(inspectTemplate)
+          .build();
+
+      return dlpServiceClient.createInspectTemplate(createInspectTemplateRequest);
+    }
+  }
+
+  private static DeidentifyTemplate createDeidentifyTemplate() throws IOException {
+    try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
+      // Specify replacement string to be used for the finding.
+      ReplaceValueConfig replaceValueConfig = ReplaceValueConfig.newBuilder()
+          .setNewValue(Value.newBuilder().setStringValue("[REDACTED]").build())
+          .build();
+
+      // Define type of deidentification.
+      PrimitiveTransformation primitiveTransformation = PrimitiveTransformation.newBuilder()
+          .setReplaceConfig(replaceValueConfig)
+          .build();
+
+      // Associate deidentification type with info type.
+      InfoTypeTransformation transformation = InfoTypeTransformation.newBuilder()
+          .setPrimitiveTransformation(primitiveTransformation)
+          .build();
+
+      // Construct the configuration for the Redact request and list all desired transformations.
+      DeidentifyConfig redactConfig = DeidentifyConfig.newBuilder()
+          .setInfoTypeTransformations(
+            InfoTypeTransformations.newBuilder()
+            .addTransformations(transformation))
+          .build();
+
+      DeidentifyTemplate deidentifyTemplate = DeidentifyTemplate.newBuilder()
+          .setDeidentifyConfig(redactConfig).build();
+
+      CreateDeidentifyTemplateRequest createDeidentifyTemplateRequest = 
+          CreateDeidentifyTemplateRequest.newBuilder()
+            .setParent(LocationName.of(PROJECT_ID, LOCATION_ID).toString())
+            .setTemplateId(randomId())
+            .setDeidentifyTemplate(deidentifyTemplate)
+            .build();
+
+      return dlpServiceClient.createDeidentifyTemplate(createDeidentifyTemplateRequest);
+    }
+  }
+
+  private static Template createAdvancedSdpTemplate() throws IOException {
+    SdpAdvancedConfig advancedSdpConfig = SdpAdvancedConfig.newBuilder()
+        .setInspectTemplate(createInspectTemplate().getName())
+        .setDeidentifyTemplate(createDeidentifyTemplate().getName())
+        .build();
+
+    SdpFilterSettings sdpSettings = SdpFilterSettings.newBuilder()
+        .setAdvancedConfig(advancedSdpConfig)
+        .build();
+
+    FilterConfig modelArmorFilter = FilterConfig.newBuilder()
+        .setSdpSettings(sdpSettings)
+        .build();
+
+    Template template = Template.newBuilder()
+        .setFilterConfig(modelArmorFilter)
+        .build();
+
+    createTemplate(template, TEST_ADV_SDP_TEMPLATE_ID);
     return template;
   }
 
@@ -187,7 +303,8 @@ public class SnippetsIT {
         .build();
 
     try (ModelArmorClient client = ModelArmorClient.create(modelArmorSettings)) {
-      CreateTemplateRequest request = CreateTemplateRequest.newBuilder().setParent(parent)
+      CreateTemplateRequest request = CreateTemplateRequest.newBuilder()
+          .setParent(parent)
           .setTemplateId(templateId)
           .setTemplate(template)
           .build();
@@ -291,14 +408,14 @@ public class SnippetsIT {
 
   @Test
   public void testSanitizeUserPromptWithBasicSdpTemplate() throws IOException {
-    String userPrompt = "For following email 1l6Y2@example.com found following associated phone number: 954-321-7890 and this ITIN: 988-86-1234";
+    String userPrompt = "Give me email associated with following ITIN: 988-86-1234";
 
     SanitizeUserPromptResponse response = SanitizeUserPrompt.sanitizeUserPrompt(PROJECT_ID,
         LOCATION_ID, TEST_BASIC_SDP_TEMPLATE_ID, userPrompt);
 
     assertEquals(FilterMatchState.MATCH_FOUND,
         response.getSanitizationResult().getFilterMatchState());
-  
+
     if (response.getSanitizationResult().containsFilterResults("sdp")) {
       Map<String, FilterResult> filterResultsMap = response.getSanitizationResult()
           .getFilterResultsMap();
@@ -314,6 +431,46 @@ public class SnippetsIT {
             for (SdpFinding finding : findings) {
               assertEquals("US_INDIVIDUAL_TAXPAYER_IDENTIFICATION_NUMBER", finding.getInfoType());
             }
+          }
+        }
+      });
+    }
+  }
+
+  @Test
+  public void testSanitizeUserPromptWithAdvancedSdpTemplate() throws IOException {
+    String userPrompt = "Give me email associated with following ITIN: 988-86-1234";
+
+    SanitizeUserPromptResponse response = SanitizeUserPrompt.sanitizeUserPrompt(PROJECT_ID,
+        LOCATION_ID, TEST_BASIC_SDP_TEMPLATE_ID, userPrompt);
+
+    assertEquals(FilterMatchState.MATCH_FOUND,
+        response.getSanitizationResult().getFilterMatchState());
+
+    if (response.getSanitizationResult().containsFilterResults("sdp")) {
+      Map<String, FilterResult> filterResultsMap = response.getSanitizationResult()
+          .getFilterResultsMap();
+
+      filterResultsMap.forEach((filterName, filterResult) -> {
+        if (filterResult.hasSdpFilterResult()) {
+          // Verify Inspect Result.
+          if (filterResult.getSdpFilterResult().hasInspectResult()) {
+            assertEquals(FilterMatchState.MATCH_FOUND,
+                filterResult.getSdpFilterResult().getInspectResult().getMatchState());
+
+            List<SdpFinding> findings = filterResult.getSdpFilterResult().getInspectResult()
+                .getFindingsList();
+            for (SdpFinding finding : findings) {
+              assertEquals("US_INDIVIDUAL_TAXPAYER_IDENTIFICATION_NUMBER", finding.getInfoType());
+            }
+          }
+
+          // Verify De-identified Result.
+          if (filterResult.getSdpFilterResult().hasDeidentifyResult()) {
+            assertEquals(FilterMatchState.MATCH_FOUND,
+                filterResult.getSdpFilterResult().getDeidentifyResult().getMatchState());
+            assertEquals("Give me email associated with following ITIN: [REDACTED]",
+                filterResult.getSdpFilterResult().getDeidentifyResult().getData());
           }
         }
       });
@@ -372,6 +529,82 @@ public class SnippetsIT {
         if (filterResult.hasCsamFilterFilterResult()) {
           assertEquals(FilterMatchState.NO_MATCH_FOUND,
               filterResult.getCsamFilterFilterResult().getMatchState());
+        }
+      });
+    }
+  }
+
+  @Test
+  public void testSanitizeModelResponseWithBasicSdpTemplate() throws IOException {
+    String modelResponse = "For following email 1l6Y2@example.com found following"
+        + " associated phone number: 954-321-7890 and this ITIN: 988-86-1234";
+
+    SanitizeModelResponseResponse response = SanitizeModelResponse.sanitizeModelResponse(PROJECT_ID,
+        LOCATION_ID, TEST_BASIC_SDP_TEMPLATE_ID, modelResponse);
+
+    assertEquals(FilterMatchState.MATCH_FOUND,
+        response.getSanitizationResult().getFilterMatchState());
+
+    if (response.getSanitizationResult().containsFilterResults("sdp")) {
+      Map<String, FilterResult> filterResultsMap = response.getSanitizationResult()
+          .getFilterResultsMap();
+
+      filterResultsMap.forEach((filterName, filterResult) -> {
+        if (filterResult.hasSdpFilterResult()) {
+          if (filterResult.getSdpFilterResult().hasInspectResult()) {
+            assertEquals(FilterMatchState.MATCH_FOUND,
+                filterResult.getSdpFilterResult().getInspectResult().getMatchState());
+
+            List<SdpFinding> findings = filterResult.getSdpFilterResult().getInspectResult()
+                .getFindingsList();
+            for (SdpFinding finding : findings) {
+              assertEquals("US_INDIVIDUAL_TAXPAYER_IDENTIFICATION_NUMBER", finding.getInfoType());
+            }
+          }
+        }
+      });
+    }
+  }
+
+  @Test
+  public void testSanitizeModelResponseWithAdvancedSdpTemplate() throws IOException {
+    String modelResponse = "For following email 1l6Y2@example.com found following"
+        + " associated phone number: 954-321-7890 and this ITIN: 988-86-1234";
+
+    SanitizeModelResponseResponse response = SanitizeModelResponse.sanitizeModelResponse(PROJECT_ID,
+        LOCATION_ID, TEST_BASIC_SDP_TEMPLATE_ID, modelResponse);
+
+    assertEquals(FilterMatchState.MATCH_FOUND,
+        response.getSanitizationResult().getFilterMatchState());
+
+    if (response.getSanitizationResult().containsFilterResults("sdp")) {
+      Map<String, FilterResult> filterResultsMap = response.getSanitizationResult()
+          .getFilterResultsMap();
+
+      filterResultsMap.forEach((filterName, filterResult) -> {
+        if (filterResult.hasSdpFilterResult()) {
+          // Verify Inspect Result.
+          if (filterResult.getSdpFilterResult().hasInspectResult()) {
+            assertEquals(FilterMatchState.MATCH_FOUND,
+                filterResult.getSdpFilterResult().getInspectResult().getMatchState());
+
+            List<SdpFinding> findings = filterResult.getSdpFilterResult().getInspectResult()
+                .getFindingsList();
+            for (SdpFinding finding : findings) {
+              assertEquals("US_INDIVIDUAL_TAXPAYER_IDENTIFICATION_NUMBER", finding.getInfoType());
+            }
+          }
+
+          // Verify De-identified Result.
+          if (filterResult.getSdpFilterResult().hasDeidentifyResult()) {
+            assertEquals(FilterMatchState.MATCH_FOUND,
+                filterResult.getSdpFilterResult().getDeidentifyResult().getMatchState());
+
+            assertEquals(
+                "For following email [REDACTED] found following"
+                    + " associated phone number: [REDACTED] and this ITIN: [REDACTED]",
+                filterResult.getSdpFilterResult().getDeidentifyResult().getData());
+          }
         }
       });
     }
