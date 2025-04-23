@@ -33,6 +33,8 @@ import com.google.cloud.modelarmor.v1.ModelArmorClient;
 import com.google.cloud.modelarmor.v1.ModelArmorSettings;
 import com.google.cloud.modelarmor.v1.PiAndJailbreakFilterSettings;
 import com.google.cloud.modelarmor.v1.PiAndJailbreakFilterSettings.PiAndJailbreakFilterEnforcement;
+import com.google.cloud.modelarmor.v1.RaiFilterResult;
+import com.google.cloud.modelarmor.v1.RaiFilterResult.RaiFilterTypeResult;
 import com.google.cloud.modelarmor.v1.SanitizeModelResponseResponse;
 import com.google.cloud.modelarmor.v1.SanitizeUserPromptResponse;
 import com.google.cloud.modelarmor.v1.SdpAdvancedConfig;
@@ -359,6 +361,24 @@ public class SnippetsIT {
 
     assertEquals(FilterMatchState.NO_MATCH_FOUND,
         response.getSanitizationResult().getFilterMatchState());
+
+    if (response.getSanitizationResult().containsFilterResults("rai")) {
+      Map<String, FilterResult> filterResultsMap = response.getSanitizationResult()
+          .getFilterResultsMap();
+
+      filterResultsMap.forEach((filterName, filterResult) -> {
+        if (filterResult.hasRaiFilterResult()) {
+          RaiFilterResult raiFilterResult = filterResult.getRaiFilterResult();
+          assertEquals(FilterMatchState.NO_MATCH_FOUND, raiFilterResult.getMatchState());
+
+          Map<String, RaiFilterTypeResult> raiFilterTypeResultsMap = raiFilterResult
+              .getRaiFilterTypeResultsMap();
+          raiFilterTypeResultsMap.forEach((raiFilterType, raiFilterTypeResult) -> {
+            assertEquals(FilterMatchState.NO_MATCH_FOUND, raiFilterTypeResult.getMatchState());
+          });
+        }
+      });
+    }
   }
 
   @Test
@@ -513,6 +533,24 @@ public class SnippetsIT {
 
     assertEquals(FilterMatchState.NO_MATCH_FOUND,
         response.getSanitizationResult().getFilterMatchState());
+
+    if (response.getSanitizationResult().containsFilterResults("rai")) {
+      Map<String, FilterResult> filterResultsMap = response.getSanitizationResult()
+          .getFilterResultsMap();
+
+      filterResultsMap.forEach((filterName, filterResult) -> {
+        if (filterResult.hasRaiFilterResult()) {
+          RaiFilterResult raiFilterResult = filterResult.getRaiFilterResult();
+          assertEquals(FilterMatchState.NO_MATCH_FOUND, raiFilterResult.getMatchState());
+
+          Map<String, RaiFilterTypeResult> raiFilterTypeResultsMap = raiFilterResult
+              .getRaiFilterTypeResultsMap();
+          raiFilterTypeResultsMap.forEach((raiFilterType, raiFilterTypeResult) -> {
+            assertEquals(FilterMatchState.NO_MATCH_FOUND, raiFilterTypeResult.getMatchState());
+          });
+        }
+      });
+    }
   }
 
   public void testSanitizeModelResponseWithMaliciousUrlTemplate() throws IOException {
