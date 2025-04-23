@@ -33,7 +33,7 @@ public class ControlledGenerationSchema6 {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "genai-java-demos";
     String location = "us-central1";
-    String modelName = "gemini-1.5-pro-001";
+    String modelName = "gemini-2.0-flash-001";
 
     controlGenerationWithJsonSchema6(projectId, location, modelName);
   }
