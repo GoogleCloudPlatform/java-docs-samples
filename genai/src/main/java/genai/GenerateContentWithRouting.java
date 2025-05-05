@@ -16,33 +16,46 @@
 
 package genai;
 
- // [START genai_generate_content_with_routing]
- import com.google.genai.Client;
- import com.google.genai.types.GenerateContentResponse;
- import com.google.genai.types.GenerateContentConfig;
- import com.google.genai.types.ModelSelectionConfig;
- import com.google.genai.types.HttpOptions;
+// [START genai_generate_content_with_routing]
+import com.google.genai.Client;
+import com.google.genai.types.GenerateContentConfig;
+import com.google.genai.types.GenerateContentResponse;
+import com.google.genai.types.HttpOptions;
+import com.google.genai.types.ModelSelectionConfig;
 
- 
 public class GenerateContentWithRouting {
- 
-   public static void main(String[] args) throws Exception {
 
+  public static void main(String[] args) throws Exception {
 
-     String modelName = "model-optimizer-exp-04-09";
+    // TODO(developer): Replace these variables before running the sample.
+    String promptText = "Why do we have 365 days in a year?";
+    String featureSelectionPreference = "PRIORITIZE_COST";
 
-     HttpOptions httpOptions = HttpOptions.builder().apiVersion("v1beta1").build();
+    String generateContentText = generateContent(promptText, featureSelectionPreference);
 
-     Client client = Client.builder().httpOptions(httpOptions).vertexAI(true).build();
+    System.out.println("Response: " + generateContentText);
+  }
 
-     ModelSelectionConfig modelSelectionConfig = ModelSelectionConfig.builder().featureSelectionPreference("PRIORITIZE_COST").build();
-     
-     GenerateContentConfig generateContentConfig = GenerateContentConfig.builder().modelSelectionConfig(modelSelectionConfig).build();
+  public static String generateContent(String promptText, String featureSelectionPreference) {
 
-     GenerateContentResponse response =
-        client.models.generateContent(modelName, "Why do we have 365 days in a year?", generateContentConfig);
-     
-      System.out.println("Response: " + response.text());
-   }
- }
+    ModelSelectionConfig modelSelectionConfig =
+        ModelSelectionConfig.builder()
+            .featureSelectionPreference(featureSelectionPreference)
+            .build();
+
+    GenerateContentConfig generateContentConfig =
+        GenerateContentConfig.builder().modelSelectionConfig(modelSelectionConfig).build();
+
+    String modelName = "model-optimizer-exp-04-09";
+
+    HttpOptions httpOptions = HttpOptions.builder().apiVersion("v1beta1").build();
+
+    Client client = Client.builder().httpOptions(httpOptions).build();
+
+    GenerateContentResponse response =
+        client.models.generateContent(modelName, promptText, generateContentConfig);
+
+    return response.text();
+  }
+}
  // [END genai_generate_content_with_routing]

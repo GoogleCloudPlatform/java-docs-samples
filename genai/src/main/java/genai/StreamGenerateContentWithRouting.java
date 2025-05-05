@@ -14,41 +14,56 @@
  * limitations under the License.
  */
 
- package genai;
+package genai;
 
- // [START genai_stream_generate_content_with_routing]
- import com.google.genai.Client;
- import com.google.genai.types.GenerateContentResponse;
- import com.google.genai.types.GenerateContentConfig;
- import com.google.genai.types.ModelSelectionConfig;
- import com.google.genai.types.HttpOptions;
- import com.google.genai.ResponseStream;
+// [START genai_stream_generate_content_with_routing]
+import com.google.genai.Client;
+import com.google.genai.ResponseStream;
+import com.google.genai.types.GenerateContentConfig;
+import com.google.genai.types.GenerateContentResponse;
+import com.google.genai.types.HttpOptions;
+import com.google.genai.types.ModelSelectionConfig;
 
- 
 public class StreamGenerateContentWithRouting {
- 
-   public static void main(String[] args) throws Exception {
 
+  public static void main(String[] args) throws Exception {
 
-     String modelName = "model-optimizer-exp-04-09";
+    // TODO(developer): Replace these variables before running the sample.
+    String promptText = "Why do we have 365 days in a year?";
+    String featureSelectionPreference = "BALANCED";
 
-     HttpOptions httpOptions = HttpOptions.builder().apiVersion("v1beta1").build();
+    String generateContentStreamText =
+        generateContentStream(promptText, featureSelectionPreference);
 
-     Client client = Client.builder().httpOptions(httpOptions).vertexAI(true).build();
+    System.out.println("Response: " + generateContentStreamText);
+  }
 
-     ModelSelectionConfig modelSelectionConfig = ModelSelectionConfig.builder().featureSelectionPreference("BALANCED").build();
-     
-     GenerateContentConfig generateContentConfig = GenerateContentConfig.builder().modelSelectionConfig(modelSelectionConfig).build();
+  public static String generateContentStream(String promptText, String featureSelectionPreference) {
 
-     ResponseStream<GenerateContentResponse> responseStream =
-        client.models.generateContentStream(modelName, "Why do we have 365 days in a year?", generateContentConfig);
-     
-    System.out.println("Streaming response: ");
-        for (GenerateContentResponse res : responseStream) {
-          System.out.print(res.text());
-        }
+    ModelSelectionConfig modelSelectionConfig =
+        ModelSelectionConfig.builder()
+            .featureSelectionPreference(featureSelectionPreference)
+            .build();
 
-    responseStream.close();
-   }
- }
- // [END genai_stream_generate_content_with_routing]
+    GenerateContentConfig generateContentConfig =
+        GenerateContentConfig.builder().modelSelectionConfig(modelSelectionConfig).build();
+
+    String modelName = "model-optimizer-exp-04-09";
+
+    HttpOptions httpOptions = HttpOptions.builder().apiVersion("v1beta1").build();
+
+    Client client = Client.builder().httpOptions(httpOptions).build();
+
+    ResponseStream<GenerateContentResponse> responseStream =
+        client.models.generateContentStream(modelName, promptText, generateContentConfig);
+
+    String streamResponse = "";
+
+    for (GenerateContentResponse res : responseStream) {
+      streamResponse += res.text();
+    }
+
+    return streamResponse;
+  }
+}
+// [END genai_stream_generate_content_with_routing]
