@@ -77,7 +77,8 @@ public class SnippetsIT {
   // Check if the required environment variables are set.
   private static String requireEnvVar(String varName) {
     String value = System.getenv(varName);
-    assertNotNull("Environment variable " + varName + " is required to run these tests.",
+    assertNotNull(
+        "Environment variable " + varName + " is required to run these tests.",
         System.getenv(varName));
     return value;
   }
