@@ -16,6 +16,7 @@
 
 package modelarmor;
 
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -24,6 +25,7 @@ import com.google.cloud.dlp.v2.DlpServiceClient;
 import com.google.cloud.modelarmor.v1.ModelArmorClient;
 import com.google.cloud.modelarmor.v1.ModelArmorSettings;
 import com.google.cloud.modelarmor.v1.SdpAdvancedConfig;
+import com.google.cloud.modelarmor.v1.SdpBasicConfig.SdpBasicConfigEnforcement;
 import com.google.cloud.modelarmor.v1.Template;
 import com.google.cloud.modelarmor.v1.TemplateName;
 import com.google.privacy.dlp.v2.CreateDeidentifyTemplateRequest;
@@ -62,8 +64,8 @@ public class SnippetsIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String LOCATION_ID = System.getenv()
       .getOrDefault("GOOGLE_CLOUD_PROJECT_LOCATION", "us-central1");
-  private static final String MA_ENDPOINT =
-      String.format("modelarmor.%s.rep.googleapis.com:443", LOCATION_ID);
+  private static final String MA_ENDPOINT = String.format("modelarmor.%s.rep.googleapis.com:443",
+      LOCATION_ID);
   private static String TEST_TEMPLATE_ID;
   private static String TEST_INSPECT_TEMPLATE_ID;
   private static String TEST_DEIDENTIFY_TEMPLATE_ID;
@@ -75,7 +77,8 @@ public class SnippetsIT {
   // Check if the required environment variables are set.
   private static String requireEnvVar(String varName) {
     String value = System.getenv(varName);
-    assertNotNull("Environment variable " + varName + " is required to run these tests.",
+    assertNotNull(
+        "Environment variable " + varName + " is required to run these tests.",
         System.getenv(varName));
     return value;
   }
@@ -83,7 +86,7 @@ public class SnippetsIT {
   @BeforeClass
   public static void beforeAll() throws IOException {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
-  
+
     TEST_TEMPLATE_ID = randomId();
     TEST_INSPECT_TEMPLATE_ID = randomId();
     TEST_DEIDENTIFY_TEMPLATE_ID = randomId();
@@ -91,8 +94,10 @@ public class SnippetsIT {
     TEST_INSPECT_TEMPLATE_NAME = InspectTemplateName
         .ofProjectLocationInspectTemplateName(PROJECT_ID, LOCATION_ID, TEST_INSPECT_TEMPLATE_ID)
         .toString();
-    TEST_DEIDENTIFY_TEMPLATE_NAME = DeidentifyTemplateName.ofProjectLocationDeidentifyTemplateName(
-        PROJECT_ID, LOCATION_ID, TEST_DEIDENTIFY_TEMPLATE_ID).toString();
+    TEST_DEIDENTIFY_TEMPLATE_NAME = DeidentifyTemplateName
+        .ofProjectLocationDeidentifyTemplateName(
+            PROJECT_ID, LOCATION_ID, TEST_DEIDENTIFY_TEMPLATE_ID)
+        .toString();
 
     createInspectTemplate(TEST_INSPECT_TEMPLATE_ID);
     createDeidentifyTemplate(TEST_DEIDENTIFY_TEMPLATE_ID);
@@ -102,11 +107,6 @@ public class SnippetsIT {
   public static void afterAll() throws IOException {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
-    try {
-      deleteModelArmorTemplate(TEST_TEMPLATE_ID);
-    } catch (NotFoundException e) {
-      // Ignore not found error - template already deleted.
-    }
     deleteSdpTemplates();
   }
 
@@ -118,6 +118,12 @@ public class SnippetsIT {
 
   @After
   public void afterEach() throws IOException {
+    try {
+      deleteModelArmorTemplate(TEST_TEMPLATE_ID);
+    } catch (NotFoundException e) {
+      // Ignore not found error - template already deleted.
+    }
+
     stdOut = null;
     System.setOut(null);
   }
@@ -125,6 +131,51 @@ public class SnippetsIT {
   private static String randomId() {
     Random random = new Random();
     return "java-ma-" + random.nextLong();
+  }
+
+  @Test
+  public void testCreateModelArmorTemplate() throws IOException {
+    Template createdTemplate = CreateTemplate.createTemplate(PROJECT_ID, LOCATION_ID,
+        TEST_TEMPLATE_ID);
+
+    assertEquals(createdTemplate.getName(), TEST_TEMPLATE_NAME);
+  }
+
+  @Test
+  public void testCreateModelArmorTemplateWithBasicSDP() throws IOException {
+    Template createdTemplate = CreateTemplateWithBasicSdp.createTemplateWithBasicSdp(PROJECT_ID,
+        LOCATION_ID, TEST_TEMPLATE_ID);
+
+    assertEquals(createdTemplate.getName(), TEST_TEMPLATE_NAME);
+    assertEquals(SdpBasicConfigEnforcement.ENABLED,
+        createdTemplate.getFilterConfig().getSdpSettings().getBasicConfig().getFilterEnforcement());
+  }
+
+  @Test
+  public void testCreateModelArmorTemplateWithLabels() throws IOException {
+    Template createdTemplate = CreateTemplateWithLabels.createTemplateWithLabels(PROJECT_ID,
+        LOCATION_ID, TEST_TEMPLATE_ID);
+
+    assertEquals(createdTemplate.getName(), TEST_TEMPLATE_NAME);
+  }
+
+  @Test
+  public void testCreateModelArmorTemplateWithMetadata() throws IOException {
+    Template createdTemplate = CreateTemplateWithMetadata.createTemplateWithMetadata(PROJECT_ID,
+        LOCATION_ID, TEST_TEMPLATE_ID);
+
+    assertEquals(createdTemplate.getName(), TEST_TEMPLATE_NAME);
+    assertEquals(true, createdTemplate.getTemplateMetadata().getIgnorePartialInvocationFailures());
+    assertEquals(true, createdTemplate.getTemplateMetadata().getLogSanitizeOperations());
+    assertEquals(500, createdTemplate.getTemplateMetadata().getCustomPromptSafetyErrorCode());
+  }
+
+  @Test
+  public void testDeleteModelArmorTemplate() throws IOException {
+    CreateTemplate.createTemplate(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
+    DeleteTemplate.deleteTemplate(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
+
+    assertThat(stdOut.toString()).contains("Deleted template:");
   }
 
   private static void deleteModelArmorTemplate(String templateId) throws IOException {
@@ -146,7 +197,8 @@ public class SnippetsIT {
 
   private static InspectTemplate createInspectTemplate(String templateId) throws IOException {
     try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
-      // Info Types: https://cloud.google.com/sensitive-data-protection/docs/infotypes-reference
+      // Info Types:
+      // https://cloud.google.com/sensitive-data-protection/docs/infotypes-reference
       List<InfoType> infoTypes = Stream
           .of("PHONE_NUMBER", "EMAIL_ADDRESS", "US_INDIVIDUAL_TAXPAYER_IDENTIFICATION_NUMBER")
           .map(it -> InfoType.newBuilder().setName(it).build())
@@ -160,12 +212,12 @@ public class SnippetsIT {
           .setInspectConfig(inspectConfig)
           .build();
 
-      CreateInspectTemplateRequest createInspectTemplateRequest = 
-          CreateInspectTemplateRequest.newBuilder()
-            .setParent(LocationName.of(PROJECT_ID, LOCATION_ID).toString())
-            .setTemplateId(templateId)
-            .setInspectTemplate(inspectTemplate)
-            .build();
+      CreateInspectTemplateRequest createInspectTemplateRequest = CreateInspectTemplateRequest
+          .newBuilder()
+          .setParent(LocationName.of(PROJECT_ID, LOCATION_ID).toString())
+          .setTemplateId(templateId)
+          .setInspectTemplate(inspectTemplate)
+          .build();
 
       return dlpServiceClient.createInspectTemplate(createInspectTemplateRequest);
     }
@@ -188,18 +240,19 @@ public class SnippetsIT {
           .setPrimitiveTransformation(primitiveTransformation)
           .build();
 
-      // Construct the configuration for the Redact request and list all desired transformations.
+      // Construct the configuration for the Redact request and list all desired
+      // transformations.
       DeidentifyConfig redactConfig = DeidentifyConfig.newBuilder()
           .setInfoTypeTransformations(
-            InfoTypeTransformations.newBuilder()
-            .addTransformations(transformation))
+              InfoTypeTransformations.newBuilder()
+                  .addTransformations(transformation))
           .build();
 
       DeidentifyTemplate deidentifyTemplate = DeidentifyTemplate.newBuilder()
           .setDeidentifyConfig(redactConfig)
           .build();
 
-      CreateDeidentifyTemplateRequest createDeidentifyTemplateRequest = 
+      CreateDeidentifyTemplateRequest createDeidentifyTemplateRequest =
           CreateDeidentifyTemplateRequest.newBuilder()
             .setParent(LocationName.of(PROJECT_ID, LOCATION_ID).toString())
             .setTemplateId(templateId)
