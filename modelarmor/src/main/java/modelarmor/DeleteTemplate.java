@@ -27,8 +27,12 @@ public class DeleteTemplate {
 
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
+
+    // Specify the Google Project ID.
     String projectId = "your-project-id";
+    // Specify the location ID. For example, us-central1.
     String locationId = "your-location-id";
+    // Specify the template ID.
     String templateId = "your-template-id";
 
     deleteTemplate(projectId, locationId, templateId);
@@ -52,6 +56,4 @@ public class DeleteTemplate {
     }
   }
 }
-
 // [END modelarmor_delete_template]
- 

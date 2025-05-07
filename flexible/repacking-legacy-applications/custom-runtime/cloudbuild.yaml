@@ -1,0 +1,37 @@
+#  Copyright 2025 Google LLC
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+# [START gae_cloudbuild_yaml]
+steps:
+  # Step 1: Build the Docker image
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      - "build"
+      - "-t"
+      - "${_LOCATION}-docker.pkg.dev/${_PROJECT}/${_REPOSITORY}/my-java-app:v1"
+      - "."
+
+  # Step 2: Push the Docker image to Artifact Registry
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      - "push"
+      - "${_LOCATION}-docker.pkg.dev/${_PROJECT}/${_REPOSITORY}/my-java-app:v1"
+
+substitutions:
+  _LOCATION: "asia" # Change this based on your region (e.g., 'us', 'europe', 'asia')
+  _REPOSITORY: "test-app" # Replace with your Artifact Registry repository name
+  _PROJECT: "project-id" # Replace with your Google Cloud Project ID
+
+images:
+  - "${_LOCATION}-docker.pkg.dev/${_PROJECT}/${_REPOSITORY}/my-java-app:v1"
+# [END gae_cloudbuild_yaml]
