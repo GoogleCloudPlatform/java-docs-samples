@@ -94,8 +94,10 @@ public class SnippetsIT {
     TEST_INSPECT_TEMPLATE_NAME = InspectTemplateName
         .ofProjectLocationInspectTemplateName(PROJECT_ID, LOCATION_ID, TEST_INSPECT_TEMPLATE_ID)
         .toString();
-    TEST_DEIDENTIFY_TEMPLATE_NAME = DeidentifyTemplateName.ofProjectLocationDeidentifyTemplateName(
-        PROJECT_ID, LOCATION_ID, TEST_DEIDENTIFY_TEMPLATE_ID).toString();
+    TEST_DEIDENTIFY_TEMPLATE_NAME = DeidentifyTemplateName
+        .ofProjectLocationDeidentifyTemplateName(
+            PROJECT_ID, LOCATION_ID, TEST_DEIDENTIFY_TEMPLATE_ID)
+        .toString();
 
     createInspectTemplate(TEST_INSPECT_TEMPLATE_ID);
     createDeidentifyTemplate(TEST_DEIDENTIFY_TEMPLATE_ID);
@@ -249,12 +251,12 @@ public class SnippetsIT {
           .setDeidentifyConfig(redactConfig)
           .build();
 
-      CreateDeidentifyTemplateRequest createDeidentifyTemplateRequest = CreateDeidentifyTemplateRequest
-          .newBuilder()
-          .setParent(LocationName.of(PROJECT_ID, LOCATION_ID).toString())
-          .setTemplateId(templateId)
-          .setDeidentifyTemplate(deidentifyTemplate)
-          .build();
+      CreateDeidentifyTemplateRequest createDeidentifyTemplateRequest =
+          CreateDeidentifyTemplateRequest.newBuilder()
+            .setParent(LocationName.of(PROJECT_ID, LOCATION_ID).toString())
+            .setTemplateId(templateId)
+            .setDeidentifyTemplate(deidentifyTemplate)
+            .build();
 
       return dlpServiceClient.createDeidentifyTemplate(createDeidentifyTemplateRequest);
     }
