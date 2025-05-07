@@ -292,12 +292,12 @@ public class SnippetsIT {
           .setDeidentifyConfig(redactConfig)
           .build();
 
-      CreateDeidentifyTemplateRequest createDeidentifyTemplateRequest = CreateDeidentifyTemplateRequest
-          .newBuilder()
-          .setParent(LocationName.of(PROJECT_ID, LOCATION_ID).toString())
-          .setTemplateId(templateId)
-          .setDeidentifyTemplate(deidentifyTemplate)
-          .build();
+      CreateDeidentifyTemplateRequest createDeidentifyTemplateRequest =
+          CreateDeidentifyTemplateRequest.newBuilder()
+            .setParent(LocationName.of(PROJECT_ID, LOCATION_ID).toString())
+            .setTemplateId(templateId)
+            .setDeidentifyTemplate(deidentifyTemplate)
+            .build();
 
       return dlpServiceClient.createDeidentifyTemplate(createDeidentifyTemplateRequest);
     }
