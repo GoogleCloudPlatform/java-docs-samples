@@ -65,6 +65,7 @@
       <groupId>com.google.protobuf</groupId>
       <artifactId>protobuf-java-util</artifactId>
     </dependency>
+
     <!-- test dependencies -->
     <dependency>
       <groupId>junit</groupId>
@@ -79,5 +80,4 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-
 </project>
