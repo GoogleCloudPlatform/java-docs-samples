@@ -107,11 +107,6 @@ public class SnippetsIT {
   public static void afterAll() throws IOException {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
 
-    try {
-      deleteModelArmorTemplate(TEST_TEMPLATE_ID);
-    } catch (NotFoundException e) {
-      // Ignore not found error - template already deleted.
-    }
     deleteSdpTemplates();
   }
 
@@ -123,6 +118,12 @@ public class SnippetsIT {
 
   @After
   public void afterEach() throws IOException {
+    try {
+      deleteModelArmorTemplate(TEST_TEMPLATE_ID);
+    } catch (NotFoundException e) {
+      // Ignore not found error - template already deleted.
+    }
+
     stdOut = null;
     System.setOut(null);
   }
