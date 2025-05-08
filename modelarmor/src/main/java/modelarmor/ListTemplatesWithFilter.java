@@ -16,44 +16,57 @@
 
 package modelarmor;
 
-// [START modelarmor_delete_template]
+// [START modelarmor_list_templates_with_filter]
 
+import com.google.cloud.modelarmor.v1.ListTemplatesRequest;
+import com.google.cloud.modelarmor.v1.LocationName;
 import com.google.cloud.modelarmor.v1.ModelArmorClient;
+import com.google.cloud.modelarmor.v1.ModelArmorClient.ListTemplatesPagedResponse;
 import com.google.cloud.modelarmor.v1.ModelArmorSettings;
-import com.google.cloud.modelarmor.v1.TemplateName;
 import java.io.IOException;
 
-public class DeleteTemplate {
+public class ListTemplatesWithFilter {
 
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
 
-    // Specify the Google Project ID.
     String projectId = "your-project-id";
-    // Specify the location ID. For example, us-central1.
     String locationId = "your-location-id";
-    // Specify the template ID.
-    String templateId = "your-template-id";
+    // Filter to applied.
+    // Example: "name=\"projects/your-project-id/locations/us-central1/your-template-id\""
+    String filter = "your-filter-condition";
 
-    deleteTemplate(projectId, locationId, templateId);
+    listTemplatesWithFilter(projectId, locationId, filter);
   }
 
-  public static void deleteTemplate(String projectId, String locationId, String templateId)
-      throws IOException {
+  public static ListTemplatesPagedResponse listTemplatesWithFilter(String projectId,
+      String locationId, String filter) throws IOException {
     // Construct the API endpoint URL.
     String apiEndpoint = String.format("modelarmor.%s.rep.googleapis.com:443", locationId);
+
     ModelArmorSettings modelArmorSettings = ModelArmorSettings.newBuilder().setEndpoint(apiEndpoint)
         .build();
 
     // Initialize the client that will be used to send requests. This client
     // only needs to be created once, and can be reused for multiple requests.
     try (ModelArmorClient client = ModelArmorClient.create(modelArmorSettings)) {
-      String name = TemplateName.of(projectId, locationId, templateId).toString();
+      // Build the parent name.
+      String parent = LocationName.of(projectId, locationId).toString();
 
-      // Note: Ensure that the template you are deleting isn't used by any models.
-      client.deleteTemplate(name);
-      System.out.println("Deleted template: " + name);
+      ListTemplatesRequest request = ListTemplatesRequest.newBuilder()
+          .setParent(parent)
+          .setFilter(filter)
+          .build();
+
+      // List all templates.
+      ListTemplatesPagedResponse pagedResponse = client.listTemplates(request);
+      pagedResponse.iterateAll().forEach(template -> {
+        System.out.printf("Template %s\n", template.getName());
+      });
+
+      return pagedResponse;
     }
   }
 }
-// [END modelarmor_delete_template]
+
+// [END modelarmor_list_templates_with_filter]

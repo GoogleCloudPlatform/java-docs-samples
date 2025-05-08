@@ -12,7 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
 
 package modelarmor;
 
@@ -38,7 +38,7 @@ public class CreateTemplate {
 
     // Specify the Google Project ID.
     String projectId = "your-project-id";
-    // Specify the location ID. For example, us-central1. 
+    // Specify the location ID. For example, us-central1.
     String locationId = "your-location-id";
     // Specify the template ID.
     String templateId = "your-template-id";
@@ -48,7 +48,6 @@ public class CreateTemplate {
 
   public static Template createTemplate(String projectId, String locationId, String templateId)
       throws IOException {
-
     // Construct the API endpoint URL.
     String apiEndpoint = String.format("modelarmor.%s.rep.googleapis.com:443", locationId);
     ModelArmorSettings modelArmorSettings = ModelArmorSettings.newBuilder().setEndpoint(apiEndpoint)
