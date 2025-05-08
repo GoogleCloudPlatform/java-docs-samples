@@ -38,7 +38,7 @@ public class CreateTemplate {
 
     // Specify the Google Project ID.
     String projectId = "your-project-id";
-    // Specify the location ID. For example, us-central1.
+    // Specify the location ID. For example, us-central1. 
     String locationId = "your-location-id";
     // Specify the template ID.
     String templateId = "your-template-id";
