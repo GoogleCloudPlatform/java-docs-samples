@@ -38,7 +38,6 @@ public class RoleIT {
   private ByteArrayOutputStream bout;
 
   private static final String projectId = System.getenv("IAM_PROJECT_ID");
-  private static final String GOOGLE_APPLICATION_CREDENTIALS = System.getenv("IAM_CREDENTIALS");
   private static final String _suffix = UUID.randomUUID().toString().substring(0, 6);
   private static final String roleId = "testRole" + _suffix;
   private static final String roleName = "projects/" + projectId + "/roles/" + roleId;
@@ -57,7 +56,6 @@ public class RoleIT {
     ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
 
     requireEnvVar("IAM_PROJECT_ID");
-    requireEnvVar("IAM_CREDENTIALS");
 
     stdOut.close();
     System.setOut(out);
