@@ -37,7 +37,7 @@
     <maven.compiler.target>11</maven.compiler.target>
     <maven.compiler.source>11</maven.compiler.source>
     <failOnMissingWebXml>false</failOnMissingWebXml> <!-- REQUIRED -->
-    <jetty.version>9.4.54.v20240208</jetty.version>
+    <jetty.version>9.4.56.v20240826</jetty.version>
     <spring.boot.version>2.7.18</spring.boot.version>
   </properties>
 
