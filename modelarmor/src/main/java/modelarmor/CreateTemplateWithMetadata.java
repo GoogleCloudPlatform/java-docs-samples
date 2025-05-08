@@ -49,10 +49,14 @@ public class CreateTemplateWithMetadata {
 
   public static Template createTemplateWithMetadata(
       String projectId, String locationId, String templateId) throws IOException {
+
+    // Construct the API endpoint URL.
     String apiEndpoint = String.format("modelarmor.%s.rep.googleapis.com:443", locationId);
     ModelArmorSettings modelArmorSettings = ModelArmorSettings.newBuilder().setEndpoint(apiEndpoint)
         .build();
 
+    // Initialize the client that will be used to send requests. This client
+    // only needs to be created once, and can be reused for multiple requests.
     try (ModelArmorClient client = ModelArmorClient.create(modelArmorSettings)) {
       String parent = LocationName.of(projectId, locationId).toString();
 
@@ -114,5 +118,4 @@ public class CreateTemplateWithMetadata {
     }
   }
 }
-
 // [END modelarmor_create_template_with_metadata]

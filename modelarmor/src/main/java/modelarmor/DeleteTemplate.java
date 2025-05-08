@@ -30,7 +30,7 @@ public class DeleteTemplate {
 
     // Specify the Google Project ID.
     String projectId = "your-project-id";
-    // Specify the location ID. For example, us-central1. 
+    // Specify the location ID. For example, us-central1.
     String locationId = "your-location-id";
     // Specify the template ID.
     String templateId = "your-template-id";
@@ -40,10 +40,14 @@ public class DeleteTemplate {
 
   public static void deleteTemplate(String projectId, String locationId, String templateId)
       throws IOException {
+
+    // Construct the API endpoint URL.
     String apiEndpoint = String.format("modelarmor.%s.rep.googleapis.com:443", locationId);
     ModelArmorSettings modelArmorSettings = ModelArmorSettings.newBuilder().setEndpoint(apiEndpoint)
         .build();
 
+    // Initialize the client that will be used to send requests. This client
+    // only needs to be created once, and can be reused for multiple requests.
     try (ModelArmorClient client = ModelArmorClient.create(modelArmorSettings)) {
       String name = TemplateName.of(projectId, locationId, templateId).toString();
 
@@ -53,5 +57,4 @@ public class DeleteTemplate {
     }
   }
 }
-
 // [END modelarmor_delete_template]
