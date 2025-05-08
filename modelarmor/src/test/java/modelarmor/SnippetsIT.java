@@ -331,10 +331,10 @@ public class SnippetsIT {
 
       CreateDeidentifyTemplateRequest createDeidentifyTemplateRequest =
           CreateDeidentifyTemplateRequest.newBuilder()
-            .setParent(LocationName.of(PROJECT_ID, LOCATION_ID).toString())
-            .setTemplateId(templateId)
-            .setDeidentifyTemplate(deidentifyTemplate)
-            .build();
+          .setParent(LocationName.of(PROJECT_ID, LOCATION_ID).toString())
+          .setTemplateId(templateId)
+          .setDeidentifyTemplate(deidentifyTemplate)
+          .build();
 
       return dlpServiceClient.createDeidentifyTemplate(createDeidentifyTemplateRequest);
     }
