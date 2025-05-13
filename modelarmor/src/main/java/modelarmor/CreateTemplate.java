@@ -64,27 +64,26 @@ public class CreateTemplate {
 
       // Configure Responsible AI filter with multiple categories and their confidence
       // levels.
-      RaiFilterSettings raiFilterSettings =
-          RaiFilterSettings.newBuilder()
-              .addAllRaiFilters(
-                  List.of(
-                      RaiFilter.newBuilder()
-                          .setFilterType(RaiFilterType.DANGEROUS)
-                          .setConfidenceLevel(DetectionConfidenceLevel.HIGH)
-                          .build(),
-                      RaiFilter.newBuilder()
-                          .setFilterType(RaiFilterType.HATE_SPEECH)
-                          .setConfidenceLevel(DetectionConfidenceLevel.HIGH)
-                          .build(),
-                      RaiFilter.newBuilder()
-                          .setFilterType(RaiFilterType.SEXUALLY_EXPLICIT)
-                          .setConfidenceLevel(DetectionConfidenceLevel.LOW_AND_ABOVE)
-                          .build(),
-                      RaiFilter.newBuilder()
-                          .setFilterType(RaiFilterType.HARASSMENT)
-                          .setConfidenceLevel(DetectionConfidenceLevel.MEDIUM_AND_ABOVE)
-                          .build()))
-              .build();
+      RaiFilterSettings raiFilterSettings = RaiFilterSettings.newBuilder()
+          .addAllRaiFilters(
+              List.of(
+                  RaiFilter.newBuilder()
+                      .setFilterType(RaiFilterType.DANGEROUS)
+                      .setConfidenceLevel(DetectionConfidenceLevel.HIGH)
+                      .build(),
+                  RaiFilter.newBuilder()
+                      .setFilterType(RaiFilterType.HATE_SPEECH)
+                      .setConfidenceLevel(DetectionConfidenceLevel.HIGH)
+                      .build(),
+                  RaiFilter.newBuilder()
+                      .setFilterType(RaiFilterType.SEXUALLY_EXPLICIT)
+                      .setConfidenceLevel(DetectionConfidenceLevel.LOW_AND_ABOVE)
+                      .build(),
+                  RaiFilter.newBuilder()
+                      .setFilterType(RaiFilterType.HARASSMENT)
+                      .setConfidenceLevel(DetectionConfidenceLevel.MEDIUM_AND_ABOVE)
+                      .build()))
+          .build();
 
       FilterConfig modelArmorFilter = FilterConfig.newBuilder()
           .setRaiSettings(raiFilterSettings)

@@ -20,7 +20,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import com.google.api.apikeys.v2.Key;
+import com.google.api.gax.rpc.InvalidArgumentException;
 import com.google.cloud.ServiceOptions;
+import io.grpc.StatusRuntimeException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -61,10 +63,8 @@ public class AuthExampleIT {
     assertTrue(output.contains("Buckets:"));
   }
 
-  @Ignore("Temporarily disabled due to failing test (Issue #10023).")
   @Test
   public void testAuthApiKey() throws IOException, IllegalStateException {
-    //TODO: Re-enable this test after fixing issue #10023.
     String projectId = ServiceOptions.getDefaultProjectId();
     String keyDisplayName = "Test API Key";
     String service = "language.googleapis.com";
@@ -73,7 +73,7 @@ public class AuthExampleIT {
     try {
       apiKey = AuthTestUtils.createTestApiKey(projectId, keyDisplayName, service, method);
 
-      String output = ApiKeyAuthExample.authenticateUsingApiKey(apiKey.getKeyString());
+      String output = authenticateUsingApiKeyWithRetry(apiKey.getKeyString());
 
       assertTrue(output.contains("magnitude:"));
     } finally {
@@ -81,5 +81,29 @@ public class AuthExampleIT {
         AuthTestUtils.deleteTestApiKey(apiKey.getName());
       }
     }
+  }
+
+  static String authenticateUsingApiKeyWithRetry(String apiKey) throws IOException {
+    int retries = 5;
+    int delay = 2000; // 2 seconds
+
+    for (int i = 0; i < retries; i++) {
+      try {
+        return ApiKeyAuthExample.authenticateUsingApiKey(apiKey);
+      } catch (StatusRuntimeException | InvalidArgumentException e) {
+        if (e.getMessage().contains("API key expired")) {
+          System.out.println("API key not yet active, retrying...");
+          try {
+            Thread.sleep(delay);
+          } catch (InterruptedException ignored) {
+            // ignore iterrupted exception and retry test
+          }
+        } else {
+          throw e;
+        }
+      }
+    }
+
+    throw new IOException("API key never became active after retries.");
   }
 }
