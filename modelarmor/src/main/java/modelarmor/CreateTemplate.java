@@ -12,7 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
 
 package modelarmor;
 
@@ -48,7 +48,6 @@ public class CreateTemplate {
 
   public static Template createTemplate(String projectId, String locationId, String templateId)
       throws IOException {
-
     // Construct the API endpoint URL.
     String apiEndpoint = String.format("modelarmor.%s.rep.googleapis.com:443", locationId);
     ModelArmorSettings modelArmorSettings = ModelArmorSettings.newBuilder().setEndpoint(apiEndpoint)

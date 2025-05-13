@@ -19,6 +19,7 @@ package modelarmor;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.dlp.v2.DlpServiceClient;
@@ -134,6 +135,82 @@ public class SnippetsIT {
   }
 
   @Test
+  public void testUpdateModelArmorTemplate() throws IOException {
+    CreateTemplate.createTemplate(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
+
+    // Update the existing template.
+    Template updatedTemplate = UpdateTemplate.updateTemplate(PROJECT_ID, LOCATION_ID,
+        TEST_TEMPLATE_ID);
+
+    assertEquals(updatedTemplate.getName(), TEST_TEMPLATE_NAME);
+  }
+
+  @Test
+  public void testUpdateModelArmorTemplateWithLabels() throws IOException {
+    CreateTemplateWithLabels.createTemplateWithLabels(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
+
+    // Update the existing template.
+    Template updatedTemplate = UpdateTemplateWithLabels.updateTemplateWithLabels(PROJECT_ID,
+        LOCATION_ID, TEST_TEMPLATE_ID);
+
+    assertEquals(updatedTemplate.getName(), TEST_TEMPLATE_NAME);
+  }
+
+  @Test
+  public void testUpdateModelArmorTemplateWithMetadata() throws IOException {
+    CreateTemplateWithMetadata.createTemplateWithMetadata(PROJECT_ID, LOCATION_ID,
+        TEST_TEMPLATE_ID);
+
+    // Update the existing template.
+    Template updatedTemplate = UpdateTemplateWithMetadata.updateTemplateWithMetadata(PROJECT_ID,
+        LOCATION_ID, TEST_TEMPLATE_ID);
+
+    assertEquals(updatedTemplate.getName(), TEST_TEMPLATE_NAME);
+    assertEquals(false, updatedTemplate.getTemplateMetadata().getIgnorePartialInvocationFailures());
+    assertEquals(false, updatedTemplate.getTemplateMetadata().getLogSanitizeOperations());
+    assertEquals(400, updatedTemplate.getTemplateMetadata().getCustomPromptSafetyErrorCode());
+  }
+
+  @Test
+  public void testGetModelArmorTemplate() throws IOException {
+    CreateTemplate.createTemplate(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
+    Template retrievedTemplate = GetTemplate.getTemplate(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
+
+    assertEquals(retrievedTemplate.getName(), TEST_TEMPLATE_NAME);
+  }
+
+  @Test
+  public void testListModelArmorTemplates() throws IOException {
+    CreateTemplate.createTemplate(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
+
+    ListTemplates.listTemplates(PROJECT_ID, LOCATION_ID);
+
+    boolean templatePresentInList = false;
+    for (Template template : ListTemplates.listTemplates(PROJECT_ID, LOCATION_ID).iterateAll()) {
+      if (TEST_TEMPLATE_NAME.equals(template.getName())) {
+        templatePresentInList = true;
+      }
+    }
+    assertTrue(templatePresentInList);
+  }
+
+  @Test
+  public void testListTemplatesWithFilter() throws IOException {
+    CreateTemplate.createTemplate(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
+    String filter = "name=\"projects/" + PROJECT_ID + "/locations/" + LOCATION_ID + "/"
+        + TEST_TEMPLATE_ID + "\"";
+
+    ListTemplatesWithFilter.listTemplatesWithFilter(PROJECT_ID, LOCATION_ID, filter);
+
+    boolean templatePresentInList = false;
+    for (Template template : ListTemplates.listTemplates(PROJECT_ID, LOCATION_ID).iterateAll()) {
+      if (TEST_TEMPLATE_NAME.equals(template.getName())) {
+        templatePresentInList = true;
+      }
+    }
+    assertTrue(templatePresentInList);
+  }
+
   public void testCreateModelArmorTemplate() throws IOException {
     Template createdTemplate = CreateTemplate.createTemplate(PROJECT_ID, LOCATION_ID,
         TEST_TEMPLATE_ID);
@@ -254,10 +331,10 @@ public class SnippetsIT {
 
       CreateDeidentifyTemplateRequest createDeidentifyTemplateRequest =
           CreateDeidentifyTemplateRequest.newBuilder()
-            .setParent(LocationName.of(PROJECT_ID, LOCATION_ID).toString())
-            .setTemplateId(templateId)
-            .setDeidentifyTemplate(deidentifyTemplate)
-            .build();
+          .setParent(LocationName.of(PROJECT_ID, LOCATION_ID).toString())
+          .setTemplateId(templateId)
+          .setDeidentifyTemplate(deidentifyTemplate)
+          .build();
 
       return dlpServiceClient.createDeidentifyTemplate(createDeidentifyTemplateRequest);
     }

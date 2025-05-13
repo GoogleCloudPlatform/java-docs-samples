@@ -16,45 +16,49 @@
 
 package modelarmor;
 
-// [START modelarmor_delete_template]
+// [START modelarmor_get_template]
 
 import com.google.cloud.modelarmor.v1.ModelArmorClient;
 import com.google.cloud.modelarmor.v1.ModelArmorSettings;
+import com.google.cloud.modelarmor.v1.Template;
 import com.google.cloud.modelarmor.v1.TemplateName;
 import java.io.IOException;
 
-public class DeleteTemplate {
+public class GetTemplate {
 
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
-
-    // Specify the Google Project ID.
     String projectId = "your-project-id";
-    // Specify the location ID. For example, us-central1.
     String locationId = "your-location-id";
-    // Specify the template ID.
     String templateId = "your-template-id";
 
-    deleteTemplate(projectId, locationId, templateId);
+    getTemplate(projectId, locationId, templateId);
   }
 
-  public static void deleteTemplate(String projectId, String locationId, String templateId)
+  public static Template getTemplate(String projectId, String locationId, String templateId)
       throws IOException {
-
     // Construct the API endpoint URL.
     String apiEndpoint = String.format("modelarmor.%s.rep.googleapis.com:443", locationId);
+
     ModelArmorSettings modelArmorSettings = ModelArmorSettings.newBuilder().setEndpoint(apiEndpoint)
         .build();
 
     // Initialize the client that will be used to send requests. This client
     // only needs to be created once, and can be reused for multiple requests.
     try (ModelArmorClient client = ModelArmorClient.create(modelArmorSettings)) {
+      // Build the template name.
       String name = TemplateName.of(projectId, locationId, templateId).toString();
 
-      // Note: Ensure that the template you are deleting isn't used by any models.
-      client.deleteTemplate(name);
-      System.out.println("Deleted template: " + name);
+      // Get the template.
+      Template template = client.getTemplate(name);
+
+      // Find more details about Template object here:
+      // https://cloud.google.com/security-command-center/docs/reference/model-armor/rest/v1/projects.locations.templates#Template
+      System.out.printf("Retrieved template: %s\n", template.getName());
+
+      return template;
     }
   }
 }
-// [END modelarmor_delete_template]
+
+// [END modelarmor_get_template]
