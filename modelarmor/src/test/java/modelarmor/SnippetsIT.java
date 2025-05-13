@@ -156,15 +156,16 @@ public class SnippetsIT {
     CreateTemplate.createTemplate(PROJECT_ID, LOCATION_ID, TEST_CSAM_TEMPLATE_ID);
   }
 
+  private static String randomId() {
+    Random random = new Random();
+    return "java-ma-" + random.nextLong();
+  }
+
   @AfterClass
   public static void afterAll() throws IOException {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
     requireEnvVar("MA_FOLDER_ID");
     requireEnvVar("MA_ORG_ID");
-
-    floorSettingNames = new String[] {
-        projectFloorSettingName, folderFloorSettingName, organizationFloorSettingName
-    };
 
     resetFloorSettings();
 
@@ -194,11 +195,21 @@ public class SnippetsIT {
 
   @After
   public void afterEach() throws IOException {
+    try {
+      deleteModelArmorTemplate(TEST_TEMPLATE_ID);
+    } catch (NotFoundException e) {
+      // Ignore not found error - template already deleted.
+    }
+
     System.setOut(originalOut);
     stdOut = null;
   }
 
   private static void resetFloorSettings() throws IOException {
+    floorSettingNames = new String[] {
+        projectFloorSettingName, folderFloorSettingName, organizationFloorSettingName
+    };
+
     try (ModelArmorClient client = ModelArmorClient.create()) {
       for (String name : floorSettingNames) {
         FloorSetting floorSetting = FloorSetting.newBuilder()
@@ -250,23 +261,10 @@ public class SnippetsIT {
   public void testUpdateProjectFloorSetting() throws IOException {
     UpdateProjectFloorSetting.updateProjectFloorSetting(PROJECT_ID);
     assertThat(stdOut.toString()).contains("Updated floor setting for project:");
-    try {
-      deleteModelArmorTemplate(TEST_TEMPLATE_ID);
-    } catch (NotFoundException e) {
-      // Ignore not found error - template already deleted.
-    }
-
-    stdOut = null;
-    System.setOut(null);
-  }
-
-  private static String randomId() {
-    Random random = new Random();
-    return "java-ma-" + random.nextLong();
   }
 
   // Create Model Armor templates required for tests.
-  private static Template createMaliciousUriTemplate() throws IOException {
+  private static void createMaliciousUriTemplate() throws IOException {
     // Create a malicious URI filter template.
     MaliciousUriFilterSettings maliciousUriFilterSettings = MaliciousUriFilterSettings.newBuilder()
         .setFilterEnforcement(MaliciousUriFilterEnforcement.ENABLED)
@@ -281,10 +279,9 @@ public class SnippetsIT {
         .build();
 
     createTemplate(template, TEST_MALICIOUS_URI_TEMPLATE_ID);
-    return template;
   }
 
-  private static Template createPiAndJailBreakTemplate() throws IOException {
+  private static void createPiAndJailBreakTemplate() throws IOException {
     // Create a Pi and Jailbreak filter template.
     // Create a template with Prompt injection & Jailbreak settings.
     PiAndJailbreakFilterSettings piAndJailbreakFilterSettings = PiAndJailbreakFilterSettings
@@ -302,10 +299,9 @@ public class SnippetsIT {
         .build();
 
     createTemplate(template, TEST_PI_JAILBREAK_TEMPLATE_ID);
-    return template;
   }
 
-  private static Template createBasicSdpTemplate() throws IOException {
+  private static void createBasicSdpTemplate() throws IOException {
     SdpBasicConfig basicSdpConfig = SdpBasicConfig.newBuilder()
         .setFilterEnforcement(SdpBasicConfigEnforcement.ENABLED)
         .build();
@@ -323,7 +319,6 @@ public class SnippetsIT {
         .build();
 
     createTemplate(template, TEST_BASIC_SDP_TEMPLATE_ID);
-    return template;
   }
 
   @Test
