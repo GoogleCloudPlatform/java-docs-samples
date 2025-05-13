@@ -87,7 +87,6 @@ assign_issues_by:
   - "api: recaptchaenterprise"
   to:
   - GoogleCloudPlatform/recaptcha-customer-obsession-reviewers
-  - GoogleCloudPlatform/dee-infra
 - labels:
   - "api: appengine"
   to:
@@ -96,6 +95,10 @@ assign_issues_by:
   - "api: bigquerydatatransfer"
   to:
   - GoogleCloudPlatform/bigquery-data-connectors
+- labels:
+  - "api: modelarmor"
+  to:
+  - GoogleCloudPlatform/cloud-modelarmor-team
 
 assign_prs:
   - GoogleCloudPlatform/java-samples-reviewers
@@ -168,8 +171,11 @@ assign_prs_by:
   - "api: recaptchaenterprise"
   to:
   - GoogleCloudPlatform/recaptcha-customer-obsession-reviewers
-  - GoogleCloudPlatform/dee-infra
 - labels:
   - "api: appengine"
   to:
   - GoogleCloudPlatform/serverless-runtimes
+- labels:
+  - "api: modelarmor"
+  to:
+  - GoogleCloudPlatform/cloud-modelarmor-team
