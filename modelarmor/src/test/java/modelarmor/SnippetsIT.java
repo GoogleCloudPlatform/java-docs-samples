@@ -398,6 +398,7 @@ public class SnippetsIT {
     assertTrue(templatePresentInList);
   }
 
+  @Test
   public void testCreateModelArmorTemplate() throws IOException {
     Template createdTemplate = CreateTemplate.createTemplate(PROJECT_ID, LOCATION_ID,
         TEST_TEMPLATE_ID);
@@ -781,6 +782,7 @@ public class SnippetsIT {
     }
   }
 
+  @Test
   public void testSanitizeModelResponseWithMaliciousUrlTemplate() throws IOException {
     String modelResponse =
         "You can use this to make a cake: https://testsafebrowsing.appspot.com/s/malware.html";
