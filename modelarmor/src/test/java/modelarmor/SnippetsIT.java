@@ -353,9 +353,8 @@ public class SnippetsIT {
         LOCATION_ID, TEST_TEMPLATE_ID);
 
     assertEquals(updatedTemplate.getName(), TEST_TEMPLATE_NAME);
-    assertEquals(false, updatedTemplate.getTemplateMetadata().getIgnorePartialInvocationFailures());
-    assertEquals(false, updatedTemplate.getTemplateMetadata().getLogSanitizeOperations());
-    assertEquals(400, updatedTemplate.getTemplateMetadata().getCustomPromptSafetyErrorCode());
+    assertEquals(true, updatedTemplate.getTemplateMetadata().getLogTemplateOperations());
+    assertEquals(true, updatedTemplate.getTemplateMetadata().getLogSanitizeOperations());
   }
 
   @Test
