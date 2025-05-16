@@ -43,7 +43,7 @@
             <dependency>
                 <groupId>com.google.cloud</groupId>
                 <artifactId>libraries-bom</artifactId>
-                <version>26.54.0</version>
+                <version>26.60.0</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -89,6 +89,11 @@
         <dependency>
             <groupId>com.google.cloud</groupId>
             <artifactId>google-iam-policy</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.cloud</groupId>
+            <artifactId>google-cloud-kms</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
