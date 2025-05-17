@@ -34,7 +34,7 @@
         <groupId>com.google.cloud</groupId>
         <scope>import</scope>
         <type>pom</type>
-        <version>26.32.0</version>
+        <version>26.60.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -43,7 +43,7 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-jobs</artifactId>
-      <version>v3-rev20230822-2.0.0</version>
+      <version>v3-rev20250326-2.0.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.auth</groupId>
@@ -58,7 +58,7 @@
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>1.4.0</version>
+      <version>1.4.4</version>
       <scope>test</scope>
     </dependency>
     <dependency>
