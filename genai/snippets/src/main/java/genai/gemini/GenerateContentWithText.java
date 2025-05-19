@@ -1,0 +1,42 @@
+package snippets;
+
+// [START googlegenaisdk_textgen_with_txt]
+
+import com.google.genai.Client;
+import com.google.genai.types.Content;
+import com.google.genai.types.GenerateContentResponse;
+import com.google.genai.types.HttpOptions;
+import com.google.genai.types.Part;
+
+public class GenerateContentWithText {
+
+  public static void main(String[] args) {
+    // TODO(developer): Replace these variables before running the sample.
+    String modelId = "gemini-2.0-flash";
+    generateContent(modelId);
+  }
+
+  public static String generateContent(String modelId) {
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests.
+    try (Client client = Client.builder()
+        .httpOptions(HttpOptions.builder().apiVersion("v1").build())
+        .build()) {
+
+      GenerateContentResponse response =
+          client.models.generateContent(modelId, Content.fromParts(
+                  Part.fromText("How does AI work?")),
+              null);
+
+      System.out.print(response.text());
+      // Example response:
+      // Okay, let's break down how AI works. It's a broad field, so I'll focus on the ...
+      //
+      // Here's a simplified overview:
+      // ...
+      return response.text();
+    }
+  }
+}
+// [END googlegenaisdk_textgen_with_txt]
+
