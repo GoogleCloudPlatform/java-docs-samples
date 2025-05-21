@@ -21,6 +21,8 @@
 
 package search;
 
+// [START retail_search_simple_query] 
+
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.retail.v2.SearchRequest;
 import com.google.cloud.retail.v2.SearchRequest.BoostSpec;
@@ -79,3 +81,5 @@ public class SearchWithBoostSpec {
     }
   }
 }
+
+// [END retail_search_simple_query]
