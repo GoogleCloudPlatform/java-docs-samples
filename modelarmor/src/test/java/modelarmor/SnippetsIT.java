@@ -28,6 +28,8 @@ import com.google.cloud.modelarmor.v1.DetectionConfidenceLevel;
 import com.google.cloud.modelarmor.v1.FilterConfig;
 import com.google.cloud.modelarmor.v1.FilterMatchState;
 import com.google.cloud.modelarmor.v1.FilterResult;
+import com.google.cloud.modelarmor.v1.FloorSetting;
+import com.google.cloud.modelarmor.v1.FloorSettingName;
 import com.google.cloud.modelarmor.v1.LocationName;
 import com.google.cloud.modelarmor.v1.MaliciousUriFilterSettings;
 import com.google.cloud.modelarmor.v1.MaliciousUriFilterSettings.MaliciousUriFilterEnforcement;
@@ -46,6 +48,7 @@ import com.google.cloud.modelarmor.v1.SdpFilterSettings;
 import com.google.cloud.modelarmor.v1.SdpFinding;
 import com.google.cloud.modelarmor.v1.Template;
 import com.google.cloud.modelarmor.v1.TemplateName;
+import com.google.cloud.modelarmor.v1.UpdateFloorSettingRequest;
 import com.google.privacy.dlp.v2.CreateDeidentifyTemplateRequest;
 import com.google.privacy.dlp.v2.CreateInspectTemplateRequest;
 import com.google.privacy.dlp.v2.DeidentifyConfig;
@@ -80,10 +83,20 @@ import org.junit.runners.JUnit4;
 public class SnippetsIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+  private static final String FOLDER_ID = System.getenv("MA_FOLDER_ID");
+  private static final String ORGANIZATION_ID = System.getenv("MA_ORG_ID");
   private static final String LOCATION_ID = System.getenv()
       .getOrDefault("GOOGLE_CLOUD_PROJECT_LOCATION", "us-central1");
   private static final String MA_ENDPOINT = String.format("modelarmor.%s.rep.googleapis.com:443",
       LOCATION_ID);
+
+  private static String projectFloorSettingName = FloorSettingName
+      .ofProjectLocationName(PROJECT_ID, "global").toString();
+  private static String folderFloorSettingName = FloorSettingName
+      .ofFolderLocationName(FOLDER_ID, "global").toString();
+  private static String organizationFloorSettingName = FloorSettingName
+      .ofOrganizationLocationName(ORGANIZATION_ID, "global").toString();
+
   private static String TEST_TEMPLATE_ID;
   private static String TEST_RAI_TEMPLATE_ID;
   private static String TEST_CSAM_TEMPLATE_ID;
@@ -97,6 +110,8 @@ public class SnippetsIT {
   private static String TEST_INSPECT_TEMPLATE_NAME;
   private static String TEST_DEIDENTIFY_TEMPLATE_NAME;
   private ByteArrayOutputStream stdOut;
+  private PrintStream originalOut;
+  private static String[] floorSettingNames;
   private static String[] templateToDelete;
 
   // Check if the required environment variables are set.
@@ -111,6 +126,8 @@ public class SnippetsIT {
   @BeforeClass
   public static void beforeAll() throws IOException {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
+    requireEnvVar("MA_FOLDER_ID");
+    requireEnvVar("MA_ORG_ID");
 
     TEST_TEMPLATE_ID = randomId();
     TEST_RAI_TEMPLATE_ID = randomId();
@@ -139,9 +156,18 @@ public class SnippetsIT {
     CreateTemplate.createTemplate(PROJECT_ID, LOCATION_ID, TEST_CSAM_TEMPLATE_ID);
   }
 
+  private static String randomId() {
+    Random random = new Random();
+    return "java-ma-" + random.nextLong();
+  }
+
   @AfterClass
   public static void afterAll() throws IOException {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
+    requireEnvVar("MA_FOLDER_ID");
+    requireEnvVar("MA_ORG_ID");
+
+    resetFloorSettings();
 
     // Delete templates after running tests.
     templateToDelete = new String[] {
@@ -162,6 +188,7 @@ public class SnippetsIT {
 
   @Before
   public void beforeEach() {
+    originalOut = System.out;
     stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
   }
@@ -174,17 +201,70 @@ public class SnippetsIT {
       // Ignore not found error - template already deleted.
     }
 
+    System.setOut(originalOut);
     stdOut = null;
-    System.setOut(null);
   }
 
-  private static String randomId() {
-    Random random = new Random();
-    return "java-ma-" + random.nextLong();
+  private static void resetFloorSettings() throws IOException {
+    floorSettingNames = new String[] {
+        projectFloorSettingName, folderFloorSettingName, organizationFloorSettingName
+    };
+
+    try (ModelArmorClient client = ModelArmorClient.create()) {
+      for (String name : floorSettingNames) {
+        FloorSetting floorSetting = FloorSetting.newBuilder()
+            .setName(name)
+            .setFilterConfig(FilterConfig.newBuilder().build())
+            .setEnableFloorSettingEnforcement(false)
+            .build();
+
+        UpdateFloorSettingRequest request = UpdateFloorSettingRequest.newBuilder()
+            .setFloorSetting(floorSetting)
+            .build();
+
+        client.updateFloorSetting(request);
+      }
+    }
+  }
+
+  @Test
+  public void testGetFolderFloorSetting() throws IOException {
+    GetFolderFloorSetting.getFolderFloorSetting(FOLDER_ID);
+    assertThat(stdOut.toString()).contains("Fetched floor setting for folder:");
+  }
+
+  @Test
+  public void testGetOrganizationFloorSetting() throws IOException {
+    GetOrganizationFloorSetting.getOrganizationFloorSetting(ORGANIZATION_ID);
+    assertThat(stdOut.toString()).contains("Fetched floor setting for organization:");
+  }
+
+  @Test
+  public void testGetProjectFloorSetting() throws IOException {
+    GetProjectFloorSetting.getProjectFloorSetting(PROJECT_ID);
+    assertThat(stdOut.toString()).contains("Fetched floor setting for project:");
+  }
+
+  @Test
+  public void testUpdateFolderFloorSetting() throws IOException {
+    UpdateFolderFloorSetting.updateFolderFloorSetting(FOLDER_ID);
+    assertThat(stdOut.toString()).contains("Updated floor setting for folder:");
+  }
+
+  @Test
+  public void testUpdateOrganizationFloorSetting() throws IOException {
+    UpdateOrganizationsFloorSetting.updateOrganizationFloorSetting(ORGANIZATION_ID);
+    assertThat(stdOut.toString()).contains("Updated floor setting for organization:");
+  }
+
+  @Test
+  public void testUpdateProjectFloorSetting() throws IOException {
+    UpdateProjectFloorSetting.updateProjectFloorSetting(PROJECT_ID);
+    assertThat(stdOut.toString()).contains("Updated floor setting for project:");
   }
 
   // Create Model Armor templates required for tests.
-  private static Template createMaliciousUriTemplate() throws IOException {
+  private static void createMaliciousUriTemplate() throws IOException {
     // Create a malicious URI filter template.
     MaliciousUriFilterSettings maliciousUriFilterSettings = MaliciousUriFilterSettings.newBuilder()
         .setFilterEnforcement(MaliciousUriFilterEnforcement.ENABLED)
@@ -199,10 +279,9 @@ public class SnippetsIT {
         .build();
 
     createTemplate(template, TEST_MALICIOUS_URI_TEMPLATE_ID);
-    return template;
   }
 
-  private static Template createPiAndJailBreakTemplate() throws IOException {
+  private static void createPiAndJailBreakTemplate() throws IOException {
     // Create a Pi and Jailbreak filter template.
     // Create a template with Prompt injection & Jailbreak settings.
     PiAndJailbreakFilterSettings piAndJailbreakFilterSettings = PiAndJailbreakFilterSettings
@@ -220,10 +299,9 @@ public class SnippetsIT {
         .build();
 
     createTemplate(template, TEST_PI_JAILBREAK_TEMPLATE_ID);
-    return template;
   }
 
-  private static Template createBasicSdpTemplate() throws IOException {
+  private static void createBasicSdpTemplate() throws IOException {
     SdpBasicConfig basicSdpConfig = SdpBasicConfig.newBuilder()
         .setFilterEnforcement(SdpBasicConfigEnforcement.ENABLED)
         .build();
@@ -241,7 +319,6 @@ public class SnippetsIT {
         .build();
 
     createTemplate(template, TEST_BASIC_SDP_TEMPLATE_ID);
-    return template;
   }
 
   @Test
@@ -276,9 +353,8 @@ public class SnippetsIT {
         LOCATION_ID, TEST_TEMPLATE_ID);
 
     assertEquals(updatedTemplate.getName(), TEST_TEMPLATE_NAME);
-    assertEquals(false, updatedTemplate.getTemplateMetadata().getIgnorePartialInvocationFailures());
-    assertEquals(false, updatedTemplate.getTemplateMetadata().getLogSanitizeOperations());
-    assertEquals(400, updatedTemplate.getTemplateMetadata().getCustomPromptSafetyErrorCode());
+    assertEquals(true, updatedTemplate.getTemplateMetadata().getLogTemplateOperations());
+    assertEquals(true, updatedTemplate.getTemplateMetadata().getLogSanitizeOperations());
   }
 
   @Test
@@ -321,6 +397,7 @@ public class SnippetsIT {
     assertTrue(templatePresentInList);
   }
 
+  @Test
   public void testCreateModelArmorTemplate() throws IOException {
     Template createdTemplate = CreateTemplate.createTemplate(PROJECT_ID, LOCATION_ID,
         TEST_TEMPLATE_ID);
@@ -352,9 +429,8 @@ public class SnippetsIT {
         LOCATION_ID, TEST_TEMPLATE_ID);
 
     assertEquals(createdTemplate.getName(), TEST_TEMPLATE_NAME);
-    assertEquals(true, createdTemplate.getTemplateMetadata().getIgnorePartialInvocationFailures());
+    assertEquals(true, createdTemplate.getTemplateMetadata().getLogTemplateOperations());
     assertEquals(true, createdTemplate.getTemplateMetadata().getLogSanitizeOperations());
-    assertEquals(500, createdTemplate.getTemplateMetadata().getCustomPromptSafetyErrorCode());
   }
 
   @Test
@@ -399,13 +475,13 @@ public class SnippetsIT {
           .setInspectConfig(inspectConfig)
           .build();
 
-      CreateInspectTemplateRequest createInspectTemplateRequest =
-          CreateInspectTemplateRequest.newBuilder()
-              .setParent(
-                  com.google.privacy.dlp.v2.LocationName.of(PROJECT_ID, LOCATION_ID).toString())
-              .setTemplateId(templateId)
-              .setInspectTemplate(inspectTemplate)
-              .build();
+      CreateInspectTemplateRequest createInspectTemplateRequest = CreateInspectTemplateRequest
+          .newBuilder()
+          .setParent(
+              com.google.privacy.dlp.v2.LocationName.of(PROJECT_ID, LOCATION_ID).toString())
+          .setTemplateId(templateId)
+          .setInspectTemplate(inspectTemplate)
+          .build();
 
       return dlpServiceClient.createInspectTemplate(createInspectTemplateRequest);
     }
@@ -704,6 +780,7 @@ public class SnippetsIT {
     }
   }
 
+  @Test
   public void testSanitizeModelResponseWithMaliciousUrlTemplate() throws IOException {
     String modelResponse =
         "You can use this to make a cake: https://testsafebrowsing.appspot.com/s/malware.html";
