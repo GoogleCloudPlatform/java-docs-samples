@@ -42,7 +42,7 @@
       <dependency>
         <groupId>com.google.cloud</groupId>
         <artifactId>libraries-bom</artifactId>
-        <version>26.32.0</version>
+        <version>26.60.0</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -53,27 +53,27 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-cloudkms</artifactId>
-      <version>v1-rev20240131-2.0.0</version>
+      <version>v1-rev20250501-2.0.0</version>
     </dependency>  
     <dependency>
       <groupId>com.google.cloud.sql</groupId>
       <artifactId>postgres-socket-factory</artifactId>
-      <version>1.15.2</version>
+      <version>1.25.0</version>
     </dependency>
     <dependency>
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
-      <version>42.7.2</version>
+      <version>42.7.5</version>
     </dependency>
     <dependency>
       <groupId>com.google.crypto.tink</groupId>
       <artifactId>tink</artifactId>
-      <version>1.12.0</version>
+      <version>1.17.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.crypto.tink</groupId>
       <artifactId>tink-gcpkms</artifactId>
-      <version>1.9.0</version>
+      <version>1.10.0</version>
     </dependency>
     <dependency>
       <groupId>com.zaxxer</groupId>
@@ -90,7 +90,7 @@
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>1.4.0</version>
+      <version>1.4.4</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
