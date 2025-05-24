@@ -34,8 +34,9 @@ public class Quickstart {
     String projectId = "your-project";
     // TODO: Replace with your service account name.
     String serviceAccount = "your-service-account";
-    // TODO: Replace with the ID of your member in the form "user:member@example.com"
-    String member = "your-member";
+    // TODO: Replace with the ID of your principal.
+    // For examples, see https://cloud.google.com/iam/docs/principal-identifiers
+    String member = "your-principal";
     // The role to be granted.
     String role = "roles/logging.logWriter";
 
@@ -56,10 +57,10 @@ public class Quickstart {
     // This client only needs to be created once, and can be reused for multiple requests.
     try (IAMClient iamClient = IAMClient.create()) {
 
-      // Grants your member the "Log writer" role for your project.
+      // Grants your principal the "Log writer" role for your project.
       addBinding(iamClient, projectId, serviceAccount, member, role);
 
-      // Get the project's policy and print all members with the "Log Writer" role
+      // Get the project's policy and print all principals with the "Log Writer" role
       Policy policy = getPolicy(iamClient, projectId, serviceAccount);
 
       Binding binding = null;
@@ -73,14 +74,14 @@ public class Quickstart {
       }
 
       System.out.println("Role: " + binding.getRole());
-      System.out.print("Members: ");
+      System.out.print("Principals: ");
 
       for (String m : binding.getMembersList()) {
         System.out.print("[" + m + "] ");
       }
       System.out.println();
 
-      // Removes member from the "Log writer" role.
+      // Removes principal from the "Log writer" role.
       removeMember(iamClient, projectId, serviceAccount, member, role);
     }
   }
@@ -107,7 +108,7 @@ public class Quickstart {
     }
 
     if (binding != null) {
-      // If binding already exists, adds member to binding.
+      // If binding already exists, adds principal to binding.
       binding.getMembersList().add(member);
     } else {
       // If binding does not exist, adds binding to policy.
@@ -127,7 +128,7 @@ public class Quickstart {
     // Gets the project's policy.
     Policy.Builder policy = getPolicy(iamClient, projectId, serviceAccount).toBuilder();
 
-    // Removes the member from the role.
+    // Removes the principal from the role.
     Binding binding = null;
     for (Binding b : policy.getBindingsList()) {
       if (b.getRole().equals(role)) {
