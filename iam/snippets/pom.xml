@@ -44,7 +44,7 @@
         <groupId>com.google.cloud</groupId>
         <scope>import</scope>
         <type>pom</type>
-        <version>26.32.0</version>
+        <version>26.60.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -72,7 +72,7 @@
       <artifactId>truth</artifactId>
       <groupId>com.google.truth</groupId>
       <scope>test</scope>
-      <version>1.4.0</version>
+      <version>1.4.4</version>
     </dependency>
     <dependency>
       <artifactId>junit</artifactId>

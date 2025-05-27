@@ -43,7 +43,7 @@
         <groupId>com.google.cloud</groupId>
         <scope>import</scope>
         <type>pom</type>
-        <version>26.32.0</version>
+        <version>26.60.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -52,7 +52,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloudevent-types</artifactId>
-      <version>0.14.0</version>
+      <version>0.16.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.protobuf</groupId>
@@ -67,7 +67,7 @@
     <dependency>
       <groupId>com.google.cloud.functions</groupId>
       <artifactId>functions-framework-api</artifactId>
-      <version>1.1.0</version>
+      <version>1.1.4</version>
       <scope>provided</scope>
     </dependency>
 
@@ -75,13 +75,13 @@
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
-      <version>5.10.2</version>
+      <version>5.12.2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>1.4.0</version>
+      <version>1.4.4</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -98,7 +98,7 @@
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
-      <version>5.10.0</version>
+      <version>5.18.0</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -117,7 +117,7 @@
         -->
         <groupId>com.google.cloud.functions</groupId>
         <artifactId>function-maven-plugin</artifactId>
-        <version>0.11.0</version>
+        <version>0.11.1</version>
         <configuration>
           <functionTarget>functions.FirebaseFirestore</functionTarget>
         </configuration>
@@ -127,7 +127,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <!-- version 3.0.0-M4 does not load JUnit5 correctly -->
         <!-- see https://issues.apache.org/jira/browse/SUREFIRE-1750 -->
-        <version>3.2.5</version>
+        <version>3.5.3</version>
         <configuration>
           <includes>
             <include>**/*Test.java</include>
@@ -140,7 +140,7 @@
       <plugin> <!-- Required for Java 8 (Alpha) functions in the inline editor -->
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.12.1</version>
+        <version>3.14.0</version>
         <executions>
           <execution>
             <id>compile</id>

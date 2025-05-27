@@ -31,7 +31,7 @@
       <dependency>
         <groupId>com.google.cloud</groupId>
         <artifactId>libraries-bom</artifactId>
-        <version>26.32.0</version>
+        <version>26.60.0</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -46,7 +46,7 @@
     <dependency>
       <groupId>com.google.crypto.tink</groupId>
       <artifactId>tink</artifactId>
-      <version>1.12.0</version>
+      <version>1.17.0</version>
     </dependency>
     <!-- [START_EXCLUDE] -->
     <dependency>
@@ -62,13 +62,13 @@
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>1.4.0</version>
+      <version>1.4.4</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.nimbusds</groupId>
       <artifactId>nimbus-jose-jwt</artifactId>
-      <version>9.37.3</version>
+      <version>9.48</version>
     </dependency>
     <dependency>
       <groupId>org.bouncycastle</groupId>

@@ -48,7 +48,7 @@ limitations under the License.
       <dependency>
         <groupId>com.google.cloud</groupId>
         <artifactId>libraries-bom</artifactId>
-        <version>26.49.0</version>
+        <version>26.60.0</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -67,12 +67,12 @@ limitations under the License.
     <dependency>
       <groupId>com.google.auth</groupId>
       <artifactId>google-auth-library-oauth2-http</artifactId>
-      <version>1.32.0</version>
+      <version>1.35.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.auth</groupId>
       <artifactId>google-auth-library-cab-token-generator</artifactId>
-      <version>1.32.0</version>
+      <version>1.35.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
@@ -92,7 +92,7 @@ limitations under the License.
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>1.4.0</version>
+      <version>1.4.4</version>
       <scope>test</scope>
     </dependency>
     <!-- START dependencies -->
@@ -104,7 +104,7 @@ limitations under the License.
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
-        <version>3.1.1</version>
+        <version>3.5.0</version>
         <executions>
           <execution>
             <goals>
