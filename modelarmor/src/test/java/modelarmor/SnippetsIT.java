@@ -205,65 +205,7 @@ public class SnippetsIT {
     stdOut = null;
   }
 
-  private static void resetFloorSettings() throws IOException {
-    floorSettingNames = new String[] {
-        projectFloorSettingName, folderFloorSettingName, organizationFloorSettingName
-    };
-
-    try (ModelArmorClient client = ModelArmorClient.create()) {
-      for (String name : floorSettingNames) {
-        FloorSetting floorSetting = FloorSetting.newBuilder()
-            .setName(name)
-            .setFilterConfig(FilterConfig.newBuilder().build())
-            .setEnableFloorSettingEnforcement(false)
-            .build();
-
-        UpdateFloorSettingRequest request = UpdateFloorSettingRequest.newBuilder()
-            .setFloorSetting(floorSetting)
-            .build();
-
-        client.updateFloorSetting(request);
-      }
-    }
-  }
-
-  @Test
-  public void testGetFolderFloorSetting() throws IOException {
-    GetFolderFloorSetting.getFolderFloorSetting(FOLDER_ID);
-    assertThat(stdOut.toString()).contains("Fetched floor setting for folder:");
-  }
-
-  @Test
-  public void testGetOrganizationFloorSetting() throws IOException {
-    GetOrganizationFloorSetting.getOrganizationFloorSetting(ORGANIZATION_ID);
-    assertThat(stdOut.toString()).contains("Fetched floor setting for organization:");
-  }
-
-  @Test
-  public void testGetProjectFloorSetting() throws IOException {
-    GetProjectFloorSetting.getProjectFloorSetting(PROJECT_ID);
-    assertThat(stdOut.toString()).contains("Fetched floor setting for project:");
-  }
-
-  @Test
-  public void testUpdateFolderFloorSetting() throws IOException {
-    UpdateFolderFloorSetting.updateFolderFloorSetting(FOLDER_ID);
-    assertThat(stdOut.toString()).contains("Updated floor setting for folder:");
-  }
-
-  @Test
-  public void testUpdateOrganizationFloorSetting() throws IOException {
-    UpdateOrganizationsFloorSetting.updateOrganizationFloorSetting(ORGANIZATION_ID);
-    assertThat(stdOut.toString()).contains("Updated floor setting for organization:");
-  }
-
-  @Test
-  public void testUpdateProjectFloorSetting() throws IOException {
-    UpdateProjectFloorSetting.updateProjectFloorSetting(PROJECT_ID);
-    assertThat(stdOut.toString()).contains("Updated floor setting for project:");
-  }
-
-  // Create Model Armor templates required for tests.
+  // Helper functions to manage templates.
   private static void createMaliciousUriTemplate() throws IOException {
     // Create a malicious URI filter template.
     MaliciousUriFilterSettings maliciousUriFilterSettings = MaliciousUriFilterSettings.newBuilder()
@@ -319,126 +261,6 @@ public class SnippetsIT {
         .build();
 
     createTemplate(template, TEST_BASIC_SDP_TEMPLATE_ID);
-  }
-
-  @Test
-  public void testUpdateModelArmorTemplate() throws IOException {
-    CreateTemplate.createTemplate(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
-
-    // Update the existing template.
-    Template updatedTemplate = UpdateTemplate.updateTemplate(PROJECT_ID, LOCATION_ID,
-        TEST_TEMPLATE_ID);
-
-    assertEquals(updatedTemplate.getName(), TEST_TEMPLATE_NAME);
-  }
-
-  @Test
-  public void testUpdateModelArmorTemplateWithLabels() throws IOException {
-    CreateTemplateWithLabels.createTemplateWithLabels(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
-
-    // Update the existing template.
-    Template updatedTemplate = UpdateTemplateWithLabels.updateTemplateWithLabels(PROJECT_ID,
-        LOCATION_ID, TEST_TEMPLATE_ID);
-
-    assertEquals(updatedTemplate.getName(), TEST_TEMPLATE_NAME);
-  }
-
-  @Test
-  public void testUpdateModelArmorTemplateWithMetadata() throws IOException {
-    CreateTemplateWithMetadata.createTemplateWithMetadata(PROJECT_ID, LOCATION_ID,
-        TEST_TEMPLATE_ID);
-
-    // Update the existing template.
-    Template updatedTemplate = UpdateTemplateWithMetadata.updateTemplateWithMetadata(PROJECT_ID,
-        LOCATION_ID, TEST_TEMPLATE_ID);
-
-    assertEquals(updatedTemplate.getName(), TEST_TEMPLATE_NAME);
-    assertEquals(true, updatedTemplate.getTemplateMetadata().getLogTemplateOperations());
-    assertEquals(true, updatedTemplate.getTemplateMetadata().getLogSanitizeOperations());
-  }
-
-  @Test
-  public void testGetModelArmorTemplate() throws IOException {
-    CreateTemplate.createTemplate(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
-    Template retrievedTemplate = GetTemplate.getTemplate(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
-
-    assertEquals(retrievedTemplate.getName(), TEST_TEMPLATE_NAME);
-  }
-
-  @Test
-  public void testListModelArmorTemplates() throws IOException {
-    CreateTemplate.createTemplate(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
-
-    ListTemplates.listTemplates(PROJECT_ID, LOCATION_ID);
-
-    boolean templatePresentInList = false;
-    for (Template template : ListTemplates.listTemplates(PROJECT_ID, LOCATION_ID).iterateAll()) {
-      if (TEST_TEMPLATE_NAME.equals(template.getName())) {
-        templatePresentInList = true;
-      }
-    }
-    assertTrue(templatePresentInList);
-  }
-
-  @Test
-  public void testListTemplatesWithFilter() throws IOException {
-    CreateTemplate.createTemplate(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
-    String filter = "name=\"projects/" + PROJECT_ID + "/locations/" + LOCATION_ID + "/"
-        + TEST_TEMPLATE_ID + "\"";
-
-    ListTemplatesWithFilter.listTemplatesWithFilter(PROJECT_ID, LOCATION_ID, filter);
-
-    boolean templatePresentInList = false;
-    for (Template template : ListTemplates.listTemplates(PROJECT_ID, LOCATION_ID).iterateAll()) {
-      if (TEST_TEMPLATE_NAME.equals(template.getName())) {
-        templatePresentInList = true;
-      }
-    }
-    assertTrue(templatePresentInList);
-  }
-
-  @Test
-  public void testCreateModelArmorTemplate() throws IOException {
-    Template createdTemplate = CreateTemplate.createTemplate(PROJECT_ID, LOCATION_ID,
-        TEST_TEMPLATE_ID);
-
-    assertEquals(createdTemplate.getName(), TEST_TEMPLATE_NAME);
-  }
-
-  @Test
-  public void testCreateModelArmorTemplateWithBasicSDP() throws IOException {
-    Template createdTemplate = CreateTemplateWithBasicSdp.createTemplateWithBasicSdp(PROJECT_ID,
-        LOCATION_ID, TEST_TEMPLATE_ID);
-
-    assertEquals(createdTemplate.getName(), TEST_TEMPLATE_NAME);
-    assertEquals(SdpBasicConfigEnforcement.ENABLED,
-        createdTemplate.getFilterConfig().getSdpSettings().getBasicConfig().getFilterEnforcement());
-  }
-
-  @Test
-  public void testCreateModelArmorTemplateWithLabels() throws IOException {
-    Template createdTemplate = CreateTemplateWithLabels.createTemplateWithLabels(PROJECT_ID,
-        LOCATION_ID, TEST_TEMPLATE_ID);
-
-    assertEquals(createdTemplate.getName(), TEST_TEMPLATE_NAME);
-  }
-
-  @Test
-  public void testCreateModelArmorTemplateWithMetadata() throws IOException {
-    Template createdTemplate = CreateTemplateWithMetadata.createTemplateWithMetadata(PROJECT_ID,
-        LOCATION_ID, TEST_TEMPLATE_ID);
-
-    assertEquals(createdTemplate.getName(), TEST_TEMPLATE_NAME);
-    assertEquals(true, createdTemplate.getTemplateMetadata().getLogTemplateOperations());
-    assertEquals(true, createdTemplate.getTemplateMetadata().getLogSanitizeOperations());
-  }
-
-  @Test
-  public void testDeleteModelArmorTemplate() throws IOException {
-    CreateTemplate.createTemplate(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
-    DeleteTemplate.deleteTemplate(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
-
-    assertThat(stdOut.toString()).contains("Deleted template:");
   }
 
   private static void deleteModelArmorTemplate(String templateId) throws IOException {
@@ -579,6 +401,203 @@ public class SnippetsIT {
     }
   }
 
+  private static void resetFloorSettings() throws IOException {
+    floorSettingNames = new String[] {
+        projectFloorSettingName, folderFloorSettingName, organizationFloorSettingName
+    };
+
+    try (ModelArmorClient client = ModelArmorClient.create()) {
+      for (String name : floorSettingNames) {
+        FloorSetting floorSetting = FloorSetting.newBuilder()
+            .setName(name)
+            .setFilterConfig(FilterConfig.newBuilder().build())
+            .setEnableFloorSettingEnforcement(false)
+            .build();
+
+        UpdateFloorSettingRequest request = UpdateFloorSettingRequest.newBuilder()
+            .setFloorSetting(floorSetting)
+            .build();
+
+        client.updateFloorSetting(request);
+      }
+    }
+  }
+
+  // Tests for Folder setting snippets.
+  @Test
+  public void testGetFolderFloorSetting() throws IOException {
+    GetFolderFloorSetting.getFolderFloorSetting(FOLDER_ID);
+    assertThat(stdOut.toString()).contains("Fetched floor setting for folder:");
+  }
+
+  @Test
+  public void testGetOrganizationFloorSetting() throws IOException {
+    GetOrganizationFloorSetting.getOrganizationFloorSetting(ORGANIZATION_ID);
+    assertThat(stdOut.toString()).contains("Fetched floor setting for organization:");
+  }
+
+  @Test
+  public void testGetProjectFloorSetting() throws IOException {
+    GetProjectFloorSetting.getProjectFloorSetting(PROJECT_ID);
+    assertThat(stdOut.toString()).contains("Fetched floor setting for project:");
+  }
+
+  @Test
+  public void testUpdateFolderFloorSetting() throws IOException {
+    UpdateFolderFloorSetting.updateFolderFloorSetting(FOLDER_ID);
+    assertThat(stdOut.toString()).contains("Updated floor setting for folder:");
+  }
+
+  @Test
+  public void testUpdateOrganizationFloorSetting() throws IOException {
+    UpdateOrganizationsFloorSetting.updateOrganizationFloorSetting(ORGANIZATION_ID);
+    assertThat(stdOut.toString()).contains("Updated floor setting for organization:");
+  }
+
+  @Test
+  public void testUpdateProjectFloorSetting() throws IOException {
+    UpdateProjectFloorSetting.updateProjectFloorSetting(PROJECT_ID);
+    assertThat(stdOut.toString()).contains("Updated floor setting for project:");
+  }
+
+  // Tests for Template CRUD snippets.
+  @Test
+  public void testUpdateModelArmorTemplate() throws IOException {
+    CreateTemplate.createTemplate(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
+
+    // Update the existing template.
+    Template updatedTemplate = UpdateTemplate.updateTemplate(PROJECT_ID, LOCATION_ID,
+        TEST_TEMPLATE_ID);
+
+    assertEquals(updatedTemplate.getName(), TEST_TEMPLATE_NAME);
+  }
+
+  @Test
+  public void testUpdateModelArmorTemplateWithLabels() throws IOException {
+    CreateTemplateWithLabels.createTemplateWithLabels(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
+
+    // Update the existing template.
+    Template updatedTemplate = UpdateTemplateWithLabels.updateTemplateWithLabels(PROJECT_ID,
+        LOCATION_ID, TEST_TEMPLATE_ID);
+
+    assertEquals(updatedTemplate.getName(), TEST_TEMPLATE_NAME);
+  }
+
+  @Test
+  public void testUpdateModelArmorTemplateWithMetadata() throws IOException {
+    CreateTemplateWithMetadata.createTemplateWithMetadata(PROJECT_ID, LOCATION_ID,
+        TEST_TEMPLATE_ID);
+
+    // Update the existing template.
+    Template updatedTemplate = UpdateTemplateWithMetadata.updateTemplateWithMetadata(PROJECT_ID,
+        LOCATION_ID, TEST_TEMPLATE_ID);
+
+    assertEquals(updatedTemplate.getName(), TEST_TEMPLATE_NAME);
+    assertEquals(true, updatedTemplate.getTemplateMetadata().getLogTemplateOperations());
+    assertEquals(true, updatedTemplate.getTemplateMetadata().getLogSanitizeOperations());
+  }
+
+  @Test
+  public void testGetModelArmorTemplate() throws IOException {
+    CreateTemplate.createTemplate(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
+    Template retrievedTemplate = GetTemplate.getTemplate(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
+
+    assertEquals(retrievedTemplate.getName(), TEST_TEMPLATE_NAME);
+  }
+
+  @Test
+  public void testListModelArmorTemplates() throws IOException {
+    CreateTemplate.createTemplate(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
+
+    ListTemplates.listTemplates(PROJECT_ID, LOCATION_ID);
+
+    boolean templatePresentInList = false;
+    for (Template template : ListTemplates.listTemplates(PROJECT_ID, LOCATION_ID).iterateAll()) {
+      if (TEST_TEMPLATE_NAME.equals(template.getName())) {
+        templatePresentInList = true;
+      }
+    }
+    assertTrue(templatePresentInList);
+  }
+
+  @Test
+  public void testListTemplatesWithFilter() throws IOException {
+    CreateTemplate.createTemplate(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
+    String filter = "name=\"projects/" + PROJECT_ID + "/locations/" + LOCATION_ID + "/"
+        + TEST_TEMPLATE_ID + "\"";
+
+    ListTemplatesWithFilter.listTemplatesWithFilter(PROJECT_ID, LOCATION_ID, filter);
+
+    boolean templatePresentInList = false;
+    for (Template template : ListTemplates.listTemplates(PROJECT_ID, LOCATION_ID).iterateAll()) {
+      if (TEST_TEMPLATE_NAME.equals(template.getName())) {
+        templatePresentInList = true;
+      }
+    }
+    assertTrue(templatePresentInList);
+  }
+
+  @Test
+  public void testCreateModelArmorTemplate() throws IOException {
+    Template createdTemplate = CreateTemplate.createTemplate(PROJECT_ID, LOCATION_ID,
+        TEST_TEMPLATE_ID);
+
+    assertEquals(createdTemplate.getName(), TEST_TEMPLATE_NAME);
+  }
+
+  @Test
+  public void testCreateModelArmorTemplateWithBasicSDP() throws IOException {
+    Template createdTemplate = CreateTemplateWithBasicSdp.createTemplateWithBasicSdp(PROJECT_ID,
+        LOCATION_ID, TEST_TEMPLATE_ID);
+
+    assertEquals(createdTemplate.getName(), TEST_TEMPLATE_NAME);
+    assertEquals(SdpBasicConfigEnforcement.ENABLED,
+        createdTemplate.getFilterConfig().getSdpSettings().getBasicConfig().getFilterEnforcement());
+  }
+
+  @Test
+  public void testCreateModelArmorTemplateWithAdvancedSDP() throws IOException {
+
+    Template createdTemplate = CreateTemplateWithAdvancedSdp.createTemplateWithAdvancedSdp(
+        PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID,
+        TEST_INSPECT_TEMPLATE_ID, TEST_DEIDENTIFY_TEMPLATE_ID);
+
+    assertEquals(TEST_TEMPLATE_NAME, createdTemplate.getName());
+
+    SdpAdvancedConfig advancedSdpConfig = createdTemplate.getFilterConfig().getSdpSettings()
+        .getAdvancedConfig();
+
+    assertEquals(TEST_INSPECT_TEMPLATE_NAME, advancedSdpConfig.getInspectTemplate());
+    assertEquals(TEST_DEIDENTIFY_TEMPLATE_NAME, advancedSdpConfig.getDeidentifyTemplate());
+  }
+
+  @Test
+  public void testCreateModelArmorTemplateWithLabels() throws IOException {
+    Template createdTemplate = CreateTemplateWithLabels.createTemplateWithLabels(PROJECT_ID,
+        LOCATION_ID, TEST_TEMPLATE_ID);
+
+    assertEquals(createdTemplate.getName(), TEST_TEMPLATE_NAME);
+  }
+
+  @Test
+  public void testCreateModelArmorTemplateWithMetadata() throws IOException {
+    Template createdTemplate = CreateTemplateWithMetadata.createTemplateWithMetadata(PROJECT_ID,
+        LOCATION_ID, TEST_TEMPLATE_ID);
+
+    assertEquals(createdTemplate.getName(), TEST_TEMPLATE_NAME);
+    assertEquals(true, createdTemplate.getTemplateMetadata().getLogTemplateOperations());
+    assertEquals(true, createdTemplate.getTemplateMetadata().getLogSanitizeOperations());
+  }
+
+  @Test
+  public void testDeleteModelArmorTemplate() throws IOException {
+    CreateTemplate.createTemplate(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
+    DeleteTemplate.deleteTemplate(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
+
+    assertThat(stdOut.toString()).contains("Deleted template:");
+  }
+
+  // Tests for user prompt sanitization snippets.
   @Test
   public void testSanitizeUserPromptWithRaiTemplate() throws IOException {
     String userPrompt = "How to make cheesecake without oven at home?";
@@ -751,6 +770,7 @@ public class SnippetsIT {
     }
   }
 
+  // Tests for model response sanitization snippets.
   @Test
   public void testSanitizeModelResponseWithRaiTemplate() throws IOException {
     String modelResponse = "To make cheesecake without oven, you'll need to follow these steps...";
@@ -912,21 +932,5 @@ public class SnippetsIT {
 
     assertEquals(FilterMatchState.NO_MATCH_FOUND,
         response.getSanitizationResult().getFilterMatchState());
-  }
-
-  @Test
-  public void testCreateModelArmorTemplateWithAdvancedSDP() throws IOException {
-
-    Template createdTemplate = CreateTemplateWithAdvancedSdp.createTemplateWithAdvancedSdp(
-        PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID,
-        TEST_INSPECT_TEMPLATE_ID, TEST_DEIDENTIFY_TEMPLATE_ID);
-
-    assertEquals(TEST_TEMPLATE_NAME, createdTemplate.getName());
-
-    SdpAdvancedConfig advancedSdpConfig = createdTemplate.getFilterConfig().getSdpSettings()
-        .getAdvancedConfig();
-
-    assertEquals(TEST_INSPECT_TEMPLATE_NAME, advancedSdpConfig.getInspectTemplate());
-    assertEquals(TEST_DEIDENTIFY_TEMPLATE_NAME, advancedSdpConfig.getDeidentifyTemplate());
   }
 }
