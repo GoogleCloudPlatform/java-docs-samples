@@ -21,23 +21,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-
 import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.dlp.v2.DlpServiceClient;
 import com.google.cloud.modelarmor.v1.CreateTemplateRequest;
@@ -80,6 +63,21 @@ import com.google.privacy.dlp.v2.InspectTemplateName;
 import com.google.privacy.dlp.v2.PrimitiveTransformation;
 import com.google.privacy.dlp.v2.ReplaceValueConfig;
 import com.google.privacy.dlp.v2.Value;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 public class SnippetsIT {
@@ -125,9 +123,11 @@ public class SnippetsIT {
     requireEnvVar("MA_FOLDER_ID");
     requireEnvVar("MA_ORG_ID");
 
-    projectFloorSettingName = FloorSettingName.ofProjectLocationName(PROJECT_ID, "global").toString();
+    projectFloorSettingName =
+        FloorSettingName.ofProjectLocationName(PROJECT_ID, "global").toString();
     folderFloorSettingName = FloorSettingName.ofFolderLocationName(FOLDER_ID, "global").toString();
-    organizationFloorSettingName = FloorSettingName.ofOrganizationLocationName(ORGANIZATION_ID, "global").toString();
+    organizationFloorSettingName =
+        FloorSettingName.ofOrganizationLocationName(ORGANIZATION_ID, "global").toString();
 
     TEST_TEMPLATE_ID = randomId();
     TEST_RAI_TEMPLATE_ID = randomId();
@@ -284,9 +284,10 @@ public class SnippetsIT {
     try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
       // Info Types:
       // https://cloud.google.com/sensitive-data-protection/docs/infotypes-reference
-      List<InfoType> infoTypes = Stream.of("PHONE_NUMBER", "EMAIL_ADDRESS", "US_INDIVIDUAL_TAXPAYER_IDENTIFICATION_NUMBER")
-          .map(it -> InfoType.newBuilder().setName(it).build())
-          .collect(Collectors.toList());
+      List<InfoType> infoTypes =
+          Stream.of("PHONE_NUMBER", "EMAIL_ADDRESS", "US_INDIVIDUAL_TAXPAYER_IDENTIFICATION_NUMBER")
+              .map(it -> InfoType.newBuilder().setName(it).build())
+              .collect(Collectors.toList());
 
       InspectConfig inspectConfig = InspectConfig.newBuilder()
           .addAllInfoTypes(infoTypes)
