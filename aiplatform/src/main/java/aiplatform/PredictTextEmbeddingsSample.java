@@ -72,14 +72,15 @@ public class PredictTextEmbeddingsSample {
     try (PredictionServiceClient client = PredictionServiceClient.create(settings)) {
       // gemini-embedding-001 takes one input at a time.
       for (int i = 0; i < texts.size(); i++) {
-        PredictRequest.Builder request =
-        PredictRequest.newBuilder().setEndpoint(endpointName.toString());
+        PredictRequest.Builder request = 
+            PredictRequest.newBuilder().setEndpoint(endpointName.toString());
         if (outputDimensionality.isPresent()) {
           request.setParameters(
               Value.newBuilder()
                   .setStructValue(
                       Struct.newBuilder()
-                          .putFields("outputDimensionality", valueOf(outputDimensionality.getAsInt()))
+                          .putFields(
+                              "outputDimensionality", valueOf(outputDimensionality.getAsInt()))
                           .build()));
         }
         request.addInstances(
