@@ -29,7 +29,7 @@
   <properties>
     <maven.compiler.target>17</maven.compiler.target>
     <maven.compiler.source>17</maven.compiler.source>
-    <spring-boot.version>3.2.2</spring-boot.version>
+    <spring-boot.version>3.4.5</spring-boot.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -51,17 +51,17 @@
     <dependency>
       <groupId>org.commonmark</groupId>
       <artifactId>commonmark</artifactId>
-      <version>0.17.0</version>
+      <version>0.24.0</version>
     </dependency>
     <dependency>
       <groupId>org.commonmark</groupId>
       <artifactId>commonmark-ext-gfm-tables</artifactId>
-      <version>0.17.0</version>
+      <version>0.24.0</version>
     </dependency>
     <dependency>
       <groupId>org.commonmark</groupId>
       <artifactId>commonmark-ext-gfm-strikethrough</artifactId>
-      <version>0.17.0</version>
+      <version>0.24.0</version>
     </dependency>
     <dependency>
       <groupId>com.googlecode.owasp-java-html-sanitizer</groupId>
@@ -94,7 +94,7 @@
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>jib-maven-plugin</artifactId>
-        <version>3.4.0</version>
+        <version>3.4.5</version>
         <configuration>
           <to>
             <image>gcr.io/PROJECT_ID/renderer</image>

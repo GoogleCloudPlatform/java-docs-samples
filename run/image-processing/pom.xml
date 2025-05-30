@@ -28,7 +28,7 @@ limitations under the License.
   <properties>
     <maven.compiler.target>17</maven.compiler.target>
     <maven.compiler.source>17</maven.compiler.source>
-    <spring-boot.version>3.2.2</spring-boot.version>
+    <spring-boot.version>3.4.5</spring-boot.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -44,7 +44,7 @@ limitations under the License.
       <dependency>
         <groupId>com.google.cloud</groupId>
         <artifactId>spring-cloud-gcp-dependencies</artifactId>
-        <version>4.9.2</version>
+        <version>4.11.0</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -98,7 +98,7 @@ limitations under the License.
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>jib-maven-plugin</artifactId>
-        <version>3.4.0</version>
+        <version>3.4.5</version>
         <configuration>
           <from>
             <image>gcr.io/PROJECT_ID/imagemagick</image>
