@@ -154,10 +154,9 @@ public class AuthenticationTests {
     for (int attempt = 0; attempt < retryLimit; attempt++) {
       try {
         response = this.httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-        switch (response.statusCode()) {
-          case HttpStatusCodes.STATUS_CODE_OK:
-          case HttpStatusCodes.STATUS_CODE_UNAUTHORIZED:
-            return response;
+        if (response.statusCode() == HttpStatusCodes.STATUS_CODE_OK
+            || response.statusCode() == HttpStatusCodes.STATUS_CODE_UNAUTHORIZED) {
+          return response;
         }
       } catch (HttpTimeoutException exception) {
         System.out.println(String.format("TimeoutException: %s", exception));
