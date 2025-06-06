@@ -15,6 +15,7 @@
  */
 
 // [START retail_add_fulfillment_places]
+
 package product;
 
 import static setup.SetupCleanup.createProduct;
