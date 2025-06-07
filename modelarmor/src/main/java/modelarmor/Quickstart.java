@@ -16,9 +16,10 @@
 
 package modelarmor;
 
-// [START modelarmor_create_template_with_labels]
+// [START modelarmor_quickstart]
 
 import com.google.cloud.modelarmor.v1.CreateTemplateRequest;
+import com.google.cloud.modelarmor.v1.DataItem;
 import com.google.cloud.modelarmor.v1.DetectionConfidenceLevel;
 import com.google.cloud.modelarmor.v1.FilterConfig;
 import com.google.cloud.modelarmor.v1.LocationName;
@@ -27,15 +28,18 @@ import com.google.cloud.modelarmor.v1.ModelArmorSettings;
 import com.google.cloud.modelarmor.v1.RaiFilterSettings;
 import com.google.cloud.modelarmor.v1.RaiFilterSettings.RaiFilter;
 import com.google.cloud.modelarmor.v1.RaiFilterType;
+import com.google.cloud.modelarmor.v1.SanitizeModelResponseRequest;
+import com.google.cloud.modelarmor.v1.SanitizeModelResponseResponse;
+import com.google.cloud.modelarmor.v1.SanitizeUserPromptRequest;
+import com.google.cloud.modelarmor.v1.SanitizeUserPromptResponse;
 import com.google.cloud.modelarmor.v1.Template;
+import com.google.protobuf.util.JsonFormat;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-public class CreateTemplateWithLabels {
+public class Quickstart {
 
-  public static void main(String[] args) throws IOException {
+  public void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
 
     // Specify the Google Project ID.
@@ -45,28 +49,32 @@ public class CreateTemplateWithLabels {
     // Specify the template ID.
     String templateId = "your-template-id";
 
-    createTemplateWithLabels(projectId, locationId, templateId);
+    // Run quickstart method.
+    quickstart(projectId, locationId, templateId);
   }
 
-  public static Template createTemplateWithLabels(
-      String projectId, String locationId, String templateId) throws IOException {
+  // This is an example to demonstrate how to use Model Armor to screen
+  // user prompts and model responses using a Model Armor template.
+  public static void quickstart(String projectId, String locationId, String templateId)
+      throws IOException {
 
-    // Construct the API endpoint URL.
+    // Endpoint to call the Model Armor server.
     String apiEndpoint = String.format("modelarmor.%s.rep.googleapis.com:443", locationId);
-    ModelArmorSettings modelArmorSettings = ModelArmorSettings.newBuilder().setEndpoint(apiEndpoint)
-        .build();
+    ModelArmorSettings.Builder builder = ModelArmorSettings.newBuilder();
+    ModelArmorSettings modelArmorSettings = builder.setEndpoint(apiEndpoint).build();
 
     // Initialize the client that will be used to send requests. This client
     // only needs to be created once, and can be reused for multiple requests.
     try (ModelArmorClient client = ModelArmorClient.create(modelArmorSettings)) {
-      String parent = LocationName.of(projectId, locationId).toString();
 
+      // Build the parent name from the project and location.
+      String parent = LocationName.of(projectId, locationId).toString();
       // Build the Model Armor template with your preferred filters.
       // For more details on filters, please refer to the following doc:
       // https://cloud.google.com/security-command-center/docs/key-concepts-model-armor#ma-filters
 
-      // Configure Responsible AI filter with multiple categories and their confidence
-      // levels.
+      // Configure Responsible AI filter with multiple categories and their
+      // confidence levels.
       RaiFilterSettings raiFilterSettings =
           RaiFilterSettings.newBuilder()
               .addAllRaiFilters(
@@ -77,11 +85,11 @@ public class CreateTemplateWithLabels {
                           .build(),
                       RaiFilter.newBuilder()
                           .setFilterType(RaiFilterType.HATE_SPEECH)
-                          .setConfidenceLevel(DetectionConfidenceLevel.HIGH)
+                          .setConfidenceLevel(DetectionConfidenceLevel.MEDIUM_AND_ABOVE)
                           .build(),
                       RaiFilter.newBuilder()
                           .setFilterType(RaiFilterType.SEXUALLY_EXPLICIT)
-                          .setConfidenceLevel(DetectionConfidenceLevel.LOW_AND_ABOVE)
+                          .setConfidenceLevel(DetectionConfidenceLevel.MEDIUM_AND_ABOVE)
                           .build(),
                       RaiFilter.newBuilder()
                           .setFilterType(RaiFilterType.HARASSMENT)
@@ -89,18 +97,11 @@ public class CreateTemplateWithLabels {
                           .build()))
               .build();
 
-      FilterConfig modelArmorFilter = FilterConfig.newBuilder()
-          .setRaiSettings(raiFilterSettings)
-          .build();
-
-      // Create Labels.
-      Map<String, String> labels = new HashMap<>();
-      labels.put("key1", "value1");
-      labels.put("key2", "value2");
+      FilterConfig modelArmorFilter =
+          FilterConfig.newBuilder().setRaiSettings(raiFilterSettings).build();
 
       Template template = Template.newBuilder()
           .setFilterConfig(modelArmorFilter)
-          .putAllLabels(labels)
           .build();
 
       CreateTemplateRequest request = CreateTemplateRequest.newBuilder()
@@ -110,10 +111,35 @@ public class CreateTemplateWithLabels {
           .build();
 
       Template createdTemplate = client.createTemplate(request);
-      System.out.println("Created template with labels: " + createdTemplate.getName());
+      System.out.println("Created template: " + createdTemplate.getName());
 
-      return createdTemplate;
+      // Screen a user prompt using the created template.
+      String userPrompt = "Unsafe user prompt";
+      SanitizeUserPromptRequest userPromptRequest =
+          SanitizeUserPromptRequest.newBuilder()
+              .setName(createdTemplate.getName())
+              .setUserPromptData(DataItem.newBuilder().setText(userPrompt).build())
+              .build();
+
+      SanitizeUserPromptResponse userPromptResponse = client.sanitizeUserPrompt(userPromptRequest);
+      System.out.println(
+          "Result for the provided user prompt: "
+              + JsonFormat.printer().print(userPromptResponse.getSanitizationResult()));
+
+      // Screen a model response using the created template.
+      String modelResponse = "Unsanitized model output";
+      SanitizeModelResponseRequest modelResponseRequest =
+          SanitizeModelResponseRequest.newBuilder()
+              .setName(createdTemplate.getName())
+              .setModelResponseData(DataItem.newBuilder().setText(modelResponse).build())
+              .build();
+
+      SanitizeModelResponseResponse modelResponseResult =
+          client.sanitizeModelResponse(modelResponseRequest);
+      System.out.println(
+          "Result for the provided model response: "
+              + JsonFormat.printer().print(modelResponseResult.getSanitizationResult()));
     }
   }
 }
-// [END modelarmor_create_template_with_labels]
+// [END modelarmor_quickstart]

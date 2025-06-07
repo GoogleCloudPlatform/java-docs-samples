@@ -16,45 +16,61 @@
 
 package modelarmor;
 
-// [START modelarmor_delete_template]
+// [START modelarmor_sanitize_model_response]
 
+import com.google.cloud.modelarmor.v1.DataItem;
 import com.google.cloud.modelarmor.v1.ModelArmorClient;
 import com.google.cloud.modelarmor.v1.ModelArmorSettings;
+import com.google.cloud.modelarmor.v1.SanitizeModelResponseRequest;
+import com.google.cloud.modelarmor.v1.SanitizeModelResponseResponse;
 import com.google.cloud.modelarmor.v1.TemplateName;
+import com.google.protobuf.util.JsonFormat;
 import java.io.IOException;
 
-public class DeleteTemplate {
+public class SanitizeModelResponse {
 
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
 
     // Specify the Google Project ID.
     String projectId = "your-project-id";
-    // Specify the location ID. For example, us-central1.
+    // Specify the location ID. For example, us-central1. 
     String locationId = "your-location-id";
     // Specify the template ID.
     String templateId = "your-template-id";
+    // Specify the model response.
+    String modelResponse = "Unsanitized model output";
 
-    deleteTemplate(projectId, locationId, templateId);
+    sanitizeModelResponse(projectId, locationId, templateId, modelResponse);
   }
 
-  public static void deleteTemplate(String projectId, String locationId, String templateId)
-      throws IOException {
+  public static SanitizeModelResponseResponse sanitizeModelResponse(String projectId,
+      String locationId, String templateId, String modelResponse) throws IOException {
 
-    // Construct the API endpoint URL.
+    // Endpoint to call the Model Armor server.
     String apiEndpoint = String.format("modelarmor.%s.rep.googleapis.com:443", locationId);
     ModelArmorSettings modelArmorSettings = ModelArmorSettings.newBuilder().setEndpoint(apiEndpoint)
         .build();
 
-    // Initialize the client that will be used to send requests. This client
-    // only needs to be created once, and can be reused for multiple requests.
     try (ModelArmorClient client = ModelArmorClient.create(modelArmorSettings)) {
+      // Build the resource name of the template.
       String name = TemplateName.of(projectId, locationId, templateId).toString();
 
-      // Note: Ensure that the template you are deleting isn't used by any models.
-      client.deleteTemplate(name);
-      System.out.println("Deleted template: " + name);
+      // Prepare the request.
+      SanitizeModelResponseRequest request = 
+          SanitizeModelResponseRequest.newBuilder()
+            .setName(name)
+            .setModelResponseData(
+              DataItem.newBuilder().setText(modelResponse)
+              .build())
+            .build();
+
+      SanitizeModelResponseResponse response = client.sanitizeModelResponse(request);
+      System.out.println("Result for the provided model response: "
+          + JsonFormat.printer().print(response.getSanitizationResult()));
+
+      return response;
     }
   }
 }
-// [END modelarmor_delete_template]
+// [END modelarmor_sanitize_model_response]

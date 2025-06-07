@@ -52,7 +52,7 @@ public class PredictTextEmbeddingsSampleTest {
         PredictTextEmbeddingsSample.predictTextEmbeddings(
             APIS_ENDPOINT,
             PROJECT,
-            "text-embedding-005",
+            "gemini-embedding-001",
             texts,
             "QUESTION_ANSWERING",
             OptionalInt.of(5));

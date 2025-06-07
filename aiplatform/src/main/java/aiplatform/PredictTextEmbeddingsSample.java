@@ -41,14 +41,14 @@ public class PredictTextEmbeddingsSample {
     // https://cloud.google.com/vertex-ai/docs/generative-ai/embeddings/get-text-embeddings
     String endpoint = "us-central1-aiplatform.googleapis.com:443";
     String project = "YOUR_PROJECT_ID";
-    String model = "text-embedding-005";
+    String model = "gemini-embedding-001";
     predictTextEmbeddings(
         endpoint,
         project,
         model,
         List.of("banana bread?", "banana muffins?"),
         "QUESTION_ANSWERING",
-        OptionalInt.of(256));
+        OptionalInt.of(3072));
   }
 
   // Gets text embeddings from a pretrained, foundational model.
@@ -67,19 +67,22 @@ public class PredictTextEmbeddingsSample {
     EndpointName endpointName =
         EndpointName.ofProjectLocationPublisherModelName(project, location, "google", model);
 
+    List<List<Float>> floats = new ArrayList<>();
     // You can use this prediction service client for multiple requests.
     try (PredictionServiceClient client = PredictionServiceClient.create(settings)) {
-      PredictRequest.Builder request =
-          PredictRequest.newBuilder().setEndpoint(endpointName.toString());
-      if (outputDimensionality.isPresent()) {
-        request.setParameters(
-            Value.newBuilder()
-                .setStructValue(
-                    Struct.newBuilder()
-                        .putFields("outputDimensionality", valueOf(outputDimensionality.getAsInt()))
-                        .build()));
-      }
+      // gemini-embedding-001 takes one input at a time.
       for (int i = 0; i < texts.size(); i++) {
+        PredictRequest.Builder request = 
+            PredictRequest.newBuilder().setEndpoint(endpointName.toString());
+        if (outputDimensionality.isPresent()) {
+          request.setParameters(
+              Value.newBuilder()
+                  .setStructValue(
+                      Struct.newBuilder()
+                          .putFields(
+                              "outputDimensionality", valueOf(outputDimensionality.getAsInt()))
+                          .build()));
+        }
         request.addInstances(
             Value.newBuilder()
                 .setStructValue(
@@ -87,17 +90,17 @@ public class PredictTextEmbeddingsSample {
                         .putFields("content", valueOf(texts.get(i)))
                         .putFields("task_type", valueOf(task))
                         .build()));
-      }
-      PredictResponse response = client.predict(request.build());
-      List<List<Float>> floats = new ArrayList<>();
-      for (Value prediction : response.getPredictionsList()) {
-        Value embeddings = prediction.getStructValue().getFieldsOrThrow("embeddings");
-        Value values = embeddings.getStructValue().getFieldsOrThrow("values");
-        floats.add(
-            values.getListValue().getValuesList().stream()
-                .map(Value::getNumberValue)
-                .map(Double::floatValue)
-                .collect(toList()));
+        PredictResponse response = client.predict(request.build());
+
+        for (Value prediction : response.getPredictionsList()) {
+          Value embeddings = prediction.getStructValue().getFieldsOrThrow("embeddings");
+          Value values = embeddings.getStructValue().getFieldsOrThrow("values");
+          floats.add(
+              values.getListValue().getValuesList().stream()
+                  .map(Value::getNumberValue)
+                  .map(Double::floatValue)
+                  .collect(toList()));
+        }
       }
       return floats;
     }
