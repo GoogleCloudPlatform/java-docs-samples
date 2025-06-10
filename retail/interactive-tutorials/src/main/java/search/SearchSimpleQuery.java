@@ -56,7 +56,7 @@ public class SearchSimpleQuery {
             .build();
     System.out.println("Search request: " + searchRequest);
     
-// [END retail_search_simple_query}
+// [END retail_search_simple_query]
     
     // Initialize client that will be used to send requests. This client only
     // needs to be created once, and can be reused for multiple requests. After
