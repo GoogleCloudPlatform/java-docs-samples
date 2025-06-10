@@ -28,8 +28,6 @@ import com.google.cloud.modelarmor.v1.DetectionConfidenceLevel;
 import com.google.cloud.modelarmor.v1.FilterConfig;
 import com.google.cloud.modelarmor.v1.FilterMatchState;
 import com.google.cloud.modelarmor.v1.FilterResult;
-import com.google.cloud.modelarmor.v1.FloorSetting;
-import com.google.cloud.modelarmor.v1.FloorSettingName;
 import com.google.cloud.modelarmor.v1.LocationName;
 import com.google.cloud.modelarmor.v1.MaliciousUriFilterSettings;
 import com.google.cloud.modelarmor.v1.MaliciousUriFilterSettings.MaliciousUriFilterEnforcement;
@@ -48,7 +46,6 @@ import com.google.cloud.modelarmor.v1.SdpFilterSettings;
 import com.google.cloud.modelarmor.v1.SdpFinding;
 import com.google.cloud.modelarmor.v1.Template;
 import com.google.cloud.modelarmor.v1.TemplateName;
-import com.google.cloud.modelarmor.v1.UpdateFloorSettingRequest;
 import com.google.privacy.dlp.v2.CreateDeidentifyTemplateRequest;
 import com.google.privacy.dlp.v2.CreateInspectTemplateRequest;
 import com.google.privacy.dlp.v2.DeidentifyConfig;
@@ -103,7 +100,6 @@ public class SnippetsIT {
   private ByteArrayOutputStream stdOut;
   private PrintStream originalOut;
   private static String[] templateToDelete;
-  private static String projectFloorSettingName;
 
   // Check if the required environment variables are set.
   private static void requireEnvVar(String varName) {
@@ -115,9 +111,6 @@ public class SnippetsIT {
   @BeforeClass
   public static void beforeAll() throws IOException {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
-
-    projectFloorSettingName =
-        FloorSettingName.ofProjectLocationName(PROJECT_ID, "global").toString();
 
     TEST_TEMPLATE_ID = randomId();
     TEST_RAI_TEMPLATE_ID = randomId();
@@ -154,8 +147,6 @@ public class SnippetsIT {
   @AfterClass
   public static void afterAll() throws IOException {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
-
-    resetFloorSettings();
 
     // Delete templates after running tests.
     templateToDelete = new String[] {
@@ -387,35 +378,6 @@ public class SnippetsIT {
       String name = TemplateName.of(PROJECT_ID, LOCATION_ID, templateId).toString();
       client.deleteTemplate(name);
     }
-  }
-
-  private static void resetFloorSettings() throws IOException {
-    try (ModelArmorClient client = ModelArmorClient.create()) {
-      FloorSetting floorSetting = FloorSetting.newBuilder()
-          .setName(projectFloorSettingName)
-          .setFilterConfig(FilterConfig.newBuilder().build())
-          .setEnableFloorSettingEnforcement(false)
-          .build();
-
-      UpdateFloorSettingRequest request = UpdateFloorSettingRequest.newBuilder()
-          .setFloorSetting(floorSetting)
-          .build();
-
-      client.updateFloorSetting(request);
-    }
-  }
-
-  // Tests for Floor setting snippets.
-  @Test
-  public void testGetProjectFloorSetting() throws IOException {
-    GetProjectFloorSetting.getProjectFloorSetting(PROJECT_ID);
-    assertThat(stdOut.toString()).contains("Fetched floor setting for project:");
-  }
-
-  @Test
-  public void testUpdateProjectFloorSetting() throws IOException {
-    UpdateProjectFloorSetting.updateProjectFloorSetting(PROJECT_ID);
-    assertThat(stdOut.toString()).contains("Updated floor setting for project:");
   }
 
   // Tests for Template CRUD snippets.
