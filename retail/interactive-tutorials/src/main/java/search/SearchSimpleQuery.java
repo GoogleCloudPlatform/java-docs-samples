@@ -21,6 +21,8 @@
 
 package search;
 
+// [START retail_search_simple_query]
+
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.retail.v2.SearchRequest;
 import com.google.cloud.retail.v2.SearchResponse;
@@ -53,7 +55,9 @@ public class SearchSimpleQuery {
             .setPageSize(pageSize)
             .build();
     System.out.println("Search request: " + searchRequest);
-
+    
+// [END retail_search_simple_query}
+    
     // Initialize client that will be used to send requests. This client only
     // needs to be created once, and can be reused for multiple requests. After
     // completing all of your requests, call the "close" method on the client to
