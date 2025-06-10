@@ -59,9 +59,8 @@ public class UpdateTemplateWithMetadata {
       // For more details about metadata, refer to the following documentation:
       // https://cloud.google.com/security-command-center/docs/reference/model-armor/rest/v1/projects.locations.templates#templatemetadata
       TemplateMetadata updatedMetadata = TemplateMetadata.newBuilder()
-          .setIgnorePartialInvocationFailures(false)
-          .setLogSanitizeOperations(false)
-          .setCustomPromptSafetyErrorCode(400)
+          .setLogTemplateOperations(true)
+          .setLogSanitizeOperations(true)
           .build();
 
       // Update the template with new metadata.

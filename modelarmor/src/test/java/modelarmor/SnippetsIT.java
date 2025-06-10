@@ -84,6 +84,7 @@ public class SnippetsIT {
       .getOrDefault("GOOGLE_CLOUD_PROJECT_LOCATION", "us-central1");
   private static final String MA_ENDPOINT = String.format("modelarmor.%s.rep.googleapis.com:443",
       LOCATION_ID);
+
   private static String TEST_TEMPLATE_ID;
   private static String TEST_RAI_TEMPLATE_ID;
   private static String TEST_CSAM_TEMPLATE_ID;
@@ -97,15 +98,14 @@ public class SnippetsIT {
   private static String TEST_INSPECT_TEMPLATE_NAME;
   private static String TEST_DEIDENTIFY_TEMPLATE_NAME;
   private ByteArrayOutputStream stdOut;
+  private PrintStream originalOut;
   private static String[] templateToDelete;
 
   // Check if the required environment variables are set.
-  private static String requireEnvVar(String varName) {
-    String value = System.getenv(varName);
+  private static void requireEnvVar(String varName) {
     assertNotNull(
         "Environment variable " + varName + " is required to run these tests.",
         System.getenv(varName));
-    return value;
   }
 
   @BeforeClass
@@ -139,6 +139,11 @@ public class SnippetsIT {
     CreateTemplate.createTemplate(PROJECT_ID, LOCATION_ID, TEST_CSAM_TEMPLATE_ID);
   }
 
+  private static String randomId() {
+    Random random = new Random();
+    return "java-ma-" + random.nextLong();
+  }
+
   @AfterClass
   public static void afterAll() throws IOException {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
@@ -162,6 +167,7 @@ public class SnippetsIT {
 
   @Before
   public void beforeEach() {
+    originalOut = System.out;
     stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
   }
@@ -174,17 +180,12 @@ public class SnippetsIT {
       // Ignore not found error - template already deleted.
     }
 
+    System.setOut(originalOut);
     stdOut = null;
-    System.setOut(null);
   }
 
-  private static String randomId() {
-    Random random = new Random();
-    return "java-ma-" + random.nextLong();
-  }
-
-  // Create Model Armor templates required for tests.
-  private static Template createMaliciousUriTemplate() throws IOException {
+  // Helper functions to manage templates.
+  private static void createMaliciousUriTemplate() throws IOException {
     // Create a malicious URI filter template.
     MaliciousUriFilterSettings maliciousUriFilterSettings = MaliciousUriFilterSettings.newBuilder()
         .setFilterEnforcement(MaliciousUriFilterEnforcement.ENABLED)
@@ -199,10 +200,9 @@ public class SnippetsIT {
         .build();
 
     createTemplate(template, TEST_MALICIOUS_URI_TEMPLATE_ID);
-    return template;
   }
 
-  private static Template createPiAndJailBreakTemplate() throws IOException {
+  private static void createPiAndJailBreakTemplate() throws IOException {
     // Create a Pi and Jailbreak filter template.
     // Create a template with Prompt injection & Jailbreak settings.
     PiAndJailbreakFilterSettings piAndJailbreakFilterSettings = PiAndJailbreakFilterSettings
@@ -220,10 +220,9 @@ public class SnippetsIT {
         .build();
 
     createTemplate(template, TEST_PI_JAILBREAK_TEMPLATE_ID);
-    return template;
   }
 
-  private static Template createBasicSdpTemplate() throws IOException {
+  private static void createBasicSdpTemplate() throws IOException {
     SdpBasicConfig basicSdpConfig = SdpBasicConfig.newBuilder()
         .setFilterEnforcement(SdpBasicConfigEnforcement.ENABLED)
         .build();
@@ -241,128 +240,6 @@ public class SnippetsIT {
         .build();
 
     createTemplate(template, TEST_BASIC_SDP_TEMPLATE_ID);
-    return template;
-  }
-
-  @Test
-  public void testUpdateModelArmorTemplate() throws IOException {
-    CreateTemplate.createTemplate(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
-
-    // Update the existing template.
-    Template updatedTemplate = UpdateTemplate.updateTemplate(PROJECT_ID, LOCATION_ID,
-        TEST_TEMPLATE_ID);
-
-    assertEquals(updatedTemplate.getName(), TEST_TEMPLATE_NAME);
-  }
-
-  @Test
-  public void testUpdateModelArmorTemplateWithLabels() throws IOException {
-    CreateTemplateWithLabels.createTemplateWithLabels(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
-
-    // Update the existing template.
-    Template updatedTemplate = UpdateTemplateWithLabels.updateTemplateWithLabels(PROJECT_ID,
-        LOCATION_ID, TEST_TEMPLATE_ID);
-
-    assertEquals(updatedTemplate.getName(), TEST_TEMPLATE_NAME);
-  }
-
-  @Test
-  public void testUpdateModelArmorTemplateWithMetadata() throws IOException {
-    CreateTemplateWithMetadata.createTemplateWithMetadata(PROJECT_ID, LOCATION_ID,
-        TEST_TEMPLATE_ID);
-
-    // Update the existing template.
-    Template updatedTemplate = UpdateTemplateWithMetadata.updateTemplateWithMetadata(PROJECT_ID,
-        LOCATION_ID, TEST_TEMPLATE_ID);
-
-    assertEquals(updatedTemplate.getName(), TEST_TEMPLATE_NAME);
-    assertEquals(false, updatedTemplate.getTemplateMetadata().getIgnorePartialInvocationFailures());
-    assertEquals(false, updatedTemplate.getTemplateMetadata().getLogSanitizeOperations());
-    assertEquals(400, updatedTemplate.getTemplateMetadata().getCustomPromptSafetyErrorCode());
-  }
-
-  @Test
-  public void testGetModelArmorTemplate() throws IOException {
-    CreateTemplate.createTemplate(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
-    Template retrievedTemplate = GetTemplate.getTemplate(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
-
-    assertEquals(retrievedTemplate.getName(), TEST_TEMPLATE_NAME);
-  }
-
-  @Test
-  public void testListModelArmorTemplates() throws IOException {
-    CreateTemplate.createTemplate(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
-
-    ListTemplates.listTemplates(PROJECT_ID, LOCATION_ID);
-
-    boolean templatePresentInList = false;
-    for (Template template : ListTemplates.listTemplates(PROJECT_ID, LOCATION_ID).iterateAll()) {
-      if (TEST_TEMPLATE_NAME.equals(template.getName())) {
-        templatePresentInList = true;
-      }
-    }
-    assertTrue(templatePresentInList);
-  }
-
-  @Test
-  public void testListTemplatesWithFilter() throws IOException {
-    CreateTemplate.createTemplate(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
-    String filter = "name=\"projects/" + PROJECT_ID + "/locations/" + LOCATION_ID + "/"
-        + TEST_TEMPLATE_ID + "\"";
-
-    ListTemplatesWithFilter.listTemplatesWithFilter(PROJECT_ID, LOCATION_ID, filter);
-
-    boolean templatePresentInList = false;
-    for (Template template : ListTemplates.listTemplates(PROJECT_ID, LOCATION_ID).iterateAll()) {
-      if (TEST_TEMPLATE_NAME.equals(template.getName())) {
-        templatePresentInList = true;
-      }
-    }
-    assertTrue(templatePresentInList);
-  }
-
-  public void testCreateModelArmorTemplate() throws IOException {
-    Template createdTemplate = CreateTemplate.createTemplate(PROJECT_ID, LOCATION_ID,
-        TEST_TEMPLATE_ID);
-
-    assertEquals(createdTemplate.getName(), TEST_TEMPLATE_NAME);
-  }
-
-  @Test
-  public void testCreateModelArmorTemplateWithBasicSDP() throws IOException {
-    Template createdTemplate = CreateTemplateWithBasicSdp.createTemplateWithBasicSdp(PROJECT_ID,
-        LOCATION_ID, TEST_TEMPLATE_ID);
-
-    assertEquals(createdTemplate.getName(), TEST_TEMPLATE_NAME);
-    assertEquals(SdpBasicConfigEnforcement.ENABLED,
-        createdTemplate.getFilterConfig().getSdpSettings().getBasicConfig().getFilterEnforcement());
-  }
-
-  @Test
-  public void testCreateModelArmorTemplateWithLabels() throws IOException {
-    Template createdTemplate = CreateTemplateWithLabels.createTemplateWithLabels(PROJECT_ID,
-        LOCATION_ID, TEST_TEMPLATE_ID);
-
-    assertEquals(createdTemplate.getName(), TEST_TEMPLATE_NAME);
-  }
-
-  @Test
-  public void testCreateModelArmorTemplateWithMetadata() throws IOException {
-    Template createdTemplate = CreateTemplateWithMetadata.createTemplateWithMetadata(PROJECT_ID,
-        LOCATION_ID, TEST_TEMPLATE_ID);
-
-    assertEquals(createdTemplate.getName(), TEST_TEMPLATE_NAME);
-    assertEquals(true, createdTemplate.getTemplateMetadata().getIgnorePartialInvocationFailures());
-    assertEquals(true, createdTemplate.getTemplateMetadata().getLogSanitizeOperations());
-    assertEquals(500, createdTemplate.getTemplateMetadata().getCustomPromptSafetyErrorCode());
-  }
-
-  @Test
-  public void testDeleteModelArmorTemplate() throws IOException {
-    CreateTemplate.createTemplate(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
-    DeleteTemplate.deleteTemplate(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
-
-    assertThat(stdOut.toString()).contains("Deleted template:");
   }
 
   private static void deleteModelArmorTemplate(String templateId) throws IOException {
@@ -386,10 +263,10 @@ public class SnippetsIT {
     try (DlpServiceClient dlpServiceClient = DlpServiceClient.create()) {
       // Info Types:
       // https://cloud.google.com/sensitive-data-protection/docs/infotypes-reference
-      List<InfoType> infoTypes = Stream
-          .of("PHONE_NUMBER", "EMAIL_ADDRESS", "US_INDIVIDUAL_TAXPAYER_IDENTIFICATION_NUMBER")
-          .map(it -> InfoType.newBuilder().setName(it).build())
-          .collect(Collectors.toList());
+      List<InfoType> infoTypes =
+          Stream.of("PHONE_NUMBER", "EMAIL_ADDRESS", "US_INDIVIDUAL_TAXPAYER_IDENTIFICATION_NUMBER")
+              .map(it -> InfoType.newBuilder().setName(it).build())
+              .collect(Collectors.toList());
 
       InspectConfig inspectConfig = InspectConfig.newBuilder()
           .addAllInfoTypes(infoTypes)
@@ -399,13 +276,13 @@ public class SnippetsIT {
           .setInspectConfig(inspectConfig)
           .build();
 
-      CreateInspectTemplateRequest createInspectTemplateRequest =
-          CreateInspectTemplateRequest.newBuilder()
-              .setParent(
-                  com.google.privacy.dlp.v2.LocationName.of(PROJECT_ID, LOCATION_ID).toString())
-              .setTemplateId(templateId)
-              .setInspectTemplate(inspectTemplate)
-              .build();
+      CreateInspectTemplateRequest createInspectTemplateRequest = CreateInspectTemplateRequest
+          .newBuilder()
+          .setParent(
+              com.google.privacy.dlp.v2.LocationName.of(PROJECT_ID, LOCATION_ID).toString())
+          .setTemplateId(templateId)
+          .setInspectTemplate(inspectTemplate)
+          .build();
 
       return dlpServiceClient.createInspectTemplate(createInspectTemplateRequest);
     }
@@ -503,6 +380,144 @@ public class SnippetsIT {
     }
   }
 
+  // Tests for Template CRUD snippets.
+  @Test
+  public void testUpdateModelArmorTemplate() throws IOException {
+    CreateTemplate.createTemplate(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
+
+    // Update the existing template.
+    Template updatedTemplate = UpdateTemplate.updateTemplate(PROJECT_ID, LOCATION_ID,
+        TEST_TEMPLATE_ID);
+
+    assertEquals(updatedTemplate.getName(), TEST_TEMPLATE_NAME);
+  }
+
+  @Test
+  public void testUpdateModelArmorTemplateWithLabels() throws IOException {
+    CreateTemplateWithLabels.createTemplateWithLabels(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
+
+    // Update the existing template.
+    Template updatedTemplate = UpdateTemplateWithLabels.updateTemplateWithLabels(PROJECT_ID,
+        LOCATION_ID, TEST_TEMPLATE_ID);
+
+    assertEquals(updatedTemplate.getName(), TEST_TEMPLATE_NAME);
+  }
+
+  @Test
+  public void testUpdateModelArmorTemplateWithMetadata() throws IOException {
+    CreateTemplateWithMetadata.createTemplateWithMetadata(PROJECT_ID, LOCATION_ID,
+        TEST_TEMPLATE_ID);
+
+    // Update the existing template.
+    Template updatedTemplate = UpdateTemplateWithMetadata.updateTemplateWithMetadata(PROJECT_ID,
+        LOCATION_ID, TEST_TEMPLATE_ID);
+
+    assertEquals(updatedTemplate.getName(), TEST_TEMPLATE_NAME);
+    assertEquals(true, updatedTemplate.getTemplateMetadata().getLogTemplateOperations());
+    assertEquals(true, updatedTemplate.getTemplateMetadata().getLogSanitizeOperations());
+  }
+
+  @Test
+  public void testGetModelArmorTemplate() throws IOException {
+    CreateTemplate.createTemplate(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
+    Template retrievedTemplate = GetTemplate.getTemplate(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
+
+    assertEquals(retrievedTemplate.getName(), TEST_TEMPLATE_NAME);
+  }
+
+  @Test
+  public void testListModelArmorTemplates() throws IOException {
+    CreateTemplate.createTemplate(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
+
+    ListTemplates.listTemplates(PROJECT_ID, LOCATION_ID);
+
+    boolean templatePresentInList = false;
+    for (Template template : ListTemplates.listTemplates(PROJECT_ID, LOCATION_ID).iterateAll()) {
+      if (TEST_TEMPLATE_NAME.equals(template.getName())) {
+        templatePresentInList = true;
+      }
+    }
+    assertTrue(templatePresentInList);
+  }
+
+  @Test
+  public void testListTemplatesWithFilter() throws IOException {
+    CreateTemplate.createTemplate(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
+    String filter = "name=\"projects/" + PROJECT_ID + "/locations/" + LOCATION_ID + "/"
+        + TEST_TEMPLATE_ID + "\"";
+
+    ListTemplatesWithFilter.listTemplatesWithFilter(PROJECT_ID, LOCATION_ID, filter);
+
+    boolean templatePresentInList = false;
+    for (Template template : ListTemplates.listTemplates(PROJECT_ID, LOCATION_ID).iterateAll()) {
+      if (TEST_TEMPLATE_NAME.equals(template.getName())) {
+        templatePresentInList = true;
+      }
+    }
+    assertTrue(templatePresentInList);
+  }
+
+  @Test
+  public void testCreateModelArmorTemplate() throws IOException {
+    Template createdTemplate = CreateTemplate.createTemplate(PROJECT_ID, LOCATION_ID,
+        TEST_TEMPLATE_ID);
+
+    assertEquals(createdTemplate.getName(), TEST_TEMPLATE_NAME);
+  }
+
+  @Test
+  public void testCreateModelArmorTemplateWithBasicSDP() throws IOException {
+    Template createdTemplate = CreateTemplateWithBasicSdp.createTemplateWithBasicSdp(PROJECT_ID,
+        LOCATION_ID, TEST_TEMPLATE_ID);
+
+    assertEquals(createdTemplate.getName(), TEST_TEMPLATE_NAME);
+    assertEquals(SdpBasicConfigEnforcement.ENABLED,
+        createdTemplate.getFilterConfig().getSdpSettings().getBasicConfig().getFilterEnforcement());
+  }
+
+  @Test
+  public void testCreateModelArmorTemplateWithAdvancedSDP() throws IOException {
+
+    Template createdTemplate = CreateTemplateWithAdvancedSdp.createTemplateWithAdvancedSdp(
+        PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID,
+        TEST_INSPECT_TEMPLATE_ID, TEST_DEIDENTIFY_TEMPLATE_ID);
+
+    assertEquals(TEST_TEMPLATE_NAME, createdTemplate.getName());
+
+    SdpAdvancedConfig advancedSdpConfig = createdTemplate.getFilterConfig().getSdpSettings()
+        .getAdvancedConfig();
+
+    assertEquals(TEST_INSPECT_TEMPLATE_NAME, advancedSdpConfig.getInspectTemplate());
+    assertEquals(TEST_DEIDENTIFY_TEMPLATE_NAME, advancedSdpConfig.getDeidentifyTemplate());
+  }
+
+  @Test
+  public void testCreateModelArmorTemplateWithLabels() throws IOException {
+    Template createdTemplate = CreateTemplateWithLabels.createTemplateWithLabels(PROJECT_ID,
+        LOCATION_ID, TEST_TEMPLATE_ID);
+
+    assertEquals(createdTemplate.getName(), TEST_TEMPLATE_NAME);
+  }
+
+  @Test
+  public void testCreateModelArmorTemplateWithMetadata() throws IOException {
+    Template createdTemplate = CreateTemplateWithMetadata.createTemplateWithMetadata(PROJECT_ID,
+        LOCATION_ID, TEST_TEMPLATE_ID);
+
+    assertEquals(createdTemplate.getName(), TEST_TEMPLATE_NAME);
+    assertEquals(true, createdTemplate.getTemplateMetadata().getLogTemplateOperations());
+    assertEquals(true, createdTemplate.getTemplateMetadata().getLogSanitizeOperations());
+  }
+
+  @Test
+  public void testDeleteModelArmorTemplate() throws IOException {
+    CreateTemplate.createTemplate(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
+    DeleteTemplate.deleteTemplate(PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID);
+
+    assertThat(stdOut.toString()).contains("Deleted template:");
+  }
+
+  // Tests for user prompt sanitization snippets.
   @Test
   public void testSanitizeUserPromptWithRaiTemplate() throws IOException {
     String userPrompt = "How to make cheesecake without oven at home?";
@@ -675,6 +690,7 @@ public class SnippetsIT {
     }
   }
 
+  // Tests for model response sanitization snippets.
   @Test
   public void testSanitizeModelResponseWithRaiTemplate() throws IOException {
     String modelResponse = "To make cheesecake without oven, you'll need to follow these steps...";
@@ -704,6 +720,7 @@ public class SnippetsIT {
     }
   }
 
+  @Test
   public void testSanitizeModelResponseWithMaliciousUrlTemplate() throws IOException {
     String modelResponse =
         "You can use this to make a cake: https://testsafebrowsing.appspot.com/s/malware.html";
@@ -835,21 +852,5 @@ public class SnippetsIT {
 
     assertEquals(FilterMatchState.NO_MATCH_FOUND,
         response.getSanitizationResult().getFilterMatchState());
-  }
-
-  @Test
-  public void testCreateModelArmorTemplateWithAdvancedSDP() throws IOException {
-
-    Template createdTemplate = CreateTemplateWithAdvancedSdp.createTemplateWithAdvancedSdp(
-        PROJECT_ID, LOCATION_ID, TEST_TEMPLATE_ID,
-        TEST_INSPECT_TEMPLATE_ID, TEST_DEIDENTIFY_TEMPLATE_ID);
-
-    assertEquals(TEST_TEMPLATE_NAME, createdTemplate.getName());
-
-    SdpAdvancedConfig advancedSdpConfig = createdTemplate.getFilterConfig().getSdpSettings()
-        .getAdvancedConfig();
-
-    assertEquals(TEST_INSPECT_TEMPLATE_NAME, advancedSdpConfig.getInspectTemplate());
-    assertEquals(TEST_DEIDENTIFY_TEMPLATE_NAME, advancedSdpConfig.getDeidentifyTemplate());
   }
 }
