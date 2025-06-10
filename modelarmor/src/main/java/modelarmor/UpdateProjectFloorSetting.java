@@ -52,34 +52,11 @@ public class UpdateProjectFloorSetting {
       // https://cloud.google.com/security-command-center/docs/key-concepts-model-armor#ma-filters
       RaiFilterSettings raiFilterSettings =
           RaiFilterSettings.newBuilder()
-              .addAllRaiFilters(
-                  List.of(
-                      RaiFilter.newBuilder()
-                          .setFilterType(RaiFilterType.DANGEROUS)
-                          .setConfidenceLevel(DetectionConfidenceLevel.HIGH)
-                          .build(),
-                      RaiFilter.newBuilder()
-                          .setFilterType(RaiFilterType.HATE_SPEECH)
-                          .setConfidenceLevel(DetectionConfidenceLevel.HIGH)
-                          .build(),
-                      RaiFilter.newBuilder()
-                          .setFilterType(RaiFilterType.HARASSMENT)
-                          .setConfidenceLevel(DetectionConfidenceLevel.HIGH)
-                          .build(),
-                      RaiFilter.newBuilder()
-                          .setFilterType(RaiFilterType.SEXUALLY_EXPLICIT)
-                          .setConfidenceLevel(DetectionConfidenceLevel.MEDIUM_AND_ABOVE)
-                          .build()))
+              .addAllRaiFilters(List.of())
               .build();
 
       FilterConfig modelArmorFilter = FilterConfig.newBuilder()
           .setRaiSettings(raiFilterSettings)
-          .build();
-
-      // Create a field mask to specify which fields to update.
-      // Ref: https://protobuf.dev/reference/protobuf/google.protobuf/#field-mask
-      FieldMask updateMask = FieldMask.newBuilder()
-          .addPaths("filter_config.rai_settings")
           .build();
 
       FloorSetting floorSetting = FloorSetting.newBuilder()
@@ -90,7 +67,6 @@ public class UpdateProjectFloorSetting {
 
       UpdateFloorSettingRequest request = UpdateFloorSettingRequest.newBuilder()
           .setFloorSetting(floorSetting)
-          .setUpdateMask(updateMask)
           .build();
 
       FloorSetting updatedFloorSetting = client.updateFloorSetting(request);
