@@ -89,4 +89,4 @@ public class CreateProduct {
   }
 }
 
-// // [END retail_create_product]
+// [END retail_create_product]
