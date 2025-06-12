@@ -166,7 +166,7 @@
       <!-- For initializing the KafkaIO connector -->
       <groupId>org.apache.kafka</groupId>
       <artifactId>kafka-clients</artifactId>
-      <version>3.8.0</version>
+      <version>3.9.1</version>
     </dependency>
     <dependency>
       <!-- For running containerized Kafka instance in the integration test -->
