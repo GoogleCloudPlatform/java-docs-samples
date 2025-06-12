@@ -20,6 +20,8 @@
 
 package product;
 
+// [START retail_create_product]
+
 import static setup.SetupCleanup.deleteProduct;
 
 import com.google.cloud.ServiceOptions;
@@ -86,3 +88,5 @@ public class CreateProduct {
     }
   }
 }
+
+// // [END retail_create_product]
