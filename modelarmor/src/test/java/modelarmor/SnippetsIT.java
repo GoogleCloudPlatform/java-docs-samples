@@ -124,8 +124,7 @@ public class SnippetsIT {
   public static void beforeAll() throws IOException {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
     
-    // TODO: Uncomment below once floor setting API issues are resolved.
-    // See buganizer ticket b/424365799 for status.
+    // TODO(b/424365799): Uncomment below code once the mentioned issue is resolved
     // requireEnvVar("MA_FOLDER_ID");
     // requireEnvVar("MA_ORG_ID");
 
@@ -171,8 +170,7 @@ public class SnippetsIT {
   public static void afterAll() throws IOException {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
     
-    // TODO: Uncomment below once floor setting API issues are resolved.
-    // See buganizer ticket b/424365799 for status.
+    // TODO(b/424365799): Uncomment below code once the mentioned issue is resolved
     // requireEnvVar("MA_FOLDER_ID");
     // requireEnvVar("MA_ORG_ID");
     // resetFloorSettings();
@@ -433,9 +431,7 @@ public class SnippetsIT {
   }
 
   // Tests for Folder setting snippets.
-  
-  // TODO: Remove ignore for below tests once floor setting API issues are resolved.
-  // See buganizer ticket b/424365799 for status.
+  // TODO(b/424365799): Enable below tests once the mentioned issue is resolved
 
   @Ignore
   @Test
