@@ -28,6 +28,8 @@ import com.google.cloud.modelarmor.v1.DetectionConfidenceLevel;
 import com.google.cloud.modelarmor.v1.FilterConfig;
 import com.google.cloud.modelarmor.v1.FilterMatchState;
 import com.google.cloud.modelarmor.v1.FilterResult;
+import com.google.cloud.modelarmor.v1.FloorSetting;
+import com.google.cloud.modelarmor.v1.FloorSettingName;
 import com.google.cloud.modelarmor.v1.LocationName;
 import com.google.cloud.modelarmor.v1.MaliciousUriFilterSettings;
 import com.google.cloud.modelarmor.v1.MaliciousUriFilterSettings.MaliciousUriFilterEnforcement;
@@ -46,6 +48,7 @@ import com.google.cloud.modelarmor.v1.SdpFilterSettings;
 import com.google.cloud.modelarmor.v1.SdpFinding;
 import com.google.cloud.modelarmor.v1.Template;
 import com.google.cloud.modelarmor.v1.TemplateName;
+import com.google.cloud.modelarmor.v1.UpdateFloorSettingRequest;
 import com.google.privacy.dlp.v2.CreateDeidentifyTemplateRequest;
 import com.google.privacy.dlp.v2.CreateInspectTemplateRequest;
 import com.google.privacy.dlp.v2.DeidentifyConfig;
@@ -72,6 +75,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -80,6 +84,10 @@ import org.junit.runners.JUnit4;
 public class SnippetsIT {
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+  private static final String FOLDER_ID = System.getenv()
+      .getOrDefault("MA_FOLDER_ID", "global");
+  private static final String ORGANIZATION_ID = System.getenv()
+      .getOrDefault("MA_ORG_ID", "global");
   private static final String LOCATION_ID = System.getenv()
       .getOrDefault("GOOGLE_CLOUD_PROJECT_LOCATION", "us-central1");
   private static final String MA_ENDPOINT = String.format("modelarmor.%s.rep.googleapis.com:443",
@@ -99,7 +107,11 @@ public class SnippetsIT {
   private static String TEST_DEIDENTIFY_TEMPLATE_NAME;
   private ByteArrayOutputStream stdOut;
   private PrintStream originalOut;
+  private static String[] floorSettingNames;
   private static String[] templateToDelete;
+  private static String projectFloorSettingName;
+  private static String folderFloorSettingName;
+  private static String organizationFloorSettingName;
 
   // Check if the required environment variables are set.
   private static void requireEnvVar(String varName) {
@@ -111,6 +123,17 @@ public class SnippetsIT {
   @BeforeClass
   public static void beforeAll() throws IOException {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
+    
+    // TODO: Uncomment below once floor setting API issues are resolved.
+    // See buganizer ticket b/424365799 for status.
+    // requireEnvVar("MA_FOLDER_ID");
+    // requireEnvVar("MA_ORG_ID");
+
+    projectFloorSettingName =
+        FloorSettingName.ofProjectLocationName(PROJECT_ID, "global").toString();
+    folderFloorSettingName = FloorSettingName.ofFolderLocationName(FOLDER_ID, "global").toString();
+    organizationFloorSettingName =
+        FloorSettingName.ofOrganizationLocationName(ORGANIZATION_ID, "global").toString();
 
     TEST_TEMPLATE_ID = randomId();
     TEST_RAI_TEMPLATE_ID = randomId();
@@ -147,6 +170,12 @@ public class SnippetsIT {
   @AfterClass
   public static void afterAll() throws IOException {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
+    
+    // TODO: Uncomment below once floor setting API issues are resolved.
+    // See buganizer ticket b/424365799 for status.
+    // requireEnvVar("MA_FOLDER_ID");
+    // requireEnvVar("MA_ORG_ID");
+    // resetFloorSettings();
 
     // Delete templates after running tests.
     templateToDelete = new String[] {
@@ -378,6 +407,77 @@ public class SnippetsIT {
       String name = TemplateName.of(PROJECT_ID, LOCATION_ID, templateId).toString();
       client.deleteTemplate(name);
     }
+  }
+
+  private static void resetFloorSettings() throws IOException {
+    floorSettingNames = new String[] {
+        projectFloorSettingName, folderFloorSettingName, organizationFloorSettingName
+    };
+    
+
+    try (ModelArmorClient client = ModelArmorClient.create()) {
+      for (String name : floorSettingNames) {
+        FloorSetting floorSetting = FloorSetting.newBuilder()
+            .setName(name)
+            .setFilterConfig(FilterConfig.newBuilder().build())
+            .setEnableFloorSettingEnforcement(false)
+            .build();
+
+        UpdateFloorSettingRequest request = UpdateFloorSettingRequest.newBuilder()
+            .setFloorSetting(floorSetting)
+            .build();
+
+        client.updateFloorSetting(request);
+      }
+    }
+  }
+
+  // Tests for Folder setting snippets.
+  
+  // TODO: Remove ignore for below tests once floor setting API issues are resolved.
+  // See buganizer ticket b/424365799 for status.
+
+  @Ignore
+  @Test
+  public void testGetOrganizationFloorSetting() throws IOException {
+    GetOrganizationFloorSetting.getOrganizationFloorSetting(ORGANIZATION_ID);
+    assertThat(stdOut.toString()).contains("Fetched floor setting for organization:");
+  }
+  
+  @Ignore
+  @Test
+  public void testGetFolderFloorSetting() throws IOException {
+    GetFolderFloorSetting.getFolderFloorSetting(FOLDER_ID);
+    assertThat(stdOut.toString()).contains("Fetched floor setting for folder:");
+  }
+
+  @Ignore
+  @Test
+  public void testGetProjectFloorSetting() throws IOException {
+    GetProjectFloorSetting.getProjectFloorSetting(PROJECT_ID);
+    assertThat(stdOut.toString()).contains("Fetched floor setting for project:");
+  }
+
+  @Ignore
+  @Test
+  public void testUpdateOrganizationFloorSetting() throws IOException {
+    UpdateOrganizationsFloorSetting.updateOrganizationFloorSetting(ORGANIZATION_ID);
+    assertThat(stdOut.toString()).contains("Updated floor setting for organization:");
+  }
+
+  @Ignore
+  @Test
+  public void testUpdateFolderFloorSetting() throws IOException {
+    UpdateFolderFloorSetting.updateFolderFloorSetting(FOLDER_ID);
+    assertThat(stdOut.toString()).contains("Updated floor setting for folder:");
+  }
+
+
+  @Ignore
+  @Test
+  public void testUpdateProjectFloorSetting() throws IOException {
+    UpdateProjectFloorSetting.updateProjectFloorSetting(PROJECT_ID);
+    assertThat(stdOut.toString()).contains("Updated floor setting for project:");
   }
 
   // Tests for Template CRUD snippets.
