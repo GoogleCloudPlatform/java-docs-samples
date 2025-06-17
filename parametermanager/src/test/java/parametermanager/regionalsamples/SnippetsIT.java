@@ -181,7 +181,7 @@ public class SnippetsIT {
         createParameter(TEST_PARAMETER_NAME_TO_RENDER.getParameter(), ParameterFormat.JSON);
     iamGrantAccess(SECRET_NAME, testParameter.getPolicyMember().getIamPolicyUidPrincipal());
     try {
-      Thread.sleep(60000);
+      Thread.sleep(120000);
     } catch (InterruptedException e) {
       throw new RuntimeException(e);
     }
