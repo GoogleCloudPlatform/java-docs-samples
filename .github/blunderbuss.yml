@@ -12,9 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-assign_issues:
-  - GoogleCloudPlatform/java-samples-reviewers
-
 assign_issues_by:
 - labels:
   - "api: routeoptimization"
@@ -99,9 +96,6 @@ assign_issues_by:
   - "api: modelarmor"
   to:
   - GoogleCloudPlatform/cloud-modelarmor-team
-
-assign_prs:
-  - GoogleCloudPlatform/java-samples-reviewers
 
 assign_prs_by:
 - labels:
