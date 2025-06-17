@@ -17,7 +17,18 @@
 package parametermanager.regionalsamples;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.Assert.assertEquals;
 
+import com.google.api.gax.rpc.AlreadyExistsException;
+import com.google.cloud.kms.v1.CryptoKey;
+import com.google.cloud.kms.v1.CryptoKeyName;
+import com.google.cloud.kms.v1.CryptoKeyVersion;
+import com.google.cloud.kms.v1.CryptoKeyVersionTemplate;
+import com.google.cloud.kms.v1.KeyManagementServiceClient;
+import com.google.cloud.kms.v1.KeyRing;
+import com.google.cloud.kms.v1.KeyRingName;
+import com.google.cloud.kms.v1.ListCryptoKeyVersionsRequest;
+import com.google.cloud.kms.v1.ProtectionLevel;
 import com.google.cloud.parametermanager.v1.LocationName;
 import com.google.cloud.parametermanager.v1.Parameter;
 import com.google.cloud.parametermanager.v1.ParameterFormat;
@@ -39,6 +50,8 @@ import com.google.iam.v1.GetIamPolicyRequest;
 import com.google.iam.v1.Policy;
 import com.google.iam.v1.SetIamPolicyRequest;
 import com.google.protobuf.ByteString;
+import com.google.protobuf.FieldMask;
+import com.google.protobuf.util.FieldMaskUtil;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -79,6 +92,12 @@ public class SnippetsIT {
   private static ParameterName TEST_PARAMETER_NAME_TO_RENDER;
   private static ParameterVersionName TEST_PARAMETER_VERSION_NAME_TO_RENDER;
   private static SecretName SECRET_NAME;
+  private static ParameterName TEST_PARAMETER_NAME_WITH_KMS;
+  private static String KEY_RING_ID;
+  private static String HSM_KEY_ID;
+  private static ParameterName TEST_PARAMETER_NAME_UPDATE_WITH_KMS;
+  private static String NEW_HSM_KEY_ID;
+  private static ParameterName TEST_PARAMETER_NAME_DELETE_WITH_KMS;
   private ByteArrayOutputStream stdOut;
 
   @BeforeClass
@@ -178,6 +197,33 @@ public class SnippetsIT {
         TEST_PARAMETER_VERSION_NAME_TO_RENDER.getParameter(),
         TEST_PARAMETER_VERSION_NAME_TO_RENDER.getParameterVersion(),
         payload);
+
+    // test create parameter with kms key
+    TEST_PARAMETER_NAME_WITH_KMS = ParameterName.of(PROJECT_ID, LOCATION_ID, randomId());
+    KEY_RING_ID = "test-regional-parameter-manager-snippets";
+    HSM_KEY_ID = randomId();
+    createKeyRing(KEY_RING_ID);
+    createHsmKey(HSM_KEY_ID);
+
+    // test update kms key of parameter
+    TEST_PARAMETER_NAME_UPDATE_WITH_KMS = ParameterName.of(PROJECT_ID, LOCATION_ID, randomId());
+    KEY_RING_ID = "test-regional-parameter-manager-snippets";
+    HSM_KEY_ID = randomId();
+    NEW_HSM_KEY_ID = randomId();
+    createKeyRing(KEY_RING_ID);
+    createHsmKey(HSM_KEY_ID);
+    createHsmKey(NEW_HSM_KEY_ID);
+    String kmsKeyId = CryptoKeyName.of(PROJECT_ID, LOCATION_ID, KEY_RING_ID, HSM_KEY_ID).toString();
+    createParameterWithKms(TEST_PARAMETER_NAME_UPDATE_WITH_KMS.getParameter(), kmsKeyId);
+
+    // test delete kms key of parameter
+    TEST_PARAMETER_NAME_DELETE_WITH_KMS = ParameterName.of(PROJECT_ID, LOCATION_ID, randomId());
+    KEY_RING_ID = "test-regional-parameter-manager-snippets";
+    HSM_KEY_ID = randomId();
+    createKeyRing(KEY_RING_ID);
+    createHsmKey(HSM_KEY_ID);
+    kmsKeyId = CryptoKeyName.of(PROJECT_ID, LOCATION_ID, KEY_RING_ID, HSM_KEY_ID).toString();
+    createParameterWithKms(TEST_PARAMETER_NAME_DELETE_WITH_KMS.getParameter(), kmsKeyId);
   }
 
   @AfterClass
@@ -208,11 +254,46 @@ public class SnippetsIT {
     deleteParameterVersion(TEST_PARAMETER_VERSION_NAME_TO_GET.toString());
     deleteParameterVersion(TEST_PARAMETER_VERSION_NAME_TO_GET_1.toString());
     deleteParameter(TEST_PARAMETER_NAME_TO_GET.toString());
+
+    deleteParameter(TEST_PARAMETER_NAME_WITH_KMS.toString());
+
+    deleteParameter(TEST_PARAMETER_NAME_UPDATE_WITH_KMS.toString());
+
+    deleteParameter(TEST_PARAMETER_NAME_DELETE_WITH_KMS.toString());
+
+    // Iterate over each key ring's key's crypto key versions and destroy.
+    try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
+      for (CryptoKey key : client.listCryptoKeys(getKeyRingName()).iterateAll()) {
+        if (key.hasRotationPeriod() || key.hasNextRotationTime()) {
+          CryptoKey keyWithoutRotation = CryptoKey.newBuilder().setName(key.getName()).build();
+          FieldMask fieldMask = FieldMaskUtil.fromString("rotation_period,next_rotation_time");
+          client.updateCryptoKey(keyWithoutRotation, fieldMask);
+        }
+
+        ListCryptoKeyVersionsRequest listVersionsRequest =
+            ListCryptoKeyVersionsRequest.newBuilder()
+                .setParent(key.getName())
+                .setFilter("state != DESTROYED AND state != DESTROY_SCHEDULED")
+                .build();
+        for (CryptoKeyVersion version :
+            client.listCryptoKeyVersions(listVersionsRequest).iterateAll()) {
+          client.destroyCryptoKeyVersion(version.getName());
+        }
+      }
+    }
   }
 
   private static String randomId() {
     Random random = new Random();
     return "java-" + random.nextLong();
+  }
+
+  private static KeyRingName getKeyRingName() {
+    return KeyRingName.of(PROJECT_ID, LOCATION_ID, KEY_RING_ID);
+  }
+
+  private static com.google.cloud.kms.v1.LocationName getLocationName() {
+    return com.google.cloud.kms.v1.LocationName.of(PROJECT_ID, LOCATION_ID);
   }
 
   private static Parameter createParameter(String parameterId, ParameterFormat format)
@@ -227,6 +308,52 @@ public class SnippetsIT {
 
     try (ParameterManagerClient client = ParameterManagerClient.create(parameterManagerSettings)) {
       return client.createParameter(parent.toString(), parameter, parameterId);
+    }
+  }
+
+  private static Parameter createParameterWithKms(String parameterId, String kmsKeyId)
+      throws IOException {
+    // Endpoint to call the regional parameter manager server
+    String apiEndpoint = String.format("parametermanager.%s.rep.googleapis.com:443", LOCATION_ID);
+    ParameterManagerSettings parameterManagerSettings =
+        ParameterManagerSettings.newBuilder().setEndpoint(apiEndpoint).build();
+
+    LocationName parent = LocationName.of(PROJECT_ID, LOCATION_ID);
+    Parameter parameter = Parameter.newBuilder().setKmsKey(kmsKeyId).build();
+
+    try (ParameterManagerClient client = ParameterManagerClient.create(parameterManagerSettings)) {
+      return client.createParameter(parent.toString(), parameter, parameterId);
+    }
+  }
+
+  private static KeyRing createKeyRing(String keyRingId) throws IOException {
+    try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
+      KeyRing keyRing = KeyRing.newBuilder().build();
+      KeyRing createdKeyRing = client.createKeyRing(getLocationName(), keyRingId, keyRing);
+      return createdKeyRing;
+    } catch (AlreadyExistsException e) {
+      try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
+        return client.getKeyRing(KeyRingName.of(PROJECT_ID, LOCATION_ID, keyRingId));
+      }
+    }
+  }
+
+  private static CryptoKey createHsmKey(String keyId) throws IOException {
+    try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
+      CryptoKey key =
+          CryptoKey.newBuilder()
+              .setPurpose(CryptoKey.CryptoKeyPurpose.ENCRYPT_DECRYPT)
+              .setVersionTemplate(
+                  CryptoKeyVersionTemplate.newBuilder()
+                      .setAlgorithm(CryptoKeyVersion
+                              .CryptoKeyVersionAlgorithm.GOOGLE_SYMMETRIC_ENCRYPTION)
+                      .setProtectionLevel(ProtectionLevel.HSM)
+                      .build())
+              .putLabels("foo", "bar")
+              .putLabels("zip", "zap")
+              .build();
+      CryptoKey createdKey = client.createCryptoKey(getKeyRingName(), keyId, key);
+      return createdKey;
     }
   }
 
@@ -516,6 +643,59 @@ public class SnippetsIT {
 
     assertThat(stdOut.toString()).contains("Enabled regional parameter version");
   }
+
+  @Test
+  public void testCreateRegionalParamWithKmsKey() throws IOException {
+    ParameterName parameterName = TEST_PARAMETER_NAME_WITH_KMS;
+    String cryptoKey = CryptoKeyName.of(PROJECT_ID, LOCATION_ID, KEY_RING_ID, HSM_KEY_ID)
+            .toString();
+    CreateRegionalParamWithKmsKey
+            .createRegionalParameterWithKmsKey(
+                    parameterName.getProject(),
+                    LOCATION_ID,
+                    parameterName.getParameter(),
+                    cryptoKey);
+
+    String expected = String.format(
+        "Created regional parameter %s with kms key %s\n",
+        parameterName, cryptoKey);
+    assertThat(stdOut.toString()).contains(expected);
+  }
+
+  @Test
+  public void testUpdateRegionalParamKmsKey() throws IOException {
+    ParameterName parameterName = TEST_PARAMETER_NAME_UPDATE_WITH_KMS;
+    String cryptoKey = CryptoKeyName.of(PROJECT_ID, LOCATION_ID, KEY_RING_ID, NEW_HSM_KEY_ID)
+            .toString();
+    Parameter updatedParameter = UpdateRegionalParamKmsKey
+            .updateRegionalParamKmsKey(
+                    parameterName.getProject(),
+                    LOCATION_ID,
+                    parameterName.getParameter(),
+                    cryptoKey);
+
+    String expected = String.format(
+        "Updated regional parameter %s with kms key %s\n",
+        parameterName, cryptoKey);
+    assertThat(stdOut.toString()).contains(expected);
+    assertThat(updatedParameter.getKmsKey()).contains(NEW_HSM_KEY_ID);
+    assertThat(updatedParameter.getKmsKey()).doesNotContain(HSM_KEY_ID);
+  }
+
+  @Test
+  public void testRemoveRegionalParamKmsKey() throws IOException {
+    ParameterName parameterName = TEST_PARAMETER_NAME_DELETE_WITH_KMS;
+    Parameter updatedParameter = RemoveRegionalParamKmsKey
+            .removeRegionalParamKmsKey(
+                    parameterName.getProject(), LOCATION_ID, parameterName.getParameter());
+
+    String expected = String.format(
+        "Removed kms key for regional parameter %s\n",
+        parameterName);
+    assertThat(stdOut.toString()).contains(expected);
+    assertEquals("", updatedParameter.getKmsKey());
+  }
+
 
   @Test
   public void testDeleteRegionalParameterVersion() throws IOException {
