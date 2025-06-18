@@ -17,7 +17,7 @@
 /*
  * Delete product from a catalog using Retail API
  */
-
+// [START retail_delete_product]
 package product;
 
 import static setup.SetupCleanup.createProduct;
@@ -52,3 +52,4 @@ public class DeleteProduct {
     }
   }
 }
+// [END retail_delete_product]
