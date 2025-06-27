@@ -19,7 +19,7 @@
  */
 
 package product;
-
+// [START retail_import_products_from_inline_source]
 import com.google.api.gax.rpc.InvalidArgumentException;
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.retail.v2.ColorInfo;
@@ -204,7 +204,7 @@ public class ImportProductsInlineSource {
 
     products.add(product1);
     products.add(product2);
-
+// [END retail_import_products_from_inline_source]
     return products;
   }
 }
