@@ -23,6 +23,10 @@ import com.google.cloud.resourcemanager.v3.CreateTagKeyMetadata;
 import com.google.cloud.resourcemanager.v3.CreateTagKeyRequest;
 import com.google.cloud.resourcemanager.v3.CreateTagValueMetadata;
 import com.google.cloud.resourcemanager.v3.CreateTagValueRequest;
+import com.google.cloud.resourcemanager.v3.DeleteTagKeyMetadata;
+import com.google.cloud.resourcemanager.v3.DeleteTagKeyRequest;
+import com.google.cloud.resourcemanager.v3.DeleteTagValueRequest;
+import com.google.cloud.resourcemanager.v3.DeleteTagValueMetadata;
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.resourcemanager.v3.TagKey;
 import com.google.cloud.resourcemanager.v3.TagKeysClient;
@@ -203,6 +207,28 @@ public class SnippetsIT {
   }
 
   private static void deleteTags() throws IOException{
+	  try (TagValuesClient tagValuesClient = TagValuesClient.create()) {
+   DeleteTagValueRequest request =
+       DeleteTagValueRequest.newBuilder()
+           .setName(TAG_VALUE.getName())
+           .build();
+   OperationFuture<TagValue, DeleteTagValueMetadata> future =
+       tagValuesClient.deleteTagValueOperationCallable().futureCall(request);
+   TagValue response = future.get();
+ }catch(Exception e){
+ }
+
+ try (TagKeysClient tagKeysClient = TagKeysClient.create()) {
+   DeleteTagKeyRequest request =
+       DeleteTagKeyRequest.newBuilder()
+           .setName(TAG_KEY.getName())
+           .build();
+   OperationFuture<TagKey, DeleteTagKeyMetadata> future =
+       tagKeysClient.deleteTagKeyOperationCallable().futureCall(request);
+   TagKey response = future.get();
+ }catch(Exception e){
+ }
+
   }
 
   private static Secret createSecret(boolean addAnnotation) throws IOException {

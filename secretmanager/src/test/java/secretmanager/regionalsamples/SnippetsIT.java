@@ -305,7 +305,12 @@ public class SnippetsIT {
   public void testCreateRegionalSecretWithTags() throws IOException {
     SecretName name = TEST_REGIONAL_SECRET_WITH_TAGS_TO_CREATE_NAME;
     Secret secret = CreateRegionalSecretWithTags.createRegionalSecretWithTags(
-        name.getProject(), name.getLocation(), name.getSecret(), TAG_KEY, TAG_VALUE);
+        name.getProject(),
+	name.getLocation(),
+	name.getSecret(),
+	TAG_KEY.getName(),
+	TAG_VALUE.getName()
+    );
 
     assertThat(stdOut.toString()).contains("Created secret with Tags");
   }
