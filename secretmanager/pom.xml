@@ -50,7 +50,7 @@
     </dependencies>
   </dependencyManagement>
 
-<dependencies>
+  <dependencies>
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-secretmanager</artifactId>
