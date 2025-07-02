@@ -65,9 +65,9 @@ public class CreateRegionalSecretWithTags {
 
       // Build the secret to create with tags.
       Secret secret =
-          Secret.newBuilder()
-                .putTags(tagKey, tagValue)
-                .build();
+        Secret.newBuilder()
+            .putTags(tagKey, tagValue)
+            .build();
 
       // Create the secret.
       Secret createdSecret = client.createSecret(location.toString(), secretId, secret);
