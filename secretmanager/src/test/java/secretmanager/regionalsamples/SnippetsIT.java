@@ -167,7 +167,7 @@ public class SnippetsIT {
   }
 
   @AfterClass
-  public static void afterAll() throws IOException {
+  public static void afterAll() throws Exception {
     Assert.assertFalse("missing GOOGLE_CLOUD_PROJECT", Strings.isNullOrEmpty(PROJECT_ID));
 
     deleteRegionalSecret(TEST_REGIONAL_SECRET.getName());
@@ -226,7 +226,7 @@ public class SnippetsIT {
 
   }
 
-  private static void deleteTags() throws IOException{
+  private static void deleteTags() throws Exception{
 	  try (TagValuesClient tagValuesClient = TagValuesClient.create()) {
       DeleteTagValueRequest request =
           DeleteTagValueRequest.newBuilder()
@@ -235,8 +235,6 @@ public class SnippetsIT {
       OperationFuture<TagValue, DeleteTagValueMetadata> future =
           tagValuesClient.deleteTagValueOperationCallable().futureCall(request);
       TagValue response = future.get();
-    }catch(Exception e){
-      System.out.printf("Unable to delete Tag key %s\n", e.toString());
     }
 
     try (TagKeysClient tagKeysClient = TagKeysClient.create()) {
@@ -248,7 +246,7 @@ public class SnippetsIT {
           tagKeysClient.deleteTagKeyOperationCallable().futureCall(request);
       TagKey response = future.get();
     }catch(Exception e){
-      System.out.printf("Unable to delete Tag Value %s\n", e.toString());
+      System.out.printf("Unable to delete Tag key %s\n", e.toString());
     }
   }
 
