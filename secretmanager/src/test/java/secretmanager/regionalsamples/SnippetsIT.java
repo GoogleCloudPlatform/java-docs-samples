@@ -223,7 +223,8 @@ public class SnippetsIT {
   }
 
   private static void deleteTags() throws Exception{
-	  try (TagValuesClient tagValuesClient = TagValuesClient.create()) {
+      Thread.sleep(60000);
+      try (TagValuesClient tagValuesClient = TagValuesClient.create()) {
       DeleteTagValueRequest request =
           DeleteTagValueRequest.newBuilder()
               .setName(TAG_VALUE.getName())

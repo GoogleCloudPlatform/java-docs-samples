@@ -160,7 +160,6 @@ public class SnippetsIT {
     deleteSecret(TEST_SECRET_TO_DELETE.getName());
     deleteSecret(TEST_SECRET_TO_DELETE_WITH_ETAG.getName());
     deleteSecret(TEST_SECRET_WITH_VERSIONS.getName());
-    Thread.sleep(5000); 
     deleteTags();
   }
 
@@ -207,7 +206,9 @@ public class SnippetsIT {
   }
 
   private static void deleteTags() throws Exception{
-	  try (TagValuesClient tagValuesClient = TagValuesClient.create()) {
+   
+   Thread.sleep(60000); 
+   try (TagValuesClient tagValuesClient = TagValuesClient.create()) {
       DeleteTagValueRequest request =
           DeleteTagValueRequest.newBuilder()
               .setName(TAG_VALUE.getName())
