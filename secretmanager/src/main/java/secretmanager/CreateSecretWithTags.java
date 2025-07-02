@@ -52,12 +52,12 @@ public class CreateSecretWithTags {
       // Build the secret to create with tags.
       Secret secret =
           Secret.newBuilder()
-                  .setReplication(
-                  Replication.newBuilder()
-                      .setAutomatic(Replication.Automatic.newBuilder().build())
-                      .build())
-                      .putTags(tagKey, tagValue)
-              .build();
+          .setReplication(
+              Replication.newBuilder()
+                  .setAutomatic(Replication.Automatic.newBuilder().build())
+                  .build())
+          .putTags(tagKey, tagValue)
+          .build();
 
       // Create the secret.
       Secret createdSecret = client.createSecret(projectName, secretId, secret);
