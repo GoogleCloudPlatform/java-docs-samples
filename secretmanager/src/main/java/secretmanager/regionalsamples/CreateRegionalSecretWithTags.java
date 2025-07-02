@@ -63,7 +63,7 @@ public class CreateRegionalSecretWithTags {
       // Build the parent name from the project.
       LocationName location = LocationName.of(projectId, locationId);
 
-      // Build the secret to create with labels.
+      // Build the secret to create with tags.
       Secret secret =
           Secret.newBuilder()
                 .putTags(tagKey, tagValue)
@@ -71,7 +71,7 @@ public class CreateRegionalSecretWithTags {
 
       // Create the secret.
       Secret createdSecret = client.createSecret(location.toString(), secretId, secret);
-      System.out.printf("Created secret %s\n", createdSecret.getName());
+      System.out.printf("Created secret with Tags%s\n", createdSecret.getName());
       return createdSecret;
     }
   }

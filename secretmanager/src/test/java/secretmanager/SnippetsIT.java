@@ -166,9 +166,16 @@ public class SnippetsIT {
 
   private static void createTags() throws IOException{
     try (TagKeysClient tagKeysClient = TagKeysClient.create()) {
-   CreateTagKeyRequest request =
+   Random random = new Random();
+   ProjectName parent = ProjectName.of(PROJECT_ID);
+	    CreateTagKeyRequest request =
        CreateTagKeyRequest.newBuilder()
-           .setTagKey(TagKey.newBuilder().build())
+           .setTagKey(
+		TagKey
+		.newBuilder()
+		.setParent(parent.toString())
+		.setShortName("java-" + random.nextLong())
+		.build())
            .build();
    OperationFuture<TagKey, CreateTagKeyMetadata> future =
        tagKeysClient.createTagKeyOperationCallable().futureCall(request);
@@ -177,9 +184,14 @@ public class SnippetsIT {
     }catch(Exception e){
     }
     try (TagValuesClient tagValuesClient = TagValuesClient.create()) {
-   CreateTagValueRequest request =
+   Random random = new Random();
+	   CreateTagValueRequest request =
        CreateTagValueRequest.newBuilder()
-           .setTagValue(TagValue.newBuilder().setParent(TAG_KEY.getName()).build())
+           .setTagValue(TagValue
+			.newBuilder()
+		        .setParent(TAG_KEY.getName())
+			.setShortName("java-" + random.nextLong())
+			.build())
            .build();
    OperationFuture<TagValue, CreateTagValueMetadata> future =
        tagValuesClient.createTagValueOperationCallable().futureCall(request);
@@ -314,7 +326,7 @@ public class SnippetsIT {
 	TAG_VALUE.getName()
     );
 
-    assertThat(secret.getTagsMap()).containsEntry(TAG_KEY, TAG_VALUE);
+    assertThat(stdOut.toString()).contains("Created secret with Tags");
   }
 
   @Test

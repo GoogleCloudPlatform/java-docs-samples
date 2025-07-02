@@ -49,7 +49,7 @@ public class CreateSecretWithTags {
       // Build the name.
       ProjectName projectName = ProjectName.of(projectId);
 
-      // Build the secret to create with labels.
+      // Build the secret to create with tags.
       Secret secret =
           Secret.newBuilder()
                   .setReplication(
@@ -61,7 +61,7 @@ public class CreateSecretWithTags {
 
       // Create the secret.
       Secret createdSecret = client.createSecret(projectName, secretId, secret);
-      System.out.printf("Created secret %s\n", createdSecret.getName());
+      System.out.printf("Created secret with Tags %s\n", createdSecret.getName());
       return createdSecret;
     }
   }
