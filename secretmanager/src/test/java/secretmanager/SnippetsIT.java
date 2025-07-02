@@ -160,6 +160,7 @@ public class SnippetsIT {
     deleteSecret(TEST_SECRET_TO_DELETE.getName());
     deleteSecret(TEST_SECRET_TO_DELETE_WITH_ETAG.getName());
     deleteSecret(TEST_SECRET_WITH_VERSIONS.getName());
+    Thread.sleep(5000); 
     deleteTags();
   }
 
@@ -168,7 +169,7 @@ public class SnippetsIT {
     return "java-" + random.nextLong();
   }
 
-  private static void createTags() throws IOException{
+  private static void createTags() throws Exception{
     try (TagKeysClient tagKeysClient = TagKeysClient.create()) {
       Random random = new Random();
       ProjectName parent = ProjectName.of(PROJECT_ID);
@@ -185,8 +186,6 @@ public class SnippetsIT {
           tagKeysClient.createTagKeyOperationCallable().futureCall(request);
       TagKey response = future.get();
       TAG_KEY = response;
-    }catch(Exception e){
-      System.out.printf("Unable to create Tag Key %s\n", e.toString());
     }
 
     try (TagValuesClient tagValuesClient = TagValuesClient.create()) {
@@ -204,12 +203,10 @@ public class SnippetsIT {
           tagValuesClient.createTagValueOperationCallable().futureCall(request);
       TagValue response = future.get();
       TAG_VALUE = response;
-    }catch(Exception e){
-      System.out.printf("Unable to create Tag Value %s\n", e.toString());
     }
   }
 
-  private static void deleteTags() throws IOException{
+  private static void deleteTags() throws Exception{
 	  try (TagValuesClient tagValuesClient = TagValuesClient.create()) {
       DeleteTagValueRequest request =
           DeleteTagValueRequest.newBuilder()
@@ -218,8 +215,6 @@ public class SnippetsIT {
       OperationFuture<TagValue, DeleteTagValueMetadata> future =
           tagValuesClient.deleteTagValueOperationCallable().futureCall(request);
       TagValue response = future.get();
-    }catch(Exception e){
-      System.out.printf("Unable to delete Tag key %s\n", e.toString());
     }
 
     try (TagKeysClient tagKeysClient = TagKeysClient.create()) {
@@ -230,8 +225,6 @@ public class SnippetsIT {
       OperationFuture<TagKey, DeleteTagKeyMetadata> future =
           tagKeysClient.deleteTagKeyOperationCallable().futureCall(request);
       TagKey response = future.get();
-    }catch(Exception e){
-      System.out.printf("Unable to delete Tag Value %s\n", e.toString());
     }
   }
 

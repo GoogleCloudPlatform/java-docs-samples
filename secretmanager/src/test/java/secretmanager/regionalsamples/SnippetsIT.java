@@ -202,8 +202,6 @@ public class SnippetsIT {
           tagKeysClient.createTagKeyOperationCallable().futureCall(request);
       TagKey response = future.get();
       TAG_KEY = response;
-    }catch(Exception e){
-      System.out.printf("Unable to create Tag Key %s\n", e.toString());
     }
 
     try (TagValuesClient tagValuesClient = TagValuesClient.create()) {
@@ -220,8 +218,6 @@ public class SnippetsIT {
           tagValuesClient.createTagValueOperationCallable().futureCall(request);
       TagValue response = future.get();
       TAG_VALUE = response;
-    }catch(Exception e){
-      System.out.printf("Unable to create Tag Value %s\n", e.toString());
     }
 
   }
@@ -245,8 +241,6 @@ public class SnippetsIT {
       OperationFuture<TagKey, DeleteTagKeyMetadata> future =
           tagKeysClient.deleteTagKeyOperationCallable().futureCall(request);
       TagKey response = future.get();
-    }catch(Exception e){
-      System.out.printf("Unable to delete Tag key %s\n", e.toString());
     }
   }
 
