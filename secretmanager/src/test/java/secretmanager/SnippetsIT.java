@@ -170,65 +170,69 @@ public class SnippetsIT {
 
   private static void createTags() throws IOException{
     try (TagKeysClient tagKeysClient = TagKeysClient.create()) {
-   Random random = new Random();
-   ProjectName parent = ProjectName.of(PROJECT_ID);
-	    CreateTagKeyRequest request =
-       CreateTagKeyRequest.newBuilder()
-           .setTagKey(
-		TagKey
-		.newBuilder()
-		.setParent(parent.toString())
-		.setShortName("java-" + random.nextLong())
-		.build())
-           .build();
-   OperationFuture<TagKey, CreateTagKeyMetadata> future =
-       tagKeysClient.createTagKeyOperationCallable().futureCall(request);
-   TagKey response = future.get();
-   TAG_KEY = response;
+      Random random = new Random();
+      ProjectName parent = ProjectName.of(PROJECT_ID);
+          CreateTagKeyRequest request =
+          CreateTagKeyRequest.newBuilder()
+              .setTagKey(
+                TagKey
+                .newBuilder()
+                .setParent(parent.toString())
+                .setShortName("java-" + random.nextLong())
+                .build())
+              .build();
+      OperationFuture<TagKey, CreateTagKeyMetadata> future =
+          tagKeysClient.createTagKeyOperationCallable().futureCall(request);
+      TagKey response = future.get();
+      TAG_KEY = response;
     }catch(Exception e){
+      System.out.printf("Unable to create Tag Key %s\n", e.toString());
     }
-    try (TagValuesClient tagValuesClient = TagValuesClient.create()) {
-   Random random = new Random();
-	   CreateTagValueRequest request =
-       CreateTagValueRequest.newBuilder()
-           .setTagValue(TagValue
-			.newBuilder()
-		        .setParent(TAG_KEY.getName())
-			.setShortName("java-" + random.nextLong())
-			.build())
-           .build();
-   OperationFuture<TagValue, CreateTagValueMetadata> future =
-       tagValuesClient.createTagValueOperationCallable().futureCall(request);
-   TagValue response = future.get();
-   TAG_VALUE = response;
- }catch(Exception e){
- }
 
+    try (TagValuesClient tagValuesClient = TagValuesClient.create()) {
+      Random random = new Random();
+        CreateTagValueRequest request =
+          CreateTagValueRequest.newBuilder()
+              .setTagValue(
+                TagValue
+                .newBuilder()
+                .setParent(TAG_KEY.getName())
+                .setShortName("java-" + random.nextLong())
+                .build())
+              .build();
+      OperationFuture<TagValue, CreateTagValueMetadata> future =
+          tagValuesClient.createTagValueOperationCallable().futureCall(request);
+      TagValue response = future.get();
+      TAG_VALUE = response;
+    }catch(Exception e){
+      System.out.printf("Unable to create Tag Value %s\n", e.toString());
+    }
   }
 
   private static void deleteTags() throws IOException{
 	  try (TagValuesClient tagValuesClient = TagValuesClient.create()) {
-   DeleteTagValueRequest request =
-       DeleteTagValueRequest.newBuilder()
-           .setName(TAG_VALUE.getName())
-           .build();
-   OperationFuture<TagValue, DeleteTagValueMetadata> future =
-       tagValuesClient.deleteTagValueOperationCallable().futureCall(request);
-   TagValue response = future.get();
- }catch(Exception e){
- }
+      DeleteTagValueRequest request =
+          DeleteTagValueRequest.newBuilder()
+              .setName(TAG_VALUE.getName())
+              .build();
+      OperationFuture<TagValue, DeleteTagValueMetadata> future =
+          tagValuesClient.deleteTagValueOperationCallable().futureCall(request);
+      TagValue response = future.get();
+    }catch(Exception e){
+      System.out.printf("Unable to delete Tag key %s\n", e.toString());
+    }
 
- try (TagKeysClient tagKeysClient = TagKeysClient.create()) {
-   DeleteTagKeyRequest request =
-       DeleteTagKeyRequest.newBuilder()
-           .setName(TAG_KEY.getName())
-           .build();
-   OperationFuture<TagKey, DeleteTagKeyMetadata> future =
-       tagKeysClient.deleteTagKeyOperationCallable().futureCall(request);
-   TagKey response = future.get();
- }catch(Exception e){
- }
-
+    try (TagKeysClient tagKeysClient = TagKeysClient.create()) {
+      DeleteTagKeyRequest request =
+          DeleteTagKeyRequest.newBuilder()
+              .setName(TAG_KEY.getName())
+              .build();
+      OperationFuture<TagKey, DeleteTagKeyMetadata> future =
+          tagKeysClient.deleteTagKeyOperationCallable().futureCall(request);
+      TagKey response = future.get();
+    }catch(Exception e){
+      System.out.printf("Unable to delete Tag Value %s\n", e.toString());
+    }
   }
 
   private static Secret createSecret(boolean addAnnotation) throws IOException {

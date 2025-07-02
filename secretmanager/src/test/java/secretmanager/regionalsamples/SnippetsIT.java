@@ -27,6 +27,10 @@ import com.google.cloud.resourcemanager.v3.CreateTagKeyMetadata;
 import com.google.cloud.resourcemanager.v3.CreateTagKeyRequest;
 import com.google.cloud.resourcemanager.v3.CreateTagValueMetadata;
 import com.google.cloud.resourcemanager.v3.CreateTagValueRequest;
+import com.google.cloud.resourcemanager.v3.DeleteTagKeyMetadata;
+import com.google.cloud.resourcemanager.v3.DeleteTagKeyRequest;
+import com.google.cloud.resourcemanager.v3.DeleteTagValueMetadata;
+import com.google.cloud.resourcemanager.v3.DeleteTagValueRequest;
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.resourcemanager.v3.TagKey;
 import com.google.cloud.resourcemanager.v3.TagKeysClient;
@@ -186,33 +190,66 @@ public class SnippetsIT {
     try (TagKeysClient tagKeysClient = TagKeysClient.create()) {
 	    ProjectName parent = ProjectName.of(PROJECT_ID);
 	    Random random = new Random();
-   CreateTagKeyRequest request =
-       CreateTagKeyRequest.newBuilder()
-           .setTagKey(TagKey.newBuilder().setParent(parent.toString())
-		.setShortName("java-" + random.nextLong()).build())
-           .build();
-   OperationFuture<TagKey, CreateTagKeyMetadata> future =
-       tagKeysClient.createTagKeyOperationCallable().futureCall(request);
-   TagKey response = future.get();
-   TAG_KEY = response;
+      CreateTagKeyRequest request =
+          CreateTagKeyRequest.newBuilder()
+              .setTagKey(
+                TagKey.newBuilder()
+                .setParent(parent.toString())
+                .setShortName("java-" + random.nextLong())
+                .build())
+              .build();
+      OperationFuture<TagKey, CreateTagKeyMetadata> future =
+          tagKeysClient.createTagKeyOperationCallable().futureCall(request);
+      TagKey response = future.get();
+      TAG_KEY = response;
     }catch(Exception e){
+      System.out.printf("Unable to create Tag Key %s\n", e.toString());
     }
+
     try (TagValuesClient tagValuesClient = TagValuesClient.create()) {
 	    Random random = new Random();
-   CreateTagValueRequest request =
-       CreateTagValueRequest.newBuilder()
-           .setTagValue(TagValue.newBuilder().setParent(TAG_KEY.getName()).setShortName("java-" + random.nextLong()).build())
-           .build();
-   OperationFuture<TagValue, CreateTagValueMetadata> future =
-       tagValuesClient.createTagValueOperationCallable().futureCall(request);
-   TagValue response = future.get();
-   TAG_VALUE = response;
- }catch(Exception e){
- }
+      CreateTagValueRequest request =
+          CreateTagValueRequest.newBuilder()
+              .setTagValue(
+                TagValue.newBuilder()
+                .setParent(TAG_KEY.getName())
+                .setShortName("java-" + random.nextLong())
+                .build())
+              .build();
+      OperationFuture<TagValue, CreateTagValueMetadata> future =
+          tagValuesClient.createTagValueOperationCallable().futureCall(request);
+      TagValue response = future.get();
+      TAG_VALUE = response;
+    }catch(Exception e){
+      System.out.printf("Unable to create Tag Value %s\n", e.toString());
+    }
 
   }
 
   private static void deleteTags() throws IOException{
+	  try (TagValuesClient tagValuesClient = TagValuesClient.create()) {
+      DeleteTagValueRequest request =
+          DeleteTagValueRequest.newBuilder()
+              .setName(TAG_VALUE.getName())
+              .build();
+      OperationFuture<TagValue, DeleteTagValueMetadata> future =
+          tagValuesClient.deleteTagValueOperationCallable().futureCall(request);
+      TagValue response = future.get();
+    }catch(Exception e){
+      System.out.printf("Unable to delete Tag key %s\n", e.toString());
+    }
+
+    try (TagKeysClient tagKeysClient = TagKeysClient.create()) {
+      DeleteTagKeyRequest request =
+          DeleteTagKeyRequest.newBuilder()
+              .setName(TAG_KEY.getName())
+              .build();
+      OperationFuture<TagKey, DeleteTagKeyMetadata> future =
+          tagKeysClient.deleteTagKeyOperationCallable().futureCall(request);
+      TagKey response = future.get();
+    }catch(Exception e){
+      System.out.printf("Unable to delete Tag Value %s\n", e.toString());
+    }
   }
 
   private static Secret createRegionalSecret() throws IOException {
