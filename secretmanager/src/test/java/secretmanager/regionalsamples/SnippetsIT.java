@@ -45,6 +45,7 @@ import com.google.cloud.secretmanager.v1.SecretManagerServiceClient.ListSecretsP
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient.ListSecretsPagedResponse;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceSettings;
 import com.google.cloud.secretmanager.v1.SecretName;
+import com.google.cloud.secretmanager.v1.ProjectName;
 import com.google.cloud.secretmanager.v1.SecretPayload;
 import com.google.cloud.secretmanager.v1.SecretVersion;
 import com.google.cloud.secretmanager.v1.SecretVersion.State;
@@ -183,9 +184,12 @@ public class SnippetsIT {
 
   private static void createTags() throws IOException{
     try (TagKeysClient tagKeysClient = TagKeysClient.create()) {
+	    ProjectName parent = ProjectName.of(PROJECT_ID);
+	    Random random = new Random();
    CreateTagKeyRequest request =
        CreateTagKeyRequest.newBuilder()
-           .setTagKey(TagKey.newBuilder().build())
+           .setTagKey(TagKey.newBuilder().setParent(parent.toString())
+		.setShortName("java-" + random.nextLong()).build())
            .build();
    OperationFuture<TagKey, CreateTagKeyMetadata> future =
        tagKeysClient.createTagKeyOperationCallable().futureCall(request);
@@ -194,9 +198,10 @@ public class SnippetsIT {
     }catch(Exception e){
     }
     try (TagValuesClient tagValuesClient = TagValuesClient.create()) {
+	    Random random = new Random();
    CreateTagValueRequest request =
        CreateTagValueRequest.newBuilder()
-           .setTagValue(TagValue.newBuilder().setParent(TAG_KEY.getName()).build())
+           .setTagValue(TagValue.newBuilder().setParent(TAG_KEY.getName()).setShortName("java-" + random.nextLong()).build())
            .build();
    OperationFuture<TagValue, CreateTagValueMetadata> future =
        tagValuesClient.createTagValueOperationCallable().futureCall(request);
