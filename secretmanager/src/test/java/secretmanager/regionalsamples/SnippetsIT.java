@@ -22,6 +22,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
+import com.google.api.gax.longrunning.OperationFuture;
 import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.resourcemanager.v3.CreateTagKeyMetadata;
 import com.google.cloud.resourcemanager.v3.CreateTagKeyRequest;
@@ -31,7 +32,6 @@ import com.google.cloud.resourcemanager.v3.DeleteTagKeyMetadata;
 import com.google.cloud.resourcemanager.v3.DeleteTagKeyRequest;
 import com.google.cloud.resourcemanager.v3.DeleteTagValueMetadata;
 import com.google.cloud.resourcemanager.v3.DeleteTagValueRequest;
-import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.resourcemanager.v3.TagKey;
 import com.google.cloud.resourcemanager.v3.TagKeysClient;
 import com.google.cloud.resourcemanager.v3.TagValue;
@@ -41,6 +41,7 @@ import com.google.cloud.secretmanager.v1.CreateSecretRequest;
 import com.google.cloud.secretmanager.v1.DeleteSecretRequest;
 import com.google.cloud.secretmanager.v1.DisableSecretVersionRequest;
 import com.google.cloud.secretmanager.v1.LocationName;
+import com.google.cloud.secretmanager.v1.ProjectName;
 import com.google.cloud.secretmanager.v1.Secret;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient.ListSecretVersionsPage;
@@ -49,7 +50,6 @@ import com.google.cloud.secretmanager.v1.SecretManagerServiceClient.ListSecretsP
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient.ListSecretsPagedResponse;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceSettings;
 import com.google.cloud.secretmanager.v1.SecretName;
-import com.google.cloud.secretmanager.v1.ProjectName;
 import com.google.cloud.secretmanager.v1.SecretPayload;
 import com.google.cloud.secretmanager.v1.SecretVersion;
 import com.google.cloud.secretmanager.v1.SecretVersion.State;
@@ -59,9 +59,9 @@ import com.google.iam.v1.Binding;
 import com.google.iam.v1.Policy;
 import com.google.protobuf.ByteString;
 import java.io.ByteArrayOutputStream;
-import java.lang.Exception;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.lang.Exception;
 import java.util.Map;
 import java.util.Random;
 import org.junit.After;
@@ -134,7 +134,7 @@ public class SnippetsIT {
     TEST_REGIONAL_SECRET_WITH_LABEL_TO_CREATE_NAME =
         SecretName.ofProjectLocationSecretName(PROJECT_ID, LOCATION_ID, randomSecretId());
     TEST_REGIONAL_SECRET_WITH_TAGS_TO_CREATE_NAME =
-	SecretName.ofProjectLocationSecretName(PROJECT_ID, LOCATION_ID,  randomSecretId());
+    SecretName.ofProjectLocationSecretName(PROJECT_ID, LOCATION_ID,  randomSecretId());
     TEST_REGIONAL_SECRET_VERSION = addRegionalSecretVersion(TEST_REGIONAL_SECRET_WITH_VERSIONS);
     TEST_REGIONAL_SECRET_VERSION_TO_DESTROY = 
         addRegionalSecretVersion(TEST_REGIONAL_SECRET_WITH_VERSIONS);
@@ -186,10 +186,10 @@ public class SnippetsIT {
     return "test-drz-" + random.nextLong();
   }
 
-  private static void createTags() throws Exception{
+  private static void createTags() throws Exception {
     try (TagKeysClient tagKeysClient = TagKeysClient.create()) {
-	    ProjectName parent = ProjectName.of(PROJECT_ID);
-	    Random random = new Random();
+      ProjectName parent = ProjectName.of(PROJECT_ID);
+      Random random = new Random();
       CreateTagKeyRequest request =
           CreateTagKeyRequest.newBuilder()
               .setTagKey(
@@ -205,7 +205,7 @@ public class SnippetsIT {
     }
 
     try (TagValuesClient tagValuesClient = TagValuesClient.create()) {
-	    Random random = new Random();
+      Random random = new Random();
       CreateTagValueRequest request =
           CreateTagValueRequest.newBuilder()
               .setTagValue(
@@ -222,9 +222,9 @@ public class SnippetsIT {
 
   }
 
-  private static void deleteTags() throws Exception{
-      Thread.sleep(60000);
-      try (TagValuesClient tagValuesClient = TagValuesClient.create()) {
+  private static void deleteTags() throws Exception {
+    Thread.sleep(60000);
+    try (TagValuesClient tagValuesClient = TagValuesClient.create()) {
       DeleteTagValueRequest request =
           DeleteTagValueRequest.newBuilder()
               .setName(TAG_VALUE.getName())
@@ -341,10 +341,10 @@ public class SnippetsIT {
     SecretName name = TEST_REGIONAL_SECRET_WITH_TAGS_TO_CREATE_NAME;
     Secret secret = CreateRegionalSecretWithTags.createRegionalSecretWithTags(
         name.getProject(),
-	name.getLocation(),
-	name.getSecret(),
-	TAG_KEY.getName(),
-	TAG_VALUE.getName()
+        name.getLocation(),
+        name.getSecret(),
+        TAG_KEY.getName(),
+        TAG_VALUE.getName()
     );
 
     assertThat(stdOut.toString()).contains("Created secret with Tags");

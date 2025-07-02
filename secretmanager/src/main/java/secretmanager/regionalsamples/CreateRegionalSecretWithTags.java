@@ -65,7 +65,7 @@ public class CreateRegionalSecretWithTags {
 
       // Build the secret to create with tags.
       Secret secret =
-        Secret.newBuilder()
+          Secret.newBuilder()
             .putTags(tagKey, tagValue)
             .build();
 

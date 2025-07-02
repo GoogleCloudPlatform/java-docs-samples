@@ -19,15 +19,15 @@ package secretmanager;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertFalse;
 
+import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.resourcemanager.v3.CreateTagKeyMetadata;
 import com.google.cloud.resourcemanager.v3.CreateTagKeyRequest;
 import com.google.cloud.resourcemanager.v3.CreateTagValueMetadata;
 import com.google.cloud.resourcemanager.v3.CreateTagValueRequest;
 import com.google.cloud.resourcemanager.v3.DeleteTagKeyMetadata;
 import com.google.cloud.resourcemanager.v3.DeleteTagKeyRequest;
-import com.google.cloud.resourcemanager.v3.DeleteTagValueRequest;
 import com.google.cloud.resourcemanager.v3.DeleteTagValueMetadata;
-import com.google.api.gax.longrunning.OperationFuture;
+import com.google.cloud.resourcemanager.v3.DeleteTagValueRequest;
 import com.google.cloud.resourcemanager.v3.TagKey;
 import com.google.cloud.resourcemanager.v3.TagKeysClient;
 import com.google.cloud.resourcemanager.v3.TagValue;
@@ -46,10 +46,10 @@ import com.google.cloud.secretmanager.v1.SecretVersion;
 import com.google.cloud.secretmanager.v1.SecretVersionName;
 import com.google.common.base.Strings;
 import com.google.protobuf.ByteString;
-import java.lang.Exception;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.lang.Exception;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Base64;
@@ -168,11 +168,11 @@ public class SnippetsIT {
     return "java-" + random.nextLong();
   }
 
-  private static void createTags() throws Exception{
+  private static void createTags() throws Exception {
     try (TagKeysClient tagKeysClient = TagKeysClient.create()) {
       Random random = new Random();
       ProjectName parent = ProjectName.of(PROJECT_ID);
-          CreateTagKeyRequest request =
+      CreateTagKeyRequest request =
           CreateTagKeyRequest.newBuilder()
               .setTagKey(
                 TagKey
@@ -189,7 +189,7 @@ public class SnippetsIT {
 
     try (TagValuesClient tagValuesClient = TagValuesClient.create()) {
       Random random = new Random();
-        CreateTagValueRequest request =
+      CreateTagValueRequest request =
           CreateTagValueRequest.newBuilder()
               .setTagValue(
                 TagValue
@@ -205,10 +205,9 @@ public class SnippetsIT {
     }
   }
 
-  private static void deleteTags() throws Exception{
-   
-   Thread.sleep(60000); 
-   try (TagValuesClient tagValuesClient = TagValuesClient.create()) {
+  private static void deleteTags() throws Exception {
+    Thread.sleep(60000); 
+    try (TagValuesClient tagValuesClient = TagValuesClient.create()) {
       DeleteTagValueRequest request =
           DeleteTagValueRequest.newBuilder()
               .setName(TAG_VALUE.getName())
@@ -345,9 +344,9 @@ public class SnippetsIT {
     SecretName name = TEST_SECRET_WITH_TAGS_TO_CREATE_NAME;
     Secret secret = CreateSecretWithTags.createSecretWithTags(
         name.getProject(),
-	name.getSecret(),
-	TAG_KEY.getName(),
-	TAG_VALUE.getName()
+        name.getSecret(),
+        TAG_KEY.getName(),
+        TAG_VALUE.getName()
     );
 
     assertThat(stdOut.toString()).contains("Created secret with Tags");
