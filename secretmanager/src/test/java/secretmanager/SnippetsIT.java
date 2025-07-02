@@ -109,7 +109,7 @@ public class SnippetsIT {
   private ByteArrayOutputStream stdOut;
 
   @BeforeClass
-  public static void beforeAll() throws IOException {
+  public static void beforeAll() throws Exception {
     Assert.assertFalse("missing GOOGLE_CLOUD_PROJECT", Strings.isNullOrEmpty(PROJECT_ID));
 
     TEST_SECRET = createSecret(true);
@@ -148,7 +148,7 @@ public class SnippetsIT {
   }
 
   @AfterClass
-  public static void afterAll() throws IOException {
+  public static void afterAll() throws Exception {
     Assert.assertFalse("missing GOOGLE_CLOUD_PROJECT", Strings.isNullOrEmpty(PROJECT_ID));
 
     deleteSecret(TEST_SECRET.getName());

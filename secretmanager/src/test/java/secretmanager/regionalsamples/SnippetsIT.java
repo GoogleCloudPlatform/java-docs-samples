@@ -117,7 +117,7 @@ public class SnippetsIT {
   private ByteArrayOutputStream stdOut;
 
   @BeforeClass
-  public static void beforeAll() throws IOException {
+  public static void beforeAll() throws Exception {
     Assert.assertFalse("missing GOOGLE_CLOUD_PROJECT", Strings.isNullOrEmpty(PROJECT_ID));
     Assert.assertFalse("missing GOOGLE_CLOUD_PROJECT_LOCATION",
         Strings.isNullOrEmpty(LOCATION_ID));
@@ -186,7 +186,7 @@ public class SnippetsIT {
     return "test-drz-" + random.nextLong();
   }
 
-  private static void createTags() throws IOException{
+  private static void createTags() throws Exception{
     try (TagKeysClient tagKeysClient = TagKeysClient.create()) {
 	    ProjectName parent = ProjectName.of(PROJECT_ID);
 	    Random random = new Random();
