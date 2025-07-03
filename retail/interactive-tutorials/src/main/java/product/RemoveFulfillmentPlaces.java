@@ -16,6 +16,7 @@
 
 package product;
 
+// [START retail_remove_fulfillment_places]
 import static setup.SetupCleanup.createProduct;
 import static setup.SetupCleanup.deleteProduct;
 import static setup.SetupCleanup.getProduct;
@@ -82,3 +83,4 @@ public class RemoveFulfillmentPlaces {
     }
   }
 }
+// [END retail_remove_fulfillment_places]

@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-// [START retail_add_fulfillment_places]
 
 package product;
 
+// [START retail_add_fulfillment_places]
 import static setup.SetupCleanup.createProduct;
 import static setup.SetupCleanup.deleteProduct;
 import static setup.SetupCleanup.getProduct;

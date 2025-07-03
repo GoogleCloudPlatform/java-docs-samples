@@ -19,6 +19,7 @@
  */
 
 package product;
+
 // [START retail_get_product]
 import static setup.SetupCleanup.createProduct;
 import static setup.SetupCleanup.deleteProduct;

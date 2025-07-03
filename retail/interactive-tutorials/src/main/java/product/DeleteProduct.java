@@ -17,9 +17,10 @@
 /*
  * Delete product from a catalog using Retail API
  */
-// [START retail_delete_product]
+
 package product;
 
+// [START retail_delete_product]
 import static setup.SetupCleanup.createProduct;
 
 import com.google.cloud.retail.v2.DeleteProductRequest;
