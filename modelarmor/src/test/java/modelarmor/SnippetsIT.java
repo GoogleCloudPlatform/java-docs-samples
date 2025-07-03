@@ -123,10 +123,8 @@ public class SnippetsIT {
   @BeforeClass
   public static void beforeAll() throws IOException {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
-    
-    // TODO(b/424365799): Uncomment below code once the mentioned issue is resolved
-    // requireEnvVar("MA_FOLDER_ID");
-    // requireEnvVar("MA_ORG_ID");
+    requireEnvVar("MA_FOLDER_ID");
+    requireEnvVar("MA_ORG_ID");
 
     projectFloorSettingName =
         FloorSettingName.ofProjectLocationName(PROJECT_ID, "global").toString();
@@ -169,11 +167,10 @@ public class SnippetsIT {
   @AfterClass
   public static void afterAll() throws IOException {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
+    requireEnvVar("MA_FOLDER_ID");
+    requireEnvVar("MA_ORG_ID");
     
-    // TODO(b/424365799): Uncomment below code once the mentioned issue is resolved
-    // requireEnvVar("MA_FOLDER_ID");
-    // requireEnvVar("MA_ORG_ID");
-    // resetFloorSettings();
+    resetFloorSettings();
 
     // Delete templates after running tests.
     templateToDelete = new String[] {
@@ -431,37 +428,30 @@ public class SnippetsIT {
   }
 
   // Tests for Folder setting snippets.
-  // TODO(b/424365799): Enable below tests once the mentioned issue is resolved
-
-  @Ignore
   @Test
   public void testGetOrganizationFloorSetting() throws IOException {
     GetOrganizationFloorSetting.getOrganizationFloorSetting(ORGANIZATION_ID);
     assertThat(stdOut.toString()).contains("Fetched floor setting for organization:");
   }
   
-  @Ignore
   @Test
   public void testGetFolderFloorSetting() throws IOException {
     GetFolderFloorSetting.getFolderFloorSetting(FOLDER_ID);
     assertThat(stdOut.toString()).contains("Fetched floor setting for folder:");
   }
 
-  @Ignore
   @Test
   public void testGetProjectFloorSetting() throws IOException {
     GetProjectFloorSetting.getProjectFloorSetting(PROJECT_ID);
     assertThat(stdOut.toString()).contains("Fetched floor setting for project:");
   }
 
-  @Ignore
   @Test
   public void testUpdateOrganizationFloorSetting() throws IOException {
     UpdateOrganizationsFloorSetting.updateOrganizationFloorSetting(ORGANIZATION_ID);
     assertThat(stdOut.toString()).contains("Updated floor setting for organization:");
   }
 
-  @Ignore
   @Test
   public void testUpdateFolderFloorSetting() throws IOException {
     UpdateFolderFloorSetting.updateFolderFloorSetting(FOLDER_ID);
@@ -469,7 +459,6 @@ public class SnippetsIT {
   }
 
 
-  @Ignore
   @Test
   public void testUpdateProjectFloorSetting() throws IOException {
     UpdateProjectFloorSetting.updateProjectFloorSetting(PROJECT_ID);
