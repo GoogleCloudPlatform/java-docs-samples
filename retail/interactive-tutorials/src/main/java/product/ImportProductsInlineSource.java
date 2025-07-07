@@ -204,7 +204,7 @@ public class ImportProductsInlineSource {
 
     products.add(product1);
     products.add(product2);
-// [END retail_import_products_from_inline_source]
     return products;
   }
 }
+// [END retail_import_products_from_inline_source]
