@@ -20,6 +20,8 @@
 
 package events;
 
+// [START retail_purge_user_events]
+
 import static setup.SetupCleanup.writeUserEvent;
 
 import com.google.api.gax.longrunning.OperationFuture;
@@ -73,3 +75,5 @@ public class PurgeUserEvent {
     }
   }
 }
+
+// [END retail_purge_user_events]
