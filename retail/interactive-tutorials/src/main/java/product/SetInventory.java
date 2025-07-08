@@ -16,6 +16,9 @@
 
 package product;
 
+/*
+ * Region Tag: retail_set_inventory
+ */
 // [START retail_set_inventory]
 
 import static setup.SetupCleanup.createProduct;
