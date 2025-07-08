@@ -98,6 +98,9 @@ public class SetInventory {
             .build();
     System.out.printf("Set inventory request: %s%n", setInventoryRequest);
 
+    /*
+     * Region Tag: retail_set_inventory
+     */
     // [END retail_set_inventory]
 
     // To send an out-of-order request assign the invalid SetTime here:
