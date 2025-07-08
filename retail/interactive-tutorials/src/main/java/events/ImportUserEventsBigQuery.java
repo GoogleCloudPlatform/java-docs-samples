@@ -20,6 +20,8 @@
 
 package events;
 
+// [START retail_import_user_events_from_big_query]
+
 import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.bigquery.BigQueryException;
@@ -122,3 +124,4 @@ public class ImportUserEventsBigQuery {
     }
   }
 }
+// [END retail_import_user_events_from_big_query]
