@@ -20,6 +20,7 @@
  */
 
 package search;
+// [START retail_search_for_products_with_ordering]
 
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.retail.v2.SearchRequest;
@@ -70,3 +71,5 @@ public class SearchWithOrdering {
     }
   }
 }
+
+// [END retail_search_for_products_with_ordering]
