@@ -19,6 +19,7 @@
  */
 
 package events;
+// [START retail_import_user_events_from_gcs]
 
 import com.google.api.gax.rpc.InvalidArgumentException;
 import com.google.api.gax.rpc.PermissionDeniedException;
@@ -128,3 +129,5 @@ public class ImportUserEventsGcs {
     }
   }
 }
+
+// [END retail_import_user_events_from_gcs]
