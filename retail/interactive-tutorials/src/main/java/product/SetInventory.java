@@ -16,6 +16,11 @@
 
 package product;
 
+/*
+ * Region Tag: retail_set_inventory
+ */
+// [START retail_set_inventory]
+
 import static setup.SetupCleanup.createProduct;
 import static setup.SetupCleanup.deleteProduct;
 import static setup.SetupCleanup.getProduct;
@@ -92,6 +97,11 @@ public class SetInventory {
             .setSetMask(setMask)
             .build();
     System.out.printf("Set inventory request: %s%n", setInventoryRequest);
+
+    /*
+     * Region Tag: retail_set_inventory
+     */
+    // [END retail_set_inventory]
 
     // To send an out-of-order request assign the invalid SetTime here:
     // Instant instant = LocalDateTime.now().minusDays(1).toInstant(ZoneOffset.UTC);
