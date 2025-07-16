@@ -26,6 +26,7 @@ import java.io.PrintStream;
 import java.util.concurrent.ExecutionException;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -50,6 +51,7 @@ public class SearchWithBoostSpecTest {
   }
 
   @Test
+  @Ignore("https://github.com/GoogleCloudPlatform/java-docs-samples/issues/10133")
   public void testOutput() {
     String outputResult = bout.toString();
 
