@@ -19,6 +19,7 @@
  */
 
 package events;
+
 // [START retail_import_user_events_from_inline_source]
 
 import com.google.api.gax.longrunning.OperationFuture;
