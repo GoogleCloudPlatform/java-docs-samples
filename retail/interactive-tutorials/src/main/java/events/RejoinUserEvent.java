@@ -20,6 +20,8 @@
 
 package events;
 
+// [START retail_rejoin_user_events]
+
 import static setup.SetupCleanup.purgeUserEvent;
 import static setup.SetupCleanup.writeUserEvent;
 
@@ -73,3 +75,5 @@ public class RejoinUserEvent {
     purgeUserEvent(visitorId);
   }
 }
+
+// [END retail_rejoin_user_events]
