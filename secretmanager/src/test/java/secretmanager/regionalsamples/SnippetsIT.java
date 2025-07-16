@@ -22,12 +22,26 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
+import com.google.api.gax.longrunning.OperationFuture;
 import com.google.api.gax.rpc.NotFoundException;
+import com.google.cloud.resourcemanager.v3.CreateTagKeyMetadata;
+import com.google.cloud.resourcemanager.v3.CreateTagKeyRequest;
+import com.google.cloud.resourcemanager.v3.CreateTagValueMetadata;
+import com.google.cloud.resourcemanager.v3.CreateTagValueRequest;
+import com.google.cloud.resourcemanager.v3.DeleteTagKeyMetadata;
+import com.google.cloud.resourcemanager.v3.DeleteTagKeyRequest;
+import com.google.cloud.resourcemanager.v3.DeleteTagValueMetadata;
+import com.google.cloud.resourcemanager.v3.DeleteTagValueRequest;
+import com.google.cloud.resourcemanager.v3.TagKey;
+import com.google.cloud.resourcemanager.v3.TagKeysClient;
+import com.google.cloud.resourcemanager.v3.TagValue;
+import com.google.cloud.resourcemanager.v3.TagValuesClient;
 import com.google.cloud.secretmanager.v1.AddSecretVersionRequest;
 import com.google.cloud.secretmanager.v1.CreateSecretRequest;
 import com.google.cloud.secretmanager.v1.DeleteSecretRequest;
 import com.google.cloud.secretmanager.v1.DisableSecretVersionRequest;
 import com.google.cloud.secretmanager.v1.LocationName;
+import com.google.cloud.secretmanager.v1.ProjectName;
 import com.google.cloud.secretmanager.v1.Secret;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient.ListSecretVersionsPage;
@@ -47,6 +61,7 @@ import com.google.protobuf.ByteString;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.lang.Exception;
 import java.util.Map;
 import java.util.Random;
 import org.junit.After;
@@ -86,6 +101,7 @@ public class SnippetsIT {
   private static Secret TEST_REGIONAL_SECRET_WITH_VERSIONS;
   private static SecretName TEST_REGIONAL_SECRET_TO_CREATE_NAME;
   private static SecretName TEST_REGIONAL_SECRET_WITH_LABEL_TO_CREATE_NAME;
+  private static SecretName TEST_REGIONAL_SECRET_WITH_TAGS_TO_CREATE_NAME;
   private static SecretName TEST_REGIONAL_SECRET_WITH_ANNOTATION_TO_CREATE_NAME;
   private static SecretVersion TEST_REGIONAL_SECRET_VERSION;
   private static SecretVersion TEST_REGIONAL_SECRET_VERSION_TO_DESTROY;
@@ -95,10 +111,13 @@ public class SnippetsIT {
   private static SecretVersion TEST_REGIONAL_SECRET_VERSION_TO_ENABLE;
   private static SecretVersion TEST_REGIONAL_SECRET_VERSION_TO_ENABLE_WITH_ETAG;
 
+  private static TagKey TAG_KEY;
+  private static TagValue TAG_VALUE;
+
   private ByteArrayOutputStream stdOut;
 
   @BeforeClass
-  public static void beforeAll() throws IOException {
+  public static void beforeAll() throws Exception {
     Assert.assertFalse("missing GOOGLE_CLOUD_PROJECT", Strings.isNullOrEmpty(PROJECT_ID));
     Assert.assertFalse("missing GOOGLE_CLOUD_PROJECT_LOCATION",
         Strings.isNullOrEmpty(LOCATION_ID));
@@ -114,6 +133,8 @@ public class SnippetsIT {
 
     TEST_REGIONAL_SECRET_WITH_LABEL_TO_CREATE_NAME =
         SecretName.ofProjectLocationSecretName(PROJECT_ID, LOCATION_ID, randomSecretId());
+    TEST_REGIONAL_SECRET_WITH_TAGS_TO_CREATE_NAME =
+    SecretName.ofProjectLocationSecretName(PROJECT_ID, LOCATION_ID,  randomSecretId());
     TEST_REGIONAL_SECRET_VERSION = addRegionalSecretVersion(TEST_REGIONAL_SECRET_WITH_VERSIONS);
     TEST_REGIONAL_SECRET_VERSION_TO_DESTROY = 
         addRegionalSecretVersion(TEST_REGIONAL_SECRET_WITH_VERSIONS);
@@ -130,6 +151,7 @@ public class SnippetsIT {
     disableRegionalSecretVersion(TEST_REGIONAL_SECRET_VERSION_TO_ENABLE);
     TEST_REGIONAL_SECRET_VERSION_TO_ENABLE_WITH_ETAG = disableRegionalSecretVersion(
     TEST_REGIONAL_SECRET_VERSION_TO_ENABLE_WITH_ETAG);
+    createTags();
   }
 
   @Before
@@ -145,21 +167,82 @@ public class SnippetsIT {
   }
 
   @AfterClass
-  public static void afterAll() throws IOException {
+  public static void afterAll() throws Exception {
     Assert.assertFalse("missing GOOGLE_CLOUD_PROJECT", Strings.isNullOrEmpty(PROJECT_ID));
 
     deleteRegionalSecret(TEST_REGIONAL_SECRET.getName());
     deleteRegionalSecret(TEST_REGIONAL_SECRET_TO_CREATE_NAME.toString());
     deleteRegionalSecret(TEST_REGIONAL_SECRET_WITH_LABEL_TO_CREATE_NAME.toString());
+    deleteRegionalSecret(TEST_REGIONAL_SECRET_WITH_TAGS_TO_CREATE_NAME.toString());
     deleteRegionalSecret(TEST_REGIONAL_SECRET_WITH_ANNOTATION_TO_CREATE_NAME.toString());
     deleteRegionalSecret(TEST_REGIONAL_SECRET_TO_DELETE.getName());
     deleteRegionalSecret(TEST_REGIONAL_SECRET_TO_DELETE_WITH_ETAG.getName());
     deleteRegionalSecret(TEST_REGIONAL_SECRET_WITH_VERSIONS.getName());
+    deleteTags();
   }
 
   private static String randomSecretId() {
     Random random = new Random();
     return "test-drz-" + random.nextLong();
+  }
+
+  private static void createTags() throws Exception {
+    try (TagKeysClient tagKeysClient = TagKeysClient.create()) {
+      ProjectName parent = ProjectName.of(PROJECT_ID);
+      Random random = new Random();
+      CreateTagKeyRequest request =
+          CreateTagKeyRequest.newBuilder()
+              .setTagKey(
+                TagKey.newBuilder()
+                .setParent(parent.toString())
+                .setShortName("java-" + random.nextLong())
+                .build())
+              .build();
+      OperationFuture<TagKey, CreateTagKeyMetadata> future =
+          tagKeysClient.createTagKeyOperationCallable().futureCall(request);
+      TagKey response = future.get();
+      TAG_KEY = response;
+    }
+
+    try (TagValuesClient tagValuesClient = TagValuesClient.create()) {
+      Random random = new Random();
+      CreateTagValueRequest request =
+          CreateTagValueRequest.newBuilder()
+              .setTagValue(
+                TagValue.newBuilder()
+                .setParent(TAG_KEY.getName())
+                .setShortName("java-" + random.nextLong())
+                .build())
+              .build();
+      OperationFuture<TagValue, CreateTagValueMetadata> future =
+          tagValuesClient.createTagValueOperationCallable().futureCall(request);
+      TagValue response = future.get();
+      TAG_VALUE = response;
+    }
+
+  }
+
+  private static void deleteTags() throws Exception {
+    Thread.sleep(60000);
+    try (TagValuesClient tagValuesClient = TagValuesClient.create()) {
+      DeleteTagValueRequest request =
+          DeleteTagValueRequest.newBuilder()
+              .setName(TAG_VALUE.getName())
+              .build();
+      OperationFuture<TagValue, DeleteTagValueMetadata> future =
+          tagValuesClient.deleteTagValueOperationCallable().futureCall(request);
+      TagValue response = future.get();
+    }
+
+    try (TagKeysClient tagKeysClient = TagKeysClient.create()) {
+      DeleteTagKeyRequest request =
+          DeleteTagKeyRequest.newBuilder()
+              .setName(TAG_KEY.getName())
+              .build();
+      OperationFuture<TagKey, DeleteTagKeyMetadata> future =
+          tagKeysClient.deleteTagKeyOperationCallable().futureCall(request);
+      TagKey response = future.get();
+    }
   }
 
   private static Secret createRegionalSecret() throws IOException {
@@ -251,6 +334,20 @@ public class SnippetsIT {
         name.getProject(), name.getLocation(), name.getSecret(), LABEL_KEY, LABEL_VALUE);
 
     assertThat(secret.getLabelsMap()).containsEntry(LABEL_KEY, LABEL_VALUE);
+  }
+
+  @Test
+  public void testCreateRegionalSecretWithTags() throws IOException {
+    SecretName name = TEST_REGIONAL_SECRET_WITH_TAGS_TO_CREATE_NAME;
+    Secret secret = CreateRegionalSecretWithTags.createRegionalSecretWithTags(
+        name.getProject(),
+        name.getLocation(),
+        name.getSecret(),
+        TAG_KEY.getName(),
+        TAG_VALUE.getName()
+    );
+
+    assertThat(stdOut.toString()).contains("Created secret with Tags");
   }
 
   @Test
