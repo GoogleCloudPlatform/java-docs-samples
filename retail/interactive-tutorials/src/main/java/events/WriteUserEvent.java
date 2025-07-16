@@ -20,6 +20,7 @@
 
 package events;
 
+// [START retail_write_user_event]
 import static setup.SetupCleanup.purgeUserEvent;
 
 import com.google.cloud.ServiceOptions;
@@ -78,3 +79,4 @@ public class WriteUserEvent {
     purgeUserEvent(visitorId);
   }
 }
+// [END retail_write_user_event]
