@@ -20,6 +20,7 @@
  */
 
 package search;
+
 // [START retail_search_for_products_with_ordering]
 
 import com.google.cloud.ServiceOptions;
