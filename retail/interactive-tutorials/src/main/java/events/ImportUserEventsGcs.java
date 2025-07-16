@@ -19,6 +19,7 @@
  */
 
 package events;
+
 // [START retail_import_user_events_from_gcs]
 
 import com.google.api.gax.rpc.InvalidArgumentException;
