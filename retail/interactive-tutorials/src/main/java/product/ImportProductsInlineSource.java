@@ -19,6 +19,7 @@
  */
 
 package product;
+
 // [START retail_import_products_from_inline_source]
 import com.google.api.gax.rpc.InvalidArgumentException;
 import com.google.cloud.ServiceOptions;
