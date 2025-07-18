@@ -20,6 +20,7 @@
 
 package product;
 
+// [START retail_delete_product]
 import static setup.SetupCleanup.createProduct;
 
 import com.google.cloud.retail.v2.DeleteProductRequest;
@@ -52,3 +53,4 @@ public class DeleteProduct {
     }
   }
 }
+// [END retail_delete_product]

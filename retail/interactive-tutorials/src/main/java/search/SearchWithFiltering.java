@@ -21,6 +21,8 @@
 
 package search;
 
+// [START retail_search_for_products_with_filtering]
+
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.retail.v2.SearchRequest;
 import com.google.cloud.retail.v2.SearchResponse;
@@ -71,3 +73,5 @@ public class SearchWithFiltering {
     }
   }
 }
+
+// [END retail_search_for_products_with_filtering]

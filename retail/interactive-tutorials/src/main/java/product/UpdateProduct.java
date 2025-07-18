@@ -20,6 +20,7 @@
 
 package product;
 
+// [START retail_update_product]
 import static setup.SetupCleanup.createProduct;
 import static setup.SetupCleanup.deleteProduct;
 
@@ -91,3 +92,4 @@ public class UpdateProduct {
     }
   }
 }
+// [END retail_update_product]

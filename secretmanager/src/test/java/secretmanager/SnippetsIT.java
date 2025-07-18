@@ -19,6 +19,19 @@ package secretmanager;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertFalse;
 
+import com.google.api.gax.longrunning.OperationFuture;
+import com.google.cloud.resourcemanager.v3.CreateTagKeyMetadata;
+import com.google.cloud.resourcemanager.v3.CreateTagKeyRequest;
+import com.google.cloud.resourcemanager.v3.CreateTagValueMetadata;
+import com.google.cloud.resourcemanager.v3.CreateTagValueRequest;
+import com.google.cloud.resourcemanager.v3.DeleteTagKeyMetadata;
+import com.google.cloud.resourcemanager.v3.DeleteTagKeyRequest;
+import com.google.cloud.resourcemanager.v3.DeleteTagValueMetadata;
+import com.google.cloud.resourcemanager.v3.DeleteTagValueRequest;
+import com.google.cloud.resourcemanager.v3.TagKey;
+import com.google.cloud.resourcemanager.v3.TagKeysClient;
+import com.google.cloud.resourcemanager.v3.TagValue;
+import com.google.cloud.resourcemanager.v3.TagValuesClient;
 import com.google.cloud.secretmanager.v1.AddSecretVersionRequest;
 import com.google.cloud.secretmanager.v1.CreateSecretRequest;
 import com.google.cloud.secretmanager.v1.DeleteSecretRequest;
@@ -36,6 +49,7 @@ import com.google.protobuf.ByteString;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.lang.Exception;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Base64;
@@ -78,6 +92,7 @@ public class SnippetsIT {
   private static Secret TEST_SECRET_WITH_VERSIONS;
   private static SecretName TEST_SECRET_TO_CREATE_NAME;
   private static SecretName TEST_SECRET_WITH_LABEL_TO_CREATE_NAME;
+  private static SecretName TEST_SECRET_WITH_TAGS_TO_CREATE_NAME;
   private static SecretName TEST_SECRET_WITH_ANNOTATION_TO_CREATE_NAME;
   private static SecretName TEST_UMMR_SECRET_TO_CREATE_NAME;
   private static SecretVersion TEST_SECRET_VERSION;
@@ -88,10 +103,13 @@ public class SnippetsIT {
   private static SecretVersion TEST_SECRET_VERSION_TO_ENABLE;
   private static SecretVersion TEST_SECRET_VERSION_TO_ENABLE_WITH_ETAG;
 
+  private static TagKey TAG_KEY;
+  private static TagValue TAG_VALUE;
+
   private ByteArrayOutputStream stdOut;
 
   @BeforeClass
-  public static void beforeAll() throws IOException {
+  public static void beforeAll() throws Exception {
     Assert.assertFalse("missing GOOGLE_CLOUD_PROJECT", Strings.isNullOrEmpty(PROJECT_ID));
 
     TEST_SECRET = createSecret(true);
@@ -100,6 +118,7 @@ public class SnippetsIT {
     TEST_SECRET_WITH_VERSIONS = createSecret(false);
     TEST_SECRET_TO_CREATE_NAME = SecretName.of(PROJECT_ID, randomSecretId());
     TEST_UMMR_SECRET_TO_CREATE_NAME = SecretName.of(PROJECT_ID, randomSecretId());
+    TEST_SECRET_WITH_TAGS_TO_CREATE_NAME = SecretName.of(PROJECT_ID, randomSecretId());
     TEST_SECRET_WITH_LABEL_TO_CREATE_NAME = SecretName.of(PROJECT_ID, randomSecretId());
     TEST_SECRET_WITH_ANNOTATION_TO_CREATE_NAME = SecretName.of(PROJECT_ID, randomSecretId());
 
@@ -113,6 +132,7 @@ public class SnippetsIT {
     disableSecretVersion(TEST_SECRET_VERSION_TO_ENABLE);
     TEST_SECRET_VERSION_TO_ENABLE_WITH_ETAG = disableSecretVersion(
         TEST_SECRET_VERSION_TO_ENABLE_WITH_ETAG);
+    createTags();
   }
 
   @Before
@@ -128,22 +148,84 @@ public class SnippetsIT {
   }
 
   @AfterClass
-  public static void afterAll() throws IOException {
+  public static void afterAll() throws Exception {
     Assert.assertFalse("missing GOOGLE_CLOUD_PROJECT", Strings.isNullOrEmpty(PROJECT_ID));
 
     deleteSecret(TEST_SECRET.getName());
     deleteSecret(TEST_SECRET_TO_CREATE_NAME.toString());
+    deleteSecret(TEST_SECRET_WITH_TAGS_TO_CREATE_NAME.toString());
     deleteSecret(TEST_SECRET_WITH_LABEL_TO_CREATE_NAME.toString());
     deleteSecret(TEST_SECRET_WITH_ANNOTATION_TO_CREATE_NAME.toString());
     deleteSecret(TEST_UMMR_SECRET_TO_CREATE_NAME.toString());
     deleteSecret(TEST_SECRET_TO_DELETE.getName());
     deleteSecret(TEST_SECRET_TO_DELETE_WITH_ETAG.getName());
     deleteSecret(TEST_SECRET_WITH_VERSIONS.getName());
+    deleteTags();
   }
 
   private static String randomSecretId() {
     Random random = new Random();
     return "java-" + random.nextLong();
+  }
+
+  private static void createTags() throws Exception {
+    try (TagKeysClient tagKeysClient = TagKeysClient.create()) {
+      Random random = new Random();
+      ProjectName parent = ProjectName.of(PROJECT_ID);
+      CreateTagKeyRequest request =
+          CreateTagKeyRequest.newBuilder()
+              .setTagKey(
+                TagKey
+                .newBuilder()
+                .setParent(parent.toString())
+                .setShortName("java-" + random.nextLong())
+                .build())
+              .build();
+      OperationFuture<TagKey, CreateTagKeyMetadata> future =
+          tagKeysClient.createTagKeyOperationCallable().futureCall(request);
+      TagKey response = future.get();
+      TAG_KEY = response;
+    }
+
+    try (TagValuesClient tagValuesClient = TagValuesClient.create()) {
+      Random random = new Random();
+      CreateTagValueRequest request =
+          CreateTagValueRequest.newBuilder()
+              .setTagValue(
+                TagValue
+                .newBuilder()
+                .setParent(TAG_KEY.getName())
+                .setShortName("java-" + random.nextLong())
+                .build())
+              .build();
+      OperationFuture<TagValue, CreateTagValueMetadata> future =
+          tagValuesClient.createTagValueOperationCallable().futureCall(request);
+      TagValue response = future.get();
+      TAG_VALUE = response;
+    }
+  }
+
+  private static void deleteTags() throws Exception {
+    Thread.sleep(60000); 
+    try (TagValuesClient tagValuesClient = TagValuesClient.create()) {
+      DeleteTagValueRequest request =
+          DeleteTagValueRequest.newBuilder()
+              .setName(TAG_VALUE.getName())
+              .build();
+      OperationFuture<TagValue, DeleteTagValueMetadata> future =
+          tagValuesClient.deleteTagValueOperationCallable().futureCall(request);
+      TagValue response = future.get();
+    }
+
+    try (TagKeysClient tagKeysClient = TagKeysClient.create()) {
+      DeleteTagKeyRequest request =
+          DeleteTagKeyRequest.newBuilder()
+              .setName(TAG_KEY.getName())
+              .build();
+      OperationFuture<TagKey, DeleteTagKeyMetadata> future =
+          tagKeysClient.deleteTagKeyOperationCallable().futureCall(request);
+      TagKey response = future.get();
+    }
   }
 
   private static Secret createSecret(boolean addAnnotation) throws IOException {
@@ -255,6 +337,19 @@ public class SnippetsIT {
         name.getProject(), name.getSecret(), LABEL_KEY, LABEL_VALUE);
 
     assertThat(secret.getLabelsMap()).containsEntry(LABEL_KEY, LABEL_VALUE);
+  }
+
+  @Test
+  public void testCreateSecretWithTag() throws IOException {
+    SecretName name = TEST_SECRET_WITH_TAGS_TO_CREATE_NAME;
+    Secret secret = CreateSecretWithTags.createSecretWithTags(
+        name.getProject(),
+        name.getSecret(),
+        TAG_KEY.getName(),
+        TAG_VALUE.getName()
+    );
+
+    assertThat(stdOut.toString()).contains("Created secret with Tags");
   }
 
   @Test

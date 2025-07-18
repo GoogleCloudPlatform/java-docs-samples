@@ -20,6 +20,8 @@
 
 package events;
 
+// [START retail_import_user_events_from_inline_source]
+
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.bigquery.BigQueryException;
@@ -124,3 +126,5 @@ public class ImportUserEventsInline {
     }
   }
 }
+
+// [END retail_import_user_events_from_inline_source]

@@ -27,13 +27,14 @@ public class AddBinding {
     Policy policy = Policy.newBuilder().build();
     // TODO: Replace with your role.
     String role = "roles/role-to-add";
-    // TODO: Replace with your members.
-    List<String> members = Collections.singletonList("user:member-to-add@example.com");
+    // TODO: Replace with your principals.
+    // For examples, see https://cloud.google.com/iam/docs/principal-identifiers
+    List<String> members = Collections.singletonList("principal-id");
 
     addBinding(policy, role, members);
   }
 
-  // Adds a member to a role.
+  // Adds a principals to a role.
   public static Policy addBinding(Policy policy, String role, List<String> members) {
     Binding binding = Binding.newBuilder()
             .setRole(role)
