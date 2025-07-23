@@ -624,4 +624,14 @@ public class InspectTests extends TestBase {
       assertThat(output).contains("InfoType: STORED_TYPE");
     }
   }
+
+  @Test
+  public void testProcessInspectFindingsSavedToGcs() throws Exception {
+    ProcessInspectFindingsSavedToGcs.processFindingsGcsFile(
+        "src/test/resources/save_to_gcs_findings.txt");
+    String output = bout.toString();
+    assertThat(output).contains("Findings: 2");
+    assertThat(output).contains("Info type: PERSON_NAME");
+    assertThat(output).contains("Likelihood: LIKELY");
+  }
 }

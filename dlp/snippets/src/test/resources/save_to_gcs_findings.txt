@@ -1,0 +1,110 @@
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+findings {
+  info_type {
+    name: "PERSON_NAME"
+    sensitivity_score {
+      score: SENSITIVITY_MODERATE
+    }
+  }
+  likelihood: LIKELY
+  location {
+    byte_range {
+      start: 1208
+      end: 1216
+    }
+    content_locations {
+      container_name: "gs://fake_test_bucket/file.txt"
+      document_location {
+      }
+      container_timestamp {
+        seconds: 1728939753
+        nanos: 301000000
+      }
+      container_version: "1728939753176395"
+    }
+    container {
+      type: "Google Cloud Storage"
+      project_id: "fake-project-id"
+      full_path: "gs://fake_test_bucket/file.txt"
+      root_path: "fake_test_bucket"
+      relative_path: "file.txt"
+      update_time {
+        seconds: 1728939753
+        nanos: 301000000
+      }
+      version: "1728939753176395"
+    }
+  }
+  create_time {
+    seconds: 1741889947
+    nanos: 947000000
+  }
+  resource_name: "projects/fake-project-id/locations/global/dlpJobs/i-test-gcs-save"
+  job_create_time {
+    seconds: 1741889652
+    nanos: 348000000
+  }
+  job_name: "projects/fake-project-id/locations/global/dlpJobs/i-test-gcs-save"
+  finding_id: "2025-03-13T18:21:18.454889Z3148393127282654372"
+}
+findings {
+  info_type {
+    name: "PERSON_NAME"
+    sensitivity_score {
+      score: SENSITIVITY_MODERATE
+    }
+  }
+  likelihood: POSSIBLE
+  location {
+    byte_range {
+      start: 19872
+      end: 19879
+    }
+    content_locations {
+      container_name: "gs://fake_test_bucket/file.txt"
+      document_location {
+      }
+      container_timestamp {
+        seconds: 1728939753
+        nanos: 301000000
+      }
+      container_version: "1728939753176395"
+    }
+    container {
+      type: "Google Cloud Storage"
+      project_id: "fake-project-id"
+      full_path: "gs://fake_test_bucket/file.txt"
+      root_path: "fake_test_bucket"
+      relative_path: "file.txt"
+      update_time {
+        seconds: 1728939753
+        nanos: 301000000
+      }
+      version: "1728939753176395"
+    }
+  }
+  create_time {
+    seconds: 1741889947
+    nanos: 948000000
+  }
+  resource_name: "projects/fake-project-id/locations/global/dlpJobs/i-test-gcs-save"
+  job_create_time {
+    seconds: 1741889652
+    nanos: 348000000
+  }
+  job_name: "projects/fake-project-id/locations/global/dlpJobs/i-test-gcs-save"
+  finding_id: "2025-03-13T18:21:18.506689Z2134257296577089402"
+}
