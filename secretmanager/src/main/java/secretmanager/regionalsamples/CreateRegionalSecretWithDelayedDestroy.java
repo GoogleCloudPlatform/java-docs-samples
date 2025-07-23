@@ -33,7 +33,7 @@ public class CreateRegionalSecretWithDelayedDestroy {
     String locationId = "your-location-id";
     String secretId = "your-secret-id";
     Integer versionDestroyTtl = 86400;
-    createRegionalSecretWithDelayedDestroy(projectId, secretId, locationId, versionDestroyTtl);
+    createRegionalSecretWithDelayedDestroy(projectId, locationId, secretId, versionDestroyTtl);
   }
 
   // Create secret with version destroy TTL.
