@@ -89,7 +89,9 @@ public class SnippetsIT {
   private static Secret TEST_SECRET;
   private static Secret TEST_SECRET_TO_DELETE;
   private static Secret TEST_SECRET_TO_DELETE_WITH_ETAG;
+  private static Secret TEST_SECRET_TO_DELAYED_DESTROY;
   private static Secret TEST_SECRET_WITH_VERSIONS;
+  private static SecretName TEST_SECRET_WITH_DELAYED_DESTROY;
   private static SecretName TEST_SECRET_TO_CREATE_NAME;
   private static SecretName TEST_SECRET_WITH_LABEL_TO_CREATE_NAME;
   private static SecretName TEST_SECRET_WITH_TAGS_TO_CREATE_NAME;
@@ -116,6 +118,8 @@ public class SnippetsIT {
     TEST_SECRET_TO_DELETE = createSecret(false);
     TEST_SECRET_TO_DELETE_WITH_ETAG = createSecret(false);
     TEST_SECRET_WITH_VERSIONS = createSecret(false);
+    TEST_SECRET_TO_DELAYED_DESTROY = createSecret(false);
+    TEST_SECRET_WITH_DELAYED_DESTROY = SecretName.of(PROJECT_ID, randomSecretId());
     TEST_SECRET_TO_CREATE_NAME = SecretName.of(PROJECT_ID, randomSecretId());
     TEST_UMMR_SECRET_TO_CREATE_NAME = SecretName.of(PROJECT_ID, randomSecretId());
     TEST_SECRET_WITH_TAGS_TO_CREATE_NAME = SecretName.of(PROJECT_ID, randomSecretId());
@@ -160,6 +164,8 @@ public class SnippetsIT {
     deleteSecret(TEST_SECRET_TO_DELETE.getName());
     deleteSecret(TEST_SECRET_TO_DELETE_WITH_ETAG.getName());
     deleteSecret(TEST_SECRET_WITH_VERSIONS.getName());
+    deleteSecret(TEST_SECRET_WITH_DELAYED_DESTROY.toString());
+    deleteSecret(TEST_SECRET_TO_DELAYED_DESTROY.getName());
     deleteTags();
   }
 
@@ -584,6 +590,32 @@ public class SnippetsIT {
   }
 
   @Test
+  public void testCreateSecretWithDelayedDestroy() throws IOException {
+    SecretName name = TEST_SECRET_WITH_DELAYED_DESTROY;
+    CreateSecretWithDelayedDestroy.createSecretWithDelayedDestroy(
+        name.getProject(), name.getSecret(), 86400);
+
+    assertThat(stdOut.toString()).contains("Created secret with version destroy ttl");
+  }
+
+  @Test
+  public void testUpdateSecretWithDelayedDestroy() throws IOException {
+    SecretName name = SecretName.parse(TEST_SECRET_TO_DELAYED_DESTROY.getName());
+    UpdateSecretWithDelayedDestroy.updateSecretWithDelayedDestroy(
+        name.getProject(), name.getSecret(), 86400);
+
+    assertThat(stdOut.toString()).contains("Updated secret");
+  }
+
+  @Test
+  public void testDisableSecretDelayedDestroy() throws IOException {
+    SecretName name = SecretName.parse(TEST_SECRET_TO_DELAYED_DESTROY.getName());
+    DisableSecretDelayedDestroy.disableSecretDelayedDestroy(name.getProject(), name.getSecret());
+
+    assertThat(stdOut.toString()).contains("Updated secret");
+  }
+
+  @Test
   public void testConsumeEventNotification() {
     String message = "hello!";
     byte[] base64Bytes = Base64.getEncoder().encode(message.getBytes(StandardCharsets.UTF_8));
@@ -599,5 +631,4 @@ public class SnippetsIT {
     assertThat(log).isEqualTo(
         "Received SECRET_UPDATE for projects/p/secrets/s. New metadata: hello!");
   }
-        
 }

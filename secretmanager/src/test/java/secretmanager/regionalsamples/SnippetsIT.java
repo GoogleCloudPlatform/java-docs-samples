@@ -99,6 +99,8 @@ public class SnippetsIT {
   private static Secret TEST_REGIONAL_SECRET_TO_DELETE;
   private static Secret TEST_REGIONAL_SECRET_TO_DELETE_WITH_ETAG;
   private static Secret TEST_REGIONAL_SECRET_WITH_VERSIONS;
+  private static Secret TEST_REGIONAL_SECRET_TO_DELAYED_DESTROY;
+  private static SecretName TEST_REGIONAL_SECRET_WITH_DELAYED_DESTROY;
   private static SecretName TEST_REGIONAL_SECRET_TO_CREATE_NAME;
   private static SecretName TEST_REGIONAL_SECRET_WITH_LABEL_TO_CREATE_NAME;
   private static SecretName TEST_REGIONAL_SECRET_WITH_TAGS_TO_CREATE_NAME;
@@ -126,6 +128,9 @@ public class SnippetsIT {
     TEST_REGIONAL_SECRET_TO_DELETE = createRegionalSecret();
     TEST_REGIONAL_SECRET_TO_DELETE_WITH_ETAG = createRegionalSecret();
     TEST_REGIONAL_SECRET_WITH_VERSIONS = createRegionalSecret();
+    TEST_REGIONAL_SECRET_TO_DELAYED_DESTROY = createRegionalSecret();
+    TEST_REGIONAL_SECRET_WITH_DELAYED_DESTROY =
+        SecretName.ofProjectLocationSecretName(PROJECT_ID, LOCATION_ID, randomSecretId());
     TEST_REGIONAL_SECRET_TO_CREATE_NAME = 
         SecretName.ofProjectLocationSecretName(PROJECT_ID, LOCATION_ID, randomSecretId());
     TEST_REGIONAL_SECRET_WITH_ANNOTATION_TO_CREATE_NAME =
@@ -178,6 +183,8 @@ public class SnippetsIT {
     deleteRegionalSecret(TEST_REGIONAL_SECRET_TO_DELETE.getName());
     deleteRegionalSecret(TEST_REGIONAL_SECRET_TO_DELETE_WITH_ETAG.getName());
     deleteRegionalSecret(TEST_REGIONAL_SECRET_WITH_VERSIONS.getName());
+    deleteRegionalSecret(TEST_REGIONAL_SECRET_WITH_DELAYED_DESTROY.toString());
+    deleteRegionalSecret(TEST_REGIONAL_SECRET_TO_DELAYED_DESTROY.getName());
     deleteTags();
   }
 
@@ -673,6 +680,33 @@ public class SnippetsIT {
 
     assertThat(updatedSecret.getAnnotationsMap()).containsEntry(
         UPDATED_ANNOTATION_KEY, UPDATED_ANNOTATION_VALUE);
+  }
+
+  @Test
+  public void testCreateRegionalSecretWithDelayedDestroy() throws IOException {
+    SecretName name = TEST_REGIONAL_SECRET_WITH_DELAYED_DESTROY;
+    CreateRegionalSecretWithDelayedDestroy.createRegionalSecretWithDelayedDestroy(
+        name.getProject(), name.getLocation(), name.getSecret(), 86400);
+
+    assertThat(stdOut.toString()).contains("Created secret with version destroy ttl");
+  }
+
+  @Test
+  public void testUpdateRegionalSecretWithDelayedDestroy() throws IOException {
+    SecretName name = SecretName.parse(TEST_REGIONAL_SECRET_TO_DELAYED_DESTROY.getName());
+    UpdateRegionalSecretWithDelayedDestroy.updateRegionalSecretWithDelayedDestroy(
+        name.getProject(), name.getLocation(), name.getSecret(), 86400);
+
+    assertThat(stdOut.toString()).contains("Updated secret");
+  }
+
+  @Test
+  public void testDisableRegionalSecretDelayedDestroy() throws IOException {
+    SecretName name = SecretName.parse(TEST_REGIONAL_SECRET_TO_DELAYED_DESTROY.getName());
+    DisableRegionalSecretDelayedDestroy.disableRegionalSecretDelayedDestroy(
+        name.getProject(), name.getLocation(), name.getSecret());
+
+    assertThat(stdOut.toString()).contains("Updated secret");
   }
 }
  
