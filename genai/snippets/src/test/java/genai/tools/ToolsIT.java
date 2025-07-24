@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package genai.counttokens;
+package genai.tools;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.util.Optional;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -30,7 +29,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
-public class CountTokensIT {
+public class ToolsIT {
 
   private static final String GEMINI_FLASH = "gemini-2.5-flash";
   private ByteArrayOutputStream bout;
@@ -62,14 +61,23 @@ public class CountTokensIT {
   }
 
   @Test
-  public void testCountTokensWithText() {
-    Optional<Integer> response = CountTokensWithText.countTokens(GEMINI_FLASH);
-    assertThat(response.get()).isGreaterThan(0);
-  }
+  public void testGenerateContentWithFunctionDescription() {
 
-  @Test
-  public void testCountTokensWithTextAndVideo() {
-    Optional<Integer> response = CountTokensWithTextAndVideo.countTokens(GEMINI_FLASH);
-    assertThat(response.get()).isGreaterThan(10);
+    String prompt =
+        "At Stellar Sounds, a music label, 2024 was a rollercoaster. \"Echoes of the Night,\""
+            + " a debut synth-pop album, \n surprisingly sold 350,000 copies, while veteran"
+            + " rock band \"Crimson Tide's\" latest, \"Reckless Hearts,\" \n lagged at"
+            + " 120,000. Their up-and-coming indie artist, \"Luna Bloom's\" EP, \"Whispers "
+            + "of Dawn,\" \n secured 75,000 sales. The biggest disappointment was the "
+            + "highly-anticipated rap album \"Street Symphony\" \n only reaching 100,000"
+            + " units. Overall, Stellar Sounds moved over 645,000 units this year, revealing"
+            + " unexpected \n trends in music consumption.";
+
+    String response = ToolFunctionDescriptionWithText.generateContent(GEMINI_FLASH, prompt);
+
+    assertThat(response).isNotEmpty();
+    assertThat(response).contains("get_album_sales");
+    assertThat(response).contains("copies_sold=350000");
+    assertThat(response).contains("album_name=Echoes of the Night");
   }
 }
