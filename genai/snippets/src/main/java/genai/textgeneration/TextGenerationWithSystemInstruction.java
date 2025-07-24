@@ -14,54 +14,49 @@
  * limitations under the License.
  */
 
-package genai.controlledgeneration;
+package genai.textgeneration;
 
-// [START googlegenaisdk_ctrlgen_with_enum_schema]
+// [START googlegenaisdk_textgen_sys_instr_with_txt]
 
 import com.google.genai.Client;
+import com.google.genai.types.Content;
 import com.google.genai.types.GenerateContentConfig;
 import com.google.genai.types.GenerateContentResponse;
 import com.google.genai.types.HttpOptions;
-import com.google.genai.types.Schema;
-import com.google.genai.types.Type;
-import java.util.List;
+import com.google.genai.types.Part;
 
-public class ControlledGenerationWithEnumSchema {
+public class TextGenerationWithSystemInstruction {
 
   public static void main(String[] args) {
     // TODO(developer): Replace these variables before running the sample.
-    String contents = "What type of instrument is an oboe?";
     String modelId = "gemini-2.5-flash";
-    generateContent(modelId, contents);
+    generateContent(modelId);
   }
 
-  // Generates content with an enum response schema
-  public static String generateContent(String modelId, String contents) {
+  // Generates text with text and system instruction input
+  public static String generateContent(String modelId) {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (Client client =
         Client.builder().httpOptions(HttpOptions.builder().apiVersion("v1").build()).build()) {
 
-      // Define the response schema with an enum.
-      Schema responseSchema =
-          Schema.builder()
-              .type(Type.Known.STRING)
-              .enum_(List.of("Percussion", "String", "Woodwind", "Brass", "Keyboard"))
-              .build();
-
       GenerateContentConfig config =
           GenerateContentConfig.builder()
-              .responseMimeType("text/x.enum")
-              .responseSchema(responseSchema)
+              .systemInstruction(
+                  Content.fromParts(
+                      Part.fromText("You're a language translator."),
+                      Part.fromText("Your mission is to translate text in English to French.")))
               .build();
 
-      GenerateContentResponse response = client.models.generateContent(modelId, contents, config);
+      GenerateContentResponse response =
+          client.models.generateContent(
+              modelId, Content.fromParts(Part.fromText("Why is the sky blue?")), config);
 
       System.out.print(response.text());
       // Example response:
-      // Woodwind
+      // Pourquoi le ciel est-il bleu ?
       return response.text();
     }
   }
 }
-// [END googlegenaisdk_ctrlgen_with_enum_schema]
+// [END googlegenaisdk_textgen_sys_instr_with_txt]

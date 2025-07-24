@@ -14,54 +14,45 @@
  * limitations under the License.
  */
 
-package genai.controlledgeneration;
+package genai.textgeneration;
 
-// [START googlegenaisdk_ctrlgen_with_enum_schema]
+// [START googlegenaisdk_textgen_with_txt_img]
 
 import com.google.genai.Client;
-import com.google.genai.types.GenerateContentConfig;
+import com.google.genai.types.Content;
 import com.google.genai.types.GenerateContentResponse;
 import com.google.genai.types.HttpOptions;
-import com.google.genai.types.Schema;
-import com.google.genai.types.Type;
-import java.util.List;
+import com.google.genai.types.Part;
 
-public class ControlledGenerationWithEnumSchema {
+public class TextGenerationWithTextAndImage {
 
   public static void main(String[] args) {
     // TODO(developer): Replace these variables before running the sample.
-    String contents = "What type of instrument is an oboe?";
     String modelId = "gemini-2.5-flash";
-    generateContent(modelId, contents);
+    generateContent(modelId);
   }
 
-  // Generates content with an enum response schema
-  public static String generateContent(String modelId, String contents) {
+  // Generates text with text and image input
+  public static String generateContent(String modelId) {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (Client client =
         Client.builder().httpOptions(HttpOptions.builder().apiVersion("v1").build()).build()) {
 
-      // Define the response schema with an enum.
-      Schema responseSchema =
-          Schema.builder()
-              .type(Type.Known.STRING)
-              .enum_(List.of("Percussion", "String", "Woodwind", "Brass", "Keyboard"))
-              .build();
-
-      GenerateContentConfig config =
-          GenerateContentConfig.builder()
-              .responseMimeType("text/x.enum")
-              .responseSchema(responseSchema)
-              .build();
-
-      GenerateContentResponse response = client.models.generateContent(modelId, contents, config);
+      GenerateContentResponse response =
+          client.models.generateContent(
+              modelId,
+              Content.fromParts(
+                  Part.fromText("What is shown in this image?"),
+                  Part.fromUri(
+                      "gs://cloud-samples-data/generative-ai/image/scones.jpg", "image/jpeg")),
+              null);
 
       System.out.print(response.text());
       // Example response:
-      // Woodwind
+      // The image shows a flat lay of blueberry scones arranged on parchment paper. There are ...
       return response.text();
     }
   }
 }
-// [END googlegenaisdk_ctrlgen_with_enum_schema]
+// [END googlegenaisdk_textgen_with_txt_img]

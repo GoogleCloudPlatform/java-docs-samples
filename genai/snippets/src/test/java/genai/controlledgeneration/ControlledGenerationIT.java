@@ -31,40 +31,40 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class ControlledGenerationIT {
 
-    private static final String GEMINI_FLASH = "gemini-2.5-flash";
-    private ByteArrayOutputStream bout;
-    private PrintStream out;
+  private static final String GEMINI_FLASH = "gemini-2.5-flash";
+  private ByteArrayOutputStream bout;
+  private PrintStream out;
 
-    // Check if the required environment variables are set.
-    public static void requireEnvVar(String envVarName) {
-        assertWithMessage(String.format("Missing environment variable '%s' ", envVarName))
-                .that(System.getenv(envVarName))
-                .isNotEmpty();
-    }
+  // Check if the required environment variables are set.
+  public static void requireEnvVar(String envVarName) {
+    assertWithMessage(String.format("Missing environment variable '%s' ", envVarName))
+        .that(System.getenv(envVarName))
+        .isNotEmpty();
+  }
 
-    @BeforeClass
-    public static void checkRequirements() {
-        requireEnvVar("GOOGLE_CLOUD_PROJECT");
-        requireEnvVar("GOOGLE_CLOUD_LOCATION");
-    }
+  @BeforeClass
+  public static void checkRequirements() {
+    requireEnvVar("GOOGLE_CLOUD_PROJECT");
+    requireEnvVar("GOOGLE_CLOUD_LOCATION");
+  }
 
-    @Before
-    public void setUp() {
-        bout = new ByteArrayOutputStream();
-        out = new PrintStream(bout);
-        System.setOut(out);
-    }
+  @Before
+  public void setUp() {
+    bout = new ByteArrayOutputStream();
+    out = new PrintStream(bout);
+    System.setOut(out);
+  }
 
-    @After
-    public void tearDown() {
-        System.setOut(null);
-    }
+  @After
+  public void tearDown() {
+    System.setOut(null);
+  }
 
-    @Test
-    public void testControlledGenerationWithEnumSchema() {
-        String prompt = "What type of instrument is an oboe?";
-        String response = ControlledGenerationWithEnumSchema.generateContent(GEMINI_FLASH, prompt);
-        assertThat(response).isNotEmpty();
-        assertThat(response).isEqualTo("Woodwind");
-    }
+  @Test
+  public void testControlledGenerationWithEnumSchema() {
+    String prompt = "What type of instrument is an oboe?";
+    String response = ControlledGenerationWithEnumSchema.generateContent(GEMINI_FLASH, prompt);
+    assertThat(response).isNotEmpty();
+    assertThat(response).isEqualTo("Woodwind");
+  }
 }
