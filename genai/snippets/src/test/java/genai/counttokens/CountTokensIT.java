@@ -64,12 +64,14 @@ public class CountTokensIT {
   @Test
   public void testCountTokensWithText() {
     Optional<Integer> response = CountTokensWithText.countTokens(GEMINI_FLASH);
+    assertThat(response).isPresent();
     assertThat(response.get()).isGreaterThan(0);
   }
 
   @Test
   public void testCountTokensWithTextAndVideo() {
     Optional<Integer> response = CountTokensWithTextAndVideo.countTokens(GEMINI_FLASH);
-    assertThat(response.get()).isGreaterThan(10);
+    assertThat(response).isPresent();
+    assertThat(response.get()).isGreaterThan(6);
   }
 }

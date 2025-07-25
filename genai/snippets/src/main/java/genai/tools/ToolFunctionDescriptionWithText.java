@@ -28,6 +28,8 @@ import com.google.genai.types.Tool;
 import com.google.genai.types.Type;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 public class ToolFunctionDescriptionWithText {
 
@@ -91,16 +93,16 @@ public class ToolFunctionDescriptionWithText {
                       .build()) // End parameters schema
               .build(); // End function declaration
 
-      Tool salesTool = Tool.builder().functionDeclarations(List.of(getAlbumSales)).build();
+      Tool salesTool = Tool.builder().functionDeclarations(getAlbumSales).build();
 
       GenerateContentConfig config =
-          GenerateContentConfig.builder().tools(List.of(salesTool)).temperature(0.0f).build();
+          GenerateContentConfig.builder().tools(salesTool).temperature(0.0f).build();
 
       GenerateContentResponse response = client.models.generateContent(modelId, contents, config);
 
-      // response.functionCalls() returns an Optional<List<FunctionCall>>.
-      // We get the list, then get the first FunctionCall from the list.
+      // response.functionCalls() returns an Immutable<FunctionCall>.
       System.out.println(response.functionCalls().get(0));
+
       return response.functionCalls().toString();
       // Example response:
       // FunctionCall{id=Optional.empty, args=Optional[{albums=[{copies_sold=350000,

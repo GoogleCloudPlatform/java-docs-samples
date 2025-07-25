@@ -42,13 +42,9 @@ public class CountTokensWithTextAndVideo {
         Client.builder().httpOptions(HttpOptions.builder().apiVersion("v1").build()).build()) {
 
       Content content =
-          Content.builder()
-              .parts(
-                  List.of(
-                      Part.fromText("Provide a description of this video"),
-                      Part.fromUri(
-                          "gs://cloud-samples-data/generative-ai/video/pixel8.mp4", "video/mp4")))
-              .build();
+          Content.fromParts(
+              Part.fromText("Provide a description of this video"),
+              Part.fromUri("gs://cloud-samples-data/generative-ai/video/pixel8.mp4", "video/mp4"));
 
       CountTokensResponse response = client.models.countTokens(modelId, List.of(content), null);
 

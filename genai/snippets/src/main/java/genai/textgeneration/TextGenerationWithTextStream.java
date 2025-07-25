@@ -40,14 +40,15 @@ public class TextGenerationWithTextStream {
         Client.builder().httpOptions(HttpOptions.builder().apiVersion("v1").build()).build()) {
 
       StringBuilder responseTextBuilder = new StringBuilder();
-      ResponseStream<GenerateContentResponse> responseStream =
-          client.models.generateContentStream(modelId, contents, null);
 
-      for (GenerateContentResponse chunk : responseStream) {
-        System.out.print(chunk.text());
-        responseTextBuilder.append(chunk.text());
+      try (ResponseStream<GenerateContentResponse> responseStream =
+                   client.models.generateContentStream(modelId, contents, null)) {
+
+        for (GenerateContentResponse chunk : responseStream) {
+          System.out.print(chunk.text());
+          responseTextBuilder.append(chunk.text());
+        }
       }
-      responseStream.close();
       // Example response:
       // The sky appears blue due to a phenomenon called **Rayleigh scattering**. Here's
       // a breakdown of why:
