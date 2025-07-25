@@ -37,7 +37,7 @@ public class CreateRegionalSecretWithDelayedDestroy {
   }
 
   // Create secret with version destroy TTL.
-  public static void createRegionalSecretWithDelayedDestroy(
+  public static Secret createRegionalSecretWithDelayedDestroy(
       String projectId,
       String locationId,
       String secretId,
@@ -63,6 +63,8 @@ public class CreateRegionalSecretWithDelayedDestroy {
       // Create the secret.
       Secret createdSecret = client.createSecret(locationName, secretId, secret);
       System.out.printf("Created secret with version destroy ttl %s\n", createdSecret.getName());
+
+      return createdSecret;
     }
   }
 }

@@ -592,27 +592,31 @@ public class SnippetsIT {
   @Test
   public void testCreateSecretWithDelayedDestroy() throws IOException {
     SecretName name = TEST_SECRET_WITH_DELAYED_DESTROY;
-    CreateSecretWithDelayedDestroy.createSecretWithDelayedDestroy(
+    Secret secret = CreateSecretWithDelayedDestroy.createSecretWithDelayedDestroy(
         name.getProject(), name.getSecret(), 86400);
 
     assertThat(stdOut.toString()).contains("Created secret with version destroy ttl");
+    assertThat(secret.getVersionDestroyTtl().getSeconds()).isEqualTo(86400);
   }
 
   @Test
   public void testUpdateSecretWithDelayedDestroy() throws IOException {
     SecretName name = SecretName.parse(TEST_SECRET_TO_DELAYED_DESTROY.getName());
-    UpdateSecretWithDelayedDestroy.updateSecretWithDelayedDestroy(
-        name.getProject(), name.getSecret(), 86400);
+    Secret secret = UpdateSecretWithDelayedDestroy.updateSecretWithDelayedDestroy(
+        name.getProject(), name.getSecret(), 86520);
 
     assertThat(stdOut.toString()).contains("Updated secret");
+    assertThat(secret.getVersionDestroyTtl().getSeconds()).isEqualTo(86520);
   }
 
   @Test
   public void testDisableSecretDelayedDestroy() throws IOException {
     SecretName name = SecretName.parse(TEST_SECRET_TO_DELAYED_DESTROY.getName());
-    DisableSecretDelayedDestroy.disableSecretDelayedDestroy(name.getProject(), name.getSecret());
+    Secret secret = DisableSecretDelayedDestroy.disableSecretDelayedDestroy(
+        name.getProject(), name.getSecret());
 
     assertThat(stdOut.toString()).contains("Updated secret");
+    assertThat(secret.getVersionDestroyTtl().getSeconds()).isEqualTo(0);
   }
 
   @Test

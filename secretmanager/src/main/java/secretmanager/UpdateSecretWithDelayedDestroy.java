@@ -37,7 +37,7 @@ public class UpdateSecretWithDelayedDestroy {
   }
 
   // Update secret with version destroy TTL.
-  public static void updateSecretWithDelayedDestroy(
+  public static Secret updateSecretWithDelayedDestroy(
       String projectId,
       String secretId,
       Integer versionDestroyTtl)
@@ -60,6 +60,8 @@ public class UpdateSecretWithDelayedDestroy {
       // Update the secret.
       Secret updatedSecret = client.updateSecret(secret, fieldMask);
       System.out.printf("Updated secret %s\n", updatedSecret.getName());
+
+      return updatedSecret;
     }
   }
 }

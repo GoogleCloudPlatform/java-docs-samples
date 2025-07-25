@@ -36,7 +36,7 @@ public class CreateSecretWithDelayedDestroy {
   }
 
   // Create secret with version destroy TTL.
-  public static void createSecretWithDelayedDestroy(
+  public static Secret createSecretWithDelayedDestroy(
       String projectId,
       String secretId,
       Integer versionDestroyTtl)
@@ -59,6 +59,8 @@ public class CreateSecretWithDelayedDestroy {
       // Create the secret.
       Secret createdSecret = client.createSecret(projectName, secretId, secret);
       System.out.printf("Created secret with version destroy ttl %s\n", createdSecret.getName());
+
+      return createdSecret;
     }
   }
 }

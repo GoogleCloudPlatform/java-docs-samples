@@ -685,28 +685,31 @@ public class SnippetsIT {
   @Test
   public void testCreateRegionalSecretWithDelayedDestroy() throws IOException {
     SecretName name = TEST_REGIONAL_SECRET_WITH_DELAYED_DESTROY;
-    CreateRegionalSecretWithDelayedDestroy.createRegionalSecretWithDelayedDestroy(
+    Secret secret = CreateRegionalSecretWithDelayedDestroy.createRegionalSecretWithDelayedDestroy(
         name.getProject(), name.getLocation(), name.getSecret(), 86400);
 
     assertThat(stdOut.toString()).contains("Created secret with version destroy ttl");
+    assertThat(secret.getVersionDestroyTtl().getSeconds()).isEqualTo(86400);
   }
 
   @Test
   public void testUpdateRegionalSecretWithDelayedDestroy() throws IOException {
     SecretName name = SecretName.parse(TEST_REGIONAL_SECRET_TO_DELAYED_DESTROY.getName());
-    UpdateRegionalSecretWithDelayedDestroy.updateRegionalSecretWithDelayedDestroy(
-        name.getProject(), name.getLocation(), name.getSecret(), 86400);
+    Secret secret = UpdateRegionalSecretWithDelayedDestroy.updateRegionalSecretWithDelayedDestroy(
+        name.getProject(), name.getLocation(), name.getSecret(), 86520);
 
     assertThat(stdOut.toString()).contains("Updated secret");
+    assertThat(secret.getVersionDestroyTtl().getSeconds()).isEqualTo(86520);
   }
 
   @Test
   public void testDisableRegionalSecretDelayedDestroy() throws IOException {
     SecretName name = SecretName.parse(TEST_REGIONAL_SECRET_TO_DELAYED_DESTROY.getName());
-    DisableRegionalSecretDelayedDestroy.disableRegionalSecretDelayedDestroy(
+    Secret secret = DisableRegionalSecretDelayedDestroy.disableRegionalSecretDelayedDestroy(
         name.getProject(), name.getLocation(), name.getSecret());
 
     assertThat(stdOut.toString()).contains("Updated secret");
+    assertThat(secret.getVersionDestroyTtl().getSeconds()).isEqualTo(0);
   }
 }
  

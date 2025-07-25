@@ -35,7 +35,7 @@ public class DisableSecretDelayedDestroy {
   }
 
   // Disables delayed destroy for a secret.
-  public static void disableSecretDelayedDestroy(
+  public static Secret disableSecretDelayedDestroy(
       String projectId,
       String secretId)
       throws IOException {
@@ -56,6 +56,8 @@ public class DisableSecretDelayedDestroy {
       // Update the secret.
       Secret updatedSecret = client.updateSecret(secret, fieldMask);
       System.out.printf("Updated secret %s\n", updatedSecret.getName());
+
+      return updatedSecret;
     }
   }
 }

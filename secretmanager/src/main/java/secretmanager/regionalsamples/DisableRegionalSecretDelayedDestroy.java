@@ -37,7 +37,7 @@ public class DisableRegionalSecretDelayedDestroy {
   }
 
   // Disables the secret's delayed destroy.
-  public static void disableRegionalSecretDelayedDestroy(
+  public static Secret disableRegionalSecretDelayedDestroy(
       String projectId,
       String locationId,
       String secretId)
@@ -66,6 +66,8 @@ public class DisableRegionalSecretDelayedDestroy {
       // Update the secret.
       Secret updatedSecret = client.updateSecret(secret, fieldMask);
       System.out.printf("Updated secret %s\n", updatedSecret.getName());
+
+      return updatedSecret;
     }
   }
 }

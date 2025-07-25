@@ -39,7 +39,7 @@ public class UpdateRegionalSecretWithDelayedDestroy {
   }
 
   // Update secret with version destroy TTL.
-  public static void updateRegionalSecretWithDelayedDestroy(
+  public static Secret updateRegionalSecretWithDelayedDestroy(
       String projectId,
       String locationId,
       String secretId,
@@ -70,6 +70,8 @@ public class UpdateRegionalSecretWithDelayedDestroy {
       // Update the secret.
       Secret updatedSecret = client.updateSecret(secret, fieldMask);
       System.out.printf("Updated secret %s\n", updatedSecret.getName());
+
+      return updatedSecret;
     }
   }
 }
