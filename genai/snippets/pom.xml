@@ -42,7 +42,7 @@
                 <groupId>com.google.cloud</groupId>
                 <scope>import</scope>
                 <type>pom</type>
-                <version>26.63.0</version>
+                <version>26.64.0</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -51,7 +51,7 @@
         <dependency>
             <groupId>com.google.genai</groupId>
             <artifactId>google-genai</artifactId>
-            <version>1.9.0</version>
+            <version>1.10.0</version>
         </dependency>
         <dependency>
             <artifactId>junit</artifactId>
