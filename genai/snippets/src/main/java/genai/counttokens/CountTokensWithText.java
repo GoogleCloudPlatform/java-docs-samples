@@ -41,9 +41,8 @@ public class CountTokensWithText {
     try (Client client =
         Client.builder().httpOptions(HttpOptions.builder().apiVersion("v1").build()).build()) {
 
-      Content content = Content.fromParts(Part.fromText("What's the highest mountain in Africa?"));
-
-      CountTokensResponse response = client.models.countTokens(modelId, List.of(content), null);
+      CountTokensResponse response =
+          client.models.countTokens(modelId, "What's the highest mountain in Africa?", null);
 
       System.out.print(response);
       // Example response:

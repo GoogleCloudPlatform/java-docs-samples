@@ -49,8 +49,7 @@ public class TextGenerationWithSystemInstruction {
               .build();
 
       GenerateContentResponse response =
-          client.models.generateContent(
-              modelId, Content.fromParts(Part.fromText("Why is the sky blue?")), config);
+          client.models.generateContent(modelId, "Why is the sky blue?", config);
 
       System.out.print(response.text());
       // Example response:

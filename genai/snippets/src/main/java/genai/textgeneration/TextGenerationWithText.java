@@ -40,8 +40,7 @@ public class TextGenerationWithText {
         Client.builder().httpOptions(HttpOptions.builder().apiVersion("v1").build()).build()) {
 
       GenerateContentResponse response =
-          client.models.generateContent(
-              modelId, Content.fromParts(Part.fromText("How does AI work?")), null);
+          client.models.generateContent(modelId, "How does AI work?", null);
 
       System.out.print(response.text());
       // Example response:
