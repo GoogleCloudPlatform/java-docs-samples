@@ -31,7 +31,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
@@ -39,14 +38,13 @@ import org.springframework.web.bind.annotation.RestController;
 @SpringBootApplication
 public class Authentication {
   @RestController
-  @CrossOrigin(exposedHeaders = "*", allowedHeaders = "*")
   class AuthenticationController {
 
     @Autowired private AuthenticationService authService;
 
     @GetMapping("/")
     public ResponseEntity<String> getEmailFromAuthHeader(
-        @RequestHeader("X-Serverless-Authorization") String authHeader) {
+        @RequestHeader(value = "X-Serverless-Authorization", required = false) String authHeader) {
       String responseBody;
       if (authHeader == null) {
         responseBody = "Error verifying ID token: missing X-Serverless-Authorization header";
