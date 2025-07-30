@@ -32,6 +32,7 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class CountTokensIT {
 
+
   private static final String GEMINI_FLASH = "gemini-2.5-flash";
   private ByteArrayOutputStream bout;
   private PrintStream out;
@@ -46,7 +47,6 @@ public class CountTokensIT {
   @BeforeClass
   public static void checkRequirements() {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
-    requireEnvVar("GOOGLE_CLOUD_LOCATION");
   }
 
   @Before

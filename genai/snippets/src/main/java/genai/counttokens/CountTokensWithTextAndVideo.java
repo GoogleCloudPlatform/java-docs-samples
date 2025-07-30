@@ -39,7 +39,11 @@ public class CountTokensWithTextAndVideo {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (Client client =
-        Client.builder().httpOptions(HttpOptions.builder().apiVersion("v1").build()).build()) {
+        Client.builder()
+            .location("global")
+            .vertexAI(true)
+            .httpOptions(HttpOptions.builder().apiVersion("v1").build())
+            .build()) {
 
       Content content =
           Content.fromParts(

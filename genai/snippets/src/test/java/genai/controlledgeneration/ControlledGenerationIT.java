@@ -45,7 +45,6 @@ public class ControlledGenerationIT {
   @BeforeClass
   public static void checkRequirements() {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
-    requireEnvVar("GOOGLE_CLOUD_LOCATION");
   }
 
   @Before

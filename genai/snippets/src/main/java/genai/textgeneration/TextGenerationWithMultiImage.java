@@ -44,7 +44,11 @@ public class TextGenerationWithMultiImage {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (Client client =
-        Client.builder().httpOptions(HttpOptions.builder().apiVersion("v1").build()).build()) {
+        Client.builder()
+            .location("global")
+            .vertexAI(true)
+            .httpOptions(HttpOptions.builder().apiVersion("v1").build())
+            .build()) {
 
       // Read content from a local file.
       byte[] localFileImgBytes = Files.readAllBytes(Paths.get(localImageFilePath));
