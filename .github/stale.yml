@@ -11,8 +11,6 @@ exemptLabels:
   - type: process
   - type: feature request
   - type: docs
-  - flakybot: issue
-  - flakybot: flaky
   - :rotating_light:
 
 # Label to use when marking an issue as stale
