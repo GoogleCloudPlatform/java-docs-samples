@@ -180,17 +180,18 @@ public class AuthenticationTests {
   @Test
   public void testValidToken() throws Exception {
     String token = getGoogleIdToken();
-    HttpResponse<String> response = executeRequest("X-Serverless-Authorization", "Bearer " + token);
+    HttpResponse<String> response = executeRequest("X-Authorization", "bearer " + token);
 
     assertTrue(response != null);
     assertTrue(response.statusCode() == HttpStatusCodes.STATUS_CODE_OK);
     assertTrue(response.body().contains("Hello,"));
+    assertTrue(response.body().contains("@"));
   }
 
   @Test
   public void testInvalidToken() throws Exception {
     String token = "invalid_token";
-    HttpResponse<String> response = executeRequest("X-Serverless-Authorization", "Bearer " + token);
+    HttpResponse<String> response = executeRequest("X-Authorization", "bearer " + token);
 
     assertTrue(response != null);
     assertTrue(response.statusCode() == HttpStatusCodes.STATUS_CODE_UNAUTHORIZED);
@@ -203,6 +204,6 @@ public class AuthenticationTests {
 
     assertTrue(response != null);
     assertTrue(response.statusCode() == HttpStatusCodes.STATUS_CODE_UNAUTHORIZED);
-    assertTrue(response.body().contains("missing X-Serverless-Authorization header"));
+    assertTrue(response.body().contains("missing X-Authorization header"));
   }
 }

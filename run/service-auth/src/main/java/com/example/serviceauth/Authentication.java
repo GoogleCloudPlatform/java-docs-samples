@@ -27,7 +27,6 @@ import java.util.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -46,19 +45,17 @@ public class Authentication {
 
     @GetMapping("/")
     public ResponseEntity<String> getEmailFromAuthHeader(
-        @RequestHeader(value = "X-Serverless-Authorization", required = false) String authHeader) {
+        @RequestHeader(value = "X-Authorization", required = false) String authHeader) {
       String responseBody;
       if (authHeader == null) {
-        responseBody = "Error verifying ID token: missing X-Serverless-Authorization header";
+        responseBody = "Error verifying ID token: missing X-Authorization header";
         return new ResponseEntity<>(responseBody, HttpStatus.UNAUTHORIZED);
       }
 
       String email = authService.parseAuthHeader(authHeader);
       if (email == null) {
         responseBody = "Unauthorized request. Please supply a valid bearer token.";
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("WWW-Authenticate", "Bearer");
-        return new ResponseEntity<>(responseBody, headers, HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(responseBody, HttpStatus.UNAUTHORIZED);
       }
 
       responseBody = "Hello, " + email;
@@ -95,7 +92,7 @@ public class Authentication {
       Collection<String> audience = Arrays.asList(serviceUrl);
 
       // Validate and decode the ID token in the header.
-      if ("Bearer".equals(authType)) {
+      if ("bearer".equals(authType.toLowerCase())) {
         try {
           // Find more information about the verification process in:
           // https://developers.google.com/identity/sign-in/web/backend-auth#java
@@ -119,6 +116,7 @@ public class Authentication {
           }
         } catch (Exception exception) {
           System.out.println("Ivalid token: " + exception);
+          return null;
         }
       } else {
         System.out.println("Unhandled header format: " + authType);
