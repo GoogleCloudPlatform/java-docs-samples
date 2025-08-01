@@ -42,8 +42,8 @@ public class ContentCacheDelete {
       client.caches.delete(cacheName, null);
       System.out.println("Deleted cache: " + cacheName);
       // Example response
-      // Deleted cached content:
-      // projects/111111111111/locations/us-central1/cachedContents/1111111111111111111
+      // Deleted cache:
+      // projects/111111111111/locations/global/cachedContents/1111111111111111111
 
     }
   }

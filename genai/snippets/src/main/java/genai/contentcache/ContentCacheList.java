@@ -47,9 +47,9 @@ public class ContentCacheList {
         content.expireTime().ifPresent(time -> System.out.println("Expires at: " + time));
       }
       // Example response:
-      // Name: projects/111111111111/locations/us-central1/cachedContents/1111111111111111111
+      // Name: projects/111111111111/locations/global/cachedContents/1111111111111111111
       // Model:
-      // projects/111111111111/locations/us-central1/publishers/google/models/gemini-2.5-flash
+      // projects/111111111111/locations/global/publishers/google/models/gemini-2.5-flash
       // Last updated at: 2025-07-28T21:54:19.125825Z
       // Expires at: 2025-08-04T21:54:18.328233500Z
       // ...

@@ -75,7 +75,7 @@ public class ContentCacheCreateWithTextGcsPdf {
       cachedContent.name().ifPresent(System.out::println);
       cachedContent.usageMetadata().ifPresent(System.out::println);
       // Example response:
-      // projects/111111111111/locations/us-central1/cachedContents/1111111111111111111
+      // projects/111111111111/locations/global/cachedContents/1111111111111111111
       // CachedContentUsageMetadata{audioDurationSeconds=Optional.empty, imageCount=Optional[167],
       // textCount=Optional[153], totalTokenCount=Optional[43125],
       // videoDurationSeconds=Optional.empty}
