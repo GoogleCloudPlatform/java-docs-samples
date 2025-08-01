@@ -33,8 +33,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -43,64 +43,64 @@ public class AuthenticationTests {
 
   private static String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static String REGION = "us-central1";
-  private String projectNumber;
-  private String serviceUrl;
-  private String serviceName;
-  private HttpClient httpClient;
+  private static String PROJECT_NUMBER;
+  private static String SERVICE_URL;
+  private static String SERVICE_NAME;
+  private static HttpClient HTTP_CLIENT;
 
-  @BeforeEach
-  public void setUp() {
-    this.projectNumber = getProjectNumber();
-    this.serviceName = generateServiceName();
-    this.serviceUrl = generateServiceUrl();
-    this.deployService();
+  @BeforeAll
+  public static void setUp() {
+    PROJECT_NUMBER = getPROJECT_NUMBER();
+    SERVICE_NAME = generateServiceName();
+    SERVICE_URL = generateServiceUrl();
+    deployService();
 
-    this.httpClient = HttpClient.newHttpClient();
+    HTTP_CLIENT = HttpClient.newHttpClient();
   }
 
-  @AfterEach
-  public void tearDown() {
-    this.deleteService();
+  @AfterAll
+  public static void tearDown() {
+    deleteService();
   }
 
-  private String getProjectNumber() {
+  private static String getPROJECT_NUMBER() {
     return getOutputFromCommand(
         List.of("gcloud", "projects", "describe", PROJECT_ID, "--format=value(projectNumber)"));
   }
 
-  private String generateServiceName() {
+  private static String generateServiceName() {
     return String.format("receive-java-%s", UUID.randomUUID().toString().substring(0, 8));
   }
 
-  private String generateServiceUrl() {
-    return String.format("https://%s-%s.%s.run.app", this.serviceName, this.projectNumber, REGION);
+  private static String generateServiceUrl() {
+    return String.format("https://%s-%s.%s.run.app", SERVICE_NAME, PROJECT_NUMBER, REGION);
   }
 
-  private String deployService() {
+  private static String deployService() {
     return getOutputFromCommand(
         List.of(
             "gcloud",
             "run",
             "deploy",
-            serviceName,
+            SERVICE_NAME,
             "--project",
             PROJECT_ID,
             "--source",
             ".",
             "--region=" + REGION,
             "--allow-unauthenticated",
-            "--set-env-vars=SERVICE_URL=" + serviceUrl,
+            "--set-env-vars=SERVICE_URL=" + SERVICE_URL,
             "--quiet"));
   }
 
-  private String deleteService() {
+  private static String deleteService() {
     return getOutputFromCommand(
         List.of(
             "gcloud",
             "run",
             "services",
             "delete",
-            serviceName,
+            SERVICE_NAME,
             "--project",
             PROJECT_ID,
             "--async",
@@ -108,7 +108,7 @@ public class AuthenticationTests {
             "--quiet"));
   }
 
-  private String getOutputFromCommand(List<String> command) {
+  private static String getOutputFromCommand(List<String> command) {
     try {
       ProcessBuilder processBuilder = new ProcessBuilder(command);
 
@@ -131,7 +131,7 @@ public class AuthenticationTests {
       IdTokenCredentials idTokenCredentials =
           IdTokenCredentials.newBuilder()
               .setIdTokenProvider((IdTokenProvider) googleCredentials)
-              .setTargetAudience(serviceUrl)
+              .setTargetAudience(SERVICE_URL)
               .setOptions(Arrays.asList(Option.FORMAT_FULL, Option.LICENSES_TRUE))
               .build();
 
@@ -142,7 +142,8 @@ public class AuthenticationTests {
   }
 
   private HttpResponse<String> executeRequest(String headerName, String headerValue) {
-    HttpRequest.Builder requestBuilder = HttpRequest.newBuilder().uri(URI.create(serviceUrl)).GET();
+    HttpRequest.Builder requestBuilder =
+        HttpRequest.newBuilder().uri(URI.create(SERVICE_URL)).GET();
     if (headerName != null) {
       requestBuilder = requestBuilder.header(headerName, headerValue);
     }
@@ -153,7 +154,7 @@ public class AuthenticationTests {
 
     for (int attempt = 0; attempt < retryLimit; attempt++) {
       try {
-        response = this.httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        response = HTTP_CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
         if (response.statusCode() == HttpStatusCodes.STATUS_CODE_OK
             || response.statusCode() == HttpStatusCodes.STATUS_CODE_UNAUTHORIZED) {
           return response;
