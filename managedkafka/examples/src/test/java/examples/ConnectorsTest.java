@@ -289,7 +289,6 @@ public class ConnectorsTest {
 
       String bigqueryProjectId = "test-bigquery-project";
       String datasetName = "test_dataset";
-      String tableName = "test_table";
       String kafkaTopicName = "test-kafka-topic";
       String maxTasks = "3";
       String connectorClass = "com.wepay.kafka.connect.bigquery.BigQuerySinkConnector";
@@ -304,7 +303,6 @@ public class ConnectorsTest {
           bigqueryConnectorId,
           bigqueryProjectId,
           datasetName,
-          tableName,
           kafkaTopicName,
           maxTasks,
           connectorClass,

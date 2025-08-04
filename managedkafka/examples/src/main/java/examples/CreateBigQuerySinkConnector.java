@@ -38,7 +38,6 @@ public class CreateBigQuerySinkConnector {
     String connectorId = "my-bigquery-sink-connector";
     String bigqueryProjectId = "my-bigquery-project-id";
     String datasetName = "my_dataset";
-    String tableName = "kafka_sink_table";
     String kafkaTopicName = "kafka-topic";
     String maxTasks = "3";
     String connectorClass = "com.wepay.kafka.connect.bigquery.BigQuerySinkConnector";
@@ -52,7 +51,6 @@ public class CreateBigQuerySinkConnector {
         connectorId,
         bigqueryProjectId,
         datasetName,
-        tableName,
         kafkaTopicName,
         maxTasks,
         connectorClass,
@@ -68,7 +66,6 @@ public class CreateBigQuerySinkConnector {
       String connectorId,
       String bigqueryProjectId,
       String datasetName,
-      String tableName,
       String kafkaTopicName,
       String maxTasks,
       String connectorClass,
