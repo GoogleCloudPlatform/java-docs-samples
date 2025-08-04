@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package genai.gemini.textgeneration;
+package genai.textgeneration;
 
 // [START googlegenaisdk_textgen_async_with_txt]
 

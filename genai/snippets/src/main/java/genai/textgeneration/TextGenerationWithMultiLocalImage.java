@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package genai.gemini.textgeneration;
+package genai.textgeneration;
 
 // [START googlegenaisdk_textgen_with_multi_local_img]
 
@@ -23,7 +23,6 @@ import com.google.genai.types.Content;
 import com.google.genai.types.GenerateContentResponse;
 import com.google.genai.types.HttpOptions;
 import com.google.genai.types.Part;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;

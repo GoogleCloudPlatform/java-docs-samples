@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package genai.gemini.textgeneration;
+package genai.textgeneration;
 
 // [START googlegenaisdk_textgen_with_mute_video]
 
 import com.google.genai.Client;
 import com.google.genai.types.Content;
-import com.google.genai.types.HttpOptions;
 import com.google.genai.types.GenerateContentResponse;
+import com.google.genai.types.HttpOptions;
 import com.google.genai.types.Part;
 
 public class TextGenerationWithMuteVideo {
@@ -32,7 +32,7 @@ public class TextGenerationWithMuteVideo {
     generateContent(modelId);
   }
 
-  // Generates text with mute video
+  // Generates text with mute video input
   public static String generateContent(String modelId) {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
