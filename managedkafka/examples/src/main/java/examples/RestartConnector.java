@@ -48,7 +48,7 @@ public class RestartConnector {
       managedKafkaConnectClient.restartConnector(request);
       System.out.printf("Connector %s restarted successfully.\n", connectorId);
     } catch (IOException | ApiException e) {
-      System.err.printf("managedKafkaConnectClient.restartConnector got err: %s", 
+      System.err.printf("managedKafkaConnectClient.restartConnector got err: %s\n", 
           e.getMessage());
     }
   }

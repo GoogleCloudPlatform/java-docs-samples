@@ -48,7 +48,7 @@ public class PauseConnector {
       managedKafkaConnectClient.pauseConnector(request);
       System.out.printf("Connector %s paused successfully.\n", connectorId);
     } catch (IOException | ApiException e) {
-      System.err.printf("managedKafkaConnectClient.pauseConnector got err: %s", 
+      System.err.printf("managedKafkaConnectClient.pauseConnector got err: %s\n", 
           e.getMessage());
     }
   }

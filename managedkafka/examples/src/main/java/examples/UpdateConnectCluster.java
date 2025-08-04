@@ -83,7 +83,7 @@ public class UpdateConnectCluster {
       ConnectCluster response = future.get();
       System.out.printf("Updated connect cluster: %s\n", response.getName());
     } catch (ExecutionException e) {
-      System.err.printf("managedKafkaConnectClient.updateConnectCluster got err: %s", 
+      System.err.printf("managedKafkaConnectClient.updateConnectCluster got err: %s\n", 
           e.getMessage());
     }
   }

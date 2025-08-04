@@ -48,7 +48,7 @@ public class StopConnector {
       managedKafkaConnectClient.stopConnector(request);
       System.out.printf("Connector %s stopped successfully.\n", connectorId);
     } catch (IOException | ApiException e) {
-      System.err.printf("managedKafkaConnectClient.stopConnector got err: %s", e.getMessage());
+      System.err.printf("managedKafkaConnectClient.stopConnector got err: %s\n", e.getMessage());
     }
   }
 }

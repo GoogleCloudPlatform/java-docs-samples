@@ -75,7 +75,7 @@ public class DeleteConnectCluster {
       future.get();
       System.out.println("Deleted connect cluster");
     } catch (IOException | ApiException e) {
-      System.err.printf("managedKafkaConnectClient.deleteConnectCluster got err: %s", 
+      System.err.printf("managedKafkaConnectClient.deleteConnectCluster got err: %s\n", 
           e.getMessage());
     }
   }

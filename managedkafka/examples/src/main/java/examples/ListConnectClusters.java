@@ -42,7 +42,7 @@ public class ListConnectClusters {
         System.out.println(connectCluster.getAllFields());
       }
     } catch (IOException | ApiException e) {
-      System.err.printf("managedKafkaConnectClient.listConnectClusters got err: %s", 
+      System.err.printf("managedKafkaConnectClient.listConnectClusters got err: %s\n", 
           e.getMessage());
     }
   }

@@ -36,7 +36,6 @@ import com.google.cloud.managedkafka.v1.ManagedKafkaConnectSettings;
 import com.google.cloud.managedkafka.v1.OperationMetadata;
 import java.time.Duration;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
 public class CreateConnectCluster {
 
@@ -117,7 +116,7 @@ public class CreateConnectCluster {
       ConnectCluster response = future.get();
       System.out.printf("Created connect cluster: %s\n", response.getName());
     } catch (ExecutionException e) {
-      System.err.printf("managedKafkaConnectClient.createConnectCluster got err: %s", 
+      System.err.printf("managedKafkaConnectClient.createConnectCluster got err: %s\n", 
           e.getMessage());
       throw e;
     }

@@ -48,7 +48,7 @@ public class ResumeConnector {
       managedKafkaConnectClient.resumeConnector(request);
       System.out.printf("Connector %s resumed successfully.\n", connectorId);
     } catch (IOException | ApiException e) {
-      System.err.printf("managedKafkaConnectClient.resumeConnector got err: %s", 
+      System.err.printf("managedKafkaConnectClient.resumeConnector got err: %s\n", 
           e.getMessage());
     }
   }

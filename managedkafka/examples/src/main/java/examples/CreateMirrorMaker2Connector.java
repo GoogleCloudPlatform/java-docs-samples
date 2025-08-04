@@ -135,7 +135,7 @@ public class CreateMirrorMaker2Connector {
       Connector response = managedKafkaConnectClient.createConnector(request);
       System.out.printf("Created MirrorMaker2 connector: %s\n", response.getName());
     } catch (IOException | ApiException e) {
-      System.err.printf("managedKafkaConnectClient.createConnector got err: %s", e.getMessage());
+      System.err.printf("managedKafkaConnectClient.createConnector got err: %s\n", e.getMessage());
     }
   }
 }

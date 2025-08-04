@@ -104,7 +104,7 @@ public class CreateBigQuerySinkConnector {
       Connector response = managedKafkaConnectClient.createConnector(request);
       System.out.printf("Created BigQuery Sink connector: %s\n", response.getName());
     } catch (IOException | ApiException e) {
-      System.err.printf("managedKafkaConnectClient.createConnector got err: %s", e.getMessage());
+      System.err.printf("managedKafkaConnectClient.createConnector got err: %s\n", e.getMessage());
     }
   }
 }
