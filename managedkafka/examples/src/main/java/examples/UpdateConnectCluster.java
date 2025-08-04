@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Google LLC
+ * Copyright 2025 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -65,7 +65,8 @@ public class UpdateConnectCluster {
 
     try (ManagedKafkaConnectClient managedKafkaConnectClient = ManagedKafkaConnectClient.create(
         settingsBuilder.build())) {
-      UpdateConnectClusterRequest request = UpdateConnectClusterRequest.newBuilder().setUpdateMask(updateMask)
+      UpdateConnectClusterRequest request = UpdateConnectClusterRequest.newBuilder()
+          .setUpdateMask(updateMask)
           .setConnectCluster(connectCluster).build();
       OperationFuture<ConnectCluster, OperationMetadata> future = managedKafkaConnectClient
           .updateConnectClusterOperationCallable().futureCall(request);
@@ -73,7 +74,8 @@ public class UpdateConnectCluster {
       // Get the initial LRO and print details. CreateConnectCluster contains sample
       // code for polling logs.
       OperationSnapshot operation = future.getInitialFuture().get();
-      System.out.printf("Connect cluster update started. Operation name: %s\nDone: %s\nMetadata: %s\n",
+      System.out.printf(
+          "Connect cluster update started. Operation name: %s\nDone: %s\nMetadata: %s\n",
           operation.getName(),
           operation.isDone(),
           future.getMetadata().get().toString());
@@ -81,7 +83,8 @@ public class UpdateConnectCluster {
       ConnectCluster response = future.get();
       System.out.printf("Updated connect cluster: %s\n", response.getName());
     } catch (ExecutionException e) {
-      System.err.printf("managedKafkaConnectClient.updateConnectCluster got err: %s", e.getMessage());
+      System.err.printf("managedKafkaConnectClient.updateConnectCluster got err: %s", 
+          e.getMessage());
     }
   }
 }

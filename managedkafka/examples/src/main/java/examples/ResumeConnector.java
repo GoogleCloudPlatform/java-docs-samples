@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Google LLC
+ * Copyright 2025 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,15 +37,19 @@ public class ResumeConnector {
   public static void resumeConnector(
       String projectId, String region, String connectClusterId, String connectorId)
       throws Exception {
-    try (ManagedKafkaConnectClient managedKafkaConnectClient = ManagedKafkaConnectClient.create()) {
-      ConnectorName connectorName = ConnectorName.of(projectId, region, connectClusterId, connectorId);
-      ResumeConnectorRequest request = ResumeConnectorRequest.newBuilder().setName(connectorName.toString()).build();
+    try (ManagedKafkaConnectClient managedKafkaConnectClient = 
+        ManagedKafkaConnectClient.create()) {
+      ConnectorName connectorName = ConnectorName.of(projectId, region, connectClusterId, 
+          connectorId);
+      ResumeConnectorRequest request = ResumeConnectorRequest.newBuilder()
+          .setName(connectorName.toString()).build();
 
       // This operation is being handled synchronously.
       managedKafkaConnectClient.resumeConnector(request);
       System.out.printf("Connector %s resumed successfully.\n", connectorId);
     } catch (IOException | ApiException e) {
-      System.err.printf("managedKafkaConnectClient.resumeConnector got err: %s", e.getMessage());
+      System.err.printf("managedKafkaConnectClient.resumeConnector got err: %s", 
+          e.getMessage());
     }
   }
 }

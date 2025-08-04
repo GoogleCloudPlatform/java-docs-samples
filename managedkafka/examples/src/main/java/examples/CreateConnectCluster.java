@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Google LLC
+ * Copyright 2025 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,7 +61,8 @@ public class CreateConnectCluster {
       int cpu,
       long memoryBytes)
       throws Exception {
-    CapacityConfig capacityConfig = CapacityConfig.newBuilder().setVcpuCount(cpu).setMemoryBytes(memoryBytes).build();
+    CapacityConfig capacityConfig = CapacityConfig.newBuilder().setVcpuCount(cpu)
+        .setMemoryBytes(memoryBytes).build();
     ConnectNetworkConfig networkConfig = ConnectNetworkConfig.newBuilder()
         .setPrimarySubnet(subnet)
         .build();
@@ -116,7 +117,8 @@ public class CreateConnectCluster {
       ConnectCluster response = future.get();
       System.out.printf("Created connect cluster: %s\n", response.getName());
     } catch (ExecutionException e) {
-      System.err.printf("managedKafkaConnectClient.createConnectCluster got err: %s", e.getMessage());
+      System.err.printf("managedKafkaConnectClient.createConnectCluster got err: %s", 
+          e.getMessage());
       throw e;
     }
   }

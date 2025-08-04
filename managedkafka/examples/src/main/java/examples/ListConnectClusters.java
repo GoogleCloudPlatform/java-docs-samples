@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Google LLC
+ * Copyright 2025 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,14 +33,17 @@ public class ListConnectClusters {
   }
 
   public static void listConnectClusters(String projectId, String region) throws Exception {
-    try (ManagedKafkaConnectClient managedKafkaConnectClient = ManagedKafkaConnectClient.create()) {
+    try (ManagedKafkaConnectClient managedKafkaConnectClient = 
+        ManagedKafkaConnectClient.create()) {
       LocationName locationName = LocationName.of(projectId, region);
       // This operation is being handled synchronously.
-      for (ConnectCluster connectCluster : managedKafkaConnectClient.listConnectClusters(locationName).iterateAll()) {
+      for (ConnectCluster connectCluster : managedKafkaConnectClient
+          .listConnectClusters(locationName).iterateAll()) {
         System.out.println(connectCluster.getAllFields());
       }
     } catch (IOException | ApiException e) {
-      System.err.printf("managedKafkaConnectClient.listConnectClusters got err: %s", e.getMessage());
+      System.err.printf("managedKafkaConnectClient.listConnectClusters got err: %s", 
+          e.getMessage());
     }
   }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Google LLC
+ * Copyright 2025 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,12 +45,16 @@ public class CreateMirrorMaker2Connector {
     String offsetSyncsReplicationFactor = "1";
     String sourceSecurityProtocol = "SASL_SSL";
     String sourceSaslMechanism = "OAUTHBEARER";
-    String sourceLoginCallbackHandler = "com.google.cloud.hosted.kafka.auth.GcpLoginCallbackHandler";
-    String sourceJaasConfig = "org.apache.kafka.common.security.oauthbearer.OAuthBearerLoginModule required;";
+    String sourceLoginCallbackHandler = 
+        "com.google.cloud.hosted.kafka.auth.GcpLoginCallbackHandler";
+    String sourceJaasConfig = 
+        "org.apache.kafka.common.security.oauthbearer.OAuthBearerLoginModule required;";
     String targetSecurityProtocol = "SASL_SSL";
     String targetSaslMechanism = "OAUTHBEARER";
-    String targetLoginCallbackHandler = "com.google.cloud.hosted.kafka.auth.GcpLoginCallbackHandler";
-    String targetJaasConfig = "org.apache.kafka.common.security.oauthbearer.OAuthBearerLoginModule required;";
+    String targetLoginCallbackHandler = 
+        "com.google.cloud.hosted.kafka.auth.GcpLoginCallbackHandler";
+    String targetJaasConfig = 
+        "org.apache.kafka.common.security.oauthbearer.OAuthBearerLoginModule required;";
     createMirrorMaker2Connector(
         projectId,
         region,

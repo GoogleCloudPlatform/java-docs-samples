@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Google LLC
+ * Copyright 2025 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.google.cloud.managedkafka.v1.ConnectClusterName;
 import com.google.cloud.managedkafka.v1.Connector;
 import com.google.cloud.managedkafka.v1.ConnectorName;
 import com.google.cloud.managedkafka.v1.CreateConnectorRequest;
@@ -41,285 +40,283 @@ import org.mockito.Mockito;
 @RunWith(JUnit4.class)
 public class ConnectorsTest {
 
-    protected static final String projectId = "test-project";
-    protected static final String region = "us-central1";
-    protected static final String connectClusterId = "test-connect-cluster";
-    protected static final String mirrorMaker2ConnectorId = "test-mirrormaker2-connector";
-    protected static final String pubsubSourceConnectorId = "test-pubsub-source-connector";
-    protected static final String pubsubSinkConnectorId = "test-pubsub-sink-connector";
-    protected static final String gcsConnectorId = "test-gcs-sink-connector";
-    protected static final String bigqueryConnectorId = "test-bigquery-sink-connector";
+  protected static final String projectId = "test-project";
+  protected static final String region = "us-central1";
+  protected static final String connectClusterId = "test-connect-cluster";
+  protected static final String mirrorMaker2ConnectorId = "test-mirrormaker2-connector";
+  protected static final String pubsubSourceConnectorId = "test-pubsub-source-connector";
+  protected static final String pubsubSinkConnectorId = "test-pubsub-sink-connector";
+  protected static final String gcsConnectorId = "test-gcs-sink-connector";
+  protected static final String bigqueryConnectorId = "test-bigquery-sink-connector";
 
-    protected static final String mirrorMaker2ConnectorName = "projects/test-project/locations/us-central1/connectClusters/"
-            + "test-connect-cluster/connectors/test-mirrormaker2-connector";
-    protected static final String pubsubSourceConnectorName = "projects/test-project/locations/us-central1/connectClusters/"
-            + "test-connect-cluster/connectors/test-pubsub-source-connector";
-    protected static final String pubsubSinkConnectorName = "projects/test-project/locations/us-central1/connectClusters/"
-            + "test-connect-cluster/connectors/test-pubsub-sink-connector";
-    protected static final String gcsConnectorName = "projects/test-project/locations/us-central1/connectClusters/"
-            + "test-connect-cluster/connectors/test-gcs-sink-connector";
-    protected static final String bigqueryConnectorName = "projects/test-project/locations/us-central1/connectClusters/"
-            + "test-connect-cluster/connectors/test-bigquery-sink-connector";
+  protected static final String mirrorMaker2ConnectorName =
+      "projects/test-project/locations/us-central1/connectClusters/"
+          + "test-connect-cluster/connectors/test-mirrormaker2-connector";
+  protected static final String pubsubSourceConnectorName =
+      "projects/test-project/locations/us-central1/connectClusters/"
+          + "test-connect-cluster/connectors/test-pubsub-source-connector";
+  protected static final String pubsubSinkConnectorName =
+      "projects/test-project/locations/us-central1/connectClusters/"
+          + "test-connect-cluster/connectors/test-pubsub-sink-connector";
+  protected static final String gcsConnectorName =
+      "projects/test-project/locations/us-central1/connectClusters/"
+          + "test-connect-cluster/connectors/test-gcs-sink-connector";
+  protected static final String bigqueryConnectorName =
+      "projects/test-project/locations/us-central1/connectClusters/"
+          + "test-connect-cluster/connectors/test-bigquery-sink-connector";
 
-    private ByteArrayOutputStream bout;
+  private ByteArrayOutputStream bout;
 
-    @Before
-    public void setUp() {
-        bout = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(bout));
+  @Before
+  public void setUp() {
+    bout = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(bout));
+  }
+
+  @Test
+  public void createMirrorMaker2ConnectorTest() throws Exception {
+    ManagedKafkaConnectClient managedKafkaConnectClient = mock(ManagedKafkaConnectClient.class);
+    try (MockedStatic<ManagedKafkaConnectClient> mockedStatic =
+        Mockito.mockStatic(ManagedKafkaConnectClient.class)) {
+      mockedStatic.when(() -> create()).thenReturn(managedKafkaConnectClient);
+      Connector connector =
+          Connector.newBuilder()
+              .setName(
+                  ConnectorName.of(projectId, region, connectClusterId, mirrorMaker2ConnectorId)
+                      .toString())
+              .build();
+      when(managedKafkaConnectClient.createConnector(any(CreateConnectorRequest.class)))
+          .thenReturn(connector);
+
+      String sourceClusterBootstrapServers = "source-cluster:9092";
+      String targetClusterBootstrapServers = "target-cluster:9092";
+      String sourceClusterAlias = "source";
+      String targetClusterAlias = "target";
+      String connectorClass = "org.apache.kafka.connect.mirror.MirrorSourceConnector";
+      String topics = ".*";
+      String offsetSyncsReplicationFactor = "1";
+      String sourceSecurityProtocol = "SASL_SSL";
+      String sourceSaslMechanism = "OAUTHBEARER";
+      String sourceLoginCallbackHandler =
+          "com.google.cloud.hosted.kafka.auth.GcpLoginCallbackHandler";
+      String sourceJaasConfig =
+          "org.apache.kafka.common.security.oauthbearer.OAuthBearerLoginModule required;";
+      String targetSecurityProtocol = "SASL_SSL";
+      String targetSaslMechanism = "OAUTHBEARER";
+      String targetLoginCallbackHandler =
+          "com.google.cloud.hosted.kafka.auth.GcpLoginCallbackHandler";
+      String targetJaasConfig =
+          "org.apache.kafka.common.security.oauthbearer.OAuthBearerLoginModule required;";
+
+      CreateMirrorMaker2Connector.createMirrorMaker2Connector(
+          projectId,
+          region,
+          connectClusterId,
+          mirrorMaker2ConnectorId,
+          sourceClusterBootstrapServers,
+          targetClusterBootstrapServers,
+          sourceClusterAlias,
+          targetClusterAlias,
+          connectorClass,
+          topics,
+          offsetSyncsReplicationFactor,
+          sourceSecurityProtocol,
+          sourceSaslMechanism,
+          sourceLoginCallbackHandler,
+          sourceJaasConfig,
+          targetSecurityProtocol,
+          targetSaslMechanism,
+          targetLoginCallbackHandler,
+          targetJaasConfig);
+
+      String output = bout.toString();
+      assertThat(output).contains("Created MirrorMaker2 connector");
+      assertThat(output).contains(mirrorMaker2ConnectorName);
+      verify(managedKafkaConnectClient, times(1))
+          .createConnector(any(CreateConnectorRequest.class));
     }
+  }
 
-    @Test
-    public void createMirrorMaker2ConnectorTest() throws Exception {
-        ManagedKafkaConnectClient managedKafkaConnectClient = mock(ManagedKafkaConnectClient.class);
-        try (MockedStatic<ManagedKafkaConnectClient> mockedStatic = Mockito
-                .mockStatic(ManagedKafkaConnectClient.class)) {
-            mockedStatic.when(() -> create()).thenReturn(managedKafkaConnectClient);
-            Connector connector = Connector.newBuilder()
-                    .setName(
-                            ConnectorName.of(
-                                    projectId,
-                                    region,
-                                    connectClusterId,
-                                    mirrorMaker2ConnectorId)
-                                    .toString())
-                    .build();
-            when(managedKafkaConnectClient.createConnector(any(CreateConnectorRequest.class)))
-                    .thenReturn(connector);
+  @Test
+  public void createPubSubSourceConnectorTest() throws Exception {
+    ManagedKafkaConnectClient managedKafkaConnectClient = mock(ManagedKafkaConnectClient.class);
+    try (MockedStatic<ManagedKafkaConnectClient> mockedStatic =
+        Mockito.mockStatic(ManagedKafkaConnectClient.class)) {
+      mockedStatic.when(() -> create()).thenReturn(managedKafkaConnectClient);
+      Connector connector =
+          Connector.newBuilder()
+              .setName(
+                  ConnectorName.of(projectId, region, connectClusterId, pubsubSourceConnectorId)
+                      .toString())
+              .build();
+      when(managedKafkaConnectClient.createConnector(any(CreateConnectorRequest.class)))
+          .thenReturn(connector);
 
-            String sourceClusterBootstrapServers = "source-cluster:9092";
-            String targetClusterBootstrapServers = "target-cluster:9092";
-            String sourceClusterAlias = "source";
-            String targetClusterAlias = "target";
-            String connectorClass = "org.apache.kafka.connect.mirror.MirrorSourceConnector";
-            String topics = ".*";
-            String offsetSyncsReplicationFactor = "1";
-            String sourceSecurityProtocol = "SASL_SSL";
-            String sourceSaslMechanism = "OAUTHBEARER";
-            String sourceLoginCallbackHandler = "com.google.cloud.hosted.kafka.auth.GcpLoginCallbackHandler";
-            String sourceJaasConfig = "org.apache.kafka.common.security.oauthbearer.OAuthBearerLoginModule required;";
-            String targetSecurityProtocol = "SASL_SSL";
-            String targetSaslMechanism = "OAUTHBEARER";
-            String targetLoginCallbackHandler = "com.google.cloud.hosted.kafka.auth.GcpLoginCallbackHandler";
-            String targetJaasConfig = "org.apache.kafka.common.security.oauthbearer.OAuthBearerLoginModule required;";
+      String pubsubProjectId = "test-pubsub-project";
+      String subscriptionName = "test-subscription";
+      String kafkaTopicName = "test-kafka-topic";
+      String connectorClass = "com.google.pubsub.kafka.source.CloudPubSubSourceConnector";
+      String maxTasks = "1";
+      String valueConverter = "org.apache.kafka.connect.converters.ByteArrayConverter";
+      String keyConverter = "org.apache.kafka.connect.storage.StringConverter";
 
-            CreateMirrorMaker2Connector.createMirrorMaker2Connector(
-                    projectId,
-                    region,
-                    connectClusterId,
-                    mirrorMaker2ConnectorId,
-                    sourceClusterBootstrapServers,
-                    targetClusterBootstrapServers,
-                    sourceClusterAlias,
-                    targetClusterAlias,
-                    connectorClass,
-                    topics,
-                    offsetSyncsReplicationFactor,
-                    sourceSecurityProtocol,
-                    sourceSaslMechanism,
-                    sourceLoginCallbackHandler,
-                    sourceJaasConfig,
-                    targetSecurityProtocol,
-                    targetSaslMechanism,
-                    targetLoginCallbackHandler,
-                    targetJaasConfig);
+      CreatePubSubSourceConnector.createPubSubSourceConnector(
+          projectId,
+          region,
+          connectClusterId,
+          pubsubSourceConnectorId,
+          pubsubProjectId,
+          subscriptionName,
+          kafkaTopicName,
+          connectorClass,
+          maxTasks,
+          valueConverter,
+          keyConverter);
 
-            String output = bout.toString();
-            assertThat(output).contains("Created MirrorMaker2 connector");
-            assertThat(output).contains(mirrorMaker2ConnectorName);
-            verify(managedKafkaConnectClient, times(1)).createConnector(any(CreateConnectorRequest.class));
-        }
+      String output = bout.toString();
+      assertThat(output).contains("Created Pub/Sub Source connector");
+      assertThat(output).contains(pubsubSourceConnectorName);
+      verify(managedKafkaConnectClient, times(1))
+          .createConnector(any(CreateConnectorRequest.class));
     }
+  }
 
-    @Test
-    public void createPubSubSourceConnectorTest() throws Exception {
-        ManagedKafkaConnectClient managedKafkaConnectClient = mock(ManagedKafkaConnectClient.class);
-        try (MockedStatic<ManagedKafkaConnectClient> mockedStatic = Mockito
-                .mockStatic(ManagedKafkaConnectClient.class)) {
-            mockedStatic.when(() -> create()).thenReturn(managedKafkaConnectClient);
-            Connector connector = Connector.newBuilder()
-                    .setName(
-                            ConnectorName.of(
-                                    projectId,
-                                    region,
-                                    connectClusterId,
-                                    pubsubSourceConnectorId)
-                                    .toString())
-                    .build();
-            when(managedKafkaConnectClient.createConnector(any(CreateConnectorRequest.class)))
-                    .thenReturn(connector);
+  @Test
+  public void createPubSubSinkConnectorTest() throws Exception {
+    ManagedKafkaConnectClient managedKafkaConnectClient = mock(ManagedKafkaConnectClient.class);
+    try (MockedStatic<ManagedKafkaConnectClient> mockedStatic =
+        Mockito.mockStatic(ManagedKafkaConnectClient.class)) {
+      mockedStatic.when(() -> create()).thenReturn(managedKafkaConnectClient);
+      Connector connector =
+          Connector.newBuilder()
+              .setName(
+                  ConnectorName.of(projectId, region, connectClusterId, pubsubSinkConnectorId)
+                      .toString())
+              .build();
+      when(managedKafkaConnectClient.createConnector(any(CreateConnectorRequest.class)))
+          .thenReturn(connector);
 
-            String pubsubProjectId = "test-pubsub-project";
-            String subscriptionName = "test-subscription";
-            String kafkaTopicName = "test-kafka-topic";
-            String connectorClass = "com.google.pubsub.kafka.source.CloudPubSubSourceConnector";
-            String maxTasks = "1";
-            String valueConverter = "org.apache.kafka.connect.converters.ByteArrayConverter";
-            String keyConverter = "org.apache.kafka.connect.storage.StringConverter";
+      String pubsubProjectId = "test-pubsub-project";
+      String pubsubTopicName = "test-pubsub-topic";
+      String kafkaTopicName = "test-kafka-topic";
+      String connectorClass = "com.google.pubsub.kafka.sink.CloudPubSubSinkConnector";
+      String maxTasks = "1";
+      String valueConverter = "org.apache.kafka.connect.storage.StringConverter";
+      String keyConverter = "org.apache.kafka.connect.storage.StringConverter";
 
-            CreatePubSubSourceConnector.createPubSubSourceConnector(
-                    projectId,
-                    region,
-                    connectClusterId,
-                    pubsubSourceConnectorId,
-                    pubsubProjectId,
-                    subscriptionName,
-                    kafkaTopicName,
-                    connectorClass,
-                    maxTasks,
-                    valueConverter,
-                    keyConverter);
+      CreatePubSubSinkConnector.createPubSubSinkConnector(
+          projectId,
+          region,
+          connectClusterId,
+          pubsubSinkConnectorId,
+          pubsubProjectId,
+          pubsubTopicName,
+          kafkaTopicName,
+          connectorClass,
+          maxTasks,
+          valueConverter,
+          keyConverter);
 
-            String output = bout.toString();
-            assertThat(output).contains("Created Pub/Sub Source connector");
-            assertThat(output).contains(pubsubSourceConnectorName);
-            verify(managedKafkaConnectClient, times(1)).createConnector(any(CreateConnectorRequest.class));
-        }
+      String output = bout.toString();
+      assertThat(output).contains("Created Pub/Sub Sink connector");
+      assertThat(output).contains(pubsubSinkConnectorName);
+      verify(managedKafkaConnectClient, times(1))
+          .createConnector(any(CreateConnectorRequest.class));
     }
+  }
 
-    @Test
-    public void createPubSubSinkConnectorTest() throws Exception {
-        ManagedKafkaConnectClient managedKafkaConnectClient = mock(ManagedKafkaConnectClient.class);
-        try (MockedStatic<ManagedKafkaConnectClient> mockedStatic = Mockito
-                .mockStatic(ManagedKafkaConnectClient.class)) {
-            mockedStatic.when(() -> create()).thenReturn(managedKafkaConnectClient);
-            Connector connector = Connector.newBuilder()
-                    .setName(
-                            ConnectorName.of(
-                                    projectId,
-                                    region,
-                                    connectClusterId,
-                                    pubsubSinkConnectorId)
-                                    .toString())
-                    .build();
-            when(managedKafkaConnectClient.createConnector(any(CreateConnectorRequest.class)))
-                    .thenReturn(connector);
+  @Test
+  public void createCloudStorageSinkConnectorTest() throws Exception {
+    ManagedKafkaConnectClient managedKafkaConnectClient = mock(ManagedKafkaConnectClient.class);
+    try (MockedStatic<ManagedKafkaConnectClient> mockedStatic =
+        Mockito.mockStatic(ManagedKafkaConnectClient.class)) {
+      mockedStatic.when(() -> create()).thenReturn(managedKafkaConnectClient);
+      Connector connector =
+          Connector.newBuilder()
+              .setName(
+                  ConnectorName.of(projectId, region, connectClusterId, gcsConnectorId).toString())
+              .build();
+      when(managedKafkaConnectClient.createConnector(any(CreateConnectorRequest.class)))
+          .thenReturn(connector);
 
-            String pubsubProjectId = "test-pubsub-project";
-            String pubsubTopicName = "test-pubsub-topic";
-            String kafkaTopicName = "test-kafka-topic";
-            String connectorClass = "com.google.pubsub.kafka.sink.CloudPubSubSinkConnector";
-            String maxTasks = "1";
-            String valueConverter = "org.apache.kafka.connect.storage.StringConverter";
-            String keyConverter = "org.apache.kafka.connect.storage.StringConverter";
+      String bucketName = "test-gcs-bucket";
+      String kafkaTopicName = "test-kafka-topic";
+      String connectorClass = "io.aiven.kafka.connect.gcs.GcsSinkConnector";
+      String maxTasks = "1";
+      String gcsCredentialsDefault = "true";
+      String formatOutputType = "json";
+      String valueConverter = "org.apache.kafka.connect.json.JsonConverter";
+      String valueSchemasEnable = "false";
+      String keyConverter = "org.apache.kafka.connect.storage.StringConverter";
 
-            CreatePubSubSinkConnector.createPubSubSinkConnector(
-                    projectId,
-                    region,
-                    connectClusterId,
-                    pubsubSinkConnectorId,
-                    pubsubProjectId,
-                    pubsubTopicName,
-                    kafkaTopicName,
-                    connectorClass,
-                    maxTasks,
-                    valueConverter,
-                    keyConverter);
+      CreateCloudStorageSinkConnector.createCloudStorageSinkConnector(
+          projectId,
+          region,
+          connectClusterId,
+          gcsConnectorId,
+          bucketName,
+          kafkaTopicName,
+          connectorClass,
+          maxTasks,
+          gcsCredentialsDefault,
+          formatOutputType,
+          valueConverter,
+          valueSchemasEnable,
+          keyConverter);
 
-            String output = bout.toString();
-            assertThat(output).contains("Created Pub/Sub Sink connector");
-            assertThat(output).contains(pubsubSinkConnectorName);
-            verify(managedKafkaConnectClient, times(1)).createConnector(any(CreateConnectorRequest.class));
-        }
+      String output = bout.toString();
+      assertThat(output).contains("Created Cloud Storage Sink connector");
+      assertThat(output).contains(gcsConnectorName);
+      verify(managedKafkaConnectClient, times(1))
+          .createConnector(any(CreateConnectorRequest.class));
     }
+  }
 
-    @Test
-    public void createCloudStorageSinkConnectorTest() throws Exception {
-        ManagedKafkaConnectClient managedKafkaConnectClient = mock(ManagedKafkaConnectClient.class);
-        try (MockedStatic<ManagedKafkaConnectClient> mockedStatic = Mockito
-                .mockStatic(ManagedKafkaConnectClient.class)) {
-            mockedStatic.when(() -> create()).thenReturn(managedKafkaConnectClient);
-            Connector connector = Connector.newBuilder()
-                    .setName(
-                            ConnectorName.of(
-                                    projectId,
-                                    region,
-                                    connectClusterId,
-                                    gcsConnectorId)
-                                    .toString())
-                    .build();
-            when(managedKafkaConnectClient.createConnector(any(CreateConnectorRequest.class)))
-                    .thenReturn(connector);
+  @Test
+  public void createBigQuerySinkConnectorTest() throws Exception {
+    ManagedKafkaConnectClient managedKafkaConnectClient = mock(ManagedKafkaConnectClient.class);
+    try (MockedStatic<ManagedKafkaConnectClient> mockedStatic =
+        Mockito.mockStatic(ManagedKafkaConnectClient.class)) {
+      mockedStatic.when(() -> create()).thenReturn(managedKafkaConnectClient);
+      Connector connector =
+          Connector.newBuilder()
+              .setName(
+                  ConnectorName.of(projectId, region, connectClusterId, bigqueryConnectorId)
+                      .toString())
+              .build();
+      when(managedKafkaConnectClient.createConnector(any(CreateConnectorRequest.class)))
+          .thenReturn(connector);
 
-            String bucketName = "test-gcs-bucket";
-            String kafkaTopicName = "test-kafka-topic";
-            String connectorClass = "io.aiven.kafka.connect.gcs.GcsSinkConnector";
-            String maxTasks = "1";
-            String gcsCredentialsDefault = "true";
-            String formatOutputType = "json";
-            String valueConverter = "org.apache.kafka.connect.json.JsonConverter";
-            String valueSchemasEnable = "false";
-            String keyConverter = "org.apache.kafka.connect.storage.StringConverter";
+      String bigqueryProjectId = "test-bigquery-project";
+      String datasetName = "test_dataset";
+      String tableName = "test_table";
+      String kafkaTopicName = "test-kafka-topic";
+      String maxTasks = "3";
+      String connectorClass = "com.wepay.kafka.connect.bigquery.BigQuerySinkConnector";
+      String keyConverter = "org.apache.kafka.connect.storage.StringConverter";
+      String valueConverter = "org.apache.kafka.connect.json.JsonConverter";
+      String valueSchemasEnable = "false";
 
-            CreateCloudStorageSinkConnector.createCloudStorageSinkConnector(
-                    projectId,
-                    region,
-                    connectClusterId,
-                    gcsConnectorId,
-                    bucketName,
-                    kafkaTopicName,
-                    connectorClass,
-                    maxTasks,
-                    gcsCredentialsDefault,
-                    formatOutputType,
-                    valueConverter,
-                    valueSchemasEnable,
-                    keyConverter);
+      CreateBigQuerySinkConnector.createBigQuerySinkConnector(
+          projectId,
+          region,
+          connectClusterId,
+          bigqueryConnectorId,
+          bigqueryProjectId,
+          datasetName,
+          tableName,
+          kafkaTopicName,
+          maxTasks,
+          connectorClass,
+          keyConverter,
+          valueConverter,
+          valueSchemasEnable);
 
-            String output = bout.toString();
-            assertThat(output).contains("Created Cloud Storage Sink connector");
-            assertThat(output).contains(gcsConnectorName);
-            verify(managedKafkaConnectClient, times(1)).createConnector(any(CreateConnectorRequest.class));
-        }
+      String output = bout.toString();
+      assertThat(output).contains("Created BigQuery Sink connector");
+      assertThat(output).contains(bigqueryConnectorName);
+      verify(managedKafkaConnectClient, times(1))
+          .createConnector(any(CreateConnectorRequest.class));
     }
-
-    @Test
-    public void createBigQuerySinkConnectorTest() throws Exception {
-        ManagedKafkaConnectClient managedKafkaConnectClient = mock(ManagedKafkaConnectClient.class);
-        try (MockedStatic<ManagedKafkaConnectClient> mockedStatic = Mockito
-                .mockStatic(ManagedKafkaConnectClient.class)) {
-            mockedStatic.when(() -> create()).thenReturn(managedKafkaConnectClient);
-            Connector connector = Connector.newBuilder()
-                    .setName(
-                            ConnectorName.of(
-                                    projectId,
-                                    region,
-                                    connectClusterId,
-                                    bigqueryConnectorId)
-                                    .toString())
-                    .build();
-            when(managedKafkaConnectClient.createConnector(any(CreateConnectorRequest.class)))
-                    .thenReturn(connector);
-
-            String bigqueryProjectId = "test-bigquery-project";
-            String datasetName = "test_dataset";
-            String tableName = "test_table";
-            String kafkaTopicName = "test-kafka-topic";
-            String maxTasks = "3";
-            String connectorClass = "com.wepay.kafka.connect.bigquery.BigQuerySinkConnector";
-            String keyConverter = "org.apache.kafka.connect.storage.StringConverter";
-            String valueConverter = "org.apache.kafka.connect.json.JsonConverter";
-            String valueSchemasEnable = "false";
-
-            CreateBigQuerySinkConnector.createBigQuerySinkConnector(
-                    projectId,
-                    region,
-                    connectClusterId,
-                    bigqueryConnectorId,
-                    bigqueryProjectId,
-                    datasetName,
-                    tableName,
-                    kafkaTopicName,
-                    maxTasks,
-                    connectorClass,
-                    keyConverter,
-                    valueConverter,
-                    valueSchemasEnable);
-
-            String output = bout.toString();
-            assertThat(output).contains("Created BigQuery Sink connector");
-            assertThat(output).contains(bigqueryConnectorName);
-            verify(managedKafkaConnectClient, times(1)).createConnector(any(CreateConnectorRequest.class));
-        }
-    }
+  }
 }

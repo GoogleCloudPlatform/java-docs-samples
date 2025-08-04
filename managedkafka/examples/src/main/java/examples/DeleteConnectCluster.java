@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Google LLC
+ * Copyright 2025 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,7 +66,8 @@ public class DeleteConnectCluster {
       // Get the initial LRO and print details. CreateConnectCluster contains sample
       // code for polling logs.
       OperationSnapshot operation = future.getInitialFuture().get();
-      System.out.printf("Connect cluster deletion started. Operation name: %s\nDone: %s\nMetadata: %s\n",
+      System.out.printf(
+          "Connect cluster deletion started. Operation name: %s\nDone: %s\nMetadata: %s\n",
           operation.getName(),
           operation.isDone(),
           future.getMetadata().get().toString());
@@ -74,7 +75,8 @@ public class DeleteConnectCluster {
       future.get();
       System.out.println("Deleted connect cluster");
     } catch (IOException | ApiException e) {
-      System.err.printf("managedKafkaConnectClient.deleteConnectCluster got err: %s", e.getMessage());
+      System.err.printf("managedKafkaConnectClient.deleteConnectCluster got err: %s", 
+          e.getMessage());
     }
   }
 }

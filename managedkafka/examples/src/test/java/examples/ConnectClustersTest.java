@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Google LLC
+ * Copyright 2025 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,6 @@ import com.google.api.gax.retrying.RetryingFuture;
 import com.google.api.gax.rpc.OperationCallable;
 import com.google.cloud.managedkafka.v1.ConnectCluster;
 import com.google.cloud.managedkafka.v1.ConnectClusterName;
-import com.google.cloud.managedkafka.v1.ConnectorName;
 import com.google.cloud.managedkafka.v1.CreateConnectClusterRequest;
 import com.google.cloud.managedkafka.v1.DeleteConnectClusterRequest;
 import com.google.cloud.managedkafka.v1.LocationName;
@@ -61,9 +60,12 @@ public class ConnectClustersTest {
   protected static final String region = "us-central1";
   protected static final String clusterId = "test-connect-cluster";
   protected static final String kafkaCluster = "test-kafka-cluster";
-  protected static final String connectClusterName = "projects/test-project/locations/us-central1/connectClusters/test-connect-cluster";
+  protected static final String connectClusterName =
+      "projects/test-project/locations/us-central1/connectClusters/test-connect-cluster";
   protected static final String connectorId = "test-connector";
-  protected static final String connectorName = "projects/test-project/locations/us-central1/connectClusters/test-connect-cluster/connectors/test-connector";
+  protected static final String connectorName =
+      "projects/test-project/locations/us-central1/connectClusters/test-connect-cluster"
+          + "/connectors/test-connector";
   private ByteArrayOutputStream bout;
 
   @Before
@@ -74,20 +76,22 @@ public class ConnectClustersTest {
 
   @Test
   public void createConnectClusterTest() throws Exception {
-    ManagedKafkaConnectClient ManagedKafkaConnectClient = mock(ManagedKafkaConnectClient.class);
-    OperationCallable<CreateConnectClusterRequest, ConnectCluster, OperationMetadata> operationCallable = mock(
-        OperationCallable.class);
-    OperationFuture<ConnectCluster, OperationMetadata> operationFuture = mock(OperationFuture.class);
+    ManagedKafkaConnectClient managedKafkaConnectClient = mock(ManagedKafkaConnectClient.class);
+    OperationCallable<CreateConnectClusterRequest, ConnectCluster, OperationMetadata>
+        operationCallable = mock(OperationCallable.class);
+    OperationFuture<ConnectCluster, OperationMetadata> operationFuture =
+        mock(OperationFuture.class);
 
-    try (MockedStatic<ManagedKafkaConnectClient> mockedStatic = Mockito.mockStatic(ManagedKafkaConnectClient.class)) {
+    try (MockedStatic<ManagedKafkaConnectClient> mockedStatic =
+        Mockito.mockStatic(ManagedKafkaConnectClient.class)) {
 
       // client creation
       mockedStatic
           .when(() -> create(any(ManagedKafkaConnectSettings.class)))
-          .thenReturn(ManagedKafkaConnectClient);
+          .thenReturn(managedKafkaConnectClient);
 
       // operation callable
-      when(ManagedKafkaConnectClient.createConnectClusterOperationCallable())
+      when(managedKafkaConnectClient.createConnectClusterOperationCallable())
           .thenReturn(operationCallable);
       when(operationCallable.futureCall(any(CreateConnectClusterRequest.class)))
           .thenReturn(operationFuture);
@@ -106,8 +110,7 @@ public class ConnectClustersTest {
       OperationSnapshot operationSnapshot = mock(OperationSnapshot.class);
       when(operationFuture.getInitialFuture().get()).thenReturn(operationSnapshot);
       when(operationSnapshot.getName())
-          .thenReturn(
-              "projects/test-project/locations/test-location/operations/test-operation");
+          .thenReturn("projects/test-project/locations/test-location/operations/test-operation");
       when(operationSnapshot.isDone()).thenReturn(false, false, true);
 
       // polling future
@@ -131,9 +134,8 @@ public class ConnectClustersTest {
       String output = bout.toString();
       assertThat(output).contains("Created connect cluster");
       assertThat(output).contains(connectClusterName);
-      verify(ManagedKafkaConnectClient, times(1)).createConnectClusterOperationCallable();
-      verify(operationCallable, times(1))
-          .futureCall(any(CreateConnectClusterRequest.class));
+      verify(managedKafkaConnectClient, times(1)).createConnectClusterOperationCallable();
+      verify(operationCallable, times(1)).futureCall(any(CreateConnectClusterRequest.class));
       verify(operationFuture, times(2)).getPollingFuture(); // Verify 2 polling attempts
       verify(pollingFuture, times(2)).getAttemptResult(); // Verify 2 attempt results
       verify(operationSnapshot, times(3)).isDone(); // 2 polls + 1 initial check
@@ -143,12 +145,15 @@ public class ConnectClustersTest {
   @Test
   public void getConnectClusterTest() throws Exception {
     ManagedKafkaConnectClient managedKafkaConnectClient = mock(ManagedKafkaConnectClient.class);
-    try (MockedStatic<ManagedKafkaConnectClient> mockedStatic = Mockito.mockStatic(ManagedKafkaConnectClient.class)) {
+    try (MockedStatic<ManagedKafkaConnectClient> mockedStatic =
+        Mockito.mockStatic(ManagedKafkaConnectClient.class)) {
       mockedStatic.when(() -> create()).thenReturn(managedKafkaConnectClient);
-      ConnectCluster connectCluster = ConnectCluster.newBuilder()
-          .setName(ConnectClusterName.of(projectId, region, clusterId).toString())
-          .build();
-      when(managedKafkaConnectClient.getConnectCluster(any(ConnectClusterName.class))).thenReturn(connectCluster);
+      ConnectCluster connectCluster =
+          ConnectCluster.newBuilder()
+              .setName(ConnectClusterName.of(projectId, region, clusterId).toString())
+              .build();
+      when(managedKafkaConnectClient.getConnectCluster(any(ConnectClusterName.class)))
+          .thenReturn(connectCluster);
       GetConnectCluster.getConnectCluster(projectId, region, clusterId);
       String output = bout.toString();
       assertThat(output).contains(connectClusterName);
@@ -159,20 +164,23 @@ public class ConnectClustersTest {
   @Test
   public void listConnectClustersTest() throws Exception {
     ManagedKafkaConnectClient managedKafkaConnectClient = mock(ManagedKafkaConnectClient.class);
-    ManagedKafkaConnectClient.ListConnectClustersPagedResponse response = mock(
-        ManagedKafkaConnectClient.ListConnectClustersPagedResponse.class);
-    try (MockedStatic<ManagedKafkaConnectClient> mockedStatic = Mockito.mockStatic(ManagedKafkaConnectClient.class)) {
+    ManagedKafkaConnectClient.ListConnectClustersPagedResponse response =
+        mock(ManagedKafkaConnectClient.ListConnectClustersPagedResponse.class);
+    try (MockedStatic<ManagedKafkaConnectClient> mockedStatic =
+        Mockito.mockStatic(ManagedKafkaConnectClient.class)) {
       mockedStatic.when(() -> create()).thenReturn(managedKafkaConnectClient);
-      Iterable<ConnectCluster> iterable = () -> {
-        List<ConnectCluster> connectClusters = new ArrayList<>();
-        connectClusters.add(
-            ConnectCluster.newBuilder()
-                .setName(ConnectClusterName.of(projectId, region, clusterId).toString())
-                .build());
-        return connectClusters.iterator();
-      };
+      Iterable<ConnectCluster> iterable =
+          () -> {
+            List<ConnectCluster> connectClusters = new ArrayList<>();
+            connectClusters.add(
+                ConnectCluster.newBuilder()
+                    .setName(ConnectClusterName.of(projectId, region, clusterId).toString())
+                    .build());
+            return connectClusters.iterator();
+          };
       when(response.iterateAll()).thenReturn(iterable);
-      when(managedKafkaConnectClient.listConnectClusters(any(LocationName.class))).thenReturn(response);
+      when(managedKafkaConnectClient.listConnectClusters(any(LocationName.class)))
+          .thenReturn(response);
       ListConnectClusters.listConnectClusters(projectId, region);
       String output = bout.toString();
       assertThat(output).contains(connectClusterName);
@@ -183,11 +191,13 @@ public class ConnectClustersTest {
   @Test
   public void updateConnectClusterTest() throws Exception {
     ManagedKafkaConnectClient managedKafkaConnectClient = mock(ManagedKafkaConnectClient.class);
-    OperationCallable<UpdateConnectClusterRequest, ConnectCluster, OperationMetadata> operationCallable = mock(
-        OperationCallable.class);
-    OperationFuture<ConnectCluster, OperationMetadata> operationFuture = mock(OperationFuture.class);
+    OperationCallable<UpdateConnectClusterRequest, ConnectCluster, OperationMetadata>
+        operationCallable = mock(OperationCallable.class);
+    OperationFuture<ConnectCluster, OperationMetadata> operationFuture =
+        mock(OperationFuture.class);
 
-    try (MockedStatic<ManagedKafkaConnectClient> mockedStatic = Mockito.mockStatic(ManagedKafkaConnectClient.class)) {
+    try (MockedStatic<ManagedKafkaConnectClient> mockedStatic =
+        Mockito.mockStatic(ManagedKafkaConnectClient.class)) {
 
       // client creation
       mockedStatic
@@ -214,8 +224,7 @@ public class ConnectClustersTest {
       OperationSnapshot operationSnapshot = mock(OperationSnapshot.class);
       when(operationFuture.getInitialFuture().get()).thenReturn(operationSnapshot);
       when(operationSnapshot.getName())
-          .thenReturn(
-              "projects/test-project/locations/test-location/operations/test-operation");
+          .thenReturn("projects/test-project/locations/test-location/operations/test-operation");
       when(operationSnapshot.isDone()).thenReturn(true);
 
       // Setup final result
@@ -229,18 +238,18 @@ public class ConnectClustersTest {
       assertThat(output).contains("Updated connect cluster");
       assertThat(output).contains(connectClusterName);
       verify(managedKafkaConnectClient, times(1)).updateConnectClusterOperationCallable();
-      verify(operationCallable, times(1))
-          .futureCall(any(UpdateConnectClusterRequest.class));
+      verify(operationCallable, times(1)).futureCall(any(UpdateConnectClusterRequest.class));
     }
   }
 
   @Test
   public void deleteConnectClusterTest() throws Exception {
     ManagedKafkaConnectClient managedKafkaConnectClient = mock(ManagedKafkaConnectClient.class);
-    OperationCallable<DeleteConnectClusterRequest, Empty, OperationMetadata> operationCallable = mock(
-        OperationCallable.class);
+    OperationCallable<DeleteConnectClusterRequest, Empty, OperationMetadata> operationCallable =
+        mock(OperationCallable.class);
     OperationFuture<Empty, OperationMetadata> operationFuture = mock(OperationFuture.class);
-    try (MockedStatic<ManagedKafkaConnectClient> mockedStatic = Mockito.mockStatic(ManagedKafkaConnectClient.class)) {
+    try (MockedStatic<ManagedKafkaConnectClient> mockedStatic =
+        Mockito.mockStatic(ManagedKafkaConnectClient.class)) {
 
       // client creation
       mockedStatic
@@ -267,8 +276,7 @@ public class ConnectClustersTest {
       OperationSnapshot operationSnapshot = mock(OperationSnapshot.class);
       when(operationFuture.getInitialFuture().get()).thenReturn(operationSnapshot);
       when(operationSnapshot.getName())
-          .thenReturn(
-              "projects/test-project/locations/test-location/operations/test-operation");
+          .thenReturn("projects/test-project/locations/test-location/operations/test-operation");
       when(operationSnapshot.isDone()).thenReturn(true);
 
       // Setup final result
@@ -279,15 +287,15 @@ public class ConnectClustersTest {
       String output = bout.toString();
       assertThat(output).contains("Deleted connect cluster");
       verify(managedKafkaConnectClient, times(1)).deleteConnectClusterOperationCallable();
-      verify(operationCallable, times(1))
-          .futureCall(any(DeleteConnectClusterRequest.class));
+      verify(operationCallable, times(1)).futureCall(any(DeleteConnectClusterRequest.class));
     }
   }
 
   @Test
   public void pauseConnectorTest() throws Exception {
     ManagedKafkaConnectClient managedKafkaConnectClient = mock(ManagedKafkaConnectClient.class);
-    try (MockedStatic<ManagedKafkaConnectClient> mockedStatic = Mockito.mockStatic(ManagedKafkaConnectClient.class)) {
+    try (MockedStatic<ManagedKafkaConnectClient> mockedStatic =
+        Mockito.mockStatic(ManagedKafkaConnectClient.class)) {
       mockedStatic.when(() -> create()).thenReturn(managedKafkaConnectClient);
       PauseConnector.pauseConnector(projectId, region, clusterId, connectorId);
       String output = bout.toString();
@@ -299,31 +307,36 @@ public class ConnectClustersTest {
   @Test
   public void resumeConnectorTest() throws Exception {
     ManagedKafkaConnectClient managedKafkaConnectClient = mock(ManagedKafkaConnectClient.class);
-    try (MockedStatic<ManagedKafkaConnectClient> mockedStatic = Mockito.mockStatic(ManagedKafkaConnectClient.class)) {
+    try (MockedStatic<ManagedKafkaConnectClient> mockedStatic =
+        Mockito.mockStatic(ManagedKafkaConnectClient.class)) {
       mockedStatic.when(() -> create()).thenReturn(managedKafkaConnectClient);
       ResumeConnector.resumeConnector(projectId, region, clusterId, connectorId);
       String output = bout.toString();
       assertThat(output).contains("Connector " + connectorId + " resumed successfully.");
-      verify(managedKafkaConnectClient, times(1)).resumeConnector(any(ResumeConnectorRequest.class));
+      verify(managedKafkaConnectClient, times(1))
+          .resumeConnector(any(ResumeConnectorRequest.class));
     }
   }
 
   @Test
   public void restartConnectorTest() throws Exception {
     ManagedKafkaConnectClient managedKafkaConnectClient = mock(ManagedKafkaConnectClient.class);
-    try (MockedStatic<ManagedKafkaConnectClient> mockedStatic = Mockito.mockStatic(ManagedKafkaConnectClient.class)) {
+    try (MockedStatic<ManagedKafkaConnectClient> mockedStatic =
+        Mockito.mockStatic(ManagedKafkaConnectClient.class)) {
       mockedStatic.when(() -> create()).thenReturn(managedKafkaConnectClient);
       RestartConnector.restartConnector(projectId, region, clusterId, connectorId);
       String output = bout.toString();
       assertThat(output).contains("Connector " + connectorId + " restarted successfully.");
-      verify(managedKafkaConnectClient, times(1)).restartConnector(any(RestartConnectorRequest.class));
+      verify(managedKafkaConnectClient, times(1))
+          .restartConnector(any(RestartConnectorRequest.class));
     }
   }
 
   @Test
   public void stopConnectorTest() throws Exception {
     ManagedKafkaConnectClient managedKafkaConnectClient = mock(ManagedKafkaConnectClient.class);
-    try (MockedStatic<ManagedKafkaConnectClient> mockedStatic = Mockito.mockStatic(ManagedKafkaConnectClient.class)) {
+    try (MockedStatic<ManagedKafkaConnectClient> mockedStatic =
+        Mockito.mockStatic(ManagedKafkaConnectClient.class)) {
       mockedStatic.when(() -> create()).thenReturn(managedKafkaConnectClient);
       StopConnector.stopConnector(projectId, region, clusterId, connectorId);
       String output = bout.toString();

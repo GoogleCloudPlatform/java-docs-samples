@@ -89,18 +89,19 @@ public class CreateBigQuerySinkConnector {
     configMap.put("value.converter.schemas.enable", valueSchemasEnable);
     configMap.put("defaultDataset", datasetName);
 
-    Connector connector = Connector.newBuilder()
-        .setName(
-            ConnectorName.of(projectId, region, connectClusterId, connectorId).toString())
-        .putAllConfigs(configMap)
-        .build();
+    Connector connector =
+        Connector.newBuilder()
+            .setName(ConnectorName.of(projectId, region, connectClusterId, connectorId).toString())
+            .putAllConfigs(configMap)
+            .build();
 
     try (ManagedKafkaConnectClient managedKafkaConnectClient = ManagedKafkaConnectClient.create()) {
-      CreateConnectorRequest request = CreateConnectorRequest.newBuilder()
-          .setParent(ConnectClusterName.of(projectId, region, connectClusterId).toString())
-          .setConnectorId(connectorId)
-          .setConnector(connector)
-          .build();
+      CreateConnectorRequest request =
+          CreateConnectorRequest.newBuilder()
+              .setParent(ConnectClusterName.of(projectId, region, connectClusterId).toString())
+              .setConnectorId(connectorId)
+              .setConnector(connector)
+              .build();
 
       // This operation is being handled synchronously.
       Connector response = managedKafkaConnectClient.createConnector(request);

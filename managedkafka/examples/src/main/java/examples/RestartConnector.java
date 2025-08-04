@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Google LLC
+ * Copyright 2025 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,15 +37,19 @@ public class RestartConnector {
   public static void restartConnector(
       String projectId, String region, String connectClusterId, String connectorId)
       throws Exception {
-    try (ManagedKafkaConnectClient managedKafkaConnectClient = ManagedKafkaConnectClient.create()) {
-      ConnectorName connectorName = ConnectorName.of(projectId, region, connectClusterId, connectorId);
-      RestartConnectorRequest request = RestartConnectorRequest.newBuilder().setName(connectorName.toString()).build();
+    try (ManagedKafkaConnectClient managedKafkaConnectClient = 
+        ManagedKafkaConnectClient.create()) {
+      ConnectorName connectorName = ConnectorName.of(projectId, region, connectClusterId, 
+          connectorId);
+      RestartConnectorRequest request = RestartConnectorRequest.newBuilder()
+          .setName(connectorName.toString()).build();
 
       // This operation is being handled synchronously.
       managedKafkaConnectClient.restartConnector(request);
       System.out.printf("Connector %s restarted successfully.\n", connectorId);
     } catch (IOException | ApiException e) {
-      System.err.printf("managedKafkaConnectClient.restartConnector got err: %s", e.getMessage());
+      System.err.printf("managedKafkaConnectClient.restartConnector got err: %s", 
+          e.getMessage());
     }
   }
 }
