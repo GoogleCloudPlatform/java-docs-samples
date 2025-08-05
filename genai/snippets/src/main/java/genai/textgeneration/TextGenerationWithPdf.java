@@ -43,10 +43,9 @@ public class TextGenerationWithPdf {
             .httpOptions(HttpOptions.builder().apiVersion("v1").build())
             .build()) {
 
-      String prompt =
-          "You are a highly skilled document summarization specialist.\n"
+      String prompt = "You are a highly skilled document summarization specialist.\n"
               + " Your task is to provide a concise executive summary of no more than 300 words.\n"
-              + "Please summarize the given document for a general audience";
+              + " Please summarize the given document for a general audience";
 
       GenerateContentResponse response =
           client.models.generateContent(
