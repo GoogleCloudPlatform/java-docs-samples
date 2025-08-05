@@ -32,12 +32,12 @@ public class TextGenerationWithMultiLocalImage {
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String modelId = "gemini-2.5-flash";
-    String localImageFilePath1 = "resources/latte.jpg";
-    String localImageFilePath2 = "resources/scones.jpg";
+    String localImageFilePath1 = "your/local/img1.jpg";
+    String localImageFilePath2 = "your/local/img2.jpg";
     generateContent(modelId, localImageFilePath1, localImageFilePath2);
   }
 
-  // Generates text with multiple local images
+  // Generates text using multiple local images
   public static String generateContent(
       String modelId, String localImageFilePath1, String localImageFilePath2) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created

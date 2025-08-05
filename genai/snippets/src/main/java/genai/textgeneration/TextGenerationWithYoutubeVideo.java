@@ -32,7 +32,7 @@ public class TextGenerationWithYoutubeVideo {
     generateContent(modelId);
   }
 
-  // Generates text with YouTube video
+  // Generates text with YouTube video input
   public static String generateContent(String modelId) {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.

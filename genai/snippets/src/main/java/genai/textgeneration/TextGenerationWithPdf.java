@@ -32,7 +32,7 @@ public class TextGenerationWithPdf {
     generateContent(modelId);
   }
 
-  // Generates text with PDF
+  // Generates text with PDF file input
   public static String generateContent(String modelId) {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
