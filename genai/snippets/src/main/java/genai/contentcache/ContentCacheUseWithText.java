@@ -28,6 +28,7 @@ public class ContentCacheUseWithText {
   public static void main(String[] args) {
     // TODO(developer): Replace these variables before running the sample.
     String modelId = "gemini-2.5-flash";
+    // E.g cacheName = "projects/111111111111/locations/global/cachedContents/1111111111111111111"
     String cacheName = "your-cache-name";
     contentCacheUseWithText(modelId, cacheName);
   }

@@ -30,6 +30,7 @@ public class ContentCacheUpdate {
 
   public static void main(String[] args) {
     // TODO(developer): Replace these variables before running the sample.
+    // E.g cacheName = "projects/111111111111/locations/global/cachedContents/1111111111111111111"
     String cacheName = "your-cache-name";
     contentCacheUpdate(cacheName);
   }

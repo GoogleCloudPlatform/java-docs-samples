@@ -16,14 +16,16 @@
 
 package genai.contentcache;
 
+// [START googlegenaisdk_contentcache_delete]
+
 import com.google.genai.Client;
 import com.google.genai.types.HttpOptions;
 
-// [START googlegenaisdk_contentcache_delete]
 public class ContentCacheDelete {
 
   public static void main(String[] args) {
     // TODO(developer): Replace these variables before running the sample.
+    // E.g cacheName = "projects/111111111111/locations/global/cachedContents/1111111111111111111"
     String cacheName = "your-cache-name";
     contentCacheDelete(cacheName);
   }
@@ -42,8 +44,7 @@ public class ContentCacheDelete {
       client.caches.delete(cacheName, null);
       System.out.println("Deleted cache: " + cacheName);
       // Example response
-      // Deleted cache:
-      // projects/111111111111/locations/global/cachedContents/1111111111111111111
+      // Deleted cache: projects/111111111111/locations/global/cachedContents/1111111111111111111
 
     }
   }
