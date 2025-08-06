@@ -104,6 +104,10 @@ public class CountTokensIT {
             CountTokensResponseWithText.countTokens(GEMINI_FLASH);
 
     assertThat(response).isPresent();
+    assertThat(response.get().totalTokenCount()).isPresent();
+    assertThat(response.get().totalTokenCount().get()).isGreaterThan(0);
+    assertThat(response.get().promptTokenCount()).isPresent();
+    assertThat(response.get().promptTokenCount().get()).isGreaterThan(0);
 
   }
 }
