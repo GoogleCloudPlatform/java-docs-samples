@@ -23,7 +23,6 @@ import com.google.genai.types.ComputeTokensResponse;
 import com.google.genai.types.HttpOptions;
 import com.google.genai.types.TokensInfo;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,22 +48,20 @@ public class CountTokensComputeWithText {
       ComputeTokensResponse response = client.models.computeTokens(
               modelId, "What's the longest word in the English language?", null);
 
-      // Get tokensInfo from the response
-      List<TokensInfo> tokensInfo = response.tokensInfo().orElse(new ArrayList<>());
       // Print TokensInfo
-      tokensInfo.forEach(
-              info -> {
-                info.role().ifPresent(role -> System.out.println("role: " + role));
-                info.tokenIds().ifPresent(tokenIds -> System.out.println("tokenIds: " + tokenIds));
-                // print tokens input as strings since they are in a form of byte array
-                System.out.println("tokens: ");
-                info.tokens().ifPresent(tokens ->
-                        tokens.forEach(token ->
-                                System.out.println(new String(token, StandardCharsets.UTF_8))
-                        )
-                );
-              }
-      );
+      response.tokensInfo().ifPresent(tokensInfoList -> {
+        for (TokensInfo info : tokensInfoList) {
+          info.role().ifPresent(role -> System.out.println("role: " + role));
+          info.tokenIds().ifPresent(tokenIds -> System.out.println("tokenIds: " + tokenIds));
+          // print tokens input as strings since they are in a form of byte array
+          System.out.println("tokens: ");
+          info.tokens().ifPresent(tokens ->
+              tokens.forEach(token ->
+                  System.out.println(new String(token, StandardCharsets.UTF_8))
+              )
+          );
+        }
+      });
       // Example response.tokensInfo()
       // role: user
       // tokenIds: [1841, 235303, 235256, 573, 32514, 2204, 575, 573, 4645, 5255, 235336]
