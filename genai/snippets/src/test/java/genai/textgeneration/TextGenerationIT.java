@@ -117,7 +117,6 @@ public class TextGenerationIT {
   @Test
   public void testTextGenerationAsyncWithText() {
     String response = TextGenerationAsyncWithText.generateContent(GEMINI_FLASH);
-    assertThat(response).isNotNull();
     assertThat(response).isNotEmpty();
   }
 
@@ -127,28 +126,24 @@ public class TextGenerationIT {
             TextGenerationWithMultiLocalImage.generateContent(
                     GEMINI_FLASH, LOCAL_IMG_1, LOCAL_IMG_2);
 
-    assertThat(response).isNotNull();
     assertThat(response).isNotEmpty();
   }
 
   @Test
   public void testTextGenerationWithMuteVideo() {
     String response = TextGenerationWithMuteVideo.generateContent(GEMINI_FLASH);
-    assertThat(response).isNotNull();
     assertThat(response).isNotEmpty();
   }
 
   @Test
   public void testTextGenerationWithPdf() {
     String response = TextGenerationWithPdf.generateContent(GEMINI_FLASH);
-    assertThat(response).isNotNull();
     assertThat(response).isNotEmpty();
   }
 
   @Test
   public void testTextGenerationWithYoutubeVideo() {
     String response = TextGenerationWithYoutubeVideo.generateContent(GEMINI_FLASH);
-    assertThat(response).isNotNull();
     assertThat(response).isNotEmpty();
   }
 }
