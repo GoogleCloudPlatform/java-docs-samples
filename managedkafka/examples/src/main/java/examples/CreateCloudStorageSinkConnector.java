@@ -39,7 +39,7 @@ public class CreateCloudStorageSinkConnector {
     String bucketName = "my-gcs-bucket";
     String kafkaTopicName = "kafka-topic";
     String connectorClass = "io.aiven.kafka.connect.gcs.GcsSinkConnector";
-    String maxTasks = "1";
+    String maxTasks = "3";
     String gcsCredentialsDefault = "true";
     String formatOutputType = "json";
     String valueConverter = "org.apache.kafka.connect.json.JsonConverter";

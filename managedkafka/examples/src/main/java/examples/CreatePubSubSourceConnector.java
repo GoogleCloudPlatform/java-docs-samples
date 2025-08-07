@@ -40,7 +40,7 @@ public class CreatePubSubSourceConnector {
     String subscriptionName = "my-subscription";
     String kafkaTopicName = "pubsub-topic";
     String connectorClass = "com.google.pubsub.kafka.source.CloudPubSubSourceConnector";
-    String maxTasks = "1";
+    String maxTasks = "3";
     String valueConverter = "org.apache.kafka.connect.converters.ByteArrayConverter";
     String keyConverter = "org.apache.kafka.connect.storage.StringConverter";
     createPubSubSourceConnector(

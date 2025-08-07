@@ -41,7 +41,7 @@ public class UpdateConnectCluster {
     String projectId = "my-project-id";
     String region = "my-region"; // e.g. us-east1
     String clusterId = "my-connect-cluster";
-    long memoryBytes = 12884901888L; // 12 GiB
+    long memoryBytes = 25769803776L; // 24 GiB
     updateConnectCluster(projectId, region, clusterId, memoryBytes);
   }
 

@@ -31,6 +31,8 @@ import com.google.api.gax.retrying.RetryingFuture;
 import com.google.api.gax.rpc.OperationCallable;
 import com.google.cloud.managedkafka.v1.ConnectCluster;
 import com.google.cloud.managedkafka.v1.ConnectClusterName;
+import com.google.cloud.managedkafka.v1.Connector;
+import com.google.cloud.managedkafka.v1.ConnectorName;
 import com.google.cloud.managedkafka.v1.CreateConnectClusterRequest;
 import com.google.cloud.managedkafka.v1.DeleteConnectClusterRequest;
 import com.google.cloud.managedkafka.v1.LocationName;
@@ -43,6 +45,7 @@ import com.google.cloud.managedkafka.v1.ResumeConnectorRequest;
 import com.google.cloud.managedkafka.v1.StopConnectorRequest;
 import com.google.cloud.managedkafka.v1.UpdateConnectClusterRequest;
 import com.google.protobuf.Empty;
+import com.google.protobuf.FieldMask;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -301,6 +304,89 @@ public class ConnectClustersTest {
       String output = bout.toString();
       assertThat(output).contains("Connector " + connectorId + " paused successfully.");
       verify(managedKafkaConnectClient, times(1)).pauseConnector(any(PauseConnectorRequest.class));
+    }
+  }
+
+  @Test
+  public void listConnectorsTest() throws Exception {
+    ManagedKafkaConnectClient managedKafkaConnectClient = mock(ManagedKafkaConnectClient.class);
+    ManagedKafkaConnectClient.ListConnectorsPagedResponse response =
+        mock(ManagedKafkaConnectClient.ListConnectorsPagedResponse.class);
+
+    try (MockedStatic<ManagedKafkaConnectClient> mockedStatic =
+        Mockito.mockStatic(ManagedKafkaConnectClient.class)) {
+      mockedStatic.when(() -> create()).thenReturn(managedKafkaConnectClient);
+
+      List<Connector> connectors = new ArrayList<>();
+      connectors.add(Connector.newBuilder().setName(connectorName).build());
+      Iterable<Connector> iterable = () -> connectors.iterator();
+
+      when(response.iterateAll()).thenReturn(iterable);
+      when(managedKafkaConnectClient.listConnectors(any(ConnectClusterName.class)))
+          .thenReturn(response);
+
+      ListConnectors.listConnectors(projectId, region, clusterId);
+
+      String output = bout.toString();
+      assertThat(output).contains(connectorName);
+      verify(managedKafkaConnectClient, times(1)).listConnectors(any(ConnectClusterName.class));
+    }
+  }
+
+  @Test
+  public void getConnectorTest() throws Exception {
+    ManagedKafkaConnectClient managedKafkaConnectClient = mock(ManagedKafkaConnectClient.class);
+    try (MockedStatic<ManagedKafkaConnectClient> mockedStatic =
+        Mockito.mockStatic(ManagedKafkaConnectClient.class)) {
+      mockedStatic.when(() -> create()).thenReturn(managedKafkaConnectClient);
+
+      Connector connector = Connector.newBuilder().setName(connectorName).build();
+      when(managedKafkaConnectClient.getConnector(any(ConnectorName.class))).thenReturn(connector);
+
+      GetConnector.getConnector(projectId, region, clusterId, connectorId);
+      String output = bout.toString();
+
+      assertThat(output).contains(connectorName);
+      verify(managedKafkaConnectClient, times(1)).getConnector(any(ConnectorName.class));
+    }
+  }
+
+  @Test
+  public void deleteConnectorTest() throws Exception {
+    ManagedKafkaConnectClient managedKafkaConnectClient = mock(ManagedKafkaConnectClient.class);
+    try (MockedStatic<ManagedKafkaConnectClient> mockedStatic =
+        Mockito.mockStatic(ManagedKafkaConnectClient.class)) {
+      mockedStatic.when(() -> create()).thenReturn(managedKafkaConnectClient);
+
+      DeleteConnector.deleteConnector(projectId, region, clusterId, connectorId);
+
+      String output = bout.toString();
+      assertThat(output).contains("Deleted connector: " + connectorName);
+      verify(managedKafkaConnectClient, times(1)).deleteConnector(any(ConnectorName.class));
+    }
+  }
+
+  @Test
+  public void updateConnectorTest() throws Exception {
+    ManagedKafkaConnectClient managedKafkaConnectClient = mock(ManagedKafkaConnectClient.class);
+    try (MockedStatic<ManagedKafkaConnectClient> mockedStatic =
+        Mockito.mockStatic(ManagedKafkaConnectClient.class)) {
+      mockedStatic.when(() -> create()).thenReturn(managedKafkaConnectClient);
+
+      Connector updatedConnector =
+          Connector.newBuilder().setName(connectorName).putConfigs("tasks.max", "5").build();
+
+      when(managedKafkaConnectClient.updateConnector(any(Connector.class), any(FieldMask.class)))
+          .thenReturn(updatedConnector);
+
+      UpdateConnector.updateConnector(projectId, region, clusterId, connectorId, "5");
+
+      String output = bout.toString();
+      assertThat(output).contains("Updated connector: " + connectorName);
+      assertThat(output).contains("tasks.max");
+      assertThat(output).contains("5");
+      verify(managedKafkaConnectClient, times(1))
+          .updateConnector(any(Connector.class), any(FieldMask.class));
     }
   }
 

@@ -28,12 +28,13 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CreateMirrorMaker2Connector {
+public class CreateMirrorMaker2SourceConnector {
 
   public static void main(String[] args) throws Exception {
     // TODO(developer): Replace these variables before running the example.
     String projectId = "my-project-id";
     String region = "my-region"; // e.g. us-east1
+    String maxTasks = "3";
     String connectClusterId = "my-connect-cluster";
     String connectorId = "my-mirrormaker2-connector";
     String sourceClusterBootstrapServers = "my-source-cluster:9092";
@@ -42,22 +43,10 @@ public class CreateMirrorMaker2Connector {
     String targetClusterAlias = "target";
     String connectorClass = "org.apache.kafka.connect.mirror.MirrorSourceConnector";
     String topics = ".*";
-    String offsetSyncsReplicationFactor = "1";
-    String sourceSecurityProtocol = "SASL_SSL";
-    String sourceSaslMechanism = "OAUTHBEARER";
-    String sourceLoginCallbackHandler = 
-        "com.google.cloud.hosted.kafka.auth.GcpLoginCallbackHandler";
-    String sourceJaasConfig = 
-        "org.apache.kafka.common.security.oauthbearer.OAuthBearerLoginModule required;";
-    String targetSecurityProtocol = "SASL_SSL";
-    String targetSaslMechanism = "OAUTHBEARER";
-    String targetLoginCallbackHandler = 
-        "com.google.cloud.hosted.kafka.auth.GcpLoginCallbackHandler";
-    String targetJaasConfig = 
-        "org.apache.kafka.common.security.oauthbearer.OAuthBearerLoginModule required;";
-    createMirrorMaker2Connector(
+    createMirrorMaker2SourceConnector(
         projectId,
         region,
+        maxTasks,
         connectClusterId,
         connectorId,
         sourceClusterBootstrapServers,
@@ -65,21 +54,13 @@ public class CreateMirrorMaker2Connector {
         sourceClusterAlias,
         targetClusterAlias,
         connectorClass,
-        topics,
-        offsetSyncsReplicationFactor,
-        sourceSecurityProtocol,
-        sourceSaslMechanism,
-        sourceLoginCallbackHandler,
-        sourceJaasConfig,
-        targetSecurityProtocol,
-        targetSaslMechanism,
-        targetLoginCallbackHandler,
-        targetJaasConfig);
+        topics);
   }
 
-  public static void createMirrorMaker2Connector(
+  public static void createMirrorMaker2SourceConnector(
       String projectId,
       String region,
+      String maxTasks,
       String connectClusterId,
       String connectorId,
       String sourceClusterBootstrapServers,
@@ -87,20 +68,12 @@ public class CreateMirrorMaker2Connector {
       String sourceClusterAlias,
       String targetClusterAlias,
       String connectorClass,
-      String topics,
-      String offsetSyncsReplicationFactor,
-      String sourceSecurityProtocol,
-      String sourceSaslMechanism,
-      String sourceLoginCallbackHandler,
-      String sourceJaasConfig,
-      String targetSecurityProtocol,
-      String targetSaslMechanism,
-      String targetLoginCallbackHandler,
-      String targetJaasConfig)
+      String topics)
       throws Exception {
 
     // Build the connector configuration
     Map<String, String> configMap = new HashMap<>();
+    configMap.put("tasks.max", maxTasks);
     configMap.put("connector.class", connectorClass);
     configMap.put("name", connectorId);
     configMap.put("source.cluster.alias", sourceClusterAlias);
@@ -108,15 +81,6 @@ public class CreateMirrorMaker2Connector {
     configMap.put("topics", topics);
     configMap.put("source.cluster.bootstrap.servers", sourceClusterBootstrapServers);
     configMap.put("target.cluster.bootstrap.servers", targetClusterBootstrapServers);
-    configMap.put("offset-syncs.topic.replication.factor", offsetSyncsReplicationFactor);
-    configMap.put("source.cluster.security.protocol", sourceSecurityProtocol);
-    configMap.put("source.cluster.sasl.mechanism", sourceSaslMechanism);
-    configMap.put("source.cluster.sasl.login.callback.handler.class", sourceLoginCallbackHandler);
-    configMap.put("source.cluster.sasl.jaas.config", sourceJaasConfig);
-    configMap.put("target.cluster.security.protocol", targetSecurityProtocol);
-    configMap.put("target.cluster.sasl.mechanism", targetSaslMechanism);
-    configMap.put("target.cluster.sasl.login.callback.handler.class", targetLoginCallbackHandler);
-    configMap.put("target.cluster.sasl.jaas.config", targetJaasConfig);
 
     Connector connector = Connector.newBuilder()
         .setName(
@@ -133,7 +97,7 @@ public class CreateMirrorMaker2Connector {
 
       // This operation is being handled synchronously.
       Connector response = managedKafkaConnectClient.createConnector(request);
-      System.out.printf("Created MirrorMaker2 connector: %s\n", response.getName());
+      System.out.printf("Created MirrorMaker2 Source connector: %s\n", response.getName());
     } catch (IOException | ApiException e) {
       System.err.printf("managedKafkaConnectClient.createConnector got err: %s\n", e.getMessage());
     }

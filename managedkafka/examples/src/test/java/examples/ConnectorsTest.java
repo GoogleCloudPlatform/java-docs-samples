@@ -43,15 +43,15 @@ public class ConnectorsTest {
   protected static final String projectId = "test-project";
   protected static final String region = "us-central1";
   protected static final String connectClusterId = "test-connect-cluster";
-  protected static final String mirrorMaker2ConnectorId = "test-mirrormaker2-connector";
+  protected static final String mirrorMaker2ConnectorId = "test-mirrormaker2-source-connector";
   protected static final String pubsubSourceConnectorId = "test-pubsub-source-connector";
   protected static final String pubsubSinkConnectorId = "test-pubsub-sink-connector";
   protected static final String gcsConnectorId = "test-gcs-sink-connector";
   protected static final String bigqueryConnectorId = "test-bigquery-sink-connector";
 
-  protected static final String mirrorMaker2ConnectorName =
+  protected static final String mirrorMaker2SourceConnectorName =
       "projects/test-project/locations/us-central1/connectClusters/"
-          + "test-connect-cluster/connectors/test-mirrormaker2-connector";
+          + "test-connect-cluster/connectors/test-mirrormaker2-source-connector";
   protected static final String pubsubSourceConnectorName =
       "projects/test-project/locations/us-central1/connectClusters/"
           + "test-connect-cluster/connectors/test-pubsub-source-connector";
@@ -74,7 +74,7 @@ public class ConnectorsTest {
   }
 
   @Test
-  public void createMirrorMaker2ConnectorTest() throws Exception {
+  public void createMirrorMaker2SourceConnectorTest() throws Exception {
     ManagedKafkaConnectClient managedKafkaConnectClient = mock(ManagedKafkaConnectClient.class);
     try (MockedStatic<ManagedKafkaConnectClient> mockedStatic =
         Mockito.mockStatic(ManagedKafkaConnectClient.class)) {
@@ -90,27 +90,16 @@ public class ConnectorsTest {
 
       String sourceClusterBootstrapServers = "source-cluster:9092";
       String targetClusterBootstrapServers = "target-cluster:9092";
+      String maxTasks = "3";
       String sourceClusterAlias = "source";
       String targetClusterAlias = "target";
       String connectorClass = "org.apache.kafka.connect.mirror.MirrorSourceConnector";
       String topics = ".*";
-      String offsetSyncsReplicationFactor = "1";
-      String sourceSecurityProtocol = "SASL_SSL";
-      String sourceSaslMechanism = "OAUTHBEARER";
-      String sourceLoginCallbackHandler =
-          "com.google.cloud.hosted.kafka.auth.GcpLoginCallbackHandler";
-      String sourceJaasConfig =
-          "org.apache.kafka.common.security.oauthbearer.OAuthBearerLoginModule required;";
-      String targetSecurityProtocol = "SASL_SSL";
-      String targetSaslMechanism = "OAUTHBEARER";
-      String targetLoginCallbackHandler =
-          "com.google.cloud.hosted.kafka.auth.GcpLoginCallbackHandler";
-      String targetJaasConfig =
-          "org.apache.kafka.common.security.oauthbearer.OAuthBearerLoginModule required;";
 
-      CreateMirrorMaker2Connector.createMirrorMaker2Connector(
+      CreateMirrorMaker2SourceConnector.createMirrorMaker2SourceConnector(
           projectId,
           region,
+          maxTasks,
           connectClusterId,
           mirrorMaker2ConnectorId,
           sourceClusterBootstrapServers,
@@ -118,20 +107,11 @@ public class ConnectorsTest {
           sourceClusterAlias,
           targetClusterAlias,
           connectorClass,
-          topics,
-          offsetSyncsReplicationFactor,
-          sourceSecurityProtocol,
-          sourceSaslMechanism,
-          sourceLoginCallbackHandler,
-          sourceJaasConfig,
-          targetSecurityProtocol,
-          targetSaslMechanism,
-          targetLoginCallbackHandler,
-          targetJaasConfig);
+          topics);
 
       String output = bout.toString();
-      assertThat(output).contains("Created MirrorMaker2 connector");
-      assertThat(output).contains(mirrorMaker2ConnectorName);
+      assertThat(output).contains("Created MirrorMaker2 Source connector");
+      assertThat(output).contains(mirrorMaker2SourceConnectorName);
       verify(managedKafkaConnectClient, times(1))
           .createConnector(any(CreateConnectorRequest.class));
     }
@@ -156,7 +136,7 @@ public class ConnectorsTest {
       String subscriptionName = "test-subscription";
       String kafkaTopicName = "test-kafka-topic";
       String connectorClass = "com.google.pubsub.kafka.source.CloudPubSubSourceConnector";
-      String maxTasks = "1";
+      String maxTasks = "3";
       String valueConverter = "org.apache.kafka.connect.converters.ByteArrayConverter";
       String keyConverter = "org.apache.kafka.connect.storage.StringConverter";
 
@@ -200,7 +180,7 @@ public class ConnectorsTest {
       String pubsubTopicName = "test-pubsub-topic";
       String kafkaTopicName = "test-kafka-topic";
       String connectorClass = "com.google.pubsub.kafka.sink.CloudPubSubSinkConnector";
-      String maxTasks = "1";
+      String maxTasks = "3";
       String valueConverter = "org.apache.kafka.connect.storage.StringConverter";
       String keyConverter = "org.apache.kafka.connect.storage.StringConverter";
 
@@ -242,7 +222,7 @@ public class ConnectorsTest {
       String bucketName = "test-gcs-bucket";
       String kafkaTopicName = "test-kafka-topic";
       String connectorClass = "io.aiven.kafka.connect.gcs.GcsSinkConnector";
-      String maxTasks = "1";
+      String maxTasks = "3";
       String gcsCredentialsDefault = "true";
       String formatOutputType = "json";
       String valueConverter = "org.apache.kafka.connect.json.JsonConverter";

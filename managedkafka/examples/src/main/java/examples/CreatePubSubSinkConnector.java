@@ -40,7 +40,7 @@ public class CreatePubSubSinkConnector {
     String pubsubTopicName = "my-pubsub-topic";
     String kafkaTopicName = "kafka-topic";
     String connectorClass = "com.google.pubsub.kafka.sink.CloudPubSubSinkConnector";
-    String maxTasks = "1";
+    String maxTasks = "3";
     String valueConverter = "org.apache.kafka.connect.storage.StringConverter";
     String keyConverter = "org.apache.kafka.connect.storage.StringConverter";
     createPubSubSinkConnector(
