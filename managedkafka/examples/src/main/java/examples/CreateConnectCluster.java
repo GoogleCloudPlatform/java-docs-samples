@@ -65,6 +65,10 @@ public class CreateConnectCluster {
     ConnectNetworkConfig networkConfig = ConnectNetworkConfig.newBuilder()
         .setPrimarySubnet(subnet)
         .build();
+    // Optionally, you can also specify additional accessible subnets and resolvable
+    // DNS domains as part of your network configuration. For example:
+    // .addAllAdditionalSubnets(List.of("subnet-1", "subnet-2"))
+    // .addAllDnsDomainNames(List.of("dns-1", "dns-2"))
     ConnectGcpConfig gcpConfig = ConnectGcpConfig.newBuilder()
         .setAccessConfig(ConnectAccessConfig.newBuilder().addNetworkConfigs(networkConfig).build())
         .build();
