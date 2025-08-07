@@ -1,0 +1,20 @@
+Pre-requisites:
+
+You will need to be added to a specific allow list which will allow you to impersonate
+the service account `payment-reseller-test-serv-734@eng-diagram-369411.iam.gserviceaccount.com`
+
+<How to verify this as a developer?>
+
+Steps:
+
+- Save your google cloud credentials to a local file to run the code.
+  -  Run the command `gcloud auth application-default login`. This should
+     trigger an oauth screen asking permissions run google cloud cli. Login with
+     the allow listed account and give permissions.
+
+     Credentials will be saved to a local file with directory path
+     `~/.config/gcloud/application_default_credentials.json`
+
+
+  -  You are all setup, you can execute specific code
+     Verify with running an impersonate code which should print the access token
