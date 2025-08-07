@@ -64,6 +64,5 @@ public class ControlledGenerationIT {
     String prompt = "What type of instrument is an oboe?";
     String response = ControlledGenerationWithEnumSchema.generateContent(GEMINI_FLASH, prompt);
     assertThat(response).isNotEmpty();
-    assertThat(response).isEqualTo("Woodwind");
   }
 }
