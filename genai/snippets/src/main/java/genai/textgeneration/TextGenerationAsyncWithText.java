@@ -47,7 +47,7 @@ public class TextGenerationAsyncWithText {
               modelId, "Compose a song about the adventures of a time-traveling squirrel.", null);
 
       String response = asyncResponse.join().text();
-      System.out.println(response);
+      System.out.print(response);
       // Example response:
       // (Verse 1)
       // In an oak tree, so leafy and green,
