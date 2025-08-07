@@ -40,7 +40,7 @@ public class CreateMirrorMaker2SourceConnector {
     String sourceClusterBootstrapServers = "my-source-cluster:9092";
     String targetClusterBootstrapServers = "my-target-cluster:9092";
     String sourceClusterAlias = "source";
-    String targetClusterAlias = "target";
+    String targetClusterAlias = "target"; // This is usually the primary cluster.
     String connectorClass = "org.apache.kafka.connect.mirror.MirrorSourceConnector";
     String topics = ".*";
     createMirrorMaker2SourceConnector(
