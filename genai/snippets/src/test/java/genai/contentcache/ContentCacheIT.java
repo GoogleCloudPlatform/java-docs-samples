@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package genai.controlledgeneration;
+package genai.contentcache;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.Optional;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -29,7 +30,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
-public class ControlledGenerationIT {
+public class ContentCacheIT {
 
   private static final String GEMINI_FLASH = "gemini-2.5-flash";
   private ByteArrayOutputStream bout;
@@ -60,9 +61,38 @@ public class ControlledGenerationIT {
   }
 
   @Test
-  public void testControlledGenerationWithEnumSchema() {
-    String prompt = "What type of instrument is an oboe?";
-    String response = ControlledGenerationWithEnumSchema.generateContent(GEMINI_FLASH, prompt);
+  public void testContentCache() {
+
+    // Test create cache
+    Optional<String> cacheName =
+        ContentCacheCreateWithTextGcsPdf.contentCacheCreateWithTextGcsPdf(GEMINI_FLASH);
+    assertThat(cacheName).isPresent();
+    assertThat(cacheName.get()).isNotEmpty();
+
+    // Test list cache
+    ContentCacheList.contentCacheList();
+    assertThat(bout.toString()).contains("Name: ");
+    assertThat(bout.toString()).contains("Model: ");
+    assertThat(bout.toString()).contains("Last updated at: ");
+    assertThat(bout.toString()).contains("Expires at: ");
+    bout.reset();
+
+    // Test update cache
+    String cacheResourceName = cacheName.get();
+    ContentCacheUpdate.contentCacheUpdate(cacheResourceName);
+    assertThat(bout.toString()).contains("Expire time: ");
+    assertThat(bout.toString()).contains("Expire time after update: ");
+    assertThat(bout.toString()).contains(String.format("Updated cache: %s", cacheResourceName));
+    bout.reset();
+
+    // Test use cache with text
+    String response =
+        ContentCacheUseWithText.contentCacheUseWithText(GEMINI_FLASH, cacheResourceName);
     assertThat(response).isNotEmpty();
+    assertThat(response).isNotNull();
+
+    // Test delete cache
+    ContentCacheDelete.contentCacheDelete(cacheResourceName);
+    assertThat(bout.toString()).contains(String.format("Deleted cache: %s", cacheResourceName));
   }
 }
