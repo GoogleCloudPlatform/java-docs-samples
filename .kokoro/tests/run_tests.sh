@@ -45,7 +45,7 @@ fi
 if [[ "$SCRIPT_DEBUG" != "true" ]]; then
     # Update `gcloud` and log versioning for debugging
     apt update && apt -y upgrade google-cloud-sdk
-    
+
     echo "********** GIT INFO ***********"
     git version
     echo "********** GCLOUD INFO ***********"
@@ -67,7 +67,10 @@ if [[ "$SCRIPT_DEBUG" != "true" ]]; then
     # For Cloud Run filesystem sample
     export FILESTORE_IP_ADDRESS=$(gcloud secrets versions access latest --secret fs-app)
     export MNT_DIR=$PWD/run/filesystem
-    
+    # For Model Armor tests
+    export MA_FOLDER_ID=695279264361
+    export MA_ORG_ID=951890214235
+
     SECRET_FILES=("java-docs-samples-service-account.json" \
     "java-aiplatform-samples-secrets.txt" \
     "java-automl-samples-secrets.txt" \
@@ -88,7 +91,7 @@ if [[ "$SCRIPT_DEBUG" != "true" ]]; then
 
     # create secret dir
     mkdir -p "${KOKORO_GFILE_DIR}/secrets"
-    
+
     for SECRET in "${SECRET_FILES[@]}"; do
       # grab latest version of secret
       gcloud secrets versions access latest --secret="${SECRET%.*}" > "${KOKORO_GFILE_DIR}/secrets/$SECRET"
@@ -166,7 +169,7 @@ test_prog="$PWD/.kokoro/tests/run_test_java.sh"
 
 git config --global --add safe.directory $PWD
 
-# Use btlr to run all the tests in each folder 
+# Use btlr to run all the tests in each folder
 echo "btlr" "${btlr_args[@]}" -- "${test_prog}"
 btlr "${btlr_args[@]}" -- "${test_prog}"
 

@@ -38,7 +38,7 @@ public class GetFolderFloorSetting {
     // Initialize client that will be used to send requests. This client only
     // needs to be created once, and can be reused for multiple requests.
     try (ModelArmorClient client = ModelArmorClient.create()) {
-      String name = FloorSettingName.of(folderId, "global").toString();
+      String name = FloorSettingName.ofFolderLocationName(folderId, "global").toString();
 
       GetFloorSettingRequest request = GetFloorSettingRequest.newBuilder().setName(name).build();
 
