@@ -108,6 +108,7 @@ public class Authentication {
             // https://cloud.google.com/java/docs/reference/google-api-client/latest/com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload
             GoogleIdToken.Payload payload = googleIdToken.getPayload();
             if (payload.getEmailVerified()) {
+              System.out.println("Email verified: " + payload.getEmail());
               return payload.getEmail();
             }
             System.out.println("Invalid token. Email wasn't verified.");

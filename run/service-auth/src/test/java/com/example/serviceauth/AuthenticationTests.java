@@ -49,8 +49,8 @@ public class AuthenticationTests {
   private static HttpClient HTTP_CLIENT;
 
   @BeforeAll
-  public static void setUp() {
-    PROJECT_NUMBER = getPROJECT_NUMBER();
+  public static void setUp() throws InterruptedException, IOException {
+    PROJECT_NUMBER = getProjectNumber();
     SERVICE_NAME = generateServiceName();
     SERVICE_URL = generateServiceUrl();
     deployService();
@@ -59,11 +59,11 @@ public class AuthenticationTests {
   }
 
   @AfterAll
-  public static void tearDown() {
+  public static void tearDown() throws InterruptedException, IOException {
     deleteService();
   }
 
-  private static String getPROJECT_NUMBER() {
+  private static String getProjectNumber() throws InterruptedException, IOException {
     return getOutputFromCommand(
         List.of("gcloud", "projects", "describe", PROJECT_ID, "--format=value(projectNumber)"));
   }
@@ -76,7 +76,7 @@ public class AuthenticationTests {
     return String.format("https://%s-%s.%s.run.app", SERVICE_NAME, PROJECT_NUMBER, REGION);
   }
 
-  private static String deployService() {
+  private static String deployService() throws InterruptedException, IOException {
     return getOutputFromCommand(
         List.of(
             "gcloud",
@@ -93,7 +93,7 @@ public class AuthenticationTests {
             "--quiet"));
   }
 
-  private static String deleteService() {
+  private static String deleteService() throws InterruptedException, IOException {
     return getOutputFromCommand(
         List.of(
             "gcloud",
@@ -108,37 +108,31 @@ public class AuthenticationTests {
             "--quiet"));
   }
 
-  private static String getOutputFromCommand(List<String> command) {
-    try {
-      ProcessBuilder processBuilder = new ProcessBuilder(command);
+  private static String getOutputFromCommand(List<String> command)
+      throws InterruptedException, IOException {
 
-      Process process = processBuilder.start();
-      String output =
-          new String(process.getInputStream().readAllBytes(), StandardCharsets.UTF_8).strip();
+    ProcessBuilder processBuilder = new ProcessBuilder(command);
 
-      process.waitFor();
+    Process process = processBuilder.start();
+    String output =
+        new String(process.getInputStream().readAllBytes(), StandardCharsets.UTF_8).strip();
 
-      return output;
-    } catch (InterruptedException | IOException exception) {
-      return String.format("Exception: %s", exception);
-    }
+    process.waitFor();
+
+    return output;
   }
 
-  private String getGoogleIdToken() {
-    try {
-      GoogleCredentials googleCredentials = GoogleCredentials.getApplicationDefault();
+  private String getGoogleIdToken() throws IOException {
+    GoogleCredentials googleCredentials = GoogleCredentials.getApplicationDefault();
 
-      IdTokenCredentials idTokenCredentials =
-          IdTokenCredentials.newBuilder()
-              .setIdTokenProvider((IdTokenProvider) googleCredentials)
-              .setTargetAudience(SERVICE_URL)
-              .setOptions(Arrays.asList(Option.FORMAT_FULL, Option.LICENSES_TRUE))
-              .build();
+    IdTokenCredentials idTokenCredentials =
+        IdTokenCredentials.newBuilder()
+            .setIdTokenProvider((IdTokenProvider) googleCredentials)
+            .setTargetAudience(SERVICE_URL)
+            .setOptions(Arrays.asList(Option.FORMAT_FULL, Option.LICENSES_TRUE))
+            .build();
 
-      return idTokenCredentials.refreshAccessToken().getTokenValue();
-    } catch (IOException exception) {
-      return "error_generating_token";
-    }
+    return idTokenCredentials.refreshAccessToken().getTokenValue();
   }
 
   private HttpResponse<String> executeRequest(String headerName, String headerValue) {
