@@ -65,7 +65,7 @@ public class ToolsVaisWithText {
           client.models.generateContent(
               modelId, "How do I make an appointment to renew my driver's license?", config);
 
-      System.out.println(response.text());
+      System.out.print(response.text());
       // Example response:
       // The process for making an appointment to renew your driver's license varies depending
       // on your location. To provide you with the most accurate instructions...

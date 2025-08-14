@@ -56,7 +56,6 @@ public class ToolsIT {
     System.setOut(out);
   }
 
-
   @After
   public void tearDown() {
     System.setOut(null);

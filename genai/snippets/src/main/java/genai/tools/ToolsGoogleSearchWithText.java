@@ -53,7 +53,7 @@ public class ToolsGoogleSearchWithText {
                   .tools(Tool.builder().googleSearch(GoogleSearch.builder().build()).build())
                   .build());
 
-      System.out.println(response.text());
+      System.out.print(response.text());
       // Example response:
       // The next total solar eclipse in the United States will occur on...
       return response.text();

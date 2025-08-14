@@ -58,10 +58,8 @@ public class ToolsCodeExecWithText {
               "Calculate 20th fibonacci number. Then find the nearest palindrome to it.",
               contentConfig);
 
-      System.out.println("Code: ");
-      System.out.print(response.executableCode());
-      System.out.println("Outcome: ");
-      System.out.print(response.codeExecutionResult());
+      System.out.println("Code: \n" + response.executableCode());
+      System.out.println("Outcome: \n" + response.codeExecutionResult());
       // Example response
       // Code:
       // def fibonacci(n):
