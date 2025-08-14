@@ -44,14 +44,15 @@ public class ToolsGoogleSearchWithText {
             .httpOptions(HttpOptions.builder().apiVersion("v1").build())
             .build()) {
 
+      // Create a config and set Google Search tool
+      GenerateContentConfig contentConfig =
+          GenerateContentConfig.builder()
+              .tools(Tool.builder().googleSearch(GoogleSearch.builder().build()).build())
+              .build();
+
       GenerateContentResponse response =
           client.models.generateContent(
-              modelId,
-              "When is the next total solar eclipse in the United States?",
-              GenerateContentConfig.builder()
-                  // set Google Search tool
-                  .tools(Tool.builder().googleSearch(GoogleSearch.builder().build()).build())
-                  .build());
+              modelId, "When is the next total solar eclipse in the United States?", contentConfig);
 
       System.out.print(response.text());
       // Example response:

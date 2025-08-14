@@ -58,12 +58,12 @@ public class ToolsVaisWithText {
                       .build())
               .build();
 
-      GenerateContentConfig config =
-              GenerateContentConfig.builder().tools(vaisSearchTool).build();
+      GenerateContentConfig contentConfig =
+          GenerateContentConfig.builder().tools(vaisSearchTool).build();
 
       GenerateContentResponse response =
           client.models.generateContent(
-              modelId, "How do I make an appointment to renew my driver's license?", config);
+              modelId, "How do I make an appointment to renew my driver's license?", contentConfig);
 
       System.out.print(response.text());
       // Example response:
