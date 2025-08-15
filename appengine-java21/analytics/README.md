@@ -1,7 +1,7 @@
 # Google Analytics sample for Google App Engine
 
 <a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=appengine-java21/analytics/README.md">
-<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+<img alt="Open in Cloud Shell" src ="https://gstatic.com/cloudssh/images/open-btn.png"></a>
 
 Integrating App Engine with Google Analytics.
 
