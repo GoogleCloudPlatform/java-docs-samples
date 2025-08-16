@@ -16,7 +16,7 @@
  */
 
 package com.example.dataflow;
-
+// [START dataflow_apache_iceberg_rest_catalog_streaming_write]
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
@@ -133,3 +133,4 @@ public class ApacheIcebergRestCatalogStreamingWrite {
     p.run();
   }
 }
+// [END dataflow_apache_iceberg_rest_catalog_streaming_write]

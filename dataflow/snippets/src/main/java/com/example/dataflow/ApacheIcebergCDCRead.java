@@ -15,7 +15,7 @@
  */
 
 package com.example.dataflow;
-
+// [START dataflow_apache_iceberg_cdc_read]
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
@@ -161,3 +161,4 @@ public class ApacheIcebergCDCRead {
     p.run();
   }
 }
+// [END dataflow_apache_iceberg_cdc_read]
