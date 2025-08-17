@@ -70,7 +70,6 @@ public class ApacheIcebergIT {
 
   String outputFileNamePrefix = UUID.randomUUID().toString();
   String outputFileName = outputFileNamePrefix + "-00000-of-00001.txt";
-  String warehouse = "gs://" + bucketName;
   String table = "user_clicks.streaming_write";
   String destinationTable = "user_clicks.cdc_destination";
 
@@ -150,6 +149,7 @@ public class ApacheIcebergIT {
  
   @Test
   public void testApacheIcebergRestCatalog() throws IOException, InterruptedException {
+    String warehouse = "gs://" + bucketName;
     Thread thread =
         new Thread(
             () -> {
