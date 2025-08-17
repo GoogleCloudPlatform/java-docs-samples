@@ -20,16 +20,17 @@ import static org.junit.Assert.assertTrue;
 
 import com.google.api.gax.paging.Page;
 import com.google.cloud.storage.Blob;
-import com.google.cloud.storage.Bucket;
 import com.google.cloud.storage.BucketInfo;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
+import com.google.cloud.storage.testing.RemoteStorageHelper;
 import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.iceberg.CatalogProperties;
@@ -69,6 +70,9 @@ public class ApacheIcebergIT {
 
   String outputFileNamePrefix = UUID.randomUUID().toString();
   String outputFileName = outputFileNamePrefix + "-00000-of-00001.txt";
+  String warehouse = "gs://" + bucketName;
+  String table = "user_clicks.streaming_write";
+  String destinationTable = "user_clicks.cdc_destination";
 
   private Table createIcebergTable(String name) {
 
@@ -137,27 +141,15 @@ public class ApacheIcebergIT {
   }
 
   @After
-  public void tearDown() throws IOException {
+  public void tearDown() throws IOException, ExecutionException, InterruptedException {
     Files.deleteIfExists(Paths.get(outputFileName));
-    /* 
     if (bucketName != null) {
-      Bucket bucket = storage.get(bucketName);
-      if (bucket != null) {
-        for (Blob blob : bucket.list().iterateAll()) {
-          blob.delete();
-        }
-        bucket.delete();
-      }
+      RemoteStorageHelper.forceDelete(storage, bucketName, 1, TimeUnit.MINUTES);
     }
-    */
   }
  
   @Test
   public void testApacheIcebergRestCatalog() throws IOException, InterruptedException {
-    String warehouse = "gs://" + bucketName;
-    String table = "user_clicks.streaming_write";
-    String destinationTable = "user_clicks.cdc_destination";
-
     Thread thread =
         new Thread(
             () -> {
@@ -178,6 +170,11 @@ public class ApacheIcebergIT {
               }
             });
 
+    thread.start();
+    Thread.sleep(60000);
+    thread.interrupt();
+    thread.join();
+
     Thread cdcThread =
         new Thread(
             () -> {
@@ -188,7 +185,7 @@ public class ApacheIcebergIT {
                       "--sourceTable=" + table,
                       "--destinationTable=" + destinationTable,
                       "--warehouse=" + warehouse,
-                      "--catalogName=biglake",
+                      "--catalogName=" + "biglake",
                     });
               } catch (Exception e) {
                 if (!(e.getCause() instanceof InterruptedException)) {
@@ -196,11 +193,6 @@ public class ApacheIcebergIT {
                 }
               }
             });
-
-    thread.start();
-    Thread.sleep(60000);
-    thread.interrupt();
-    thread.join();
     cdcThread.start();
     Thread.sleep(120000);
     cdcThread.interrupt();
