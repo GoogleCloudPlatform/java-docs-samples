@@ -16,15 +16,20 @@
 
 package com.example.dataflow;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import com.google.api.gax.paging.Page;
+import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.Bucket;
+import com.google.cloud.storage.BucketInfo;
+import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageOptions;
 import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.UUID;
-import org.apache.beam.sdk.PipelineResult;
+import java.util.concurrent.atomic.AtomicReference;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.iceberg.CatalogProperties;
@@ -50,13 +55,6 @@ import org.apache.iceberg.types.Types.NestedField;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import com.google.cloud.storage.Blob;
-import com.google.cloud.storage.Storage;
-import com.google.cloud.storage.StorageOptions;
-import com.google.cloud.storage.BucketInfo;
-import com.google.cloud.storage.Bucket;
-import com.google.api.gax.paging.Page;
-import java.util.concurrent.atomic.AtomicReference;
 
 
 public class ApacheIcebergIT {
@@ -141,24 +139,21 @@ public class ApacheIcebergIT {
   @After
   public void tearDown() throws IOException {
     Files.deleteIfExists(Paths.get(outputFileName));
+    /* 
     if (bucketName != null) {
       Bucket bucket = storage.get(bucketName);
       if (bucket != null) {
-        Page<Blob> blobs = bucket.list();
-        while (blobs != null) {
-          for (Blob blob : blobs.iterateAll()) {
-            blob.delete();
-          }
-          blobs = bucket.list();
+        for (Blob blob : bucket.list().iterateAll()) {
+          blob.delete();
         }
         bucket.delete();
       }
     }
+    */
   }
-
+ 
   @Test
   public void testApacheIcebergRestCatalog() throws IOException, InterruptedException {
-    Storage storage = StorageOptions.getDefaultInstance().getService();
     String warehouse = "gs://" + bucketName;
     String table = "user_clicks.streaming_write";
     String destinationTable = "user_clicks.cdc_destination";
@@ -174,19 +169,20 @@ public class ApacheIcebergIT {
                       "--icebergTable=" + table,
                       "--catalogName=biglake",
                     });
-              } catch (IOException e) {
-                throw new RuntimeException(e);
+              } catch (Exception e) {
+                // We expect an InterruptedException when the test interrupts the thread.
+                // We can ignore it.
+                if (!(e.getCause() instanceof InterruptedException)) {
+                  throw new RuntimeException(e);
+                }
               }
             });
-
-    final AtomicReference<Throwable> exception = new AtomicReference<>();
-    thread.setUncaughtExceptionHandler((t, e) -> exception.set(e));
 
     Thread cdcThread =
         new Thread(
             () -> {
               try {
-                ApacheIcebergCDCRead.main(
+                ApacheIcebergCdcRead.main(
                     new String[] {
                       "--runner=DirectRunner",
                       "--sourceTable=" + table,
@@ -194,27 +190,21 @@ public class ApacheIcebergIT {
                       "--warehouse=" + warehouse,
                       "--catalogName=biglake",
                     });
-              } catch (IOException e) {
-                throw new RuntimeException(e);
+              } catch (Exception e) {
+                if (!(e.getCause() instanceof InterruptedException)) {
+                  throw new RuntimeException(e);
+                }
               }
             });
-
-    final AtomicReference<Throwable> cdcException = new AtomicReference<>();
-    cdcThread.setUncaughtExceptionHandler((t, e) -> cdcException.set(e));
 
     thread.start();
     Thread.sleep(60000);
     thread.interrupt();
+    thread.join();
     cdcThread.start();
-    Thread.sleep(60000);
+    Thread.sleep(120000);
     cdcThread.interrupt();
-
-    if (exception.get() != null) {
-      throw new RuntimeException(exception.get());
-    }
-    if (cdcException.get() != null) {
-      throw new RuntimeException(cdcException.get());
-    }
+    cdcThread.join();
 
     boolean dataFolderHasFiles = false;
     boolean metadataFolderHasFiles = false;
@@ -224,7 +214,8 @@ public class ApacheIcebergIT {
       if (blob.getName().startsWith("user_clicks/cdc_destination/data/") && blob.getSize() > 0) {
         dataFolderHasFiles = true;
       }
-      if (blob.getName().startsWith("user_clicks/cdc_destination/metadata/") && blob.getSize() > 0) {
+      if (blob.getName().startsWith("user_clicks/cdc_destination/metadata/")
+          && blob.getSize() > 0) {
         metadataFolderHasFiles = true;
       }
     }

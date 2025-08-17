@@ -15,6 +15,7 @@
  */
 
 package com.example.dataflow;
+
 // [START dataflow_apache_iceberg_cdc_read]
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.common.collect.ImmutableMap;
@@ -46,7 +47,7 @@ import org.joda.time.Duration;
  * <p>This pipeline can be used to process the output of {@link
  * ApacheIcebergRestCatalogStreamingWrite}.
  */
-public class ApacheIcebergCDCRead {
+public class ApacheIcebergCdcRead {
 
   // Schema for the source table containing click events.
   public static final Schema SOURCE_SCHEMA =
@@ -113,7 +114,7 @@ public class ApacheIcebergCDCRead {
             .put("table", options.getSourceTable())
             .put("catalog_name", options.getCatalogName())
             .put("catalog_properties", catalogProps)
-            .put("streaming", true)
+            .put("streaming", Boolean.TRUE)
             .put("poll_interval_seconds", 20)
             .build();
 
@@ -127,7 +128,8 @@ public class ApacheIcebergCDCRead {
             .apply("ApplyWindow", Window.into(FixedWindows.of(Duration.standardMinutes(1))))
             .apply(
                 "ExtractUserAndCount",
-                MapElements.into(TypeDescriptors.kvs(TypeDescriptors.strings(), TypeDescriptors.longs()))
+                MapElements.into(
+                        TypeDescriptors.kvs(TypeDescriptors.strings(), TypeDescriptors.longs()))
                     .via(
                         row -> {
                           String userId = row.getString("user_id");
