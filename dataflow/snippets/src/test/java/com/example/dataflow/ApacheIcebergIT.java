@@ -50,12 +50,22 @@ import org.apache.iceberg.types.Types.NestedField;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageOptions;
+import com.google.cloud.storage.BucketInfo;
+import com.google.cloud.storage.Bucket;
+import com.google.api.gax.paging.Page;
+import java.util.concurrent.atomic.AtomicReference;
+
 
 public class ApacheIcebergIT {
 
   private Configuration hadoopConf = new Configuration();
+  private Storage storage = StorageOptions.getDefaultInstance().getService();
   private java.nio.file.Path warehouseDirectory;
   private String warehouseLocation;
+  private String bucketName;
   private Catalog catalog;
   private static final String CATALOG_NAME = "local";
 
@@ -124,12 +134,103 @@ public class ApacheIcebergIT {
             CATALOG_NAME,
             ImmutableMap.of(CatalogProperties.WAREHOUSE_LOCATION, warehouseLocation),
             hadoopConf);
-
+    bucketName = "test-bucket-" + UUID.randomUUID();
+    storage.create(BucketInfo.newBuilder(bucketName).setLocation("us-central1").build());
   }
 
   @After
   public void tearDown() throws IOException {
     Files.deleteIfExists(Paths.get(outputFileName));
+    if (bucketName != null) {
+      Bucket bucket = storage.get(bucketName);
+      if (bucket != null) {
+        Page<Blob> blobs = bucket.list();
+        while (blobs != null) {
+          for (Blob blob : blobs.iterateAll()) {
+            blob.delete();
+          }
+          blobs = bucket.list();
+        }
+        bucket.delete();
+      }
+    }
+  }
+
+  @Test
+  public void testApacheIcebergRestCatalog() throws IOException, InterruptedException {
+    Storage storage = StorageOptions.getDefaultInstance().getService();
+    String warehouse = "gs://" + bucketName;
+    String table = "user_clicks.streaming_write";
+    String destinationTable = "user_clicks.cdc_destination";
+
+    Thread thread =
+        new Thread(
+            () -> {
+              try {
+                ApacheIcebergRestCatalogStreamingWrite.main(
+                    new String[] {
+                      "--runner=DirectRunner",
+                      "--warehouse=" + warehouse,
+                      "--icebergTable=" + table,
+                      "--catalogName=biglake",
+                    });
+              } catch (IOException e) {
+                throw new RuntimeException(e);
+              }
+            });
+
+    final AtomicReference<Throwable> exception = new AtomicReference<>();
+    thread.setUncaughtExceptionHandler((t, e) -> exception.set(e));
+
+    Thread cdcThread =
+        new Thread(
+            () -> {
+              try {
+                ApacheIcebergCDCRead.main(
+                    new String[] {
+                      "--runner=DirectRunner",
+                      "--sourceTable=" + table,
+                      "--destinationTable=" + destinationTable,
+                      "--warehouse=" + warehouse,
+                      "--catalogName=biglake",
+                    });
+              } catch (IOException e) {
+                throw new RuntimeException(e);
+              }
+            });
+
+    final AtomicReference<Throwable> cdcException = new AtomicReference<>();
+    cdcThread.setUncaughtExceptionHandler((t, e) -> cdcException.set(e));
+
+    thread.start();
+    Thread.sleep(60000);
+    thread.interrupt();
+    cdcThread.start();
+    Thread.sleep(60000);
+    cdcThread.interrupt();
+
+    if (exception.get() != null) {
+      throw new RuntimeException(exception.get());
+    }
+    if (cdcException.get() != null) {
+      throw new RuntimeException(cdcException.get());
+    }
+
+    boolean dataFolderHasFiles = false;
+    boolean metadataFolderHasFiles = false;
+
+    Page<Blob> blobs = storage.list(bucketName);
+    for (Blob blob : blobs.iterateAll()) {
+      if (blob.getName().startsWith("user_clicks/cdc_destination/data/") && blob.getSize() > 0) {
+        dataFolderHasFiles = true;
+      }
+      if (blob.getName().startsWith("user_clicks/cdc_destination/metadata/") && blob.getSize() > 0) {
+        metadataFolderHasFiles = true;
+      }
+    }
+
+    assertTrue(dataFolderHasFiles);
+    assertTrue(metadataFolderHasFiles);
   }
 
   @Test

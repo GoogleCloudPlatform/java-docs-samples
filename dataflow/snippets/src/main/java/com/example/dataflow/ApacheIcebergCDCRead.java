@@ -114,7 +114,7 @@ public class ApacheIcebergCDCRead {
             .put("catalog_name", options.getCatalogName())
             .put("catalog_properties", catalogProps)
             .put("streaming", true)
-            .put("poll_interval_seconds", 120)
+            .put("poll_interval_seconds", 20)
             .build();
 
     PCollection<Row> cdcEvents =

@@ -155,7 +155,7 @@
       <artifactId>iceberg-data</artifactId>
       <version>${iceberg.version}</version>
     </dependency>
-        <dependency>
+    <dependency>
       <groupId>org.apache.iceberg</groupId>
       <artifactId>iceberg-gcp</artifactId>
       <version>${iceberg.version}</version>

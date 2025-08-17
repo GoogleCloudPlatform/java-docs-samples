@@ -110,7 +110,7 @@ public class ApacheIcebergRestCatalogStreamingWrite {
             .put("table", options.getIcebergTable())
             .put("catalog_properties", catalogProps)
             .put("catalog_name", options.getCatalogName())
-            .put("triggering_frequency_seconds", 30)
+            .put("triggering_frequency_seconds", 20)
             .build();
 
     Pipeline p = Pipeline.create(options);
