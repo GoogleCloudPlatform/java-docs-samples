@@ -59,6 +59,7 @@ import org.junit.Test;
 
 
 public class ApacheIcebergIT {
+  private static final String projectId = System.getenv("GOOGLE_CLOUD_PROJECT");
 
   private Configuration hadoopConf = new Configuration();
   private Storage storage = StorageOptions.getDefaultInstance().getService();
@@ -179,6 +180,7 @@ public class ApacheIcebergIT {
                       "--warehouse=" + warehouse,
                       "--icebergTable=" + table,
                       "--catalogName=biglake",
+                      "--project=" + projectId,
                     });
               } catch (Exception e) {
                 // We expect an InterruptedException when the test interrupts the thread.
@@ -207,6 +209,7 @@ public class ApacheIcebergIT {
                       "--destinationTable=" + destinationTable,
                       "--warehouse=" + warehouse,
                       "--catalogName=" + "biglake",
+                      "--project=" + projectId,
                     });
               } catch (Exception e) {
                 if (!(e.getCause() instanceof InterruptedException)) {
