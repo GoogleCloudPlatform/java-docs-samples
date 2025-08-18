@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package genai.tools;
 
 // [START googlegenaisdk_tools_code_exec_with_txt]
