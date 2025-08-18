@@ -125,7 +125,7 @@ public class ApacheIcebergCdcRead {
 
     PCollection<Row> aggregatedRows =
         cdcEvents
-            .apply("ApplyWindow", Window.into(FixedWindows.of(Duration.standardMinutes(1))))
+            .apply("ApplyWindow", Window.into(FixedWindows.of(Duration.standardSeconds(30))))
             .apply(
                 "ExtractUserAndCount",
                 MapElements.into(
