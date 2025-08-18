@@ -32,8 +32,8 @@ public class ToolsVaisWithText {
     // TODO(developer): Replace these variables before running the sample.
     String modelId = "gemini-2.5-flash";
     // Load Data Store ID from Vertex AI Search
-    // E.g datastore =
-    // "projects/11111111/locations/global/collections/default_collection/dataStores/data-store-id"
+    // E.g datastoreId =
+    // "projects/project-id/locations/global/collections/default_collection/dataStores/datastore-id"
     String datastoreId = "your-datastore";
     generateContent(modelId, datastoreId);
   }
