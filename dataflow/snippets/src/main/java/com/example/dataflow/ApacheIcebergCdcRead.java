@@ -102,7 +102,10 @@ public class ApacheIcebergCdcRead {
             .put("oauth2-server-uri", "https://oauth2.googleapis.com/token")
             .put(
                 "token",
-                GoogleCredentials.getApplicationDefault().refreshAccessToken().getTokenValue())
+                GoogleCredentials.getApplicationDefault()
+                    .createScoped("https://www.googleapis.com/auth/cloud-platform")
+                    .refreshAccessToken()
+                    .getTokenValue())
             .put("rest-metrics-reporting-enabled", "false")
             .build();
 
