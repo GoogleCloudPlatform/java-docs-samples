@@ -124,6 +124,25 @@ public class ApacheIcebergIT {
     return false;
   }
 
+  private void assertTableHasDataAndMetadata(String tableName) {
+    boolean dataFolderHasFiles = false;
+    boolean metadataFolderHasFiles = false;
+    String tablePath = tableName.replace('.', '/');
+
+    Page<Blob> blobs = storage.list(bucketName);
+    for (Blob blob : blobs.iterateAll()) {
+      if (blob.getName().startsWith(tablePath + "/data/") && blob.getSize() > 0) {
+        dataFolderHasFiles = true;
+      }
+      if (blob.getName().startsWith(tablePath + "/metadata/") && blob.getSize() > 0) {
+        metadataFolderHasFiles = true;
+      }
+    }
+
+    assertTrue("Data folder should have files for table " + tableName, dataFolderHasFiles);
+    assertTrue("Metadata folder should have files for table " + tableName, metadataFolderHasFiles);
+  }
+
   @Before
   public void setUp() throws IOException {
     // Create an Apache Iceberg catalog with a table.
@@ -175,6 +194,8 @@ public class ApacheIcebergIT {
     thread.interrupt();
     thread.join();
 
+    assertTableHasDataAndMetadata(table);
+
     Thread cdcThread =
         new Thread(
             () -> {
@@ -198,22 +219,7 @@ public class ApacheIcebergIT {
     cdcThread.interrupt();
     cdcThread.join();
 
-    boolean dataFolderHasFiles = false;
-    boolean metadataFolderHasFiles = false;
-
-    Page<Blob> blobs = storage.list(bucketName);
-    for (Blob blob : blobs.iterateAll()) {
-      if (blob.getName().startsWith("user_clicks/cdc_destination/data/") && blob.getSize() > 0) {
-        dataFolderHasFiles = true;
-      }
-      if (blob.getName().startsWith("user_clicks/cdc_destination/metadata/")
-          && blob.getSize() > 0) {
-        metadataFolderHasFiles = true;
-      }
-    }
-
-    assertTrue(dataFolderHasFiles);
-    assertTrue(metadataFolderHasFiles);
+    assertTableHasDataAndMetadata(destinationTable);
   }
 
   @Test
