@@ -47,8 +47,8 @@ public class TextGenerationWithYoutubeVideo {
           client.models.generateContent(
               modelId,
               Content.fromParts(
-                  Part.fromText("Write a short and engaging blog post based on this video."),
-                  Part.fromUri("https://www.youtube.com/watch?v=3KtWfp0UopM", "video/mp4")),
+                  Part.fromUri("https://www.youtube.com/watch?v=3KtWfp0UopM", "video/mp4"),
+                  Part.fromText("Write a short and engaging blog post based on this video.")),
               null);
 
       System.out.print(response.text());

@@ -47,10 +47,10 @@ public class TextGenerationWithMuteVideo {
           client.models.generateContent(
               modelId,
               Content.fromParts(
-                  Part.fromText("What is in this video?"),
                   Part.fromUri(
                       "gs://cloud-samples-data/generative-ai/video/ad_copy_from_video.mp4",
-                      "video/mp4")),
+                      "video/mp4"),
+                  Part.fromText("What is in this video?")),
               null);
 
       System.out.print(response.text());

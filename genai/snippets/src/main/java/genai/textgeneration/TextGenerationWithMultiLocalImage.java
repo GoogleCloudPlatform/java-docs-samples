@@ -57,9 +57,9 @@ public class TextGenerationWithMultiLocalImage {
           client.models.generateContent(
               modelId,
               Content.fromParts(
-                  Part.fromText("Generate a list of all the objects contained in both images"),
                   Part.fromBytes(localFileImg1Bytes, "image/jpeg"),
-                  Part.fromBytes(localFileImg2Bytes, "image/jpeg")),
+                  Part.fromBytes(localFileImg2Bytes, "image/jpeg"),
+                  Part.fromText("Generate a list of all the objects contained in both images")),
               null);
 
       System.out.print(response.text());
