@@ -47,15 +47,15 @@ public class TextGenerationWithLocalVideo {
             .httpOptions(HttpOptions.builder().apiVersion("v1").build())
             .build()) {
 
-      // Read content from a local video.
+      // Read content from the local video.
       byte[] videoData = Files.readAllBytes(Paths.get(localVideoPath));
 
       GenerateContentResponse response =
           client.models.generateContent(
               modelId,
               Content.fromParts(
-                  Part.fromText("Write a short and engaging blog post based on this video."),
-                  Part.fromBytes(videoData, "video/mp4")),
+                  Part.fromBytes(videoData, "video/mp4"),
+                  Part.fromText("Write a short and engaging blog post based on this video.")),
               null);
 
       System.out.print(response.text());
