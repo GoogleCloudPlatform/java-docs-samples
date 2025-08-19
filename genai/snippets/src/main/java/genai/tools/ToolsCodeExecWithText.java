@@ -44,7 +44,7 @@ public class ToolsCodeExecWithText {
             .httpOptions(HttpOptions.builder().apiVersion("v1").build())
             .build()) {
 
-      // Create a config and set codeExecution tool
+      // Create a GenerateContentConfig and set codeExecution tool
       GenerateContentConfig contentConfig =
           GenerateContentConfig.builder()
               .tools(Tool.builder().codeExecution(ToolCodeExecution.builder().build()).build())

@@ -61,10 +61,10 @@ public class ToolsCodeExecWithTextLocalImage {
               + " best strategy is.\n"
               + " Thank you!";
 
-      // Read content from a local image
+      // Read content from the local image
       byte[] imageData = Files.readAllBytes(Paths.get(localImagePath));
 
-      // Create a config and set codeExecution tool
+      // Create a GenerateContentConfig and set codeExecution tool
       GenerateContentConfig contentConfig =
           GenerateContentConfig.builder()
               .tools(Tool.builder().codeExecution(ToolCodeExecution.builder().build()).build())
@@ -74,7 +74,7 @@ public class ToolsCodeExecWithTextLocalImage {
       GenerateContentResponse response =
           client.models.generateContent(
               modelId,
-              Content.fromParts(Part.fromText(prompt), Part.fromBytes(imageData, "image/png")),
+              Content.fromParts(Part.fromBytes(imageData, "image/png"), Part.fromText(prompt)),
               contentConfig);
 
       System.out.println("Code: \n" + response.executableCode());

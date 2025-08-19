@@ -44,7 +44,7 @@ public class ToolsGoogleSearchWithText {
             .httpOptions(HttpOptions.builder().apiVersion("v1").build())
             .build()) {
 
-      // Create a config and set Google Search tool
+      // Create a GenerateContentConfig and set Google Search tool
       GenerateContentConfig contentConfig =
           GenerateContentConfig.builder()
               .tools(Tool.builder().googleSearch(GoogleSearch.builder().build()).build())

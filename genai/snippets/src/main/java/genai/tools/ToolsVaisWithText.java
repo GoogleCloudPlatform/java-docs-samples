@@ -58,6 +58,7 @@ public class ToolsVaisWithText {
                       .build())
               .build();
 
+      // Create a GenerateContentConfig and set the Vertex AI Search tool
       GenerateContentConfig contentConfig =
           GenerateContentConfig.builder().tools(vaisSearchTool).build();
 
