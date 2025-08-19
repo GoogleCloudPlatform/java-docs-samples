@@ -43,7 +43,8 @@ public class TextGenerationWithPdf {
             .httpOptions(HttpOptions.builder().apiVersion("v1").build())
             .build()) {
 
-      String prompt = "You are a highly skilled document summarization specialist.\n"
+      String prompt =
+          "You are a highly skilled document summarization specialist.\n"
               + " Your task is to provide a concise executive summary of no more than 300 words.\n"
               + " Please summarize the given document for a general audience";
 
@@ -51,10 +52,10 @@ public class TextGenerationWithPdf {
           client.models.generateContent(
               modelId,
               Content.fromParts(
-                  Part.fromText(prompt),
                   Part.fromUri(
                       "gs://cloud-samples-data/generative-ai/pdf/1706.03762v7.pdf",
-                      "application/pdf")),
+                      "application/pdf"),
+                  Part.fromText(prompt)),
               null);
 
       System.out.print(response.text());
