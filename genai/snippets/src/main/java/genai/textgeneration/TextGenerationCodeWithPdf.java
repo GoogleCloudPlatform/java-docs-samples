@@ -51,8 +51,8 @@ public class TextGenerationCodeWithPdf {
           client.models.generateContent(
               modelId,
               Content.fromParts(
-                  Part.fromText("Convert this python code to use Google Python Style Guide"),
-                  Part.fromUri(fileUri, "application/pdf")),
+                  Part.fromUri(fileUri, "application/pdf"),
+                  Part.fromText("Convert this python code to use Google Python Style Guide")),
               null);
 
       System.out.print(response.text());

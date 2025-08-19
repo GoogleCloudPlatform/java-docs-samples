@@ -47,9 +47,9 @@ public class TextGenerationWithGcsAudio {
           client.models.generateContent(
               modelId,
               Content.fromParts(
-                  Part.fromText("Provide a concise summary of the main points in the audio file."),
-                  Part.fromUri("gs://cloud-samples-data/generative-ai/audio/pixel.mp3",
-                          "audio/mpeg")),
+                  Part.fromUri(
+                      "gs://cloud-samples-data/generative-ai/audio/pixel.mp3", "audio/mpeg"),
+                  Part.fromText("Provide a concise summary of the main points in the audio file.")),
               null);
 
       System.out.print(response.text());
