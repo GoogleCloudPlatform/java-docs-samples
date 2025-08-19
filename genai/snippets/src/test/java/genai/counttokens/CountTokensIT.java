@@ -19,8 +19,12 @@ package genai.counttokens;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
+import com.google.genai.types.GenerateContentResponseUsageMetadata;
+import com.google.genai.types.TokensInfo;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import org.junit.After;
 import org.junit.Before;
@@ -31,7 +35,6 @@ import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 public class CountTokensIT {
-
 
   private static final String GEMINI_FLASH = "gemini-2.5-flash";
   private ByteArrayOutputStream bout;
@@ -73,5 +76,38 @@ public class CountTokensIT {
     Optional<Integer> response = CountTokensWithTextAndVideo.countTokens(GEMINI_FLASH);
     assertThat(response).isPresent();
     assertThat(response.get()).isGreaterThan(6);
+  }
+
+  @Test
+  public void testCountTokensComputeWithText() {
+
+    List<TokensInfo> response =
+            CountTokensComputeWithText.computeTokens(GEMINI_FLASH).orElse(new ArrayList<>());
+
+    assertThat(response).isNotEmpty();
+    TokensInfo tokensInfo = response.get(0);
+
+    assertThat(tokensInfo.role()).isPresent();
+
+    assertThat(tokensInfo.tokenIds()).isPresent();
+    assertThat(tokensInfo.tokenIds().get()).isNotEmpty();
+
+    assertThat(tokensInfo.tokens()).isPresent();
+    assertThat(tokensInfo.tokens().get()).isNotEmpty();
+
+  }
+
+  @Test
+  public void testCountTokensResponseWithText() {
+
+    Optional<GenerateContentResponseUsageMetadata> response =
+            CountTokensResponseWithText.countTokens(GEMINI_FLASH);
+
+    assertThat(response).isPresent();
+    assertThat(response.get().totalTokenCount()).isPresent();
+    assertThat(response.get().totalTokenCount().get()).isGreaterThan(0);
+    assertThat(response.get().promptTokenCount()).isPresent();
+    assertThat(response.get().promptTokenCount().get()).isGreaterThan(0);
+
   }
 }
