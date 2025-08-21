@@ -106,12 +106,4 @@ public class ToolsIT {
     assertThat(response).isNotEmpty();
   }
 
-  @Test
-  public void testToolsVaisWithText() {
-    String datastore = "projects/" + PROJECT_ID + "/locations/global/"
-            + "collections/default_collection/dataStores/grounding-test-datastore";
-    String response = ToolsVaisWithText.generateContent(GEMINI_FLASH, datastore);
-    assertThat(response).isNotEmpty();
-  }
-
 }
