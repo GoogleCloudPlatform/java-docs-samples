@@ -60,7 +60,7 @@ public class ApacheIcebergRestCatalogStreamingWrite {
 
     void setWarehouse(String warehouse);
 
-    @Description("The URI for the REST catalog.")
+    @Description("The URI for the REST catalog")
     @Validation.Required
     @Default.String("https://biglake.googleapis.com/iceberg/v1beta/restcatalog")
     String getCatalogUri();
