@@ -16,7 +16,7 @@
 
 package com.example.appengine.analytics;
 
-// [START analytics_track]
+// [START gae_java21_analytics_track]
 import com.google.appengine.api.urlfetch.URLFetchService;
 import com.google.appengine.api.urlfetch.URLFetchServiceFactory;
 import java.io.IOException;
@@ -35,8 +35,7 @@ import org.apache.http.client.utils.URIBuilder;
 @WebServlet(
     name = "analytics",
     description = "Analytics: Send Analytics Event to Google Analytics",
-    urlPatterns = "/analytics"
-)
+    urlPatterns = "/analytics")
 public class AnalyticsServlet extends HttpServlet {
 
   @Override
@@ -68,4 +67,4 @@ public class AnalyticsServlet extends HttpServlet {
     resp.getWriter().println("Event tracked.");
   }
 }
-// [END analytics_track]
+// [END gae_java21_analytics_track]
