@@ -32,6 +32,7 @@ import org.junit.runners.JUnit4;
 public class ToolsIT {
 
   private static final String GEMINI_FLASH = "gemini-2.5-flash";
+  private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
@@ -78,5 +79,13 @@ public class ToolsIT {
     assertThat(response).contains("get_album_sales");
     assertThat(response).contains("copies_sold=350000");
     assertThat(response).contains("album_name=Echoes of the Night");
+  }
+
+  @Test
+  public void testToolsVaisWithText() {
+    String datastore = "projects/" + PROJECT_ID + "/locations/global/"
+            + "collections/default_collection/dataStores/grounding-test-datastore";
+    String response = ToolsVaisWithText.generateContent(GEMINI_FLASH, datastore);
+    assertThat(response).isNotEmpty();
   }
 }
