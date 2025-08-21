@@ -3,7 +3,10 @@ Pre-requisites:
 You will need to be added to a specific allow list which will allow you to impersonate
 the service account `payment-reseller-test-serv-734@eng-diagram-369411.iam.gserviceaccount.com`
 
-<How to verify this as a developer?>
+Verify running below command:
+gcloud projects list --impersonate-service-account='payment-reseller-test-serv-734@eng-diagram-369411.iam.gserviceaccount.com'
+If it succeeds, you are all set.
+
 
 Steps:
 

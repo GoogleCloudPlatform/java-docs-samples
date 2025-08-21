@@ -38,7 +38,7 @@
 
   <profiles>
     <profile>
-      <id>runImpersonateServiceAccountAndProvisionSubscription</id>
+      <id>runProvisionSubscription</id>
       <build>
         <plugins>
           <plugin>
@@ -60,7 +60,7 @@
       </build>
     </profile>
     <profile>
-      <id>runImpersonateServiceAccountAndGenerateUserSession</id>
+      <id>runGenerateUserSession</id>
       <build>
         <plugins>
           <plugin>
