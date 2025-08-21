@@ -27,7 +27,7 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-paymentsresellersubscription</artifactId>
-      <version>v1-rev20250302-2.0.0</version>
+      <version>v1-rev20250808-2.0.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.http-client</groupId>

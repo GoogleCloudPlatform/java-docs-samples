@@ -16,16 +16,16 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.paymentsresellersubscription.v1.PaymentsResellerSubscription;
-import com.google.api.services.paymentsresellersubscription.v1.model.GoogleCloudPaymentsResellerSubscriptionV1CreateSubscriptionIntent;
-import com.google.api.services.paymentsresellersubscription.v1.model.GoogleCloudPaymentsResellerSubscriptionV1GenerateUserSessionRequest;
-import com.google.api.services.paymentsresellersubscription.v1.model.GoogleCloudPaymentsResellerSubscriptionV1GenerateUserSessionResponse;
-import com.google.api.services.paymentsresellersubscription.v1.model.GoogleCloudPaymentsResellerSubscriptionV1IntentPayload;
-import com.google.api.services.paymentsresellersubscription.v1.model.GoogleCloudPaymentsResellerSubscriptionV1Location;
-import com.google.api.services.paymentsresellersubscription.v1.model.GoogleCloudPaymentsResellerSubscriptionV1ProductPayload;
-import com.google.api.services.paymentsresellersubscription.v1.model.GoogleCloudPaymentsResellerSubscriptionV1Subscription;
-import com.google.api.services.paymentsresellersubscription.v1.model.GoogleCloudPaymentsResellerSubscriptionV1SubscriptionLineItem;
-import com.google.api.services.paymentsresellersubscription.v1.model.GoogleCloudPaymentsResellerSubscriptionV1SubscriptionPromotionSpec;
-import com.google.api.services.paymentsresellersubscription.v1.model.GoogleCloudPaymentsResellerSubscriptionV1YoutubePayload;
+import com.google.api.services.paymentsresellersubscription.v1.model.CreateSubscriptionIntent;
+import com.google.api.services.paymentsresellersubscription.v1.model.GenerateUserSessionRequest;
+import com.google.api.services.paymentsresellersubscription.v1.model.GenerateUserSessionResponse;
+import com.google.api.services.paymentsresellersubscription.v1.model.IntentPayload;
+import com.google.api.services.paymentsresellersubscription.v1.model.Location;
+import com.google.api.services.paymentsresellersubscription.v1.model.ProductPayload;
+import com.google.api.services.paymentsresellersubscription.v1.model.Subscription;
+import com.google.api.services.paymentsresellersubscription.v1.model.SubscriptionLineItem;
+import com.google.api.services.paymentsresellersubscription.v1.model.SubscriptionPromotionSpec;
+import com.google.api.services.paymentsresellersubscription.v1.model.YoutubePayload;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.common.collect.ImmutableList;
 import java.io.IOException;
@@ -57,36 +57,36 @@ public class GenerateUserSession {
       DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME.withZone(
           ZoneOffset.UTC); // RFC 3339, with offset
       String subscriptionId = SUB_ID + Instant.now().toEpochMilli();
-      GoogleCloudPaymentsResellerSubscriptionV1GenerateUserSessionResponse generateUserSessionResponse = client.partners()
+      GenerateUserSessionResponse generateUserSessionResponse = client.partners()
           .userSessions().generate("partners/" + PARTNER_ID,
-              new GoogleCloudPaymentsResellerSubscriptionV1GenerateUserSessionRequest().setIntentPayload(
-                  new GoogleCloudPaymentsResellerSubscriptionV1IntentPayload().setCreateIntent(
-                      new GoogleCloudPaymentsResellerSubscriptionV1CreateSubscriptionIntent().setParent(
+              new GenerateUserSessionRequest().setIntentPayload(
+                  new IntentPayload().setCreateIntent(
+                      new CreateSubscriptionIntent().setParent(
                               "partners/" + PARTNER_ID).setSubscriptionId(subscriptionId)
                           .setSubscription(
-                              new GoogleCloudPaymentsResellerSubscriptionV1Subscription()
+                              new Subscription()
                                   .setLineItems(
                                       ImmutableList
-                                          .of(new GoogleCloudPaymentsResellerSubscriptionV1SubscriptionLineItem()
+                                          .of(new SubscriptionLineItem()
                                               .setProduct("partners/" + PARTNER_ID + "/products/"
                                                   + NFT_PRODUCT_ID)
                                               .setProductPayload(
-                                                  new GoogleCloudPaymentsResellerSubscriptionV1ProductPayload()
+                                                  new ProductPayload()
                                                       .setYoutubePayload(
-                                                          new GoogleCloudPaymentsResellerSubscriptionV1YoutubePayload()
+                                                          new YoutubePayload()
                                                               .setPartnerEligibilityIds(
                                                                   List.of(ELIGIBILITY_ID))
                                                               .setPartnerPlanType(PLAN_TYPE)
                                                       ))
-                                          //    .setLineItemPromotionSpecs(ImmutableList.of(new GoogleCloudPaymentsResellerSubscriptionV1SubscriptionPromotionSpec().setPromotion("partners/" + PARTNER_ID + "/promotions/" + PROMOTION)))
+                                          //    .setLineItemPromotionSpecs(ImmutableList.of(new SubscriptionPromotionSpec().setPromotion("partners/" + PARTNER_ID + "/promotions/" + PROMOTION)))
                                           ))
                                   .setPartnerUserToken("g1.tvc.test2@gmail.com")
                                   .setServiceLocation(
-                                      new GoogleCloudPaymentsResellerSubscriptionV1Location()
+                                      new Location()
                                           .setPostalCode("94043")
                                           .setRegionCode(REGION_CODE))
                                   .setPurchaseTime(formatter.format(Instant.now()))
-                               //   .setPromotionSpecs(ImmutableList.of(new GoogleCloudPaymentsResellerSubscriptionV1SubscriptionPromotionSpec().setPromotion("partners/" + PARTNER_ID + "/promotions/" + PROMOTION_SUB_LEVEL)))
+                               //   .setPromotionSpecs(ImmutableList.of(new SubscriptionPromotionSpec().setPromotion("partners/" + PARTNER_ID + "/promotions/" + PROMOTION_SUB_LEVEL)))
                           )))).execute();
       System.out.println("Subscription Id::" + subscriptionId);
       System.out.printf("Sandbox URL to create subscription:: https://serviceactivation.sandbox.google.com/subscription/new/%s \n", generateUserSessionResponse.getUserSession().getToken());
