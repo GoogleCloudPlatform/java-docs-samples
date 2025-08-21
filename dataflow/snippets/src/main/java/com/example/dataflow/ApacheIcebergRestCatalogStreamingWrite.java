@@ -98,13 +98,13 @@ public class ApacheIcebergRestCatalogStreamingWrite {
             .put("uri", options.getCatalogUri())
             .put("warehouse", options.getWarehouse())
             .put("header.x-goog-user-project", options.getProject())
-            .put("oauth2-server-uri", "https://oauth2.googleapis.com/token")
             .put(
-                "token",
-                GoogleCredentials.getApplicationDefault()
-                    .createScoped("https://www.googleapis.com/auth/cloud-platform")
-                    .refreshAccessToken()
-                    .getTokenValue())
+                "header.Authorization",
+                "Bearer "
+                    + GoogleCredentials.getApplicationDefault()
+                        .createScoped("https://www.googleapis.com/auth/cloud-platform")
+                        .refreshAccessToken()
+                        .getTokenValue())
             .put("rest-metrics-reporting-enabled", "false")
             .build();
 
