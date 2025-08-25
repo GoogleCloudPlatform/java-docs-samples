@@ -16,15 +16,21 @@
 
 package com.example.dataflow;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import com.google.api.gax.paging.Page;
+import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.BucketInfo;
+import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageOptions;
+import com.google.cloud.storage.testing.RemoteStorageHelper;
 import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.UUID;
-import org.apache.beam.sdk.PipelineResult;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.iceberg.CatalogProperties;
@@ -51,16 +57,22 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+
 public class ApacheIcebergIT {
+  private static final String projectId = System.getenv("GOOGLE_CLOUD_PROJECT");
 
   private Configuration hadoopConf = new Configuration();
+  private Storage storage = StorageOptions.getDefaultInstance().getService();
   private java.nio.file.Path warehouseDirectory;
   private String warehouseLocation;
+  private String bucketName;
   private Catalog catalog;
   private static final String CATALOG_NAME = "local";
 
   String outputFileNamePrefix = UUID.randomUUID().toString();
   String outputFileName = outputFileNamePrefix + "-00000-of-00001.txt";
+  String table = "user_clicks.streaming_write";
+  String destinationTable = "user_clicks.cdc_destination";
 
   private Table createIcebergTable(String name) {
 
@@ -113,6 +125,25 @@ public class ApacheIcebergIT {
     return false;
   }
 
+  private void assertTableHasDataAndMetadata(String tableName) {
+    boolean dataFolderHasFiles = false;
+    boolean metadataFolderHasFiles = false;
+    String tablePath = tableName.replace('.', '/');
+
+    Page<Blob> blobs = storage.list(bucketName);
+    for (Blob blob : blobs.iterateAll()) {
+      if (blob.getName().startsWith(tablePath + "/data/") && blob.getSize() > 0) {
+        dataFolderHasFiles = true;
+      }
+      if (blob.getName().startsWith(tablePath + "/metadata/") && blob.getSize() > 0) {
+        metadataFolderHasFiles = true;
+      }
+    }
+
+    assertTrue("Data folder should have files for table " + tableName, dataFolderHasFiles);
+    assertTrue("Metadata folder should have files for table " + tableName, metadataFolderHasFiles);
+  }
+
   @Before
   public void setUp() throws IOException {
     // Create an Apache Iceberg catalog with a table.
@@ -124,12 +155,74 @@ public class ApacheIcebergIT {
             CATALOG_NAME,
             ImmutableMap.of(CatalogProperties.WAREHOUSE_LOCATION, warehouseLocation),
             hadoopConf);
-
+    bucketName = "test-bucket-" + UUID.randomUUID();
+    storage.create(BucketInfo.newBuilder(bucketName).setLocation("us-central1").build());
   }
 
   @After
-  public void tearDown() throws IOException {
+  public void tearDown() throws IOException, ExecutionException, InterruptedException {
     Files.deleteIfExists(Paths.get(outputFileName));
+    if (bucketName != null) {
+      RemoteStorageHelper.forceDelete(storage, bucketName, 1, TimeUnit.MINUTES);
+    }
+  }
+ 
+  @Test
+  public void testApacheIcebergRestCatalog() throws IOException, InterruptedException {
+    String warehouse = "gs://" + bucketName;
+    Thread thread =
+        new Thread(
+            () -> {
+              try {
+                ApacheIcebergRestCatalogStreamingWrite.main(
+                    new String[] {
+                      "--runner=DirectRunner",
+                      "--warehouse=" + warehouse,
+                      "--icebergTable=" + table,
+                      "--catalogName=biglake",
+                      "--project=" + projectId,
+                    });
+              } catch (Exception e) {
+                // We expect an InterruptedException when the test interrupts the thread.
+                // We can ignore it.
+                if (!(e.getCause() instanceof InterruptedException)) {
+                  throw new RuntimeException(e);
+                }
+              }
+            });
+
+    thread.start();
+    Thread.sleep(60000);
+    thread.interrupt();
+    thread.join();
+
+    assertTableHasDataAndMetadata(table);
+
+    Thread cdcThread =
+        new Thread(
+            () -> {
+              try {
+                ApacheIcebergCdcRead.main(
+                    new String[] {
+                      "--runner=DirectRunner",
+                      "--sourceTable=" + table,
+                      "--destinationTable=" + destinationTable,
+                      "--warehouse=" + warehouse,
+                      "--catalogName=" + "biglake",
+                      "--project=" + projectId,
+                    });
+              } catch (Exception e) {
+                if (!(e.getCause() instanceof InterruptedException)) {
+                  throw new RuntimeException(e);
+                }
+              }
+            });
+    cdcThread.start();
+    Thread.sleep(120000);
+    cdcThread.interrupt();
+    cdcThread.join();
+
+    assertTableHasDataAndMetadata(destinationTable);
   }
 
   @Test
