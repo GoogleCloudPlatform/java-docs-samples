@@ -16,13 +16,15 @@
 
 package genai.textgeneration;
 
-// [START googlegenaisdk_textgen_with_txt]
+// [START googlegenaisdk_textgen_with_mute_video]
 
 import com.google.genai.Client;
+import com.google.genai.types.Content;
 import com.google.genai.types.GenerateContentResponse;
 import com.google.genai.types.HttpOptions;
+import com.google.genai.types.Part;
 
-public class TextGenerationWithText {
+public class TextGenerationWithMuteVideo {
 
   public static void main(String[] args) {
     // TODO(developer): Replace these variables before running the sample.
@@ -30,7 +32,7 @@ public class TextGenerationWithText {
     generateContent(modelId);
   }
 
-  // Generates text with text input
+  // Generates text with mute video input
   public static String generateContent(String modelId) {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
@@ -42,16 +44,23 @@ public class TextGenerationWithText {
             .build()) {
 
       GenerateContentResponse response =
-          client.models.generateContent(modelId, "How does AI work?", null);
+          client.models.generateContent(
+              modelId,
+              Content.fromParts(
+                  Part.fromUri(
+                      "gs://cloud-samples-data/generative-ai/video/ad_copy_from_video.mp4",
+                      "video/mp4"),
+                  Part.fromText("What is in this video?")),
+              null);
 
       System.out.print(response.text());
       // Example response:
-      // Okay, let's break down how AI works. It's a broad field, so I'll focus on the ...
+      // This video features **surfers in the ocean**.
       //
-      // Here's a simplified overview:
-      // ...
+      // The main focus is on **one individual who catches and rides a wave**, executing various
+      // turns and maneuvers as the wave breaks and dissipates into whitewater...
       return response.text();
     }
   }
 }
-// [END googlegenaisdk_textgen_with_txt]
+// [END googlegenaisdk_textgen_with_mute_video]

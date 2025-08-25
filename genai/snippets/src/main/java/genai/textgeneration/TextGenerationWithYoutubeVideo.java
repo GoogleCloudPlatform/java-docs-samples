@@ -16,13 +16,15 @@
 
 package genai.textgeneration;
 
-// [START googlegenaisdk_textgen_with_txt]
+// [START googlegenaisdk_textgen_with_youtube_video]
 
 import com.google.genai.Client;
+import com.google.genai.types.Content;
 import com.google.genai.types.GenerateContentResponse;
 import com.google.genai.types.HttpOptions;
+import com.google.genai.types.Part;
 
-public class TextGenerationWithText {
+public class TextGenerationWithYoutubeVideo {
 
   public static void main(String[] args) {
     // TODO(developer): Replace these variables before running the sample.
@@ -30,7 +32,7 @@ public class TextGenerationWithText {
     generateContent(modelId);
   }
 
-  // Generates text with text input
+  // Generates text with YouTube video input
   public static String generateContent(String modelId) {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
@@ -42,16 +44,22 @@ public class TextGenerationWithText {
             .build()) {
 
       GenerateContentResponse response =
-          client.models.generateContent(modelId, "How does AI work?", null);
+          client.models.generateContent(
+              modelId,
+              Content.fromParts(
+                  Part.fromUri("https://www.youtube.com/watch?v=3KtWfp0UopM", "video/mp4"),
+                  Part.fromText("Write a short and engaging blog post based on this video.")),
+              null);
 
       System.out.print(response.text());
       // Example response:
-      // Okay, let's break down how AI works. It's a broad field, so I'll focus on the ...
+      // 25 Years of Curiosity: A Google Anniversary Dive into What the World Searched For
       //
-      // Here's a simplified overview:
-      // ...
+      // Remember a time before instant answers were just a click away? 25 years ago, Google
+      // launched, unleashing a wave of curiosity that has since charted the collective interests,
+      // anxieties, and celebrations of humanity...
       return response.text();
     }
   }
 }
-// [END googlegenaisdk_textgen_with_txt]
+// [END googlegenaisdk_textgen_with_youtube_video]
