@@ -57,11 +57,20 @@ public class ThinkingIT {
   @After
   public void tearDown() {
     System.setOut(null);
+    bout.reset();
   }
 
   @Test
   public void testThinkingWithText() {
     String response = ThinkingWithText.generateContent(GEMINI_FLASH);
     assertThat(response).isNotEmpty();
+  }
+
+  @Test
+  public void testThinkingBudgetWithText() {
+    String response = ThinkingBudgetWithText.generateContent(GEMINI_FLASH);
+    assertThat(response).isNotEmpty();
+    assertThat(bout.toString()).contains("Token count for thinking: ");
+    assertThat(bout.toString()).contains("Total token count: ");
   }
 }
