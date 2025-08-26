@@ -32,6 +32,7 @@ import org.apache.beam.sdk.values.TypeDescriptors;
 public class KafkaRead {
 
   // [END dataflow_kafka_read]
+  // Triggering KafkaTests
   public interface Options extends StreamingOptions {
     @Description("The Kafka bootstrap server. Example: localhost:9092")
     String getBootstrapServer();
