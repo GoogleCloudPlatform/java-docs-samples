@@ -62,10 +62,13 @@ public class ThinkingBudgetWithText {
       // ...
       // The solution is $x = -2$.
 
-      response.usageMetadata().ifPresent( metadata -> {
-        System.out.println("Token count for thinking: " + metadata.thoughtsTokenCount());
-        System.out.println("Total token count: " + metadata.totalTokenCount());
-      });
+      response
+          .usageMetadata()
+          .ifPresent(
+              metadata -> {
+                System.out.println("Token count for thinking: " + metadata.thoughtsTokenCount());
+                System.out.println("Total token count: " + metadata.totalTokenCount());
+              });
       // Example response:
       // Token count for thinking: Optional[885]
       // Total token count: Optional[1468]
