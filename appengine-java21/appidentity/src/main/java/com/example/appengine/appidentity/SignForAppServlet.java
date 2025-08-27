@@ -66,7 +66,7 @@ public class SignForAppServlet extends HttpServlet {
   private byte[] getPublicCertificate() throws UnsupportedEncodingException {
     Collection<PublicCertificate> certs = appIdentity.getPublicCertificatesForApp();
     PublicCertificate publicCert = certs.iterator().next();
-    return publicCert.getX509CertificateInPemFormat().getBytes("UTF-8");
+    return publicCert.getX509CertificateInPemFormat().getBytes(java.nio.charset.StandardCharsets.UTF_8);
   }
 
   private Certificate parsePublicCertificate(byte[] publicCert)
@@ -88,7 +88,7 @@ public class SignForAppServlet extends HttpServlet {
       throws CertificateException, UnsupportedEncodingException, NoSuchAlgorithmException,
       InvalidKeyException, SignatureException {
     // Simulate the sending app.
-    String message = "abcdefg " + Calendar.getInstance().getTime().toString();
+    String message = "abcdefg " + java.time.Instant.now().toString();
     byte[] blob = message.getBytes();
     byte[] blobSignature = signBlob(blob);
     byte[] publicCert = getPublicCertificate();
@@ -110,7 +110,7 @@ public class SignForAppServlet extends HttpServlet {
     try {
       resp.getWriter().println(simulateIdentityAssertion());
     } catch (Exception e) {
-      throw new RuntimeException(e);
+      throw new javax.servlet.ServletException(e);
     }
   }
 }

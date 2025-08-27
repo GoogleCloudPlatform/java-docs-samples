@@ -68,7 +68,7 @@ public class UrlShortenerServlet extends HttpServlet {
     } catch (Exception e) {
       resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
       writer.println("error shortening URL: " + longUrl);
-      e.printStackTrace(writer);
+      e.printStackTrace();
       return;
     }
 

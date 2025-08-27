@@ -31,6 +31,7 @@ import javax.servlet.http.HttpServletResponse;
     urlPatterns = "/appidentity/identity"
 )
 public class IdentityServlet extends HttpServlet {
+  private static final String DEFAULT_VERSION_HOSTNAME_ATTRIBUTE = "com.google.appengine.runtime.default_version_hostname";
 
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -38,6 +39,6 @@ public class IdentityServlet extends HttpServlet {
     ApiProxy.Environment env = ApiProxy.getCurrentEnvironment();
     resp.getWriter().print("default_version_hostname: ");
     resp.getWriter()
-        .println(env.getAttributes().get("com.google.appengine.runtime.default_version_hostname"));
+        .println(env.getAttributes().get(DEFAULT_VERSION_HOSTNAME_ATTRIBUTE));
   }
 }

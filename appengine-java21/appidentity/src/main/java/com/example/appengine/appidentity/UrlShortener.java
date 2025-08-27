@@ -38,7 +38,7 @@ class UrlShortener {
    *
    * <p>Note: Error handling elided for simplicity.
    */
-  public String createShortUrl(String longUrl) throws Exception {
+  public String createShortUrl(String longUrl) throws IOException {
     ArrayList<String> scopes = new ArrayList<>();
     scopes.add("https://www.googleapis.com/auth/urlshortener");
     final AppIdentityService appIdentity = AppIdentityServiceFactory.getAppIdentityService();
@@ -54,7 +54,7 @@ class UrlShortener {
     connection.addRequestProperty("Content-Type", "application/json");
     connection.addRequestProperty("Authorization", "Bearer " + accessToken.getAccessToken());
 
-    OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
+    OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream(), StandardCharsets.UTF_8);
     request.write(writer);
     writer.close();
 
