@@ -31,7 +31,7 @@ public class TextGenerationConfigWithText {
     generateContent(modelId);
   }
 
-  // Generates text with text input and extra configurations
+  // Generates text with text input and optional configurations
   public static String generateContent(String modelId) {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.

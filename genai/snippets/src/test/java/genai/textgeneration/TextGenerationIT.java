@@ -97,6 +97,7 @@ public class TextGenerationIT {
     assertThat(response).isNotEmpty();
     assertThat(response).ignoringCase().contains("Tokyo");
     assertThat(response).ignoringCase().contains("Pixel");
+
   }
 
   @Test
@@ -110,5 +111,6 @@ public class TextGenerationIT {
             GEMINI_FLASH, gcsFileImagePath, localImageFilePath);
 
     assertThat(response).isNotEmpty();
+
   }
 }
