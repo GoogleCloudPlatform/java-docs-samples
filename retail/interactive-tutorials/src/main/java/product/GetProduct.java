@@ -20,6 +20,7 @@
 
 package product;
 
+// [START retail_get_product]
 import static setup.SetupCleanup.createProduct;
 import static setup.SetupCleanup.deleteProduct;
 
@@ -61,3 +62,4 @@ public class GetProduct {
     }
   }
 }
+// [END retail_get_product]

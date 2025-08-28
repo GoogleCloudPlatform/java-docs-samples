@@ -12,9 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-assign_issues:
-  - GoogleCloudPlatform/java-samples-reviewers
-
 assign_issues_by:
 - labels:
   - "api: routeoptimization"
@@ -87,7 +84,6 @@ assign_issues_by:
   - "api: recaptchaenterprise"
   to:
   - GoogleCloudPlatform/recaptcha-customer-obsession-reviewers
-  - GoogleCloudPlatform/dee-infra
 - labels:
   - "api: appengine"
   to:
@@ -96,9 +92,10 @@ assign_issues_by:
   - "api: bigquerydatatransfer"
   to:
   - GoogleCloudPlatform/bigquery-data-connectors
-
-assign_prs:
-  - GoogleCloudPlatform/java-samples-reviewers
+- labels:
+  - "api: modelarmor"
+  to:
+  - GoogleCloudPlatform/cloud-modelarmor-team
 
 assign_prs_by:
 - labels:
@@ -168,8 +165,11 @@ assign_prs_by:
   - "api: recaptchaenterprise"
   to:
   - GoogleCloudPlatform/recaptcha-customer-obsession-reviewers
-  - GoogleCloudPlatform/dee-infra
 - labels:
   - "api: appengine"
   to:
   - GoogleCloudPlatform/serverless-runtimes
+- labels:
+  - "api: modelarmor"
+  to:
+  - GoogleCloudPlatform/cloud-modelarmor-team

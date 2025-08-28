@@ -38,5 +38,9 @@ sourceFileExtensions:
   - 'yml'
 ignoreFiles:
   - '.github/auto-label.yaml'
+  - '.github/auto-approve.yml'
+  - '.github/renovate.json5'
+  - '.github/snippet-bot.yml'
+  - '.github/stale.yml'
   - '.github/sync-repo-settings.yaml'
 ignoreLicenseYear: true
