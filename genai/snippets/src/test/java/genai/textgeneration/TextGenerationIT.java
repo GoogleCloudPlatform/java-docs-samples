@@ -97,7 +97,6 @@ public class TextGenerationIT {
     assertThat(response).isNotEmpty();
     assertThat(response).ignoringCase().contains("Tokyo");
     assertThat(response).ignoringCase().contains("Pixel");
-
   }
 
   @Test
@@ -111,6 +110,30 @@ public class TextGenerationIT {
             GEMINI_FLASH, gcsFileImagePath, localImageFilePath);
 
     assertThat(response).isNotEmpty();
+  }
 
+  @Test
+  public void testTextGenerationCodeWithPdf() {
+    String response = TextGenerationCodeWithPdf.generateContent(GEMINI_FLASH);
+    assertThat(response).isNotEmpty();
+  }
+
+  @Test
+  public void testTextGenerationConfigWithText() {
+    String response = TextGenerationConfigWithText.generateContent(GEMINI_FLASH);
+    assertThat(response).isNotEmpty();
+  }
+
+  @Test
+  public void testTextGenerationWithGcsAudio() {
+    String response = TextGenerationWithGcsAudio.generateContent(GEMINI_FLASH);
+    assertThat(response).isNotEmpty();
+  }
+
+  @Test
+  public void testTextGenerationWithLocalVideo() throws IOException {
+    String localVideoPath = "resources/describe_video_content.mp4";
+    String response = TextGenerationWithLocalVideo.generateContent(GEMINI_FLASH, localVideoPath);
+    assertThat(response).isNotEmpty();
   }
 }
