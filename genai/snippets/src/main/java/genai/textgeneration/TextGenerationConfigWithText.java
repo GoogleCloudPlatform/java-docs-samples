@@ -46,7 +46,7 @@ public class TextGenerationConfigWithText {
       GenerateContentConfig contentConfig =
           GenerateContentConfig.builder()
               .temperature(0.0F)
-              .candidateCount(0)
+              .candidateCount(1)
               .responseMimeType("application/json")
               .topP(0.95F)
               .topK(20F)
