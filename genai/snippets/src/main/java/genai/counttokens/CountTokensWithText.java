@@ -19,11 +19,8 @@ package genai.counttokens;
 // [START googlegenaisdk_counttoken_with_txt]
 
 import com.google.genai.Client;
-import com.google.genai.types.Content;
 import com.google.genai.types.CountTokensResponse;
 import com.google.genai.types.HttpOptions;
-import com.google.genai.types.Part;
-import java.util.List;
 import java.util.Optional;
 
 public class CountTokensWithText {
