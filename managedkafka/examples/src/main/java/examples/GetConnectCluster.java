@@ -41,7 +41,8 @@ public class GetConnectCluster {
           .getConnectCluster(ConnectClusterName.of(projectId, region, clusterId));
       System.out.println(connectCluster.getAllFields());
     } catch (IOException | ApiException e) {
-      System.err.printf("managedKafkaConnectClient.getConnectCluster got err: %s\n", e.getMessage());
+      System.err.printf("managedKafkaConnectClient.getConnectCluster got err: %s\n", 
+          e.getMessage());
     }
   }
 }
