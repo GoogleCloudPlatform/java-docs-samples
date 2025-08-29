@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google Inc.
+ * Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,8 +35,8 @@ public class BigQueryRun extends HttpServlet {
     try {
       queryRunner.runQuery();
     } catch (InterruptedException e) {
-      resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-          "Interrupted while running BigQuery job.");
+      resp.sendError(
+          HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Interrupted while running BigQuery job.");
     }
     // redirect to home page
     resp.sendRedirect("/");
