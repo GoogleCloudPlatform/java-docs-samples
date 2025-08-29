@@ -111,4 +111,23 @@ public class TextGenerationIT {
 
     assertThat(response).isNotEmpty();
   }
+
+  @Test
+  public void testTextGenerationChatStreamWithText() {
+    String response = TextGenerationChatStreamWithText.generateContent(GEMINI_FLASH);
+    assertThat(response).isNotEmpty();
+  }
+
+  @Test
+  public void testTextGenerationChatWithText() {
+    String response = TextGenerationChatWithText.generateContent(GEMINI_FLASH);
+    assertThat(response).isNotEmpty();
+  }
+
+  @Test
+  public void testTextGenerationTranscriptWithGcsAudio() {
+    String response = TextGenerationTranscriptWithGcsAudio.generateContent(GEMINI_FLASH);
+    assertThat(response).isNotEmpty();
+  }
+
 }
