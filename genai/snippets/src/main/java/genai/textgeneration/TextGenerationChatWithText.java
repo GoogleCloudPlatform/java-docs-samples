@@ -46,17 +46,7 @@ public class TextGenerationChatWithText {
             .build()) {
 
       // Create a new chat session
-      Chat chatSession =
-          client.chats.create(
-              modelId,
-              GenerateContentConfig.builder()
-                  .systemInstruction(Content.fromParts(Part.fromText("Hello")))
-                  .systemInstruction(
-                      Content.builder()
-                          .role("model")
-                          .parts(Part.fromText("Great to meet you. What would you like to know?"))
-                          .build())
-                  .build());
+      Chat chatSession = client.chats.create(modelId);
 
       GenerateContentResponse response = chatSession.sendMessage("Tell me a story");
       System.out.print(response.text());
