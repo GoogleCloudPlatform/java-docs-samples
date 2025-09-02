@@ -67,7 +67,7 @@ public class KafkaRead {
     ImmutableMap<String, Object> config = ImmutableMap.<String, Object>builder()
         .put("bootstrap_servers", options.getBootstrapServer())
         .put("topic", options.getTopic())
-        .put("data_format", "RAW")
+        .put("format", "RAW")
         .put("max_read_time_seconds", 15)
         .put("auto_offset_reset_config", "earliest")
         .build();

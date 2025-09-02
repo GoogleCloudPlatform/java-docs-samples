@@ -33,6 +33,9 @@ import org.junit.runners.JUnit4;
 public class TextGenerationIT {
 
   private static final String GEMINI_FLASH = "gemini-2.5-flash";
+  private static final String LOCAL_IMG_1 = "resources/latte.jpg";
+  private static final String LOCAL_IMG_2 = "resources/scones.jpg";
+
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
@@ -103,31 +106,60 @@ public class TextGenerationIT {
   public void testTextGenerationWithMultiImage() throws IOException {
 
     String gcsFileImagePath = "gs://cloud-samples-data/generative-ai/image/scones.jpg";
-    String localImageFilePath = "resources/latte.jpg";
 
     String response =
         TextGenerationWithMultiImage.generateContent(
-            GEMINI_FLASH, gcsFileImagePath, localImageFilePath);
+            GEMINI_FLASH, gcsFileImagePath, LOCAL_IMG_1);
 
     assertThat(response).isNotEmpty();
   }
 
   @Test
-  public void testTextGenerationWithRouting() throws IOException {
+  public void testTextGenerationAsyncWithText() {
+    String response = TextGenerationAsyncWithText.generateContent(GEMINI_FLASH);
+    assertThat(response).isNotEmpty();
+  }
 
+  @Test
+  public void testTextGenerationWithMultiLocalImage() throws IOException {
+    String response =
+            TextGenerationWithMultiLocalImage.generateContent(
+                    GEMINI_FLASH, LOCAL_IMG_1, LOCAL_IMG_2);
+
+    assertThat(response).isNotEmpty();
+  }
+
+  @Test
+  public void testTextGenerationWithMuteVideo() {
+    String response = TextGenerationWithMuteVideo.generateContent(GEMINI_FLASH);
+    assertThat(response).isNotEmpty();
+  }
+
+  @Test
+  public void testTextGenerationWithPdf() {
+    String response = TextGenerationWithPdf.generateContent(GEMINI_FLASH);
+    assertThat(response).isNotEmpty();
+  }
+
+  @Test
+  public void testTextGenerationWithYoutubeVideo() {
+    String response = TextGenerationWithYoutubeVideo.generateContent(GEMINI_FLASH);
+    assertThat(response).isNotEmpty();
+  }
+  
+  @Test
+  public void testTextGenerationWithRouting() throws IOException {
     String textPrompt =
         "What's a good name for a flower shop that specializes in selling bouquets of"
             + " dried flowers?";
     String featureSelectionPreference = "PRIORITIZE_COST";
     String response =
         TextGenerationWithRouting.generateContent(textPrompt, featureSelectionPreference);
-
     assertThat(response).isNotEmpty();
   }
-
+  
   @Test
   public void testTextGenerationWithRoutingAndTextStream() throws IOException {
-
     String textPrompt =
         "What's a good name for a flower shop that specializes in selling bouquets of"
             + " dried flowers?";
@@ -136,7 +168,6 @@ public class TextGenerationIT {
     String response =
         TextGenerationWithRoutingAndTextStream.generateContent(
           textPrompt, featureSelectionPreference);
-
     assertThat(response).isNotEmpty();
-  }
+  } 
 }
