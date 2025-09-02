@@ -19,6 +19,7 @@ package genai.thinking;
 // [START googlegenaisdk_thinking_includethoughts_with_txt]
 
 import com.google.genai.Client;
+import com.google.genai.types.Candidate;
 import com.google.genai.types.Content;
 import com.google.genai.types.GenerateContentConfig;
 import com.google.genai.types.GenerateContentResponse;
@@ -59,19 +60,21 @@ public class ThinkingIncludeThoughtsWithText {
       // **Solution:**
       // The solution to the equation $x^2 + 4x + 4 = 0$ is $x = -2$.
 
-      // Print thoughts
+      // Get parts of the response and print thoughts
       response
           .candidates()
-          .flatMap(candidates -> candidates.get(0).content())
+          .flatMap(candidates -> candidates.stream().findFirst())
+          .flatMap(Candidate::content)
           .flatMap(Content::parts)
           .ifPresent(
-              parts ->
-                  parts.forEach(
-                      part -> {
-                        if (part.thought().isPresent() && part.thought().get()) {
-                          part.text().ifPresent(System.out::println);
-                        }
-                      }));
+              parts -> {
+                parts.forEach(
+                    part -> {
+                      if (part.thought().orElse(false)) {
+                        part.text().ifPresent(System.out::println);
+                      }
+                    });
+              });
       // Example response:
       // Alright, here's how I'd approach this problem. I'm looking at the quadratic equation $x^2 +
       // 4x + 4 = 0$. Immediately, I recognize a few potential solution paths, the beauty of
@@ -97,7 +100,6 @@ public class ThinkingIncludeThoughtsWithText {
       // So, all three methods, factoring, the quadratic formula and completing the square, yield
       // the same result: $x = -2$. The fact that the discriminant, $b^2 - 4ac$, equals 0 tells me
       // that there's only one real solution, a repeated root, which is exactly what I found.
-      // Excellent.
       return response.text();
     }
   }

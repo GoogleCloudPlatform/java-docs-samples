@@ -44,7 +44,7 @@ public class ThinkingWithText {
       GenerateContentResponse response =
           client.models.generateContent(modelId, "solve x^2 + 4x + 4 = 0", null);
 
-      System.out.print(response.text());
+      System.out.println(response.text());
       // Example response:
       // To solve the equation $x^2 + 4x + 4 = 0$, we can use several methods:
       //
