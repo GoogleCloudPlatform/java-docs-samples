@@ -35,12 +35,11 @@ public class ToolsCodeExecWithTextLocalImage {
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String modelId = "gemini-2.5-flash";
-    String localImagePath = "your-local-image.png";
-    generateContent(modelId, localImagePath);
+    generateContent(modelId);
   }
 
   // Generates text using the Code Execution tool with text and image input
-  public static String generateContent(String modelId, String localImagePath) throws IOException {
+  public static String generateContent(String modelId) throws IOException {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (Client client =
@@ -62,7 +61,8 @@ public class ToolsCodeExecWithTextLocalImage {
               + " Thank you!";
 
       // Read content from the local image
-      byte[] imageData = Files.readAllBytes(Paths.get(localImagePath));
+      // Image source: https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Monty_open_door.svg/640px-Monty_open_door.svg.png
+      byte[] imageData = Files.readAllBytes(Paths.get("resources/640px-Monty_open_door.svg.png"));
 
       // Create a GenerateContentConfig and set codeExecution tool
       GenerateContentConfig contentConfig =

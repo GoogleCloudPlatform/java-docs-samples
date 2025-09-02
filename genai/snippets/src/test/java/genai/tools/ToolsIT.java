@@ -93,8 +93,7 @@ public class ToolsIT {
 
   @Test
   public void testToolsCodeExecWithTextLocalImage() throws IOException {
-    String localImagePath = "resources/640px-Monty_open_door.svg.png";
-    String response = ToolsCodeExecWithTextLocalImage.generateContent(GEMINI_FLASH, localImagePath);
+    String response = ToolsCodeExecWithTextLocalImage.generateContent(GEMINI_FLASH);
     assertThat(response).isNotEmpty();
     assertThat(bout.toString()).contains("Code:");
     assertThat(bout.toString()).contains("Outcome:");
