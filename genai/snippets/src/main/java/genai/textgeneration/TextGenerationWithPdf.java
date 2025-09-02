@@ -16,13 +16,15 @@
 
 package genai.textgeneration;
 
-// [START googlegenaisdk_textgen_with_txt]
+// [START googlegenaisdk_textgen_with_pdf]
 
 import com.google.genai.Client;
+import com.google.genai.types.Content;
 import com.google.genai.types.GenerateContentResponse;
 import com.google.genai.types.HttpOptions;
+import com.google.genai.types.Part;
 
-public class TextGenerationWithText {
+public class TextGenerationWithPdf {
 
   public static void main(String[] args) {
     // TODO(developer): Replace these variables before running the sample.
@@ -30,7 +32,7 @@ public class TextGenerationWithText {
     generateContent(modelId);
   }
 
-  // Generates text with text input
+  // Generates text with PDF file input
   public static String generateContent(String modelId) {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
@@ -41,17 +43,31 @@ public class TextGenerationWithText {
             .httpOptions(HttpOptions.builder().apiVersion("v1").build())
             .build()) {
 
+      String prompt =
+          "You are a highly skilled document summarization specialist.\n"
+              + " Your task is to provide a concise executive summary of no more than 300 words.\n"
+              + " Please summarize the given document for a general audience";
+
       GenerateContentResponse response =
-          client.models.generateContent(modelId, "How does AI work?", null);
+          client.models.generateContent(
+              modelId,
+              Content.fromParts(
+                  Part.fromUri(
+                      "gs://cloud-samples-data/generative-ai/pdf/1706.03762v7.pdf",
+                      "application/pdf"),
+                  Part.fromText(prompt)),
+              null);
 
       System.out.print(response.text());
       // Example response:
-      // Okay, let's break down how AI works. It's a broad field, so I'll focus on the ...
-      //
-      // Here's a simplified overview:
-      // ...
+      // The document introduces the Transformer, a novel neural network architecture designed for
+      // sequence transduction tasks, such as machine translation. Unlike previous dominant models
+      // that rely on complex recurrent or convolutional neural networks, the Transformer proposes a
+      // simpler, more parallelizable design based *solely* on attention mechanisms, entirely
+      // dispensing with recurrence and convolutions...
+
       return response.text();
     }
   }
 }
-// [END googlegenaisdk_textgen_with_txt]
+// [END googlegenaisdk_textgen_with_pdf]

@@ -33,14 +33,16 @@ import org.junit.runners.JUnit4;
 public class TextGenerationIT {
 
   private static final String GEMINI_FLASH = "gemini-2.5-flash";
+  private static final String LOCAL_IMG_1 = "resources/latte.jpg";
+  private static final String LOCAL_IMG_2 = "resources/scones.jpg";
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
   // Check if the required environment variables are set.
   public static void requireEnvVar(String envVarName) {
     assertWithMessage(String.format("Missing environment variable '%s' ", envVarName))
-        .that(System.getenv(envVarName))
-        .isNotEmpty();
+            .that(System.getenv(envVarName))
+            .isNotEmpty();
   }
 
   @BeforeClass
@@ -89,9 +91,9 @@ public class TextGenerationIT {
   public void testTextGenerationWithVideo() {
 
     String prompt =
-        " Analyze the provided video file, including its audio.\n"
-            + " Summarize the main points of the video concisely.\n"
-            + " Create a chapter breakdown with timestamps for key sections or topics discussed.";
+            " Analyze the provided video file, including its audio.\n"
+                    + " Summarize the main points of the video concisely.\n"
+                    + " Create a chapter breakdown with timestamps for key sections or topics discussed.";
 
     String response = TextGenerationWithVideo.generateContent(GEMINI_FLASH, prompt);
     assertThat(response).isNotEmpty();
@@ -106,9 +108,42 @@ public class TextGenerationIT {
     String localImageFilePath = "resources/latte.jpg";
 
     String response =
-        TextGenerationWithMultiImage.generateContent(
-            GEMINI_FLASH, gcsFileImagePath, localImageFilePath);
+            TextGenerationWithMultiImage.generateContent(
+                    GEMINI_FLASH, gcsFileImagePath, localImageFilePath);
 
+    assertThat(response).isNotEmpty();
+  }
+
+  @Test
+  public void testTextGenerationAsyncWithText() {
+    String response = TextGenerationAsyncWithText.generateContent(GEMINI_FLASH);
+    assertThat(response).isNotEmpty();
+  }
+
+  @Test
+  public void testTextGenerationWithMultiLocalImage() throws IOException {
+    String response =
+            TextGenerationWithMultiLocalImage.generateContent(
+                    GEMINI_FLASH, LOCAL_IMG_1, LOCAL_IMG_2);
+
+    assertThat(response).isNotEmpty();
+  }
+
+  @Test
+  public void testTextGenerationWithMuteVideo() {
+    String response = TextGenerationWithMuteVideo.generateContent(GEMINI_FLASH);
+    assertThat(response).isNotEmpty();
+  }
+
+  @Test
+  public void testTextGenerationWithPdf() {
+    String response = TextGenerationWithPdf.generateContent(GEMINI_FLASH);
+    assertThat(response).isNotEmpty();
+  }
+
+  @Test
+  public void testTextGenerationWithYoutubeVideo() {
+    String response = TextGenerationWithYoutubeVideo.generateContent(GEMINI_FLASH);
     assertThat(response).isNotEmpty();
   }
 

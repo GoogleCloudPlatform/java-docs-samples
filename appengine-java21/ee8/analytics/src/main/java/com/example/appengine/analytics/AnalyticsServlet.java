@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Google Inc.
+ * Copyright 2015 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package com.example.appengine.analytics;
 
-// [START analytics_track]
+// [START gae_java21_analytics_track]
 import com.google.appengine.api.urlfetch.URLFetchService;
 import com.google.appengine.api.urlfetch.URLFetchServiceFactory;
 import java.io.IOException;
@@ -67,4 +67,4 @@ public class AnalyticsServlet extends HttpServlet {
     resp.getWriter().println("Event tracked.");
   }
 }
-// [END analytics_track]
+// [END gae_java21_analytics_track]

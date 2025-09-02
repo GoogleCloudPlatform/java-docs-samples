@@ -14,24 +14,26 @@
  * limitations under the License.
  */
 
-package genai.textgeneration;
+package genai.counttokens;
 
-// [START googlegenaisdk_textgen_with_txt]
+// [START googlegenaisdk_counttoken_resp_with_txt]
 
 import com.google.genai.Client;
 import com.google.genai.types.GenerateContentResponse;
+import com.google.genai.types.GenerateContentResponseUsageMetadata;
 import com.google.genai.types.HttpOptions;
+import java.util.Optional;
 
-public class TextGenerationWithText {
+public class CountTokensResponseWithText {
 
   public static void main(String[] args) {
     // TODO(developer): Replace these variables before running the sample.
     String modelId = "gemini-2.5-flash";
-    generateContent(modelId);
+    countTokens(modelId);
   }
 
-  // Generates text with text input
-  public static String generateContent(String modelId) {
+  // Generates content response usage metadata that contains prompt and response token counts
+  public static Optional<GenerateContentResponseUsageMetadata> countTokens(String modelId) {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (Client client =
@@ -42,16 +44,20 @@ public class TextGenerationWithText {
             .build()) {
 
       GenerateContentResponse response =
-          client.models.generateContent(modelId, "How does AI work?", null);
+              client.models.generateContent(modelId, "Why is the sky blue?", null);
 
-      System.out.print(response.text());
+      response.usageMetadata().ifPresent(System.out::println);
       // Example response:
-      // Okay, let's break down how AI works. It's a broad field, so I'll focus on the ...
-      //
-      // Here's a simplified overview:
-      // ...
-      return response.text();
+      // GenerateContentResponseUsageMetadata{cacheTokensDetails=Optional.empty,
+      // cachedContentTokenCount=Optional.empty, candidatesTokenCount=Optional[569],
+      // candidatesTokensDetails=Optional[[ModalityTokenCount{modality=Optional[TEXT],
+      // tokenCount=Optional[569]}]], promptTokenCount=Optional[6],
+      // promptTokensDetails=Optional[[ModalityTokenCount{modality=Optional[TEXT],
+      // tokenCount=Optional[6]}]], thoughtsTokenCount=Optional[1132],
+      // toolUsePromptTokenCount=Optional.empty, toolUsePromptTokensDetails=Optional.empty,
+      // totalTokenCount=Optional[1707], trafficType=Optional[ON_DEMAND]}
+      return response.usageMetadata();
     }
   }
 }
-// [END googlegenaisdk_textgen_with_txt]
+// [END googlegenaisdk_counttoken_resp_with_txt]

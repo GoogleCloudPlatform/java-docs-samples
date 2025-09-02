@@ -26,10 +26,7 @@ import com.google.genai.types.HttpOptions;
 import com.google.genai.types.Schema;
 import com.google.genai.types.Tool;
 import com.google.genai.types.Type;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
 
 public class ToolFunctionDescriptionWithText {
 
