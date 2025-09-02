@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -48,7 +48,7 @@ public class TextGenerationTranscriptWithGcsAudio {
           "Transcribe the interview, in the format of timecode, speaker, caption.\n"
               + "Use speaker A, speaker B, etc. to identify speakers.";
 
-      // Enable audioTimestamp to generate accurately timestamps for audio-only files
+      // Enable audioTimestamp to generate timestamps for audio-only files
       GenerateContentConfig contentConfig =
           GenerateContentConfig.builder().audioTimestamp(true).build();
 
