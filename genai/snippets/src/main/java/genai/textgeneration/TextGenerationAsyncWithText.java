@@ -16,13 +16,14 @@
 
 package genai.textgeneration;
 
-// [START googlegenaisdk_textgen_with_txt]
+// [START googlegenaisdk_textgen_async_with_txt]
 
 import com.google.genai.Client;
 import com.google.genai.types.GenerateContentResponse;
 import com.google.genai.types.HttpOptions;
+import java.util.concurrent.CompletableFuture;
 
-public class TextGenerationWithText {
+public class TextGenerationAsyncWithText {
 
   public static void main(String[] args) {
     // TODO(developer): Replace these variables before running the sample.
@@ -30,7 +31,7 @@ public class TextGenerationWithText {
     generateContent(modelId);
   }
 
-  // Generates text with text input
+  // Generates text asynchronously with text input
   public static String generateContent(String modelId) {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
@@ -41,17 +42,21 @@ public class TextGenerationWithText {
             .httpOptions(HttpOptions.builder().apiVersion("v1").build())
             .build()) {
 
-      GenerateContentResponse response =
-          client.models.generateContent(modelId, "How does AI work?", null);
+      CompletableFuture<GenerateContentResponse> asyncResponse =
+          client.async.models.generateContent(
+              modelId, "Compose a song about the adventures of a time-traveling squirrel.", null);
 
-      System.out.print(response.text());
+      String response = asyncResponse.join().text();
+      System.out.print(response);
       // Example response:
-      // Okay, let's break down how AI works. It's a broad field, so I'll focus on the ...
-      //
-      // Here's a simplified overview:
+      // (Verse 1)
+      // In an oak tree, so leafy and green,
+      // Lived Squeaky the squirrel, a critter unseen.
+      // Just burying nuts, a routine so grand,
       // ...
-      return response.text();
+
+      return response;
     }
   }
 }
-// [END googlegenaisdk_textgen_with_txt]
+// [END googlegenaisdk_textgen_async_with_txt]
