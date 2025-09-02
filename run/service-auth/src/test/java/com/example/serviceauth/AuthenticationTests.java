@@ -56,6 +56,7 @@ public class AuthenticationTests {
     deployService();
 
     HTTP_CLIENT = HttpClient.newHttpClient();
+    waitForService();
   }
 
   @AfterAll
@@ -122,29 +123,37 @@ public class AuthenticationTests {
     return output;
   }
 
-  private String getGoogleIdToken() throws IOException {
-    GoogleCredentials googleCredentials = GoogleCredentials.getApplicationDefault();
-
-    IdTokenCredentials idTokenCredentials =
-        IdTokenCredentials.newBuilder()
-            .setIdTokenProvider((IdTokenProvider) googleCredentials)
-            .setTargetAudience(SERVICE_URL)
-            .setOptions(Arrays.asList(Option.FORMAT_FULL, Option.LICENSES_TRUE))
-            .build();
-
-    return idTokenCredentials.refreshAccessToken().getTokenValue();
+  private static void waitForService() {
+    HttpResponse<String> response = null;
+    int waitingTimeInSeconds = 1;
+    int retryTimeLimitInSeconds = 32;
+    while (waitingTimeInSeconds <= retryTimeLimitInSeconds) {
+      response = executeRequest(buildRequest(null, null));
+      if (response != null) {
+        break;
+      }
+      waitingTimeInSeconds *= 2;
+      try {
+        Thread.sleep(waitingTimeInSeconds * 1000);
+      } catch (Exception e) {
+        Thread.currentThread().interrupt();
+      }
+    }
   }
 
-  private HttpResponse<String> executeRequest(String headerName, String headerValue) {
+  private static HttpRequest buildRequest(String headerName, String headerValue) {
     HttpRequest.Builder requestBuilder =
         HttpRequest.newBuilder().uri(URI.create(SERVICE_URL)).GET();
     if (headerName != null) {
       requestBuilder = requestBuilder.header(headerName, headerValue);
     }
-    HttpRequest request = requestBuilder.build();
+    return requestBuilder.build();
+  }
+
+  private static HttpResponse<String> executeRequest(HttpRequest request) {
     HttpResponse<String> response = null;
-    int retryDelay = 2000;
-    int retryLimit = 3;
+    int retryDelay = 3000;
+    int retryLimit = 5;
 
     for (int attempt = 0; attempt < retryLimit; attempt++) {
       try {
@@ -165,17 +174,30 @@ public class AuthenticationTests {
         Thread.sleep(retryDelay);
       } catch (InterruptedException exception) {
         Thread.currentThread().interrupt();
-        return null;
       }
     }
 
     return null;
   }
 
+  private String getGoogleIdToken() throws IOException {
+    GoogleCredentials googleCredentials = GoogleCredentials.getApplicationDefault();
+
+    IdTokenCredentials idTokenCredentials =
+        IdTokenCredentials.newBuilder()
+            .setIdTokenProvider((IdTokenProvider) googleCredentials)
+            .setTargetAudience(SERVICE_URL)
+            .setOptions(Arrays.asList(Option.FORMAT_FULL, Option.LICENSES_TRUE))
+            .build();
+
+    return idTokenCredentials.refreshAccessToken().getTokenValue();
+  }
+
   @Test
   public void testValidToken() throws Exception {
     String token = getGoogleIdToken();
-    HttpResponse<String> response = executeRequest("X-Authorization", "bearer " + token);
+    HttpRequest request = buildRequest("Authorization", "bearer " + token);
+    HttpResponse<String> response = executeRequest(request);
 
     assertTrue(response != null);
     assertTrue(response.statusCode() == HttpStatusCodes.STATUS_CODE_OK);
@@ -186,7 +208,8 @@ public class AuthenticationTests {
   @Test
   public void testInvalidToken() throws Exception {
     String token = "invalid_token";
-    HttpResponse<String> response = executeRequest("X-Authorization", "bearer " + token);
+    HttpRequest request = buildRequest("Authorization", "bearer " + token);
+    HttpResponse<String> response = executeRequest(request);
 
     assertTrue(response != null);
     assertTrue(response.statusCode() == HttpStatusCodes.STATUS_CODE_UNAUTHORIZED);
@@ -195,10 +218,11 @@ public class AuthenticationTests {
 
   @Test
   public void testAnonymousRequest() throws Exception {
-    HttpResponse<String> response = executeRequest(null, null);
+    HttpRequest request = buildRequest(null, null);
+    HttpResponse<String> response = executeRequest(request);
 
     assertTrue(response != null);
     assertTrue(response.statusCode() == HttpStatusCodes.STATUS_CODE_UNAUTHORIZED);
-    assertTrue(response.body().contains("missing X-Authorization header"));
+    assertTrue(response.body().contains("missing Authorization header"));
   }
 }
