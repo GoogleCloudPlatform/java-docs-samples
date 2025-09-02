@@ -73,4 +73,10 @@ public class ThinkingIT {
     assertThat(bout.toString()).contains("Token count for thinking: ");
     assertThat(bout.toString()).contains("Total token count: ");
   }
+
+  @Test
+  public void testThinkingIncludeThoughtsWithText() {
+    String response = ThinkingIncludeThoughtsWithText.generateContent(GEMINI_FLASH);
+    assertThat(response).isNotEmpty();
+  }
 }

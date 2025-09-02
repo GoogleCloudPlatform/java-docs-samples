@@ -98,7 +98,6 @@ public class ThinkingIncludeThoughtsWithText {
       // the same result: $x = -2$. The fact that the discriminant, $b^2 - 4ac$, equals 0 tells me
       // that there's only one real solution, a repeated root, which is exactly what I found.
       // Excellent.
-
       return response.text();
     }
   }

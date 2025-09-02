@@ -72,7 +72,6 @@ public class ThinkingBudgetWithText {
       // Example response:
       // Token count for thinking: Optional[885]
       // Total token count: Optional[1468]
-
       return response.text();
     }
   }
