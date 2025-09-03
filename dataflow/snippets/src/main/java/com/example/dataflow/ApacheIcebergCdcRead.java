@@ -42,8 +42,8 @@ import org.joda.time.Duration;
 
 /**
  * A streaming pipeline that reads CDC events from an Iceberg table, aggregates user clicks, and
- * writes the results to another Iceberg table. For more information, see the documentation at
- * https://cloud.google.com/bigquery/docs/blms-rest-catalog.
+ * writes the results to another Iceberg table. For more information on BigLake, 
+ * see the documentation at https://cloud.google.com/bigquery/docs/blms-rest-catalog.
  *
  * <p>This pipeline can be used to process the output of {@link
  * ApacheIcebergRestCatalogStreamingWrite}.

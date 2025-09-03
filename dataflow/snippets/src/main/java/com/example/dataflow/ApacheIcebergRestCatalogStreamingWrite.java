@@ -41,7 +41,7 @@ import org.joda.time.Duration;
  * A streaming pipeline that writes data to an Iceberg table using the REST catalog.
  *
  * <p>This example demonstrates writing to an Iceberg table backed by the BigLake Metastore. For
- * more information, see the documentation at
+ * more information on BigLake, see the documentation at
  * https://cloud.google.com/bigquery/docs/blms-rest-catalog.
  */
 public class ApacheIcebergRestCatalogStreamingWrite {
