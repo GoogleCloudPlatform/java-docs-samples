@@ -29,3 +29,4 @@ In the following command, replace YOUR-PROJECT-ID with your
 and SOME-VERSION with a valid version number.
 
     $ mvn clean package appengine:deploy
+    $ mvn appengine:deployIndex
