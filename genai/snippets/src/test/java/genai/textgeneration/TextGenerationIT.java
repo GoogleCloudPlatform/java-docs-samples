@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * https://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -92,8 +92,8 @@ public class TextGenerationIT {
 
     String prompt =
             " Analyze the provided video file, including its audio.\n"
-                    + " Summarize the main points of the video concisely.\n"
-                    + " Create a chapter breakdown with timestamps for key sections or topics discussed.";
+              + " Summarize the main points of the video concisely.\n"
+              + " Create a chapter breakdown with timestamps for key sections or topics discussed.";
 
     String response = TextGenerationWithVideo.generateContent(GEMINI_FLASH, prompt);
     assertThat(response).isNotEmpty();
@@ -167,8 +167,7 @@ public class TextGenerationIT {
 
   @Test
   public void testTextGenerationWithLocalVideo() throws IOException {
-    String localVideoPath = "resources/describe_video_content.mp4";
-    String response = TextGenerationWithLocalVideo.generateContent(GEMINI_FLASH, localVideoPath);
+    String response = TextGenerationWithLocalVideo.generateContent(GEMINI_FLASH);
     assertThat(response).isNotEmpty();
   }
 }

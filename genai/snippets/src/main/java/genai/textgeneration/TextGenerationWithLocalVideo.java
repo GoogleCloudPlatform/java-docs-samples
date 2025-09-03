@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * https://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -32,14 +32,12 @@ public class TextGenerationWithLocalVideo {
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String modelId = "gemini-2.5-flash";
-    String localVideoPath = "your-local-video.mp4";
-    generateContent(modelId, localVideoPath);
+    generateContent(modelId);
   }
 
   // Generates text with local video input
-  public static String generateContent(String modelId, String localVideoPath) throws IOException {
-    // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests.
+  public static String generateContent(String modelId) throws IOException {
+    // Client Initialization. Once created, it can be reused for multiple requests.
     try (Client client =
         Client.builder()
             .location("global")
@@ -48,7 +46,7 @@ public class TextGenerationWithLocalVideo {
             .build()) {
 
       // Read content from the local video.
-      byte[] videoData = Files.readAllBytes(Paths.get(localVideoPath));
+      byte[] videoData = Files.readAllBytes(Paths.get("resources/describe_video_content.mp4"));
 
       GenerateContentResponse response =
           client.models.generateContent(
