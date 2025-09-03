@@ -42,7 +42,7 @@ import org.joda.time.Duration;
  *
  * <p>This example demonstrates writing to an Iceberg table backed by the BigLake Metastore. For
  * more information, see the documentation at
- * https://cloud.google.com/bigquery/docs/iceberg-biglake-metastore.
+ * https://cloud.google.com/bigquery/docs/blms-rest-catalog.
  */
 public class ApacheIcebergRestCatalogStreamingWrite {
 
