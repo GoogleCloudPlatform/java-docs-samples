@@ -35,8 +35,7 @@ public class TextGenerationTranscriptWithGcsAudio {
 
   // Generates transcript with audio input
   public static String generateContent(String modelId) {
-    // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests.
+    // Client Initialization. Once created, it can be reused for multiple requests.
     try (Client client =
         Client.builder()
             .location("global")
@@ -48,7 +47,7 @@ public class TextGenerationTranscriptWithGcsAudio {
           "Transcribe the interview, in the format of timecode, speaker, caption.\n"
               + "Use speaker A, speaker B, etc. to identify speakers.";
 
-      // Enable audioTimestamp to generate timestamps for audio-only files
+      // Enable audioTimestamp to generate timestamps for audio-only files.
       GenerateContentConfig contentConfig =
           GenerateContentConfig.builder().audioTimestamp(true).build();
 
