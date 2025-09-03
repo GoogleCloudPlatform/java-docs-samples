@@ -24,12 +24,11 @@ import com.google.api.client.http.apache.v2.ApacheHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
 import java.util.Arrays;
 import java.util.Collection;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
@@ -39,21 +38,23 @@ public class Authentication {
   @RestController
   class AuthenticationController {
 
-    @Autowired private AuthenticationService authService;
+    private final AuthenticationService authService = new AuthenticationService();
 
     @GetMapping("/")
     public ResponseEntity<String> getEmailFromAuthHeader(
-        @RequestHeader(value = "X-Authorization", required = false) String authHeader) {
+        @RequestHeader(value = "Authorization", required = false) String authHeader) {
       String responseBody;
       if (authHeader == null) {
-        responseBody = "Error verifying ID token: missing X-Authorization header";
+        responseBody = "Error verifying ID token: missing Authorization header";
         return new ResponseEntity<>(responseBody, HttpStatus.UNAUTHORIZED);
       }
 
       String email = authService.parseAuthHeader(authHeader);
       if (email == null) {
         responseBody = "Unauthorized request. Please supply a valid bearer token.";
-        return new ResponseEntity<>(responseBody, HttpStatus.UNAUTHORIZED);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("WWW-Authenticate", "Bearer");
+        return new ResponseEntity<>(responseBody, headers, HttpStatus.UNAUTHORIZED);
       }
 
       responseBody = "Hello, " + email;
@@ -61,7 +62,6 @@ public class Authentication {
     }
   }
 
-  @Service
   public class AuthenticationService {
     /*
      * Parse the authorization header, validate and decode the Bearer token.
@@ -82,6 +82,11 @@ public class Authentication {
       }
       String authType = authHeaderStrings[0];
       String tokenValue = authHeaderStrings[1];
+      // Validate and decode the ID token in the header.
+      if (!"bearer".equals(authType.toLowerCase())) {
+        System.out.println("Unhandled header format: " + authType);
+        return null;
+      }
 
       // Get the service URL from the environment variable
       // set at the time of deployment.
@@ -89,36 +94,30 @@ public class Authentication {
       // Define the expected audience as the Service Base URL.
       Collection<String> audience = Arrays.asList(serviceUrl);
 
-      // Validate and decode the ID token in the header.
-      if ("bearer".equals(authType.toLowerCase())) {
-        try {
-          // Find more information about the verification process in:
-          // https://developers.google.com/identity/sign-in/web/backend-auth#java
-          // https://cloud.google.com/java/docs/reference/google-api-client/latest/com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier
-          GoogleIdTokenVerifier verifier =
-              new GoogleIdTokenVerifier.Builder(new ApacheHttpTransport(), new GsonFactory())
-                  .setAudience(audience)
-                  .build();
-          GoogleIdToken googleIdToken = verifier.verify(tokenValue);
+      try {
+        // Find more information about the verification process in:
+        // https://developers.google.com/identity/sign-in/web/backend-auth#java
+        // https://cloud.google.com/java/docs/reference/google-api-client/latest/com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier
+        GoogleIdTokenVerifier verifier =
+            new GoogleIdTokenVerifier.Builder(new ApacheHttpTransport(), new GsonFactory())
+                .setAudience(audience)
+                .build();
+        GoogleIdToken googleIdToken = verifier.verify(tokenValue);
 
-          if (googleIdToken != null) {
-            // More info about the structure for the decoded ID Token here:
-            // https://cloud.google.com/docs/authentication/token-types#id
-            // https://cloud.google.com/java/docs/reference/google-api-client/latest/com.google.api.client.googleapis.auth.oauth2.GoogleIdToken
-            // https://cloud.google.com/java/docs/reference/google-api-client/latest/com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload
-            GoogleIdToken.Payload payload = googleIdToken.getPayload();
-            if (payload.getEmailVerified()) {
-              System.out.println("Email verified: " + payload.getEmail());
-              return payload.getEmail();
-            }
-            System.out.println("Invalid token. Email wasn't verified.");
-          }
-        } catch (Exception exception) {
-          System.out.println("Ivalid token: " + exception);
+        // More info about the structure for the decoded ID Token here:
+        // https://cloud.google.com/docs/authentication/token-types#id
+        // https://cloud.google.com/java/docs/reference/google-api-client/latest/com.google.api.client.googleapis.auth.oauth2.GoogleIdToken
+        // https://cloud.google.com/java/docs/reference/google-api-client/latest/com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload
+        GoogleIdToken.Payload payload = googleIdToken.getPayload();
+        if (!payload.getEmailVerified()) {
+          System.out.println("Invalid token. Email wasn't verified.");
           return null;
         }
-      } else {
-        System.out.println("Unhandled header format: " + authType);
+        System.out.println("Email verified: " + payload.getEmail());
+        return payload.getEmail();
+
+      } catch (Exception exception) {
+        System.out.println("Ivalid token: " + exception);
       }
       return null;
     }
