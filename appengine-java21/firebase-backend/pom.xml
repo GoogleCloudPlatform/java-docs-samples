@@ -93,8 +93,8 @@
         <version>3.11.0</version>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <source>2.8.1</source>
-          <target>2.8.1</target>
+          <source>21</source>
+          <target>21</target>
         </configuration>
       </plugin>
       <plugin>
