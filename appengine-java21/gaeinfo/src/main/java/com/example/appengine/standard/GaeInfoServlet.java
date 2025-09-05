@@ -224,4 +224,4 @@ public class GaeInfoServlet extends HttpServlet {
     templateEngine.process("index", ctx, resp.getWriter());
   }
 }
-// [START gae_java21_gaeinfo_serverlet_example]
+// [END gae_java21_gaeinfo_serverlet_example]

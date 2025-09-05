@@ -13,7 +13,7 @@ Copyright Google LCC
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-<!-- [START gae_java21_pom_configuration_file] -->
+<!-- [START gae_java21_gaeinfo_pom] -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -33,12 +33,12 @@ Copyright Google LCC
     <version>1.2.0</version>
   </parent>
 
-   <!-- [START gae_java21_compiler_configuration_file] -->
+   <!-- [START gae_java21_gaeinfo_compiler] -->
   <properties>    <!-- App Engine Standard currently requires Java 21 -->
     <maven.compiler.target>21</maven.compiler.target>
     <maven.compiler.source>21</maven.compiler.source>
   </properties>
-  <!-- [END gae_java21_compiler_configuration_file] -->
+  <!-- [END gae_java21_gaeinfo_compiler] -->
 
   <dependencyManagement>
     <dependencies>
@@ -122,4 +122,4 @@ Copyright Google LCC
     </plugins>
   </build>
 </project>
-<!-- [END gae_java21_pom_configuration_file] -->
+<!-- [END gae_java21_gaeinfo_pom] -->
