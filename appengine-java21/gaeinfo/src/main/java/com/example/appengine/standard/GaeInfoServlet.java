@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Google Inc.
+ * Copyright Google LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,20 +29,20 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templateresolver.WebApplicationTemplateResolver;
-import org.thymeleaf.web.servlet.JavaxServletWebApplication;
+import org.thymeleaf.web.servlet.JakartaServletWebApplication;
 
-// [START gae_java21_example]
+// [START gae_java21_gaeinfo_serverlet_example]
 @SuppressWarnings({"serial"})
 // With @WebServlet annotation the webapp/WEB-INF/web.xml is no longer required.
 @WebServlet(
@@ -74,7 +74,7 @@ public class GaeInfoServlet extends HttpServlet {
   private final String metadata = "http://metadata.google.internal";
 
   private TemplateEngine templateEngine;
-  private JavaxServletWebApplication application;
+  private JakartaServletWebApplication application;
 
   // Use OkHttp from Square as it's quite easy to use for simple fetches.
   private final OkHttpClient ok =
@@ -116,7 +116,7 @@ public class GaeInfoServlet extends HttpServlet {
   @Override
   public void init() {
     // Setup ThymeLeaf
-    application = JavaxServletWebApplication.buildApplication(this.getServletContext());
+    application = JakartaServletWebApplication.buildApplication(this.getServletContext());
     WebApplicationTemplateResolver templateResolver =
         new WebApplicationTemplateResolver(application);
 
@@ -224,4 +224,4 @@ public class GaeInfoServlet extends HttpServlet {
     templateEngine.process("index", ctx, resp.getWriter());
   }
 }
-// [END gae_java21_example]
+// [START gae_java21_gaeinfo_serverlet_example]

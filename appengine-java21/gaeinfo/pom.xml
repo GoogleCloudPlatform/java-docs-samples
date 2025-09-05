@@ -1,5 +1,5 @@
 <!--
-Copyright 2017 Google Inc.
+Copyright Google LCC.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@ Copyright 2017 Google Inc.
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-<!-- [START gae_java21_pom] -->
+<!-- [START gae_java21_pom_configuration_file] -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -33,12 +33,12 @@ Copyright 2017 Google Inc.
     <version>1.2.0</version>
   </parent>
 
-   <!-- [START gae_java21_compiler] -->
+   <!-- [START gae_java21_compiler_configuration_file] -->
   <properties>    <!-- App Engine Standard currently requires Java 21 -->
     <maven.compiler.target>21</maven.compiler.target>
     <maven.compiler.source>21</maven.compiler.source>
   </properties>
-  <!-- [END gae_java21_compiler] -->
+  <!-- [END gae_java21_compiler_configuration_file] -->
 
   <dependencyManagement>
     <dependencies>
@@ -60,9 +60,9 @@ Copyright 2017 Google Inc.
     </dependency>
 
     <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>javax.servlet-api</artifactId>
-      <version>3.1.0</version>
+      <groupId>jakarta.servlet</groupId>
+      <artifactId>jakarta.servlet-api</artifactId>
+      <version>5.0.0</version>
       <type>jar</type>
       <scope>provided</scope>
     </dependency>
@@ -122,4 +122,4 @@ Copyright 2017 Google Inc.
     </plugins>
   </build>
 </project>
-<!-- [END gae_java21_pom] -->
+<!-- [END gae_java21_pom_configuration_file] -->
