@@ -48,7 +48,7 @@ import java.nio.channels.FileChannel;
     description = "Images: Write an image to a bucket and display it in various sizes",
     urlPatterns = "/images")
 public class ImagesServlet extends HttpServlet {
-  final String bucket = "samples-xwf-01.appspot.com";
+  final String bucket = "YOUR-BUCKETNAME-HERE";
 
   // [START gae_java21_images_gcs]
   private final GcsService gcsService =
@@ -63,7 +63,6 @@ public class ImagesServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
-    try {
     // [START gae_java21_images_original_image]
     // Read the image.jpg resource into a ByteBuffer.
     FileInputStream fileInputStream = new FileInputStream(new File("WEB-INF/image.jpg"));
@@ -137,18 +136,6 @@ public class ImagesServlet extends HttpServlet {
             + "/rotatedImage.jpeg' alt='AppEngine logo rotated' />");
     out.println("<img src='" + url + "' alt='Hosted logo' />");
     out.println("</body></html>\n");
-    }
-    catch (Exception e)
-    {
-        PrintWriter out = resp.getWriter();
-        out.println("<html><body>\n");
-        out.println("<p>hello</p>\n");
-
-        out.println("<p>\n");
-        e.printStackTrace(out);
-        out.println("</p>\n");
-        out.println("</body></html>\n");
-    }
   }
 }
 // [END gae_java21_images_example]
