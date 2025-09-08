@@ -43,6 +43,9 @@ public class CreateMirrorMaker2SourceConnector {
     String targetClusterAlias = "target"; // This is usually the primary cluster.
     String connectorClass = "org.apache.kafka.connect.mirror.MirrorSourceConnector";
     String topics = ".*";
+    // You can define an exclusion policy for topics as follows:
+    // To exclude internal MirrorMaker 2 topics, internal topics and replicated topics.
+    String topics_exclude = "mm2.*.internal,.*.replica,__.*";
     createMirrorMaker2SourceConnector(
         projectId,
         region,
@@ -54,7 +57,8 @@ public class CreateMirrorMaker2SourceConnector {
         sourceClusterAlias,
         targetClusterAlias,
         connectorClass,
-        topics);
+        topics,
+        topics_exclude);
   }
 
   public static void createMirrorMaker2SourceConnector(
@@ -68,7 +72,8 @@ public class CreateMirrorMaker2SourceConnector {
       String sourceClusterAlias,
       String targetClusterAlias,
       String connectorClass,
-      String topics)
+      String topics,
+      String topics_exclude)
       throws Exception {
 
     // Build the connector configuration
@@ -79,6 +84,7 @@ public class CreateMirrorMaker2SourceConnector {
     configMap.put("source.cluster.alias", sourceClusterAlias);
     configMap.put("target.cluster.alias", targetClusterAlias);
     configMap.put("topics", topics);
+    configMap.put("topics_exclude", topics_exclude);
     configMap.put("source.cluster.bootstrap.servers", sourceClusterBootstrapServers);
     configMap.put("target.cluster.bootstrap.servers", targetClusterBootstrapServers);
 

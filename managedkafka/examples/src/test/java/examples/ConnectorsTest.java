@@ -95,6 +95,7 @@ public class ConnectorsTest {
       String targetClusterAlias = "target";
       String connectorClass = "org.apache.kafka.connect.mirror.MirrorSourceConnector";
       String topics = ".*";
+      String topics_exclude = "mm2.*.internal,.*.replica,__.*";
 
       CreateMirrorMaker2SourceConnector.createMirrorMaker2SourceConnector(
           projectId,
@@ -107,7 +108,8 @@ public class ConnectorsTest {
           sourceClusterAlias,
           targetClusterAlias,
           connectorClass,
-          topics);
+          topics,
+          topics_exclude);
 
       String output = bout.toString();
       assertThat(output).contains("Created MirrorMaker2 Source connector");

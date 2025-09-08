@@ -235,7 +235,7 @@ public class ConnectClustersTest {
       when(operationFuture.get()).thenReturn(resultCluster);
       when(resultCluster.getName()).thenReturn(connectClusterName);
 
-      long memory = 25769803776L; // 24 GiB
+      long memory = 38654705664L; // 36 GiB
       UpdateConnectCluster.updateConnectCluster(projectId, region, clusterId, memory);
       String output = bout.toString();
       assertThat(output).contains("Updated connect cluster");
