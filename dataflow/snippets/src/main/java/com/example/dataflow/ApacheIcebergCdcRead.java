@@ -42,7 +42,8 @@ import org.joda.time.Duration;
 
 /**
  * A streaming pipeline that reads CDC events from an Iceberg table, aggregates user clicks, and
- * writes the results to another Iceberg table.
+ * writes the results to another Iceberg table. For more information on BigLake, 
+ * see the documentation at https://cloud.google.com/bigquery/docs/blms-rest-catalog.
  *
  * <p>This pipeline can be used to process the output of {@link
  * ApacheIcebergRestCatalogStreamingWrite}.
@@ -93,6 +94,8 @@ public class ApacheIcebergCdcRead {
   public static void main(String[] args) throws IOException {
     Options options = PipelineOptionsFactory.fromArgs(args).withValidation().as(Options.class);
 
+    // Note: The token expires in 1 hour. Users may need to re-run the pipeline.
+    // Future updates to Iceberg and the BigLake Metastore will support token refreshing.
     Map<String, String> catalogProps =
         ImmutableMap.<String, String>builder()
             .put("type", "rest")
