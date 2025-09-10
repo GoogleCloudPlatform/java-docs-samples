@@ -16,6 +16,8 @@
 
 package com.example.appengine.mail;
 
+// [START gae_java21_mail_discussion_email]
+
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import javax.mail.internet.MimeMessage;
@@ -23,7 +25,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-// [START gae_java21_mail_discussion_email]
 public class HandleDiscussionEmail extends MailHandlerBase {
 
   private static final Logger log = Logger.getLogger(HandleDiscussionEmail.class.getName());

@@ -16,6 +16,8 @@
 
 package com.example.appengine.mail;
 
+// [START gae_java21_mail_handler_base]
+
 import java.io.IOException;
 import java.util.Properties;
 import java.util.regex.Matcher;
@@ -33,7 +35,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /** Base class for handling the filtering of incoming emails in App Engine. */
-// [START gae_java21_mail_handler_base]
 public abstract class MailHandlerBase implements Filter {
 
   private Pattern pattern = null;
