@@ -20,10 +20,10 @@ import static com.google.common.truth.Truth.assertWithMessage;
 import static org.mockito.Mockito.when;
 
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.management.remote.JMXPrincipal;
 import org.junit.After;
 import org.junit.Before;

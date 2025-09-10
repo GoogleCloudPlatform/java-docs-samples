@@ -22,4 +22,5 @@
   <welcome-file-list>
     <welcome-file>userapi</welcome-file>
   </welcome-file-list>
+  <app-engine-apis>true</app-engine-apis>
 </web-app>
