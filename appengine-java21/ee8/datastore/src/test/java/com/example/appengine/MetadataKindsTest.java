@@ -69,7 +69,7 @@ public class MetadataKindsTest {
     helper.tearDown();
   }
 
-  // [START kind_query_example]
+  // [START gae_java21_datastore_kind_query]
   void printLowercaseKinds(DatastoreService ds, PrintWriter writer) {
 
     // Start with unrestricted kind query
@@ -102,7 +102,7 @@ public class MetadataKindsTest {
       writer.println("  " + e.getKey().getName());
     }
   }
-  // [END kind_query_example]
+  // [END gae_java21_datastore_kind_query]
 
   @Test
   public void printLowercaseKinds_printsKinds() throws Exception {

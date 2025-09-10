@@ -168,7 +168,7 @@ public class TransactionsTest {
 
   @Test
   public void crossGroupTransactions() throws Exception {
-    // [START gae_java21_datastore_cross-group_XG_transactions_using_the_Java_low-level_API]
+    // [START gae_java21_datastore_cross_group_transactions]
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     TransactionOptions options = TransactionOptions.Builder.withXG(true);
     Transaction txn = datastore.beginTransaction(options);
@@ -182,7 +182,7 @@ public class TransactionsTest {
     datastore.put(txn, b);
 
     txn.commit();
-    // [END gae_java21_datastore_cross-group_XG_transactions_using_the_Java_low-level_API]
+    // [END gae_java21_datastore_cross_group_transactions]
   }
 
   @Test
