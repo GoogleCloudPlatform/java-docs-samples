@@ -7,7 +7,7 @@ See the [sample application documentaion][sample-docs] for more detailed
 instructions.
 
 [ae-docs]: https://cloud.google.com/appengine/docs/java/
-[javamail-api]: http://javamail.java.net/
+[javamail-api]: https://jakartaee.github.io/mail-api/
 [sample-docs]: https://cloud.google.com/appengine/docs/java/mail/
 
 ## Setup
