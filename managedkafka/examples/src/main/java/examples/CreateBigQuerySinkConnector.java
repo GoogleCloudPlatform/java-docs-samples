@@ -37,7 +37,7 @@ public class CreateBigQuerySinkConnector {
     String connectClusterId = "my-connect-cluster";
     String connectorId = "my-bigquery-sink-connector";
     String bigqueryProjectId = "my-bigquery-project-id";
-    String datasetName = "my_dataset";
+    String datasetName = "my-dataset";
     String kafkaTopicName = "kafka-topic";
     String maxTasks = "3";
     String connectorClass = "com.wepay.kafka.connect.bigquery.BigQuerySinkConnector";
