@@ -52,9 +52,9 @@ limitations under the License.
 
     <!-- Compile/runtime dependencies -->
     <dependency>
-      <groupId>jakarta.servlet</groupId>
-      <artifactId>jakarta.servlet-api</artifactId>
-      <version>6.1.0</version>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+      <version>3.1.0</version>
       <type>jar</type>
       <scope>provided</scope>
     </dependency>
@@ -121,6 +121,12 @@ limitations under the License.
             </resource>
           </webResources>
         </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>0.8.13</version>
       </plugin>
 
       <plugin>

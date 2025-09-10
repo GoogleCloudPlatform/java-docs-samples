@@ -16,6 +16,7 @@
   <app-engine-apis>true</app-engine-apis>
 
   <system-properties>
+    <property name="appengine.use.EE8" value="true"/>
     <property name="BIGTABLE_PROJECT" value="@bigtable.projectID@" />
     <property name="BIGTABLE_INSTANCE" value="@bigtable.instanceID@" />
     <property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>

@@ -17,11 +17,11 @@
 package com.example.bigtable;
 
 import com.google.cloud.bigtable.hbase.BigtableConfiguration;
-import jakarta.servlet.ServletContext;
-import jakarta.servlet.ServletContextEvent;
-import jakarta.servlet.ServletContextListener;
-import jakarta.servlet.annotation.WebListener;
 import java.io.IOException;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+import javax.servlet.annotation.WebListener;
 import org.apache.hadoop.hbase.client.Connection;
 
 /**
