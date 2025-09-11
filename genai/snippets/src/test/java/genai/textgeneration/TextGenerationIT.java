@@ -146,4 +146,28 @@ public class TextGenerationIT {
     String response = TextGenerationWithYoutubeVideo.generateContent(GEMINI_FLASH);
     assertThat(response).isNotEmpty();
   }
+  
+  @Test
+  public void testTextGenerationWithRouting() throws IOException {
+    String textPrompt =
+        "What's a good name for a flower shop that specializes in selling bouquets of"
+            + " dried flowers?";
+    String featureSelectionPreference = "PRIORITIZE_COST";
+    String response =
+        TextGenerationWithRouting.generateContent(textPrompt, featureSelectionPreference);
+    assertThat(response).isNotEmpty();
+  }
+  
+  @Test
+  public void testTextGenerationWithRoutingAndTextStream() throws IOException {
+    String textPrompt =
+        "What's a good name for a flower shop that specializes in selling bouquets of"
+            + " dried flowers?";
+    String featureSelectionPreference = "PRIORITIZE_COST";
+
+    String response =
+        TextGenerationWithRoutingAndTextStream.generateContent(
+          textPrompt, featureSelectionPreference);
+    assertThat(response).isNotEmpty();
+  } 
 }
