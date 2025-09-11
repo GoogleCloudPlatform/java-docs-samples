@@ -21,7 +21,7 @@
 <html>
 <head>
   <link href='//fonts.googleapis.com/css?family=Marmelad' rel='stylesheet' type='text/css'>
-  <title>Hello App Engine Standard using Java 8</title>
+  <title>Hello App Engine Standard using Java 21</title>
 </head>
 <body>
     <h1>Hello App Engine -- Standard for Java 21!</h1>

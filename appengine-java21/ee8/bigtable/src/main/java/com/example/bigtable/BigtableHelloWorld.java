@@ -17,6 +17,8 @@
 
 package com.example.bigtable;
 
+// [START gae_java21_bigtable_helloworld]
+
 import java.io.IOException;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
@@ -30,7 +32,6 @@ import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.client.Table;
 import org.apache.hadoop.hbase.util.Bytes;
-// [START gae_java21_bigtable]
 
 /**
  * A minimal application that connects to Cloud Bigtable using the native HBase API and performs
@@ -138,4 +139,4 @@ public class BigtableHelloWorld {
     return result.toString();
   }
 }
-// [END gae_java21_bigtable]
+// [END gae_java21_bigtable_helloworld]

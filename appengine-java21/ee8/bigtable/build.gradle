@@ -11,7 +11,7 @@
 //  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
-// [START gradle]
+// [START gae_java21_bigtable_gradle_file]
 buildscript {      // Configuration for building
   repositories {
     jcenter()      // Bintray's repository - a fast Maven Central mirror & more
@@ -80,7 +80,7 @@ gretty {
 // Always run unit tests
 appengineDeploy.dependsOn test
 
-// [START model]
+// [START gae_java21_bigtable_gradle_model]
 appengine {
     run {
 
@@ -109,5 +109,5 @@ test {
     logger.lifecycle("test: " + descriptor + ": " + result )
   }
 }
-// [END model]
-// [END gradle]
+// [END gae_java21_bigtable_gradle_model]
+// [END gae_java21_bigtable_gradle_file]
