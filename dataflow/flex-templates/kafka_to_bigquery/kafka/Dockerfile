@@ -24,7 +24,7 @@ ARG KAFKA_VERSION="2.4.0"
 ARG SCALA_VERSION="2.12"
 
 # Set variables with default values used by the `start-kafka.sh` script.
-# Override them wiht the `--env` or `-e` flag.
+# Override them with the `--env` or `-e` flag.
 # https://docs.docker.com/engine/reference/builder/#env
 ENV KAFKA_TOPIC="${KAFKA_TOPIC:-messages}"
 ENV KAFKA_ADDRESS="${KAFKA_ADDRESS:-localhost}"

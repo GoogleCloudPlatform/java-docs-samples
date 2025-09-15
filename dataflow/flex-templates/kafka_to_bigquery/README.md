@@ -183,6 +183,10 @@ To learn more about pricing, see the
 ```sh
 export KAFKA_IMAGE="gcr.io/$PROJECT/samples/dataflow/kafka:latest"
 
+# Note: If the project name has `:` in it that signifies a project within an
+# organization (e.g. `example.com:project-id`), replace those with `/` so that
+# the Kafa image can be found appropriately.
+
 # Build the Kafka server image into Container Registry.
 gcloud builds submit --tag $KAFKA_IMAGE kafka/
 
