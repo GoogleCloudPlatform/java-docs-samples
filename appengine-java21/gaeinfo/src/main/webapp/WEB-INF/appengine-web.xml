@@ -21,7 +21,8 @@
   <service>gaeinfo</service>
   <runtime>java21</runtime>
     <system-properties>
-        <property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>
+      <property name="appengine.use.EE8" value="true"/>
     </system-properties>
+  <app-engine-apis>true</app-engine-apis>
 </appengine-web-app>
 <!-- [END gae_java21_gaeinfo_appengine] -->
