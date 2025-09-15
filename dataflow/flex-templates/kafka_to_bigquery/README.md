@@ -233,13 +233,13 @@ docker run --rm --network host bitnami/kafka:3.4.0 \
 # command and then hit enter after each message. End via ctrl+c:
 docker run -i --rm --network host bitnami/kafka:3.4.0 \
 /opt/bitnami/kafka/bin/kafka-console-producer.sh \
---bootstrap-server localhost:9092 --topic messages
+--bootstrap-server localhost:9092 --topic <topic-name>
 
 # 4. If the messages need to be verified that they exist, issue this command
 # and end via ctrl+c:
 docker run -it --rm --network host bitnami/kafka:3.4.0 \
 /opt/bitnami/kafka/bin/kafka-console-consumer.sh \
---bootstrap-server localhost:9092 --topic messages --from-beginning
+--bootstrap-server localhost:9092 --topic <topic-name> --from-beginning
 ```
 
 
