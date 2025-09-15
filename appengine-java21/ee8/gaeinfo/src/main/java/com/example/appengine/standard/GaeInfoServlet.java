@@ -1,4 +1,3 @@
-// [START gae_java21_gaeinfo_serverlet_example]
 /*
  * Copyright Google LLC
  *
@@ -16,6 +15,8 @@
  */
 
 package com.example.appengine.standard;
+
+// [START gae_java21_gaeinfo_serverlet_example]
 
 import com.google.appengine.api.appidentity.AppIdentityService;
 import com.google.appengine.api.appidentity.AppIdentityServiceFactory;
