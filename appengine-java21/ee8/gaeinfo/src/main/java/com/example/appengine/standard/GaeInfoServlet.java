@@ -1,3 +1,4 @@
+// [START gae_java21_gaeinfo_serverlet_example]
 /*
  * Copyright Google LLC
  *
@@ -42,7 +43,6 @@ import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templateresolver.WebApplicationTemplateResolver;
 import org.thymeleaf.web.servlet.JakartaServletWebApplication;
 
-// [START gae_java21_gaeinfo_serverlet_example]
 @SuppressWarnings({"serial"})
 // With @WebServlet annotation the webapp/WEB-INF/web.xml is no longer required.
 @WebServlet(
