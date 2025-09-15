@@ -300,6 +300,21 @@ gcloud dataflow flex-template run "kafka-to-bigquery-`date +%Y%m%d-%H%M%S`" \
     --region "$REGION"
 ```
 
+Note: If one of the parameters is a deeply nested json or dictionary, use the
+gcloud `--flags-file` parameter to pass in a yaml file a list of all the
+parameters including the nested dictionary. Passing in the dictionary straight
+from the command line will give a gcloud error. The parameters file can look
+like this:
+
+```yaml
+--parameters:
+  inputTopic: messages
+  outputTable: $PROJECT:$DATASET.$TABLE
+  bootstrapServer: $KAFKA_ADDRESS:9092
+  schema:
+    '{type: object, properties: {processing_time: {type: TIMESTAMP}, url: {type: STRING}, rating: {type: STRING}}}'
+```
+
 Run the following query to check the results in BigQuery.
 
 ```sh
