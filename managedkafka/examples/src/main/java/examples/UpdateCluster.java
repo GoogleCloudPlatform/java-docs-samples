@@ -41,7 +41,7 @@ public class UpdateCluster {
     String projectId = "my-project-id";
     String region = "my-region"; // e.g. us-east1
     String clusterId = "my-cluster";
-    long memoryBytes = 4221225472L; // 4 GiB
+    long memoryBytes = 25769803776L; // 24 GiB
     updateCluster(projectId, region, clusterId, memoryBytes);
   }
 

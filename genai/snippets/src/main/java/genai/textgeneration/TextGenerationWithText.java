@@ -19,10 +19,8 @@ package genai.textgeneration;
 // [START googlegenaisdk_textgen_with_txt]
 
 import com.google.genai.Client;
-import com.google.genai.types.Content;
 import com.google.genai.types.GenerateContentResponse;
 import com.google.genai.types.HttpOptions;
-import com.google.genai.types.Part;
 
 public class TextGenerationWithText {
 

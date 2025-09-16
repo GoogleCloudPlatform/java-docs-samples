@@ -35,8 +35,7 @@ import org.apache.http.client.utils.URIBuilder;
 @WebServlet(
     name = "analytics",
     description = "Analytics: Send Analytics Event to Google Analytics",
-    urlPatterns = "/analytics"
-)
+    urlPatterns = "/analytics")
 public class AnalyticsServlet extends HttpServlet {
 
   @Override

@@ -20,6 +20,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import org.junit.After;
 import org.junit.Before;
@@ -58,6 +59,7 @@ public class ToolsIT {
   @After
   public void tearDown() {
     System.setOut(null);
+    bout.reset();
   }
 
   @Test
@@ -79,6 +81,28 @@ public class ToolsIT {
     assertThat(response).contains("get_album_sales");
     assertThat(response).contains("copies_sold=350000");
     assertThat(response).contains("album_name=Echoes of the Night");
+  }
+
+  @Test
+  public void testToolsCodeExecWithText() {
+    String response = ToolsCodeExecWithText.generateContent(GEMINI_FLASH);
+    assertThat(response).isNotEmpty();
+    assertThat(bout.toString()).contains("Code:");
+    assertThat(bout.toString()).contains("Outcome:");
+  }
+
+  @Test
+  public void testToolsCodeExecWithTextLocalImage() throws IOException {
+    String response = ToolsCodeExecWithTextLocalImage.generateContent(GEMINI_FLASH);
+    assertThat(response).isNotEmpty();
+    assertThat(bout.toString()).contains("Code:");
+    assertThat(bout.toString()).contains("Outcome:");
+  }
+
+  @Test
+  public void testToolsGoogleSearchWithText() {
+    String response = ToolsGoogleSearchWithText.generateContent(GEMINI_FLASH);
+    assertThat(response).isNotEmpty();
   }
 
   @Test
