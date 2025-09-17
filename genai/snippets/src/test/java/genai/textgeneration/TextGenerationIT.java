@@ -63,9 +63,79 @@ public class TextGenerationIT {
   }
 
   @Test
-  public void testTextGenerationWithTextStream() {
-    String prompt = "Why is the sky blue?";
-    String response = TextGenerationWithTextStream.generateContent(GEMINI_FLASH, prompt);
+  public void testTextGenerationAsyncWithText() {
+    String response = TextGenerationAsyncWithText.generateContent(GEMINI_FLASH);
+    assertThat(response).isNotEmpty();
+  }
+
+  @Test
+  public void testTextGenerationChatStreamWithText() {
+    String response = TextGenerationChatStreamWithText.generateContent(GEMINI_FLASH);
+    assertThat(response).isNotEmpty();
+  }
+
+  @Test
+  public void testTextGenerationChatWithText() {
+    String response = TextGenerationChatWithText.generateContent(GEMINI_FLASH);
+    assertThat(response).isNotEmpty();
+  }
+
+  @Test
+  public void testTextGenerationCodeWithPdf() {
+    String response = TextGenerationCodeWithPdf.generateContent(GEMINI_FLASH);
+    assertThat(response).isNotEmpty();
+  }
+
+  @Test
+  public void testTextGenerationConfigWithText() {
+    String response = TextGenerationConfigWithText.generateContent(GEMINI_FLASH);
+    assertThat(response).isNotEmpty();
+  }
+
+  @Test
+  public void testTextGenerationTranscriptWithGcsAudio() {
+    String response = TextGenerationTranscriptWithGcsAudio.generateContent(GEMINI_FLASH);
+    assertThat(response).isNotEmpty();
+  }
+
+  @Test
+  public void testTextGenerationWithGcsAudio() {
+    String response = TextGenerationWithGcsAudio.generateContent(GEMINI_FLASH);
+    assertThat(response).isNotEmpty();
+  }
+
+  @Test
+  public void testTextGenerationWithLocalVideo() throws IOException {
+    String response = TextGenerationWithLocalVideo.generateContent(GEMINI_FLASH);
+    assertThat(response).isNotEmpty();
+  }
+
+  @Test
+  public void testTextGenerationWithMultiImage() throws IOException {
+    String gcsFileImagePath = "gs://cloud-samples-data/generative-ai/image/scones.jpg";
+    String response =
+            TextGenerationWithMultiImage.generateContent(
+                    GEMINI_FLASH, gcsFileImagePath, LOCAL_IMG_1);
+    assertThat(response).isNotEmpty();
+  }
+
+  @Test
+  public void testTextGenerationWithMultiLocalImage() throws IOException {
+    String response =
+            TextGenerationWithMultiLocalImage.generateContent(
+                    GEMINI_FLASH, LOCAL_IMG_1, LOCAL_IMG_2);
+    assertThat(response).isNotEmpty();
+  }
+
+  @Test
+  public void testTextGenerationWithMuteVideo() {
+    String response = TextGenerationWithMuteVideo.generateContent(GEMINI_FLASH);
+    assertThat(response).isNotEmpty();
+  }
+
+  @Test
+  public void testTextGenerationWithPdf() {
+    String response = TextGenerationWithPdf.generateContent(GEMINI_FLASH);
     assertThat(response).isNotEmpty();
   }
 
@@ -88,8 +158,14 @@ public class TextGenerationIT {
   }
 
   @Test
-  public void testTextGenerationWithVideo() {
+  public void testTextGenerationWithTextStream() {
+    String prompt = "Why is the sky blue?";
+    String response = TextGenerationWithTextStream.generateContent(GEMINI_FLASH, prompt);
+    assertThat(response).isNotEmpty();
+  }
 
+  @Test
+  public void testTextGenerationWithVideo() {
     String prompt =
             " Analyze the provided video file, including its audio.\n"
               + " Summarize the main points of the video concisely.\n"
@@ -102,72 +178,9 @@ public class TextGenerationIT {
   }
 
   @Test
-  public void testTextGenerationWithMultiImage() throws IOException {
-
-    String gcsFileImagePath = "gs://cloud-samples-data/generative-ai/image/scones.jpg";
-    String localImageFilePath = "resources/latte.jpg";
-
-    String response =
-            TextGenerationWithMultiImage.generateContent(
-                    GEMINI_FLASH, gcsFileImagePath, localImageFilePath);
-
-    assertThat(response).isNotEmpty();
-  }
-
-  @Test
-  public void testTextGenerationAsyncWithText() {
-    String response = TextGenerationAsyncWithText.generateContent(GEMINI_FLASH);
-    assertThat(response).isNotEmpty();
-  }
-
-  @Test
-  public void testTextGenerationWithMultiLocalImage() throws IOException {
-    String response =
-            TextGenerationWithMultiLocalImage.generateContent(
-                    GEMINI_FLASH, LOCAL_IMG_1, LOCAL_IMG_2);
-
-    assertThat(response).isNotEmpty();
-  }
-
-  @Test
-  public void testTextGenerationWithMuteVideo() {
-    String response = TextGenerationWithMuteVideo.generateContent(GEMINI_FLASH);
-    assertThat(response).isNotEmpty();
-  }
-
-  @Test
-  public void testTextGenerationWithPdf() {
-    String response = TextGenerationWithPdf.generateContent(GEMINI_FLASH);
-    assertThat(response).isNotEmpty();
-  }
-
-  @Test
   public void testTextGenerationWithYoutubeVideo() {
     String response = TextGenerationWithYoutubeVideo.generateContent(GEMINI_FLASH);
     assertThat(response).isNotEmpty();
   }
 
-  @Test
-  public void testTextGenerationCodeWithPdf() {
-    String response = TextGenerationCodeWithPdf.generateContent(GEMINI_FLASH);
-    assertThat(response).isNotEmpty();
-  }
-
-  @Test
-  public void testTextGenerationConfigWithText() {
-    String response = TextGenerationConfigWithText.generateContent(GEMINI_FLASH);
-    assertThat(response).isNotEmpty();
-  }
-
-  @Test
-  public void testTextGenerationWithGcsAudio() {
-    String response = TextGenerationWithGcsAudio.generateContent(GEMINI_FLASH);
-    assertThat(response).isNotEmpty();
-  }
-
-  @Test
-  public void testTextGenerationWithLocalVideo() throws IOException {
-    String response = TextGenerationWithLocalVideo.generateContent(GEMINI_FLASH);
-    assertThat(response).isNotEmpty();
-  }
 }
