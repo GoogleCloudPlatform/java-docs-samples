@@ -30,7 +30,7 @@ public class ThinkingIncludeThoughtsWithText {
 
   public static void main(String[] args) {
     // TODO(developer): Replace these variables before running the sample.
-    String modelId = "gemini-2.5-flash";
+    String modelId = "gemini-2.5-pro";
     generateContent(modelId);
   }
 
@@ -55,10 +55,14 @@ public class ThinkingIncludeThoughtsWithText {
 
       System.out.println(response.text());
       // Example response:
-      // To solve the equation $x^2 + 4x + 4 = 0$, we can use several methods:
+      // We can solve the equation x² + 4x + 4 = 0 using a couple of common methods.
+      //
+      // ### Method 1: Factoring (The Easiest Method for this Problem)
+      // **Recognize the pattern:** The pattern for a perfect square trinomial
+      // is a² + 2ab + b² = (a + b)².
       // ...
-      // **Solution:**
-      // The solution to the equation $x^2 + 4x + 4 = 0$ is $x = -2$.
+      // ### Final Answer:
+      // The solution is **x = -2**.
 
       // Get parts of the response and print thoughts
       response
@@ -76,30 +80,37 @@ public class ThinkingIncludeThoughtsWithText {
                     });
               });
       // Example response:
-      // Alright, here's how I'd approach this problem. I'm looking at the quadratic equation $x^2 +
-      // 4x + 4 = 0$. Immediately, I recognize a few potential solution paths, the beauty of
-      // quadratic equations is the multiple ways to solve them.
+      // Alright, let's break down this quadratic equation, x² + 4x + 4 = 0. My initial thought is,
+      // "classic quadratic."  I'll need to find the values of 'x' that make this equation true. The
+      // equation is in standard form, and since the coefficients are relatively small, I
+      // immediately suspect that factoring might be the easiest route.  It's worth checking.
       //
-      // First, **factoring** seems promising. I mentally scan the expression and see if it can be
-      // easily factored, and sure enough, it screams "perfect square trinomial." $x^2$ is clearly a
-      // perfect square, and so is $4$. The middle term, $4x$, fits the pattern $2ab$ with $a = x$
-      // and $b = 2$. So, I can rewrite the equation as $(x+2)^2 = 0$. Taking the square root of
-      // both sides, I get $x+2 = 0$, and therefore $x = -2$. Done.
+      // First, I assessed what I had. *a* is 1, *b* is 4, and *c* is 4. I consider my toolkit.
+      // Factoring is the likely first choice, then I can use the quadratic formula as a backup,
+      // because that ALWAYS works, and I could use graphing. However, for this, factoring seems the
+      // cleanest approach.
       //
-      // But, just to be thorough and ensure I haven't missed anything, I should also check the
-      // **quadratic formula**. I have to, of course, apply the standard formula: $x = \frac{-b \pm
-      // \sqrt{b^2 - 4ac}}{2a}$. Here, $a = 1$, $b = 4$, and $c = 4$. Plugging those values in, I
-      // get $x = \frac{-4 \pm \sqrt{16 - 16}}{2}$, which simplifies to $x = \frac{-4}{2}$, meaning
-      // $x = -2$. Perfect.
+      // Okay, factoring. I need two numbers that multiply to *c* (which is 4) and add up to *b*
+      // (also 4).  I quickly run through the factor pairs of 4: (1, 4), (-1, -4), (2, 2), (-2, -2).
+      //  Aha! 2 and 2 fit the bill. They multiply to 4 *and* add up to 4.  Therefore, I can rewrite
+      // the equation as (x + 2)(x + 2) = 0.  That simplifies to (x + 2)² = 0. Perfect square
+      // trinomial – nice and tidy. Seeing that pattern from the outset can save a step or two. Now,
+      // to solve for *x*:  if (x + 2)² = 0, then x + 2 must equal 0.  Therefore, x = -2. Done.
       //
-      // And finally, as a sanity check, I'll briefly consider **completing the square**.  Well, in
-      // this case, I've already essentially done it! The equation is already set up in a perfect
-      // square form. The constant term is, effectively, $(4/2)^2 = 4$. Therefore, I can directly
-      // proceed to the factored form and solve for x.
+      // But, for the sake of a full explanation, let's use the quadratic formula as a second
+      // method. It's a reliable way to double-check the answer, plus it's good practice.  I plug my
+      // *a*, *b*, and *c* values into the formula: x = [-b ± √(b² - 4ac)] / (2a). That gives me  x
+      // = [-4 ± √(4² - 4 * 1 * 4)] / (2 * 1). Simplifying under the radical, I get x = [-4 ± √(16 -
+      // 16)] / 2. So, x = [-4 ± √0] / 2. The square root of 0 is zero, which is very telling!  When
+      // the discriminant (b² - 4ac) is zero, you get one real solution, a repeated root. This means
+      // x = -4 / 2, which simplifies to x = -2.  Exactly the same as before.
       //
-      // So, all three methods, factoring, the quadratic formula and completing the square, yield
-      // the same result: $x = -2$. The fact that the discriminant, $b^2 - 4ac$, equals 0 tells me
-      // that there's only one real solution, a repeated root, which is exactly what I found.
+      // Therefore, the answer is x = -2.  Factoring was the most straightforward route.  For
+      // completeness, I showed the solution via the quadratic formula, too. Both approaches lead to
+      // the same single solution.  This is a repeated root – a double root, if you will.
+      //
+      // And to be absolutely sure...let's check our answer! Substitute -2 back into the original
+      // equation. (-2)² + 4(-2) + 4 = 4 - 8 + 4 = 0.  Yep, 0 = 0. The solution is correct.
       return response.text();
     }
   }

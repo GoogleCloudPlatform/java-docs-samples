@@ -26,7 +26,7 @@ public class ThinkingWithText {
 
   public static void main(String[] args) {
     // TODO(developer): Replace these variables before running the sample.
-    String modelId = "gemini-2.5-flash";
+    String modelId = "gemini-2.5-pro";
     generateContent(modelId);
   }
 
@@ -46,52 +46,54 @@ public class ThinkingWithText {
 
       System.out.println(response.text());
       // Example response:
-      // To solve the equation $x^2 + 4x + 4 = 0$, we can use several methods:
+      // There are a couple of common ways to solve this quadratic equation.
       //
-      // **Method 1: Factoring (Recognizing a Perfect Square Trinomial)**
+      // The equation is: **x² + 4x + 4 = 0**
       //
-      // Observe the structure of the equation: it is a quadratic trinomial.
-      // We look for two numbers that multiply to $c$ (4) and add up to $b$ (4).
-      // These numbers are 2 and 2 ($2 \times 2 = 4$ and $2 + 2 = 4$).
+      // ### Method 1: Factoring (The Easiest Method for this Problem)
       //
-      // So, the quadratic expression can be factored as $(x+2)(x+2)$.
-      // This is equivalent to $(x+2)^2$.
+      // This equation is a special case called a "perfect square trinomial".
       //
-      // Now, the equation becomes:
-      // $(x+2)^2 = 0$
+      // 1.  **Find two numbers** that multiply to the last term (4) and add up to the middle term
+      // (4).
+      //    *   The numbers are +2 and +2. (Since 2 * 2 = 4 and 2 + 2 = 4)
       //
-      // To solve for $x$, take the square root of both sides:
-      // $\sqrt{(x+2)^2} = \sqrt{0}$
-      // $x+2 = 0$
+      // 2.  **Factor the equation** using these numbers.
+      //    *   (x + 2)(x + 2) = 0
+      //    *   This can be written as: (x + 2)² = 0
       //
-      // Subtract 2 from both sides:
-      // $x = -2$
+      // 3.  **Solve for x.**
+      //    *   If (x + 2)² is zero, then (x + 2) must be zero.
+      //    *   x + 2 = 0
+      //    *   x = -2
       //
-      // This is the only solution, as the quadratic has a repeated root (or a root with
-      // multiplicity 2).
+      // ### Method 2: The Quadratic Formula
       //
-      // **Method 2: Using the Quadratic Formula**
+      // You can use the quadratic formula for any equation in the form ax² + bx + c = 0.
       //
-      // The quadratic formula solves for $x$ in an equation of the form $ax^2 + bx + c = 0$:
-      // $x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}$
+      // The formula is: **x = [-b ± √(b² - 4ac)] / 2a**
       //
-      // In our equation, $x^2 + 4x + 4 = 0$, we have:
-      // $a = 1$
-      // $b = 4$
-      // $c = 4$
+      // 1.  **Identify a, b, and c** from your equation (x² + 4x + 4 = 0).
+      //    *   a = 1
+      //    *   b = 4
+      //    *   c = 4
       //
-      // Substitute these values into the formula:
-      // $x = \frac{-4 \pm \sqrt{4^2 - 4(1)(4)}}{2(1)}$
-      // $x = \frac{-4 \pm \sqrt{16 - 16}}{2}$
-      // $x = \frac{-4 \pm \sqrt{0}}{2}$
-      // $x = \frac{-4 \pm 0}{2}$
-      // $x = \frac{-4}{2}$
-      // $x = -2$
+      // 2.  **Plug the values into the formula.**
+      //    *   x = [-4 ± √(4² - 4 * 1 * 4)] / (2 * 1)
       //
-      // Both methods yield the same solution.
+      // 3.  **Simplify.**
+      //    *   x = [-4 ± √(16 - 16)] / 2
+      //    *   x = [-4 ± √0] / 2
+      //    *   x = -4 / 2
+      //    *   x = -2
       //
-      // **Solution:**
-      // The solution to the equation $x^2 + 4x + 4 = 0$ is $x = -2$.
+      // Both methods give the same solution.
+      //
+      // ---
+      //
+      // ### Final Answer
+      //
+      // The solution is **x = -2**.
       return response.text();
     }
   }
