@@ -18,16 +18,31 @@ package genai.tools;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.RETURNS_SELF;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import com.google.genai.Client;
+import com.google.genai.Models;
+import com.google.genai.types.GenerateContentConfig;
+import com.google.genai.types.GenerateContentResponse;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.lang.reflect.Field;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.MockedStatic;
+
 
 @RunWith(JUnit4.class)
 public class ToolsIT {
@@ -106,15 +121,41 @@ public class ToolsIT {
   }
 
   @Test
-  public void testToolsVaisWithText() {
+  public void testToolsVaisWithText() throws NoSuchFieldException, IllegalAccessException {
+    String response = "The process for making an appointment to renew your driver's license"
+            + " varies depending on your location.";
 
     String datastore =
-        String.format(
-            "projects/%s/locations/global/collections/default_collection/"
-            + "dataStores/grounding-test-datastore",
-            PROJECT_ID);
-    String response = ToolsVaisWithText.generateContent(GEMINI_FLASH, datastore);
-    assertThat(response).isNotEmpty();
+            String.format(
+                    "projects/%s/locations/global/collections/default_collection/"
+                            + "dataStores/grounding-test-datastore",
+                    PROJECT_ID);
 
+    Client.Builder mockedBuilder = mock(Client.Builder.class, RETURNS_SELF);
+    Client mockedClient = mock(Client.class);
+    Models mockedModels = mock(Models.class);
+    GenerateContentResponse mockedResponse = mock(GenerateContentResponse.class);
+
+    try (MockedStatic<Client> mockedStatic = mockStatic(Client.class)) {
+      mockedStatic.when(Client::builder).thenReturn(mockedBuilder);
+      when(mockedBuilder.build()).thenReturn(mockedClient);
+
+      // Using reflection because 'models' is a final field and cannot be mockable directly
+      Field field = Client.class.getDeclaredField("models");
+      field.setAccessible(true);
+      field.set(mockedClient, mockedModels);
+
+      when(mockedClient.models.generateContent(
+              anyString(), anyString(), any(GenerateContentConfig.class)))
+          .thenReturn(mockedResponse);
+      when(mockedResponse.text()).thenReturn(response);
+
+      String generatedResponse = ToolsVaisWithText.generateContent(GEMINI_FLASH, datastore);
+
+      verify(mockedClient.models, times(1))
+          .generateContent(anyString(), anyString(), any(GenerateContentConfig.class));
+      assertThat(generatedResponse).isNotEmpty();
+      assertThat(response).isEqualTo(generatedResponse);
+    }
   }
 }
