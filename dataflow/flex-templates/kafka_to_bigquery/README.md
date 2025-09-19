@@ -130,9 +130,9 @@ For this, we need two parts running:
 > </details>
 
 The Kafka server must be accessible to *external* applications.
-For this we need a
-[static IP address](https://cloud.google.com/compute/docs/ip-addresses/reserve-static-external-ip-address)
-for the Kafka server to live.
+For this we need an
+[external static IP address](https://cloud.google.com/compute/docs/ip-addresses/reserve-static-external-ip-address)
+for the Kafka server to live. Not an internal IP address.
 
 > ℹ️ If you already have a Kafka server running you can skip this section.
 > Just make sure to store its IP address into an environment variable.
@@ -183,8 +183,20 @@ To learn more about pricing, see the
 ```sh
 export KAFKA_IMAGE="gcr.io/$PROJECT/samples/dataflow/kafka:latest"
 
+# Note: If the project name has `:` in it that signifies a project within an
+# organization (e.g. `example.com:project-id`), replace those with `/` so that
+# the Kafa image can be found appropriately.
+
 # Build the Kafka server image into Container Registry.
 gcloud builds submit --tag $KAFKA_IMAGE kafka/
+
+# If a different topic, address, kafka port, or zookeeper port is desired,
+# update the following environment variables before starting the server.
+# Otherwise, the default values will be used in the Dockerfile:
+export KAFKA_TOPIC=<topic-name>
+export KAFKA_ADDRESS=<kafka-address>
+export KAFKA_PORT=<kafka-port>
+export ZOOKEEPER_PORT=<zookeeper-port>
 
 # Create and start a new instance.
 # The --address flag binds the VM's address to the static address we created.
@@ -199,6 +211,41 @@ gcloud compute instances create-with-container kafka-vm \
   --container-env "KAFKA_ADDRESS=$KAFKA_ADDRESS" \
   --tags "kafka-server"
 ```
+
+### Sending messages to Kafka server
+
+The Kafka server should be running at this point, but in its current state no
+messages are being sent to a topic which will cause the KafkaToBigQuery
+template to fail. So ssh into the `kafka-vm` that was created earlier and issue
+the below commands that are required based on your timing. Messages sent before
+the template is started will be present when the template is started. If the 
+desire is to send messages after the template has started, then the messages
+will be processed as they are sent.
+
+```sh
+# 1. If the existing topic is not sufficient, please create a new one:
+docker run --rm --network host bitnami/kafka:3.4.0 \
+/opt/bitnami/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 \
+--create --topic <topic-name> --partitions 1 --replication-factor 1
+
+# 2. If the existing topic needs deleting, please delete it:
+docker run --rm --network host bitnami/kafka:3.4.0 \
+/opt/bitnami/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 \
+--delete --topic <topic-name>
+
+# 3. If messages need to be sent, send them to the Kafka topic via the following
+# command and then hit enter after each message. End via ctrl+c:
+docker run -i --rm --network host bitnami/kafka:3.4.0 \
+/opt/bitnami/kafka/bin/kafka-console-producer.sh \
+--bootstrap-server localhost:9092 --topic <topic-name>
+
+# 4. If the messages need to be verified that they exist, issue this command
+# and end via ctrl+c:
+docker run -it --rm --network host bitnami/kafka:3.4.0 \
+/opt/bitnami/kafka/bin/kafka-console-consumer.sh \
+--bootstrap-server localhost:9092 --topic <topic-name> --from-beginning
+```
+
 
 ### Creating and running a Flex Template
 
@@ -255,6 +302,21 @@ gcloud dataflow flex-template run "kafka-to-bigquery-`date +%Y%m%d-%H%M%S`" \
     --parameters outputTable="$PROJECT:$DATASET.$TABLE" \
     --parameters bootstrapServer="$KAFKA_ADDRESS:9092" \
     --region "$REGION"
+```
+
+Note: If one of the parameters is a deeply nested json or dictionary, use the
+gcloud `--flags-file` parameter to pass in a yaml file a list of all the
+parameters including the nested dictionary. Passing in the dictionary straight
+from the command line will give a gcloud error. The parameters file can look
+like this:
+
+```yaml
+--parameters:
+  inputTopic: messages
+  outputTable: $PROJECT:$DATASET.$TABLE
+  bootstrapServer: $KAFKA_ADDRESS:9092
+  schema:
+    '{type: object, properties: {processing_time: {type: TIMESTAMP}, url: {type: STRING}, rating: {type: STRING}}}'
 ```
 
 Run the following query to check the results in BigQuery.
