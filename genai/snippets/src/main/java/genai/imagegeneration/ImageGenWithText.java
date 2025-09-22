@@ -16,7 +16,7 @@
 
 package genai.imagegeneration;
 
-// START [googlegenaisdk_imggen_with_txt]
+// [START googlegenaisdk_imggen_with_txt]
 
 import com.google.genai.Client;
 import com.google.genai.types.GenerateImagesConfig;
@@ -72,4 +72,4 @@ public class ImageGenWithText {
     }
   }
 }
-// END [googlegenaisdk_imggen_with_txt]
+// [END googlegenaisdk_imggen_with_txt]
