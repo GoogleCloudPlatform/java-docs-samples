@@ -185,7 +185,7 @@ export KAFKA_IMAGE="gcr.io/$PROJECT/samples/dataflow/kafka:latest"
 
 # Note: If the project name has `:` in it that signifies a project within an
 # organization (e.g. `example.com:project-id`), replace those with `/` so that
-# the Kafa image can be found appropriately.
+# the Kafka image can be found appropriately.
 
 # Build the Kafka server image into Container Registry.
 gcloud builds submit --tag $KAFKA_IMAGE kafka/
@@ -212,38 +212,66 @@ gcloud compute instances create-with-container kafka-vm \
   --tags "kafka-server"
 ```
 
+Note: The Kafka server should be running at this point, but in its current state
+no messages are being sent to a topic, which will cause the KafkaToBigQuery
+template to fail.
+
+
 ### Sending messages to Kafka server
 
-The Kafka server should be running at this point, but in its current state no
-messages are being sent to a topic which will cause the KafkaToBigQuery
-template to fail. So ssh into the `kafka-vm` that was created earlier and issue
+SSH into the `kafka-vm` that was created earlier and issue
 the below commands that are required based on your timing. Messages sent before
 the template is started will be present when the template is started. If the 
 desire is to send messages after the template has started, then the messages
 will be processed as they are sent.
 
+Pre-Requisite SSH into the Kafka VM
 ```sh
-# 1. If the existing topic is not sufficient, please create a new one:
+$ gcloud compute ssh kafka-vm --zone "$ZONE"
+```
+
+1. Create a Topic
+
+```sh
 docker run --rm --network host bitnami/kafka:3.4.0 \
 /opt/bitnami/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 \
 --create --topic <topic-name> --partitions 1 --replication-factor 1
+```
 
-# 2. If the existing topic needs deleting, please delete it:
-docker run --rm --network host bitnami/kafka:3.4.0 \
-/opt/bitnami/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 \
---delete --topic <topic-name>
+2. Send Messages to the Topic
 
-# 3. If messages need to be sent, send them to the Kafka topic via the following
-# command and then hit enter after each message. End via ctrl+c:
+Run the console producer to send messages. After running the command, type a
+message and press Enter. You can send multiple messages. Press Ctrl+C to stop
+the producer.
+
+Note: You can run this step either before starting the Dataflow template
+(messages will be ready) or while it's running (messages will be processed as
+they arrive).
+
+```sh
 docker run -i --rm --network host bitnami/kafka:3.4.0 \
 /opt/bitnami/kafka/bin/kafka-console-producer.sh \
 --bootstrap-server localhost:9092 --topic <topic-name>
+```
 
-# 4. If the messages need to be verified that they exist, issue this command
-# and end via ctrl+c:
+3. (Optional) Verify the Messages
+
+You can check that your messages were sent correctly by starting a consumer.
+This will print all messages from the beginning of the topic. Press Ctrl+C to
+exit.
+
+```sh
 docker run -it --rm --network host bitnami/kafka:3.4.0 \
 /opt/bitnami/kafka/bin/kafka-console-consumer.sh \
 --bootstrap-server localhost:9092 --topic <topic-name> --from-beginning
+```
+
+4. (Optional) Delete a Topic
+
+```sh
+docker run --rm --network host bitnami/kafka:3.4.0 \
+/opt/bitnami/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 \
+--delete --topic <topic-name>
 ```
 
 

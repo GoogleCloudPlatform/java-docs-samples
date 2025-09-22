@@ -33,7 +33,7 @@ ENV ZOOKEEPER_PORT="${ZOOKEEPER_PORT:-2181}"
 
 # Download and install Apache Kafka.
 RUN apk add --no-cache bash \
-  && wget http://archive.apache.org/dist/kafka/${KAFKA_VERSION}/kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz \
+  && wget https://archive.apache.org/dist/kafka/${KAFKA_VERSION}/kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz \
     -O /tmp/kafka.tgz \
   && tar xzf /tmp/kafka.tgz -C /opt && rm /tmp/kafka.tgz \
   && ln -s /opt/kafka_${SCALA_VERSION}-${KAFKA_VERSION} /opt/kafka
