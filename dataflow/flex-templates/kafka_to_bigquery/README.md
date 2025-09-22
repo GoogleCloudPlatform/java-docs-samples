@@ -226,6 +226,7 @@ desire is to send messages after the template has started, then the messages
 will be processed as they are sent.
 
 Pre-Requisite SSH into the Kafka VM
+
 ```sh
 $ gcloud compute ssh kafka-vm --zone "$ZONE"
 ```
