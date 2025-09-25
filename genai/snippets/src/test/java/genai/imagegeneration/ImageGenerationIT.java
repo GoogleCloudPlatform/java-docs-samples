@@ -53,19 +53,6 @@ public class ImageGenerationIT {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
   }
 
-  @AfterClass
-  public static void cleanup() {
-    File directory = new File("resources/output");
-    File[] files = directory.listFiles();
-    if (files != null) {
-      for (File file : files) {
-        if (file.isFile()) {
-          file.delete();
-        }
-      }
-    }
-  }
-
   @Before
   public void setUp() {
     bout = new ByteArrayOutputStream();
