@@ -40,7 +40,7 @@ public class ImageGenerationIT {
 
   private static final String IMAGGEN_3_MODEL = "imagen-3.0-capability-001";
   private static final String BUCKET_NAME = "java-docs-samples-testing";
-  private static final String PREFIX = "img-generation-" + UUID.randomUUID();
+  private static final String PREFIX = "genai-img-generation-" + UUID.randomUUID();
   private static final String OUTPUT_GCS_URI = String.format("gs://%s/%s", BUCKET_NAME, PREFIX);
   private ByteArrayOutputStream bout;
   private PrintStream out;
