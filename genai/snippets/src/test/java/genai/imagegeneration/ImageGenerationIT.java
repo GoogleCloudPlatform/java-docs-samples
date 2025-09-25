@@ -38,7 +38,7 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class ImageGenerationIT {
 
-  private static final String IMAGGEN_3_MODEL = "imagen-3.0-capability-001";
+  private static final String IMAGEN_3_MODEL = "imagen-3.0-capability-001";
   private static final String BUCKET_NAME = "java-docs-samples-testing";
   private static final String PREFIX = "genai-img-generation-" + UUID.randomUUID();
   private static final String OUTPUT_GCS_URI = String.format("gs://%s/%s", BUCKET_NAME, PREFIX);
@@ -83,7 +83,7 @@ public class ImageGenerationIT {
   public void testImageGenCannyCtrlTypeWithTextAndImage() {
     Optional<String> response =
         ImageGenCannyCtrlTypeWithTextAndImage.generateImageWithCannyCtrl(
-            IMAGGEN_3_MODEL, OUTPUT_GCS_URI);
+            IMAGEN_3_MODEL, OUTPUT_GCS_URI);
     assertThat(response).isPresent();
     assertThat(response.get()).isNotEmpty();
   }
@@ -92,7 +92,7 @@ public class ImageGenerationIT {
   public void testImageGenRawReferenceWithTextAndImage() {
     Optional<String> response =
         ImageGenRawReferenceWithTextAndImage.generateImageWithRawReference(
-            IMAGGEN_3_MODEL, OUTPUT_GCS_URI);
+            IMAGEN_3_MODEL, OUTPUT_GCS_URI);
     assertThat(response).isPresent();
     assertThat(response.get()).isNotEmpty();
   }
@@ -101,7 +101,7 @@ public class ImageGenerationIT {
   public void testImageGenScribbleCtrlTypeWithTextAndImage() {
     Optional<String> response =
         ImageGenScribbleCtrlTypeWithTextAndImage.generateImageWithScribbleCtrl(
-            IMAGGEN_3_MODEL, OUTPUT_GCS_URI);
+            IMAGEN_3_MODEL, OUTPUT_GCS_URI);
     assertThat(response).isPresent();
     assertThat(response.get()).isNotEmpty();
   }
@@ -110,7 +110,7 @@ public class ImageGenerationIT {
   public void testImageGenStyleReferenceWithTextAndImage() {
     Optional<String> response =
         ImageGenStyleReferenceWithTextAndImage.generateImageWithStyleReference(
-            IMAGGEN_3_MODEL, OUTPUT_GCS_URI);
+            IMAGEN_3_MODEL, OUTPUT_GCS_URI);
     assertThat(response).isPresent();
     assertThat(response.get()).isNotEmpty();
   }
@@ -119,7 +119,7 @@ public class ImageGenerationIT {
   public void testImageGenSubjectReferenceWithTextAndImage() {
     Optional<String> response =
         ImageGenSubjectReferenceWithTextAndImage.generateImageWithSubjectAndControlReference(
-            IMAGGEN_3_MODEL, OUTPUT_GCS_URI);
+            IMAGEN_3_MODEL, OUTPUT_GCS_URI);
     assertThat(response).isPresent();
     assertThat(response.get()).isNotEmpty();
   }

@@ -35,8 +35,7 @@ public class ImageGenSubjectReferenceWithTextAndImage {
   public static void main(String[] args) {
     // TODO(developer): Replace these variables before running the sample.
     String modelId = "imagen-3.0-capability-001";
-    String outputGcsUri = "gs://example-cloud-bucket-5439474/java-genai-samples-tests";
-    // "gs://your-bucket/your-prefix";
+    String outputGcsUri = "gs://your-bucket/your-prefix";
     generateImageWithSubjectAndControlReference(modelId, outputGcsUri);
   }
 
