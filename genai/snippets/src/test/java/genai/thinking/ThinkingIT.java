@@ -62,13 +62,13 @@ public class ThinkingIT {
 
   @Test
   public void testThinkingWithText() {
-    String response = ThinkingWithText.generateContent(GEMINI_FLASH);
+    String response = ThinkingWithTxt.generateContent(GEMINI_FLASH);
     assertThat(response).isNotEmpty();
   }
 
   @Test
   public void testThinkingBudgetWithText() {
-    String response = ThinkingBudgetWithText.generateContent(GEMINI_FLASH);
+    String response = ThinkingBudgetWithTxt.generateContent(GEMINI_FLASH);
     assertThat(response).isNotEmpty();
     assertThat(bout.toString()).contains("Token count for thinking: ");
     assertThat(bout.toString()).contains("Total token count: ");
@@ -76,7 +76,7 @@ public class ThinkingIT {
 
   @Test
   public void testThinkingIncludeThoughtsWithText() {
-    String response = ThinkingIncludeThoughtsWithText.generateContent(GEMINI_FLASH);
+    String response = ThinkingIncludeThoughtsWithTxt.generateContent(GEMINI_FLASH);
     assertThat(response).isNotEmpty();
   }
 }

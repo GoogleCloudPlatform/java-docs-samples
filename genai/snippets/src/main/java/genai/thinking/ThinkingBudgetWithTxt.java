@@ -24,7 +24,7 @@ import com.google.genai.types.GenerateContentResponse;
 import com.google.genai.types.HttpOptions;
 import com.google.genai.types.ThinkingConfig;
 
-public class ThinkingBudgetWithText {
+public class ThinkingBudgetWithTxt {
 
   public static void main(String[] args) {
     // TODO(developer): Replace these variables before running the sample.

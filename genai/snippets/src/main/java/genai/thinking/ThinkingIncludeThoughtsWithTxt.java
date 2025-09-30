@@ -26,7 +26,7 @@ import com.google.genai.types.GenerateContentResponse;
 import com.google.genai.types.HttpOptions;
 import com.google.genai.types.ThinkingConfig;
 
-public class ThinkingIncludeThoughtsWithText {
+public class ThinkingIncludeThoughtsWithTxt {
 
   public static void main(String[] args) {
     // TODO(developer): Replace these variables before running the sample.

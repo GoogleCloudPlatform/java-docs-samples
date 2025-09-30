@@ -19,10 +19,11 @@ package genai.thinking;
 // [START googlegenaisdk_thinking_with_txt]
 
 import com.google.genai.Client;
+import com.google.genai.types.GenerateContentConfig;
 import com.google.genai.types.GenerateContentResponse;
 import com.google.genai.types.HttpOptions;
 
-public class ThinkingWithText {
+public class ThinkingWithTxt {
 
   public static void main(String[] args) {
     // TODO(developer): Replace these variables before running the sample.
@@ -30,7 +31,7 @@ public class ThinkingWithText {
     generateContent(modelId);
   }
 
-  // Generates text with text input
+  // Generates text with thinking model and text input
   public static String generateContent(String modelId) {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
@@ -42,7 +43,8 @@ public class ThinkingWithText {
             .build()) {
 
       GenerateContentResponse response =
-          client.models.generateContent(modelId, "solve x^2 + 4x + 4 = 0", null);
+          client.models.generateContent(
+              modelId, "solve x^2 + 4x + 4 = 0", GenerateContentConfig.builder().build());
 
       System.out.println(response.text());
       // Example response:
