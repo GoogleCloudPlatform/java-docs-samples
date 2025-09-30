@@ -171,7 +171,7 @@
             <annotationProcessorPath>
               <groupId>com.google.auto.value</groupId>
               <artifactId>auto-value</artifactId>
-              <version>1.10.4</version>
+              <version>1.11.0</version>
             </annotationProcessorPath>
           </annotationProcessorPaths>
         </configuration>
