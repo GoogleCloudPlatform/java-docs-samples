@@ -23,7 +23,9 @@ import com.google.api.gax.paging.Page;
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
+import com.google.genai.types.Image;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Optional;
 import java.util.UUID;
@@ -42,6 +44,9 @@ public class ImageGenerationIT {
   private static final String BUCKET_NAME = "java-docs-samples-testing";
   private static final String PREFIX = "genai-img-generation-" + UUID.randomUUID();
   private static final String OUTPUT_GCS_URI = String.format("gs://%s/%s", BUCKET_NAME, PREFIX);
+  private static final String IMAGEN_4_MODEL = "imagen-4.0-generate-001";
+  private static final String VIRTUAL_TRY_ON_MODEL = "virtual-try-on-preview-08-04";
+
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
@@ -82,8 +87,8 @@ public class ImageGenerationIT {
   @Test
   public void testImageGenCannyCtrlTypeWithTextAndImage() {
     Optional<String> response =
-        ImageGenCannyCtrlTypeWithTextAndImage.generateImageWithCannyCtrl(
-            IMAGEN_3_MODEL, OUTPUT_GCS_URI);
+            ImageGenCannyCtrlTypeWithTextAndImage.generateImageWithCannyCtrl(
+                    IMAGEN_3_MODEL, OUTPUT_GCS_URI);
     assertThat(response).isPresent();
     assertThat(response.get()).isNotEmpty();
   }
@@ -91,8 +96,8 @@ public class ImageGenerationIT {
   @Test
   public void testImageGenRawReferenceWithTextAndImage() {
     Optional<String> response =
-        ImageGenRawReferenceWithTextAndImage.generateImageWithRawReference(
-            IMAGEN_3_MODEL, OUTPUT_GCS_URI);
+            ImageGenRawReferenceWithTextAndImage.generateImageWithRawReference(
+                    IMAGEN_3_MODEL, OUTPUT_GCS_URI);
     assertThat(response).isPresent();
     assertThat(response.get()).isNotEmpty();
   }
@@ -100,8 +105,8 @@ public class ImageGenerationIT {
   @Test
   public void testImageGenScribbleCtrlTypeWithTextAndImage() {
     Optional<String> response =
-        ImageGenScribbleCtrlTypeWithTextAndImage.generateImageWithScribbleCtrl(
-            IMAGEN_3_MODEL, OUTPUT_GCS_URI);
+            ImageGenScribbleCtrlTypeWithTextAndImage.generateImageWithScribbleCtrl(
+                    IMAGEN_3_MODEL, OUTPUT_GCS_URI);
     assertThat(response).isPresent();
     assertThat(response.get()).isNotEmpty();
   }
@@ -109,8 +114,8 @@ public class ImageGenerationIT {
   @Test
   public void testImageGenStyleReferenceWithTextAndImage() {
     Optional<String> response =
-        ImageGenStyleReferenceWithTextAndImage.generateImageWithStyleReference(
-            IMAGEN_3_MODEL, OUTPUT_GCS_URI);
+            ImageGenStyleReferenceWithTextAndImage.generateImageWithStyleReference(
+                    IMAGEN_3_MODEL, OUTPUT_GCS_URI);
     assertThat(response).isPresent();
     assertThat(response.get()).isNotEmpty();
   }
@@ -118,9 +123,31 @@ public class ImageGenerationIT {
   @Test
   public void testImageGenSubjectReferenceWithTextAndImage() {
     Optional<String> response =
-        ImageGenSubjectReferenceWithTextAndImage.generateImageWithSubjectAndControlReference(
-            IMAGEN_3_MODEL, OUTPUT_GCS_URI);
+            ImageGenSubjectReferenceWithTextAndImage.generateImageWithSubjectAndControlReference(
+                    IMAGEN_3_MODEL, OUTPUT_GCS_URI);
     assertThat(response).isPresent();
     assertThat(response.get()).isNotEmpty();
   }
+
+  @Test
+  public void testImageGenVirtualTryOnWithTextAndImage() throws IOException {
+    Image image =
+            ImageGenVirtualTryOnWithTextAndImage.generateContent(
+                    VIRTUAL_TRY_ON_MODEL, "resources/output/man_in_sweater.png");
+
+    assertThat(image).isNotNull();
+    assertThat(image.imageBytes()).isPresent();
+    assertThat(image.imageBytes().get().length).isGreaterThan(0);
+  }
+
+  @Test
+  public void testImageGenWithText() throws IOException {
+    Image image =
+            ImageGenWithText.generateImage(IMAGEN_4_MODEL, "resources/output/dog_newspaper.png");
+
+    assertThat(image).isNotNull();
+    assertThat(image.imageBytes()).isPresent();
+    assertThat(image.imageBytes().get().length).isGreaterThan(0);
+  }
+
 }
