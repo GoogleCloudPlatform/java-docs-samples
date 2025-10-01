@@ -87,7 +87,7 @@ public class ImageGenerationIT {
   @Test
   public void testImageGenCannyCtrlTypeWithTextAndImage() {
     Optional<String> response =
-            ImageGenCannyCtrlTypeWithTextAndImage.generateImageWithCannyCtrl(
+            ImageGenCannyCtrlTypeWithTextAndImage.cannyEdgeCustomization(
                     IMAGEN_3_MODEL, OUTPUT_GCS_URI);
     assertThat(response).isPresent();
     assertThat(response.get()).isNotEmpty();
@@ -96,7 +96,7 @@ public class ImageGenerationIT {
   @Test
   public void testImageGenRawReferenceWithTextAndImage() {
     Optional<String> response =
-            ImageGenRawReferenceWithTextAndImage.generateImageWithRawReference(
+            ImageGenRawReferenceWithTextAndImage.styleTransferCustomization(
                     IMAGEN_3_MODEL, OUTPUT_GCS_URI);
     assertThat(response).isPresent();
     assertThat(response.get()).isNotEmpty();
@@ -105,7 +105,7 @@ public class ImageGenerationIT {
   @Test
   public void testImageGenScribbleCtrlTypeWithTextAndImage() {
     Optional<String> response =
-            ImageGenScribbleCtrlTypeWithTextAndImage.generateImageWithScribbleCtrl(
+            ImageGenScribbleCtrlTypeWithTextAndImage.scribbleCustomization(
                     IMAGEN_3_MODEL, OUTPUT_GCS_URI);
     assertThat(response).isPresent();
     assertThat(response.get()).isNotEmpty();
@@ -114,7 +114,7 @@ public class ImageGenerationIT {
   @Test
   public void testImageGenStyleReferenceWithTextAndImage() {
     Optional<String> response =
-            ImageGenStyleReferenceWithTextAndImage.generateImageWithStyleReference(
+            ImageGenStyleReferenceWithTextAndImage.styleCustomization(
                     IMAGEN_3_MODEL, OUTPUT_GCS_URI);
     assertThat(response).isPresent();
     assertThat(response.get()).isNotEmpty();
@@ -123,7 +123,7 @@ public class ImageGenerationIT {
   @Test
   public void testImageGenSubjectReferenceWithTextAndImage() {
     Optional<String> response =
-            ImageGenSubjectReferenceWithTextAndImage.generateImageWithSubjectAndControlReference(
+            ImageGenSubjectReferenceWithTextAndImage.subjectCustomization(
                     IMAGEN_3_MODEL, OUTPUT_GCS_URI);
     assertThat(response).isPresent();
     assertThat(response.get()).isNotEmpty();

@@ -36,12 +36,11 @@ public class ImageGenSubjectReferenceWithTextAndImage {
     // TODO(developer): Replace these variables before running the sample.
     String modelId = "imagen-3.0-capability-001";
     String outputGcsUri = "gs://your-bucket/your-prefix";
-    generateImageWithSubjectAndControlReference(modelId, outputGcsUri);
+    subjectCustomization(modelId, outputGcsUri);
   }
 
-  // Generates an image with a subject reference image, control reference image and text input
-  public static Optional<String> generateImageWithSubjectAndControlReference(
-      String modelId, String outputGcsUri) {
+  // Customizes a subject reference image with a control reference image and text prompt
+  public static Optional<String> subjectCustomization(String modelId, String outputGcsUri) {
     // Client Initialization. Once created, it can be reused for multiple requests.
     try (Client client = Client.builder().location("global").vertexAI(true).build()) {
       // Create subject and control reference images of a photograph stored in Google Cloud Storage
@@ -71,6 +70,8 @@ public class ImageGenSubjectReferenceWithTextAndImage {
                   ControlReferenceConfig.builder().controlType("CONTROL_TYPE_FACE_MESH").build())
               .build();
 
+      // The `[1]` and `[2]` in the prompt refer to the `referenceId` assigned to
+      // the subject reference and control reference images.
       EditImageResponse imageResponse =
           client.models.editImage(
               modelId,

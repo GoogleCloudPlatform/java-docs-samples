@@ -34,12 +34,11 @@ public class ImageGenScribbleCtrlTypeWithTextAndImage {
     // TODO(developer): Replace these variables before running the sample.
     String modelId = "imagen-3.0-capability-001";
     String outputGcsUri = "gs://your-bucket/your-prefix";
-    generateImageWithScribbleCtrl(modelId, outputGcsUri);
+    scribbleCustomization(modelId, outputGcsUri);
   }
 
-  // Generates an image with a scribble control reference image and text input
-  public static Optional<String> generateImageWithScribbleCtrl(
-      String modelId, String outputGcsUri) {
+  // Generates an image based on a scribble image and text prompt
+  public static Optional<String> scribbleCustomization(String modelId, String outputGcsUri) {
     // Client Initialization. Once created, it can be reused for multiple requests.
     try (Client client = Client.builder().location("global").vertexAI(true).build()) {
       // Create a reference image out of an existing scribble image signal
@@ -55,6 +54,8 @@ public class ImageGenScribbleCtrlTypeWithTextAndImage {
               .config(ControlReferenceConfig.builder().controlType("CONTROL_TYPE_SCRIBBLE").build())
               .build();
 
+      // The `[1]` in the prompt refers to the `referenceId` assigned to the control reference
+      // image.
       EditImageResponse imageResponse =
           client.models.editImage(
               modelId,

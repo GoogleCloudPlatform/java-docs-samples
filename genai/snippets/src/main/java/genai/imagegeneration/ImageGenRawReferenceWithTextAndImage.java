@@ -33,12 +33,11 @@ public class ImageGenRawReferenceWithTextAndImage {
     // TODO(developer): Replace these variables before running the sample.
     String modelId = "imagen-3.0-capability-001";
     String outputGcsUri = "gs://your-bucket/your-prefix";
-    generateImageWithRawReference(modelId, outputGcsUri);
+    styleTransferCustomization(modelId, outputGcsUri);
   }
 
-  // Generates an image with a raw reference image and text input
-  public static Optional<String> generateImageWithRawReference(
-      String modelId, String outputGcsUri) {
+  // Generates an image in a new style based on a raw reference image and text prompt
+  public static Optional<String> styleTransferCustomization(String modelId, String outputGcsUri) {
     // Client Initialization. Once created, it can be reused for multiple requests.
     try (Client client = Client.builder().location("global").vertexAI(true).build()) {
       // Create a raw reference image of teacup stored in Google Cloud Storage
@@ -52,6 +51,7 @@ public class ImageGenRawReferenceWithTextAndImage {
                       .build())
               .build();
 
+      // The `[1]` in the prompt refers to the `referenceId` assigned to the raw reference image.
       EditImageResponse imageResponse =
           client.models.editImage(
               modelId,

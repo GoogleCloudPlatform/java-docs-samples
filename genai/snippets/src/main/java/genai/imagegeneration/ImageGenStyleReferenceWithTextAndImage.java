@@ -34,12 +34,11 @@ public class ImageGenStyleReferenceWithTextAndImage {
     // TODO(developer): Replace these variables before running the sample.
     String modelId = "imagen-3.0-capability-001";
     String outputGcsUri = "gs://your-bucket/your-prefix";
-    generateImageWithStyleReference(modelId, outputGcsUri);
+    styleCustomization(modelId, outputGcsUri);
   }
 
-  // Generates an image with a style reference image and text input
-  public static Optional<String> generateImageWithStyleReference(
-      String modelId, String outputGcsUri) {
+  // Transfers the style of a reference image to a new image using a text prompt
+  public static Optional<String> styleCustomization(String modelId, String outputGcsUri) {
     // Client Initialization. Once created, it can be reused for multiple requests.
     try (Client client = Client.builder().location("global").vertexAI(true).build()) {
       // Create a style reference image of a neon sign stored in Google Cloud Storage
@@ -54,6 +53,7 @@ public class ImageGenStyleReferenceWithTextAndImage {
               .config(StyleReferenceConfig.builder().styleDescription("neon sign").build())
               .build();
 
+      // The `[1]` in the prompt refers to the `referenceId` assigned to the style reference image.
       EditImageResponse imageResponse =
           client.models.editImage(
               modelId,
