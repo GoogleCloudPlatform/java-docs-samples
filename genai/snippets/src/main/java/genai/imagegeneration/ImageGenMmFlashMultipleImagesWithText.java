@@ -73,7 +73,6 @@ public class ImageGenMmFlashMultipleImagesWithText {
               ImageIO.read(new ByteArrayInputStream(part.inlineData().flatMap(Blob::data).get()));
           String fileName = "resources/output/example-cats-0" + (imageCounter++) + ".png";
           ImageIO.write(image, "png", new File(fileName));
-          System.out.println(imageCounter);
           generatedImages.add(fileName);
         }
       }
