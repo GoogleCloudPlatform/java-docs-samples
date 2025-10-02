@@ -18,48 +18,33 @@ package genai.batchprediction;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
-import static com.google.genai.types.JobState.Known.JOB_STATE_SUCCEEDED;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.RETURNS_SELF;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.mockStatic;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
-import com.google.genai.Batches;
-import com.google.genai.Client;
-import com.google.genai.types.BatchJob;
-import com.google.genai.types.BatchJobSource;
-import com.google.genai.types.CreateBatchJobConfig;
+import com.google.api.gax.paging.Page;
+import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageOptions;
 import com.google.genai.types.JobState;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.lang.reflect.Field;
-import java.util.Optional;
+import java.util.UUID;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.mockito.MockedStatic;
 
 @RunWith(JUnit4.class)
 public class BatchPredictionIT {
 
   private static final String GEMINI_FLASH = "gemini-2.5-flash";
   private static final String EMBEDDING_MODEL = "text-embedding-005";
-  private static String jobName;
-  private static String outputGcsUri;
+  private static final String BUCKET_NAME = "java-docs-samples-testing";
+  private static final String PREFIX = "genai-batch-prediction" + UUID.randomUUID();
+  private static final String OUTPUT_GCS_URI = String.format("gs://%s/%s", BUCKET_NAME, PREFIX);
   private ByteArrayOutputStream bout;
   private PrintStream out;
-  private Client.Builder mockedBuilder;
-  private Client mockedClient;
-  private Batches mockedBatches;
-  private BatchJob mockedJobResponse;
-  private MockedStatic<Client> mockedStatic;
 
   // Check if the required environment variables are set.
   public static void requireEnvVar(String envVarName) {
@@ -71,74 +56,47 @@ public class BatchPredictionIT {
   @BeforeClass
   public static void checkRequirements() {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
-    jobName = "projects/project_id/locations/us-central1/batchPredictionJobs/job_id";
-    outputGcsUri = "gs://your-bucket/your-prefix";
+  }
+
+  @AfterClass
+  public static void cleanup() {
+    Storage storage = StorageOptions.getDefaultInstance().getService();
+    Page<Blob> blobs = storage.list(BUCKET_NAME, Storage.BlobListOption.prefix(PREFIX));
+
+    for (Blob blob : blobs.iterateAll()) {
+      storage.delete(blob.getBlobId());
+    }
   }
 
   @Before
-  public void setUp() throws NoSuchFieldException, IllegalAccessException {
+  public void setUp() {
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
     System.setOut(out);
-
-    // Mock builder, client, batches and response
-    mockedBuilder = mock(Client.Builder.class, RETURNS_SELF);
-    mockedClient = mock(Client.class);
-    mockedBatches = mock(Batches.class);
-    mockedJobResponse = mock(BatchJob.class);
-
-    // Static mock of Client.builder()
-    mockedStatic = mockStatic(Client.class);
-    mockedStatic.when(Client::builder).thenReturn(mockedBuilder);
-    when(mockedBuilder.build()).thenReturn(mockedClient);
-
-    // Inject mockBatches into mockClient by using reflection because
-    // 'batches' is a final field and cannot be mockable directly
-    Field field = Client.class.getDeclaredField("batches");
-    field.setAccessible(true);
-    field.set(mockedClient, mockedBatches);
-
-    when(mockedClient.batches.create(
-            anyString(), any(BatchJobSource.class), any(CreateBatchJobConfig.class)))
-            .thenReturn(mockedJobResponse);
-    when(mockedJobResponse.name()).thenReturn(Optional.of(jobName));
-    when(mockedJobResponse.state()).thenReturn(Optional.of(new JobState(JOB_STATE_SUCCEEDED)));
-
   }
 
   @After
   public void tearDown() {
     System.setOut(null);
     bout.reset();
-    mockedStatic.close();
   }
 
   @Test
   public void testBatchPredictionWithGcs() throws InterruptedException {
-
-    JobState response = BatchPredictionWithGcs.createBatchJob(GEMINI_FLASH, outputGcsUri);
-
-    verify(mockedClient.batches, times(1))
-        .create(anyString(), any(BatchJobSource.class), any(CreateBatchJobConfig.class));
-
+    JobState response = BatchPredictionWithGcs.createBatchJob(GEMINI_FLASH, OUTPUT_GCS_URI);
     assertThat(response.toString()).isNotEmpty();
     assertThat(response.toString()).isEqualTo("JOB_STATE_SUCCEEDED");
-    assertThat(bout.toString()).contains("Job name: " + jobName);
+    assertThat(bout.toString()).contains("Job name: ");
     assertThat(bout.toString()).contains("Job state: JOB_STATE_SUCCEEDED");
   }
 
   @Test
   public void testBatchPredictionEmbeddingsWithGcs() throws InterruptedException {
-
     JobState response =
-        BatchPredictionEmbeddingsWithGcs.createBatchJob(EMBEDDING_MODEL, outputGcsUri);
-
-    verify(mockedClient.batches, times(1))
-        .create(anyString(), any(BatchJobSource.class), any(CreateBatchJobConfig.class));
-
+        BatchPredictionEmbeddingsWithGcs.createBatchJob(EMBEDDING_MODEL, OUTPUT_GCS_URI);
     assertThat(response.toString()).isNotEmpty();
     assertThat(response.toString()).isEqualTo("JOB_STATE_SUCCEEDED");
-    assertThat(bout.toString()).contains("Job name: " + jobName);
+    assertThat(bout.toString()).contains("Job name: ");
     assertThat(bout.toString()).contains("Job state: JOB_STATE_SUCCEEDED");
   }
 }
