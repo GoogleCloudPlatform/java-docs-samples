@@ -30,8 +30,9 @@ import com.google.genai.types.BatchJobSource;
 import com.google.genai.types.CreateBatchJobConfig;
 import com.google.genai.types.HttpOptions;
 import com.google.genai.types.JobState;
-import java.util.HashSet;
+import java.util.EnumSet;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 public class BatchPredictionWithGcs {
 
@@ -86,14 +87,11 @@ public class BatchPredictionWithGcs {
 
       // See the documentation:
       // https://googleapis.github.io/java-genai/javadoc/com/google/genai/types/BatchJob.html
-      Set<JobState.Known> completedStates = new HashSet<>();
-      completedStates.add(JOB_STATE_SUCCEEDED);
-      completedStates.add(JOB_STATE_FAILED);
-      completedStates.add(JOB_STATE_CANCELLED);
-      completedStates.add(JOB_STATE_PAUSED);
+      Set<JobState.Known> completedStates =
+          EnumSet.of(JOB_STATE_SUCCEEDED, JOB_STATE_FAILED, JOB_STATE_CANCELLED, JOB_STATE_PAUSED);
 
       while (!completedStates.contains(jobState.knownEnum())) {
-        Thread.sleep(30000);
+        TimeUnit.SECONDS.sleep(30);
         batchJob = client.batches.get(jobName, null);
         jobState =
             batchJob

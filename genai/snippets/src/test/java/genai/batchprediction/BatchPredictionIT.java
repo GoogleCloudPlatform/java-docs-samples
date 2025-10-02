@@ -55,7 +55,10 @@ public class BatchPredictionIT {
   private static String outputGcsUri;
   private ByteArrayOutputStream bout;
   private PrintStream out;
+  private Client.Builder mockedBuilder;
   private Client mockedClient;
+  private Batches mockedBatches;
+  private BatchJob mockedJobResponse;
   private MockedStatic<Client> mockedStatic;
 
   // Check if the required environment variables are set.
@@ -79,10 +82,11 @@ public class BatchPredictionIT {
     System.setOut(out);
 
     // Mock builder, client, batches and response
-    Client.Builder mockedBuilder = mock(Client.Builder.class, RETURNS_SELF);
+    mockedBuilder = mock(Client.Builder.class, RETURNS_SELF);
     mockedClient = mock(Client.class);
-    Batches mockedBatches = mock(Batches.class);
-    BatchJob mockedBatchJobResponse = mock(BatchJob.class);
+    mockedBatches = mock(Batches.class);
+    mockedJobResponse = mock(BatchJob.class);
+
     // Static mock of Client.builder()
     mockedStatic = mockStatic(Client.class);
     mockedStatic.when(Client::builder).thenReturn(mockedBuilder);
@@ -96,10 +100,10 @@ public class BatchPredictionIT {
 
     when(mockedClient.batches.create(
             anyString(), any(BatchJobSource.class), any(CreateBatchJobConfig.class)))
-        .thenReturn(mockedBatchJobResponse);
+            .thenReturn(mockedJobResponse);
+    when(mockedJobResponse.name()).thenReturn(Optional.of(jobName));
+    when(mockedJobResponse.state()).thenReturn(Optional.of(new JobState(JOB_STATE_SUCCEEDED)));
 
-    when(mockedBatchJobResponse.name()).thenReturn(Optional.of(jobName));
-    when(mockedBatchJobResponse.state()).thenReturn(Optional.of(new JobState(JOB_STATE_SUCCEEDED)));
   }
 
   @After
