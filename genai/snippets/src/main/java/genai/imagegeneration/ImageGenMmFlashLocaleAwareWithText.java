@@ -37,7 +37,7 @@ public class ImageGenMmFlashLocaleAwareWithText {
 
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
-    String modelId = "gemini-2.5-flash-image-preview";
+    String modelId = "gemini-2.5-flash-image";
     String outputFile = "resources/output/example-breakfast-meal.png";
     generateContent(modelId, outputFile);
   }

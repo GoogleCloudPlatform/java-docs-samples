@@ -37,7 +37,7 @@ public class ImageGenMmFlashMultipleImagesWithText {
 
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
-    String modelId = "gemini-2.5-flash-image-preview";
+    String modelId = "gemini-2.5-flash-image";
     generateContent(modelId);
   }
 
@@ -49,7 +49,7 @@ public class ImageGenMmFlashMultipleImagesWithText {
       GenerateContentResponse response =
           client.models.generateContent(
               modelId,
-              "Generate 3 images a cat sitting on a chair.",
+              "Generate 3 images of a cat sitting on a chair.",
               GenerateContentConfig.builder().responseModalities("TEXT", "IMAGE").build());
 
       // Get parts of the response
@@ -73,6 +73,7 @@ public class ImageGenMmFlashMultipleImagesWithText {
               ImageIO.read(new ByteArrayInputStream(part.inlineData().flatMap(Blob::data).get()));
           String fileName = "resources/output/example-cats-0" + (imageCounter++) + ".png";
           ImageIO.write(image, "png", new File(fileName));
+          System.out.println(imageCounter);
           generatedImages.add(fileName);
         }
       }
