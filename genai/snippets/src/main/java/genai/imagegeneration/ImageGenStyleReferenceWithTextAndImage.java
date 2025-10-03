@@ -37,7 +37,18 @@ public class ImageGenStyleReferenceWithTextAndImage {
     styleCustomization(modelId, outputGcsUri);
   }
 
-  // Transfers the style of a reference image to a new image using a text prompt
+  /**
+   * Generates an image with a style reference image and text prompt
+   *
+   * <p>This function demonstrates style customization. It uses a style reference image of a "neon
+   * sign". The model is instructed to transfer the style of the reference image to a new image
+   * based on the text prompt.
+   *
+   * @param modelId The GenAI model to use for generating the image.
+   * @param outputGcsUri A GCS URI where the generated image will be saved. Example:
+   *     "gs://your-bucket/your-prefix"
+   * @return An Optional containing the GCS URI of the generated image if successful.
+   */
   public static Optional<String> styleCustomization(String modelId, String outputGcsUri) {
     // Client Initialization. Once created, it can be reused for multiple requests.
     try (Client client = Client.builder().location("global").vertexAI(true).build()) {

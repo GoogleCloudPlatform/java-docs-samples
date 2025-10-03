@@ -37,7 +37,18 @@ public class ImageGenCannyCtrlTypeWithTextAndImage {
     cannyEdgeCustomization(modelId, outputGcsUri);
   }
 
-  // Generates an image based on a canny edge image and text prompt
+  /**
+   * Generates an image with a Canny edge image and text prompt.
+   *
+   * <p>This function demonstrates controlled customization. It uses a "Canny edge" image, which is
+   * a black-and-white line drawing that outlines the shapes of objects. The model is instructed to
+   * follow this structural outline to generate an image based the text prompt.
+   *
+   * @param modelId The GenAI model to use for generating the image.
+   * @param outputGcsUri A GCS URI where the generated image will be saved. Example:
+   *     "gs://your-bucket/your-prefix"
+   * @return An Optional containing the GCS URI of the generated image if successful.
+   */
   public static Optional<String> cannyEdgeCustomization(String modelId, String outputGcsUri) {
     // Client Initialization. Once created, it can be reused for multiple requests.
     try (Client client = Client.builder().location("global").vertexAI(true).build()) {
@@ -78,7 +89,6 @@ public class ImageGenCannyCtrlTypeWithTextAndImage {
       generatedImage.gcsUri().ifPresent(System.out::println);
       // Example response:
       // gs://your-bucket/your-prefix
-
       return generatedImage.gcsUri();
     }
   }
