@@ -20,12 +20,10 @@ import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.List;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -35,7 +33,7 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class ImageGenerationMmFlashIT {
 
-  private static final String GEMINI_FLASH_IMAGE_PREVIEW = "gemini-2.5-flash-image-preview";
+  private static final String GEMINI_FLASH_IMAGE = "gemini-2.5-flash-image";
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
@@ -49,19 +47,6 @@ public class ImageGenerationMmFlashIT {
   @BeforeClass
   public static void checkRequirements() {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
-  }
-
-  @AfterClass
-  public static void cleanup() {
-    File directory = new File("resources/output");
-    File[] files = directory.listFiles();
-    if (files != null) {
-      for (File file : files) {
-        if (file.isFile()) {
-          file.delete();
-        }
-      }
-    }
   }
 
   @Before
@@ -80,37 +65,34 @@ public class ImageGenerationMmFlashIT {
   @Test
   public void testImageGenMmFlashEditImageWithTextAndImage() throws IOException {
     String outputFile = "resources/output/bw-example-image.png";
-    ImageGenMmFlashEditImageWithTextAndImage.generateContent(
-        GEMINI_FLASH_IMAGE_PREVIEW, outputFile);
+    ImageGenMmFlashEditImageWithTextAndImage.generateContent(GEMINI_FLASH_IMAGE, outputFile);
     assertThat(bout.toString()).contains("Content written to: " + outputFile);
   }
 
   @Test
   public void testImageGenMmFlashLocaleAwareWithText() throws IOException {
     String outputFile = "resources/output/example-breakfast-meal.png";
-    ImageGenMmFlashLocaleAwareWithText.generateContent(GEMINI_FLASH_IMAGE_PREVIEW, outputFile);
+    ImageGenMmFlashLocaleAwareWithText.generateContent(GEMINI_FLASH_IMAGE, outputFile);
     assertThat(bout.toString()).contains("Content written to: " + outputFile);
   }
 
   @Test
   public void testImageGenMmFlashMultipleImagesWithText() throws IOException {
-    List<String> images =
-        ImageGenMmFlashMultipleImagesWithText.generateContent(GEMINI_FLASH_IMAGE_PREVIEW);
+    List<String> images = ImageGenMmFlashMultipleImagesWithText.generateContent(GEMINI_FLASH_IMAGE);
     assertThat(images).isNotEmpty();
   }
 
   @Test
   public void testImageGenMmFlashTextAndImageWithText() throws IOException {
     String outputFile = "resources/output/paella-recipe.md";
-    ImageGenMmFlashTextAndImageWithText.generateContent(GEMINI_FLASH_IMAGE_PREVIEW, outputFile);
+    ImageGenMmFlashTextAndImageWithText.generateContent(GEMINI_FLASH_IMAGE, outputFile);
     assertThat(bout.toString()).contains("Content written to: " + outputFile);
-
   }
 
   @Test
   public void testImageGenMmFlashWithText() throws IOException {
     String outputFile = "resources/output/example-image-eiffel-tower.png";
-    ImageGenMmFlashWithText.generateContent(GEMINI_FLASH_IMAGE_PREVIEW, outputFile);
+    ImageGenMmFlashWithText.generateContent(GEMINI_FLASH_IMAGE, outputFile);
     assertThat(bout.toString()).contains("Content written to: " + outputFile);
   }
 }
