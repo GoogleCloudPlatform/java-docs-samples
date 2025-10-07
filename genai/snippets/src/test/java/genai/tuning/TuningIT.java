@@ -184,6 +184,8 @@ public class TuningIT {
     String response = TuningTextGenWithTxt.predictWithTunedEndpoint("test-tuning-job");
 
     verify(mockedClient.tunings, times(1)).get(anyString(), any(GetTuningJobConfig.class));
+    verify(mockedClient.models, times(1))
+        .generateContent(anyString(), anyString(), any(GenerateContentConfig.class));
     assertThat(response).isNotEmpty();
   }
 }

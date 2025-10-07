@@ -31,7 +31,7 @@ import com.google.genai.types.TunedModelCheckpoint;
 import com.google.genai.types.TuningDataset;
 import com.google.genai.types.TuningJob;
 import com.google.genai.types.TuningValidationDataset;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
@@ -95,7 +95,7 @@ public class TuningJobCreate {
       // projects/123456789012/locations/us-central1/metadataStores/default/contexts/experiment_id
 
       List<TunedModelCheckpoint> checkpoints =
-          tuningJob.tunedModel().flatMap(TunedModel::checkpoints).orElse(new ArrayList<>());
+          tuningJob.tunedModel().flatMap(TunedModel::checkpoints).orElse(Collections.emptyList());
 
       int index = 0;
       for (TunedModelCheckpoint checkpoint : checkpoints) {
