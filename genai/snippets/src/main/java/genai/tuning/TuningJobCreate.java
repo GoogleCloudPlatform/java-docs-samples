@@ -75,7 +75,7 @@ public class TuningJobCreate {
                   .build());
 
       String jobName =
-          tuningJob.name().orElseThrow(() -> new IllegalStateException("Failed to get job name"));
+          tuningJob.name().orElseThrow(() -> new IllegalStateException("Missing job name"));
       Optional<JobState> jobState = tuningJob.state();
       Set<JobState.Known> runningStates = EnumSet.of(JOB_STATE_PENDING, JOB_STATE_RUNNING);
 

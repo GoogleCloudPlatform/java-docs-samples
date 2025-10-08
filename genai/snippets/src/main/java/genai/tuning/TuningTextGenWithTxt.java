@@ -52,7 +52,7 @@ public class TuningTextGenWithTxt {
           tuningJob
               .tunedModel()
               .flatMap(TunedModel::endpoint)
-              .orElseThrow(() -> new IllegalStateException("Failed to get endpoint"));
+              .orElseThrow(() -> new IllegalStateException("Missing tuned model endpoint"));
 
       GenerateContentResponse response =
           client.models.generateContent(
