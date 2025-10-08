@@ -28,9 +28,11 @@ import com.google.genai.types.BatchJob;
 import com.google.genai.types.BatchJobDestination;
 import com.google.genai.types.BatchJobSource;
 import com.google.genai.types.CreateBatchJobConfig;
+import com.google.genai.types.GetBatchJobConfig;
 import com.google.genai.types.HttpOptions;
 import com.google.genai.types.JobState;
 import java.util.EnumSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -44,7 +46,7 @@ public class BatchPredictionEmbeddingsWithGcs {
   }
 
   // Creates a batch prediction job with embedding model and Google Cloud Storage
-  public static JobState createBatchJob(String modelId, String outputGcsUri)
+  public static Optional<JobState> createBatchJob(String modelId, String outputGcsUri)
       throws InterruptedException {
     // Client Initialization. Once created, it can be reused for multiple requests.
     try (Client client =
@@ -73,14 +75,11 @@ public class BatchPredictionEmbeddingsWithGcs {
       BatchJob batchJob = client.batches.create(modelId, batchJobSource, batchJobConfig);
 
       String jobName =
-          batchJob.name().orElseThrow(() -> new IllegalStateException("Failed to get job name."));
-      JobState jobState =
-          batchJob.state().orElseThrow(() -> new IllegalStateException("Failed to get job state."));
-
+          batchJob.name().orElseThrow(() -> new IllegalStateException("Missing job name"));
       System.out.println("Job name: " + jobName);
-      System.out.println("Job state: " + jobState);
-      // Job name:
-      // projects/{PROJECT_ID}/locations/us-central1/batchPredictionJobs/6205497615459549184
+      Optional<JobState> jobState = batchJob.state();
+      jobState.ifPresent(state -> System.out.println("Job state: " + state));
+      // Job name: projects/project_id/locations/us-central1/batchPredictionJobs/6205497615459549184
       // Job state: JOB_STATE_PENDING
 
       // See the documentation:
@@ -88,18 +87,14 @@ public class BatchPredictionEmbeddingsWithGcs {
       Set<JobState.Known> completedStates =
           EnumSet.of(JOB_STATE_SUCCEEDED, JOB_STATE_FAILED, JOB_STATE_CANCELLED, JOB_STATE_PAUSED);
 
-      while (!completedStates.contains(jobState.knownEnum())) {
+      while (jobState.isPresent() && !completedStates.contains(jobState.get().knownEnum())) {
         TimeUnit.SECONDS.sleep(30);
-        batchJob = client.batches.get(jobName, null);
-        jobState =
-            batchJob
-                .state()
-                .orElseThrow(() -> new IllegalStateException("Failed to get job state."));
-        System.out.println("Job state: " + jobState);
+        batchJob = client.batches.get(jobName, GetBatchJobConfig.builder().build());
+        jobState = batchJob.state();
+        batchJob.state().ifPresent(state -> System.out.println("Job state: " + state));
       }
       // Example response:
       // Job state: JOB_STATE_QUEUED
-      // Job state: JOB_STATE_RUNNING
       // Job state: JOB_STATE_RUNNING
       // ...
       // Job state: JOB_STATE_SUCCEEDED

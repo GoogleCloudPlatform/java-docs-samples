@@ -26,6 +26,7 @@ import com.google.cloud.storage.StorageOptions;
 import com.google.genai.types.JobState;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.Optional;
 import java.util.UUID;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -83,19 +84,22 @@ public class BatchPredictionIT {
 
   @Test
   public void testBatchPredictionWithGcs() throws InterruptedException {
-    JobState response = BatchPredictionWithGcs.createBatchJob(GEMINI_FLASH, OUTPUT_GCS_URI);
-    assertThat(response.toString()).isNotEmpty();
-    assertThat(response.toString()).isEqualTo("JOB_STATE_SUCCEEDED");
+    Optional<JobState> response =
+        BatchPredictionWithGcs.createBatchJob(GEMINI_FLASH, OUTPUT_GCS_URI);
+    assertThat(response).isPresent();
+    assertThat(response.get().toString()).isNotEmpty();
+    assertThat(response.get().toString()).isEqualTo("JOB_STATE_SUCCEEDED");
     assertThat(bout.toString()).contains("Job name: ");
     assertThat(bout.toString()).contains("Job state: JOB_STATE_SUCCEEDED");
   }
 
   @Test
   public void testBatchPredictionEmbeddingsWithGcs() throws InterruptedException {
-    JobState response =
+    Optional<JobState> response =
         BatchPredictionEmbeddingsWithGcs.createBatchJob(EMBEDDING_MODEL, OUTPUT_GCS_URI);
-    assertThat(response.toString()).isNotEmpty();
-    assertThat(response.toString()).isEqualTo("JOB_STATE_SUCCEEDED");
+    assertThat(response).isPresent();
+    assertThat(response.get().toString()).isNotEmpty();
+    assertThat(response.get().toString()).isEqualTo("JOB_STATE_SUCCEEDED");
     assertThat(bout.toString()).contains("Job name: ");
     assertThat(bout.toString()).contains("Job state: JOB_STATE_SUCCEEDED");
   }
