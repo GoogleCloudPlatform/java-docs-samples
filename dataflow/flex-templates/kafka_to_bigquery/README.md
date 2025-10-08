@@ -234,8 +234,8 @@ $ gcloud compute ssh kafka-vm --zone "$ZONE"
 1. Create a Topic
 
 ```sh
-docker run --rm --network host bitnami/kafka:3.4.0 \
-/opt/bitnami/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 \
+docker run --rm --network host apache/kafka:latest \
+/opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 \
 --create --topic <topic-name> --partitions 1 --replication-factor 1
 ```
 
@@ -250,8 +250,8 @@ Note: You can run this step either before starting the Dataflow template
 they arrive).
 
 ```sh
-docker run -i --rm --network host bitnami/kafka:3.4.0 \
-/opt/bitnami/kafka/bin/kafka-console-producer.sh \
+docker run -i --rm --network host apache/kafka:latest \
+/opt/kafka/bin/kafka-console-producer.sh \
 --bootstrap-server localhost:9092 --topic <topic-name>
 ```
 
@@ -262,16 +262,16 @@ This will print all messages from the beginning of the topic. Press Ctrl+C to
 exit.
 
 ```sh
-docker run -it --rm --network host bitnami/kafka:3.4.0 \
-/opt/bitnami/kafka/bin/kafka-console-consumer.sh \
+docker run -it --rm --network host apache/kafka:latest \
+/opt/kafka/bin/kafka-console-consumer.sh \
 --bootstrap-server localhost:9092 --topic <topic-name> --from-beginning
 ```
 
 4. (Optional) Delete a Topic
 
 ```sh
-docker run --rm --network host bitnami/kafka:3.4.0 \
-/opt/bitnami/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 \
+docker run --rm --network host apache/kafka:latest \
+/opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 \
 --delete --topic <topic-name>
 ```
 
