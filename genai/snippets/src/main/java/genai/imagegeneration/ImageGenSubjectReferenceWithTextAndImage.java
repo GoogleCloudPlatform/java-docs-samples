@@ -39,19 +39,8 @@ public class ImageGenSubjectReferenceWithTextAndImage {
     subjectCustomization(modelId, outputGcsUri);
   }
 
-  /**
-   * Demonstrates subject customization.
-   *
-   * <p>This function customizes a subject image using a subject reference image of type person,
-   * control reference image of type face mesh and text prompt. The model generates a new image of a
-   * person by adapting the subject reference image based on the control reference image and the
-   * given prompt.
-   *
-   * @param modelId The GenAI model to use for generating the image.
-   * @param outputGcsUri A GCS URI where the generated image will be saved. Example:
-   *     "gs://your-bucket/your-prefix"
-   * @return An Optional containing the GCS URI of the generated image if successful.
-   */
+  // Generates an image using subject customization by adapting a subject reference image
+  // with a control reference image and a text prompt.
   public static Optional<String> subjectCustomization(String modelId, String outputGcsUri) {
     // Client Initialization. Once created, it can be reused for multiple requests.
     try (Client client = Client.builder().location("global").vertexAI(true).build()) {

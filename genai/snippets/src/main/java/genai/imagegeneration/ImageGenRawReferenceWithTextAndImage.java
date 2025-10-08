@@ -36,18 +36,8 @@ public class ImageGenRawReferenceWithTextAndImage {
     styleTransferCustomization(modelId, outputGcsUri);
   }
 
-  /**
-   * Generates an image in a new style based on a raw reference image and text prompt.
-   *
-   * <p>This function demonstrates style transfer customization. It uses a raw reference image of a
-   * "teacup". The model is instructed to recreate the reference image in a new style based on the
-   * text prompt.
-   *
-   * @param modelId The GenAI model to use for generating the image.
-   * @param outputGcsUri A GCS URI where the generated image will be saved. Example:
-   *     "gs://your-bucket/your-prefix"
-   * @return An Optional containing the GCS URI of the generated image if successful.
-   */
+  // Generates an image in a new style using style transfer customization with a raw reference image
+  // and a text prompt.
   public static Optional<String> styleTransferCustomization(String modelId, String outputGcsUri) {
     // Client Initialization. Once created, it can be reused for multiple requests.
     try (Client client = Client.builder().location("global").vertexAI(true).build()) {
