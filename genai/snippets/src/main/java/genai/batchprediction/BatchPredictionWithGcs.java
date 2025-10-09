@@ -76,7 +76,7 @@ public class BatchPredictionWithGcs {
       BatchJob batchJob = client.batches.create(modelId, batchJobSource, batchJobConfig);
 
       String jobName =
-              batchJob.name().orElseThrow(() -> new IllegalStateException("Missing job name"));
+          batchJob.name().orElseThrow(() -> new IllegalStateException("Missing job name"));
       System.out.println("Job name: " + jobName);
       Optional<JobState> jobState = batchJob.state();
       jobState.ifPresent(state -> System.out.println("Job state: " + state));
@@ -86,7 +86,7 @@ public class BatchPredictionWithGcs {
       // See the documentation:
       // https://googleapis.github.io/java-genai/javadoc/com/google/genai/types/BatchJob.html
       Set<JobState.Known> completedStates =
-              EnumSet.of(JOB_STATE_SUCCEEDED, JOB_STATE_FAILED, JOB_STATE_CANCELLED, JOB_STATE_PAUSED);
+          EnumSet.of(JOB_STATE_SUCCEEDED, JOB_STATE_FAILED, JOB_STATE_CANCELLED, JOB_STATE_PAUSED);
 
       while (jobState.isPresent() && !completedStates.contains(jobState.get().knownEnum())) {
         TimeUnit.SECONDS.sleep(30);
