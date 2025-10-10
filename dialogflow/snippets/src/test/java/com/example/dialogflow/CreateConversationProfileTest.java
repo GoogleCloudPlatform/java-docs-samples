@@ -28,6 +28,7 @@ import java.util.UUID;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -87,6 +88,7 @@ public class CreateConversationProfileTest {
   }
 
   @Test
+  @Ignore("https://github.com/GoogleCloudPlatform/java-docs-samples/issues/10182")
   public void testCreateConversationProfileArticleSuggestion() throws IOException {
     String conversationProfileDisplayName = UUID.randomUUID().toString();
 
