@@ -175,7 +175,7 @@ public class SnippetsIT {
   @Test
   public void testMediaTokenCount() throws Exception {
     int tokenCount = GetMediaTokenCount.getMediaTokenCount(PROJECT_ID, LOCATION, GEMINI_FLASH);
-    assertThat(tokenCount).isInstanceOf(int.class);
+    assertThat(tokenCount).isNotNull();
   }
 
   @Test
