@@ -36,6 +36,7 @@ import java.util.concurrent.TimeoutException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -127,6 +128,7 @@ public class UpdateAnswerRecordTest {
   }
 
   @Test
+  @Ignore("https://github.com/GoogleCloudPlatform/java-docs-samples/issues/10182")
   public void testUpdateAnswerRecord() throws IOException {
     // Send AnalyzeContent Requests
     ParticipantManagement.analyzeContent(
