@@ -61,6 +61,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -200,6 +201,7 @@ public class PubsubliteToGcsIT {
   }
 
   @Test
+  @Ignore("https://cloud.google.com/pubsub/lite/docs Deprecated")
   public void testPubsubliteToGcs() throws InterruptedException, ExecutionException {
     // Run the pipeline on Dataflow as instructed in the README.
     PubsubliteToGcs.main(
