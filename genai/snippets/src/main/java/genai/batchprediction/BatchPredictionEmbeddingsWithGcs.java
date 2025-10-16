@@ -79,7 +79,7 @@ public class BatchPredictionEmbeddingsWithGcs {
       System.out.println("Job name: " + jobName);
       Optional<JobState> jobState = batchJob.state();
       jobState.ifPresent(state -> System.out.println("Job state: " + state));
-      // Job name: projects/project_id/locations/us-central1/batchPredictionJobs/6205497615459549184
+      // Job name: projects/.../locations/.../batchPredictionJobs/6205497615459549184
       // Job state: JOB_STATE_PENDING
 
       // See the documentation:

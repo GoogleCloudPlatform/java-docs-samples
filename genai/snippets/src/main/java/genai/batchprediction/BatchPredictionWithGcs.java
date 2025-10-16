@@ -53,7 +53,7 @@ public class BatchPredictionWithGcs {
     // Client Initialization. Once created, it can be reused for multiple requests.
     try (Client client =
         Client.builder()
-            .location("us-central1")
+            .location("global")
             .vertexAI(true)
             .httpOptions(HttpOptions.builder().apiVersion("v1").build())
             .build()) {
@@ -80,7 +80,7 @@ public class BatchPredictionWithGcs {
       System.out.println("Job name: " + jobName);
       Optional<JobState> jobState = batchJob.state();
       jobState.ifPresent(state -> System.out.println("Job state: " + state));
-      // Job name: projects/project_id/locations/us-central1/batchPredictionJobs/6205497615459549184
+      // Job name: projects/.../locations/.../batchPredictionJobs/6205497615459549184
       // Job state: JOB_STATE_PENDING
 
       // See the documentation:
