@@ -47,7 +47,7 @@ public class BatchPredictionWithGcs {
     createBatchJob(modelId, outputGcsUri);
   }
 
-  // Creates a batch prediction job with Google Cloud Storage
+  // Creates a batch prediction job with Google Cloud Storage.
   public static Optional<JobState> createBatchJob(String modelId, String outputGcsUri)
       throws InterruptedException {
     // Client Initialization. Once created, it can be reused for multiple requests.
@@ -92,7 +92,7 @@ public class BatchPredictionWithGcs {
         TimeUnit.SECONDS.sleep(30);
         batchJob = client.batches.get(jobName, GetBatchJobConfig.builder().build());
         jobState = batchJob.state();
-        batchJob.state().ifPresent(state -> System.out.println("Job state: " + state));
+        jobState.ifPresent(state -> System.out.println("Job state: " + state));
       }
       // Example response:
       // Job state: JOB_STATE_QUEUED

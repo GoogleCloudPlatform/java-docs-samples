@@ -45,7 +45,7 @@ public class BatchPredictionEmbeddingsWithGcs {
     createBatchJob(modelId, outputGcsUri);
   }
 
-  // Creates a batch prediction job with embedding model and Google Cloud Storage
+  // Creates a batch prediction job with embedding model and Google Cloud Storage.
   public static Optional<JobState> createBatchJob(String modelId, String outputGcsUri)
       throws InterruptedException {
     // Client Initialization. Once created, it can be reused for multiple requests.
@@ -91,7 +91,7 @@ public class BatchPredictionEmbeddingsWithGcs {
         TimeUnit.SECONDS.sleep(30);
         batchJob = client.batches.get(jobName, GetBatchJobConfig.builder().build());
         jobState = batchJob.state();
-        batchJob.state().ifPresent(state -> System.out.println("Job state: " + state));
+        jobState.ifPresent(state -> System.out.println("Job state: " + state));
       }
       // Example response:
       // Job state: JOB_STATE_QUEUED

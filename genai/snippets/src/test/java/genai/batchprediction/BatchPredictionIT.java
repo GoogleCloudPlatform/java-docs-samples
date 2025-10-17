@@ -18,34 +18,47 @@ package genai.batchprediction;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
+import static com.google.genai.types.JobState.Known.JOB_STATE_PENDING;
+import static com.google.genai.types.JobState.Known.JOB_STATE_RUNNING;
+import static com.google.genai.types.JobState.Known.JOB_STATE_SUCCEEDED;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.RETURNS_SELF;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import com.google.api.gax.paging.Page;
-import com.google.cloud.storage.Blob;
-import com.google.cloud.storage.Storage;
-import com.google.cloud.storage.StorageOptions;
+import com.google.genai.Batches;
+import com.google.genai.Client;
+import com.google.genai.types.BatchJob;
+import com.google.genai.types.BatchJobSource;
+import com.google.genai.types.CreateBatchJobConfig;
+import com.google.genai.types.GetBatchJobConfig;
 import com.google.genai.types.JobState;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.lang.reflect.Field;
 import java.util.Optional;
-import java.util.UUID;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.MockedStatic;
 
 @RunWith(JUnit4.class)
 public class BatchPredictionIT {
 
   private static final String GEMINI_FLASH = "gemini-2.5-flash";
   private static final String EMBEDDING_MODEL = "text-embedding-005";
-  private static final String BUCKET_NAME = "java-docs-samples-testing";
-  private static final String PREFIX = "genai-batch-prediction" + UUID.randomUUID();
-  private static final String OUTPUT_GCS_URI = String.format("gs://%s/%s", BUCKET_NAME, PREFIX);
+  private static String jobName;
+  private static String outputGcsUri;
   private ByteArrayOutputStream bout;
-  private PrintStream out;
+  private Batches mockedBatches;
+  private MockedStatic<Client> mockedStatic;
 
   // Check if the required environment variables are set.
   public static void requireEnvVar(String envVarName) {
@@ -57,50 +70,92 @@ public class BatchPredictionIT {
   @BeforeClass
   public static void checkRequirements() {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
-  }
-
-  @AfterClass
-  public static void cleanup() {
-    Storage storage = StorageOptions.getDefaultInstance().getService();
-    Page<Blob> blobs = storage.list(BUCKET_NAME, Storage.BlobListOption.prefix(PREFIX));
-
-    for (Blob blob : blobs.iterateAll()) {
-      storage.delete(blob.getBlobId());
-    }
+    jobName = "projects/project_id/locations/us-central1/batchPredictionJobs/job_id";
+    outputGcsUri = "gs://your-bucket/your-prefix";
   }
 
   @Before
-  public void setUp() {
+  public void setUp() throws NoSuchFieldException, IllegalAccessException {
     bout = new ByteArrayOutputStream();
-    out = new PrintStream(bout);
-    System.setOut(out);
+    System.setOut(new PrintStream(bout));
+
+    // Arrange
+    Client.Builder mockedBuilder = mock(Client.Builder.class, RETURNS_SELF);
+    mockedBatches = mock(Batches.class);
+    mockedStatic = mockStatic(Client.class);
+    mockedStatic.when(Client::builder).thenReturn(mockedBuilder);
+    Client mockedClient = mock(Client.class);
+    when(mockedBuilder.build()).thenReturn(mockedClient);
+
+    // Using reflection because 'batches' is a final field and cannot be mocked directly.
+    // This is brittle but necessary for testing this class structure.
+    Field field = Client.class.getDeclaredField("batches");
+    field.setAccessible(true);
+    field.set(mockedClient, mockedBatches);
+
+    // Mock the sequence of job states to test the polling loop
+    BatchJob pendingJob = mock(BatchJob.class);
+    when(pendingJob.name()).thenReturn(Optional.of(jobName));
+    when(pendingJob.state()).thenReturn(Optional.of(new JobState(JOB_STATE_PENDING)));
+
+    BatchJob runningJob = mock(BatchJob.class);
+    when(runningJob.state()).thenReturn(Optional.of(new JobState(JOB_STATE_RUNNING)));
+
+    BatchJob succeededJob = mock(BatchJob.class);
+    when(succeededJob.state()).thenReturn(Optional.of(new JobState(JOB_STATE_SUCCEEDED)));
+
+    when(mockedBatches.create(
+            anyString(), any(BatchJobSource.class), any(CreateBatchJobConfig.class)))
+        .thenReturn(pendingJob);
+    when(mockedBatches.get(anyString(), any(GetBatchJobConfig.class)))
+        .thenReturn(runningJob, succeededJob);
   }
 
   @After
   public void tearDown() {
     System.setOut(null);
     bout.reset();
+    mockedStatic.close();
   }
 
   @Test
   public void testBatchPredictionWithGcs() throws InterruptedException {
-    Optional<JobState> response =
-        BatchPredictionWithGcs.createBatchJob(GEMINI_FLASH, OUTPUT_GCS_URI);
+    // Act
+    Optional<JobState> response = BatchPredictionWithGcs.createBatchJob(GEMINI_FLASH, outputGcsUri);
+
+    // Assert
+    verify(mockedBatches, times(1))
+        .create(anyString(), any(BatchJobSource.class), any(CreateBatchJobConfig.class));
+    verify(mockedBatches, times(2)).get(anyString(), any(GetBatchJobConfig.class));
+
     assertThat(response).isPresent();
-    assertThat(response.get().toString()).isNotEmpty();
-    assertThat(response.get().toString()).isEqualTo("JOB_STATE_SUCCEEDED");
-    assertThat(bout.toString()).contains("Job name: ");
-    assertThat(bout.toString()).contains("Job state: JOB_STATE_SUCCEEDED");
+    assertThat(response.get().knownEnum()).isEqualTo(JOB_STATE_SUCCEEDED);
+
+    String output = bout.toString();
+    assertThat(output).contains("Job name: " + jobName);
+    assertThat(output).contains("Job state: JOB_STATE_PENDING");
+    assertThat(output).contains("Job state: JOB_STATE_RUNNING");
+    assertThat(output).contains("Job state: JOB_STATE_SUCCEEDED");
   }
 
   @Test
   public void testBatchPredictionEmbeddingsWithGcs() throws InterruptedException {
+    // Act
     Optional<JobState> response =
-        BatchPredictionEmbeddingsWithGcs.createBatchJob(EMBEDDING_MODEL, OUTPUT_GCS_URI);
+        BatchPredictionEmbeddingsWithGcs.createBatchJob(EMBEDDING_MODEL, outputGcsUri);
+
+    // Assert
+    verify(mockedBatches, times(1))
+        .create(anyString(), any(BatchJobSource.class), any(CreateBatchJobConfig.class));
+    verify(mockedBatches, times(2)).get(anyString(), any(GetBatchJobConfig.class));
+
     assertThat(response).isPresent();
-    assertThat(response.get().toString()).isNotEmpty();
-    assertThat(response.get().toString()).isEqualTo("JOB_STATE_SUCCEEDED");
-    assertThat(bout.toString()).contains("Job name: ");
-    assertThat(bout.toString()).contains("Job state: JOB_STATE_SUCCEEDED");
+    assertThat(response.get().knownEnum()).isEqualTo(JOB_STATE_SUCCEEDED);
+
+    String output = bout.toString();
+    assertThat(output).contains("Job name: " + jobName);
+    assertThat(output).contains("Job state: JOB_STATE_PENDING");
+    assertThat(output).contains("Job state: JOB_STATE_RUNNING");
+    assertThat(output).contains("Job state: JOB_STATE_SUCCEEDED");
   }
 }
