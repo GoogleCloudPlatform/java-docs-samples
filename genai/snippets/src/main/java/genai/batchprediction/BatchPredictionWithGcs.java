@@ -48,7 +48,7 @@ public class BatchPredictionWithGcs {
   }
 
   // Creates a batch prediction job with Google Cloud Storage.
-  public static Optional<JobState> createBatchJob(String modelId, String outputGcsUri)
+  public static JobState createBatchJob(String modelId, String outputGcsUri)
       throws InterruptedException {
     // Client Initialization. Once created, it can be reused for multiple requests.
     try (Client client =
@@ -77,9 +77,10 @@ public class BatchPredictionWithGcs {
 
       String jobName =
           batchJob.name().orElseThrow(() -> new IllegalStateException("Missing job name"));
+      JobState jobState =
+          batchJob.state().orElseThrow(() -> new IllegalStateException("Missing job state"));
       System.out.println("Job name: " + jobName);
-      Optional<JobState> jobState = batchJob.state();
-      jobState.ifPresent(state -> System.out.println("Job state: " + state));
+      System.out.println("Job state: " + jobState);
       // Job name: projects/.../locations/.../batchPredictionJobs/6205497615459549184
       // Job state: JOB_STATE_PENDING
 
@@ -88,11 +89,14 @@ public class BatchPredictionWithGcs {
       Set<JobState.Known> completedStates =
           EnumSet.of(JOB_STATE_SUCCEEDED, JOB_STATE_FAILED, JOB_STATE_CANCELLED, JOB_STATE_PAUSED);
 
-      while (jobState.isPresent() && !completedStates.contains(jobState.get().knownEnum())) {
+      while (!completedStates.contains(jobState.knownEnum())) {
         TimeUnit.SECONDS.sleep(30);
         batchJob = client.batches.get(jobName, GetBatchJobConfig.builder().build());
-        jobState = batchJob.state();
-        jobState.ifPresent(state -> System.out.println("Job state: " + state));
+        jobState =
+            batchJob
+                .state()
+                .orElseThrow(() -> new IllegalStateException("Missing job state during polling"));
+        System.out.println("Job state: " + jobState);
       }
       // Example response:
       // Job state: JOB_STATE_QUEUED

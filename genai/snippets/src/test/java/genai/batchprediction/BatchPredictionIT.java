@@ -121,15 +121,15 @@ public class BatchPredictionIT {
   @Test
   public void testBatchPredictionWithGcs() throws InterruptedException {
     // Act
-    Optional<JobState> response = BatchPredictionWithGcs.createBatchJob(GEMINI_FLASH, outputGcsUri);
+    JobState response = BatchPredictionWithGcs.createBatchJob(GEMINI_FLASH, outputGcsUri);
 
     // Assert
     verify(mockedBatches, times(1))
         .create(anyString(), any(BatchJobSource.class), any(CreateBatchJobConfig.class));
     verify(mockedBatches, times(2)).get(anyString(), any(GetBatchJobConfig.class));
 
-    assertThat(response).isPresent();
-    assertThat(response.get().knownEnum()).isEqualTo(JOB_STATE_SUCCEEDED);
+    assertThat(response).isNotNull();
+    assertThat(response.knownEnum()).isEqualTo(JOB_STATE_SUCCEEDED);
 
     String output = bout.toString();
     assertThat(output).contains("Job name: " + jobName);
@@ -141,7 +141,7 @@ public class BatchPredictionIT {
   @Test
   public void testBatchPredictionEmbeddingsWithGcs() throws InterruptedException {
     // Act
-    Optional<JobState> response =
+    JobState response =
         BatchPredictionEmbeddingsWithGcs.createBatchJob(EMBEDDING_MODEL, outputGcsUri);
 
     // Assert
@@ -149,8 +149,8 @@ public class BatchPredictionIT {
         .create(anyString(), any(BatchJobSource.class), any(CreateBatchJobConfig.class));
     verify(mockedBatches, times(2)).get(anyString(), any(GetBatchJobConfig.class));
 
-    assertThat(response).isPresent();
-    assertThat(response.get().knownEnum()).isEqualTo(JOB_STATE_SUCCEEDED);
+    assertThat(response).isNotNull();
+    assertThat(response.knownEnum()).isEqualTo(JOB_STATE_SUCCEEDED);
 
     String output = bout.toString();
     assertThat(output).contains("Job name: " + jobName);
