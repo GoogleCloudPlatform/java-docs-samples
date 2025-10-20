@@ -92,7 +92,7 @@ public class BatchPredictionIT {
     field.setAccessible(true);
     field.set(mockedClient, mockedBatches);
 
-    // Mock the sequence of job states to test the polling loop
+    // Mock the sequence of job states to test the polling loop.
     BatchJob pendingJob = mock(BatchJob.class);
     when(pendingJob.name()).thenReturn(Optional.of(jobName));
     when(pendingJob.state()).thenReturn(Optional.of(new JobState(JOB_STATE_PENDING)));
@@ -120,15 +120,15 @@ public class BatchPredictionIT {
   @Test
   public void testBatchPredictionWithBq() throws InterruptedException {
     // Act
-    Optional<JobState> response = BatchPredictionWithBq.createBatchJob(GEMINI_FLASH, outputBqUri);
+    JobState response = BatchPredictionWithBq.createBatchJob(GEMINI_FLASH, outputBqUri);
 
     // Assert
     verify(mockedBatches, times(1))
         .create(anyString(), any(BatchJobSource.class), any(CreateBatchJobConfig.class));
     verify(mockedBatches, times(2)).get(anyString(), any(GetBatchJobConfig.class));
 
-    assertThat(response).isPresent();
-    assertThat(response.get().knownEnum()).isEqualTo(JOB_STATE_SUCCEEDED);
+    assertThat(response).isNotNull();
+    assertThat(response.knownEnum()).isEqualTo(JOB_STATE_SUCCEEDED);
 
     String output = bout.toString();
     assertThat(output).contains("Job name: " + jobName);

@@ -32,7 +32,6 @@ import com.google.genai.types.GetBatchJobConfig;
 import com.google.genai.types.HttpOptions;
 import com.google.genai.types.JobState;
 import java.util.EnumSet;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -48,7 +47,7 @@ public class BatchPredictionWithBq {
   }
 
   // Creates a batch prediction job with Google BigQuery.
-  public static Optional<JobState> createBatchJob(String modelId, String outputUri)
+  public static JobState createBatchJob(String modelId, String outputUri)
       throws InterruptedException {
     // Client Initialization. Once created, it can be reused for multiple requests.
     try (Client client =
@@ -76,9 +75,10 @@ public class BatchPredictionWithBq {
 
       String jobName =
           batchJob.name().orElseThrow(() -> new IllegalStateException("Missing job name"));
+      JobState jobState =
+          batchJob.state().orElseThrow(() -> new IllegalStateException("Missing job state"));
       System.out.println("Job name: " + jobName);
-      Optional<JobState> jobState = batchJob.state();
-      jobState.ifPresent(state -> System.out.println("Job state: " + state));
+      System.out.println("Job state: " + jobState);
       // Job name:
       // projects/.../locations/.../batchPredictionJobs/3189981423167602688
       // Job state: JOB_STATE_PENDING
@@ -88,11 +88,14 @@ public class BatchPredictionWithBq {
       Set<JobState.Known> completedStates =
           EnumSet.of(JOB_STATE_SUCCEEDED, JOB_STATE_FAILED, JOB_STATE_CANCELLED, JOB_STATE_PAUSED);
 
-      while (jobState.isPresent() && !completedStates.contains(jobState.get().knownEnum())) {
+      while (!completedStates.contains(jobState.knownEnum())) {
         TimeUnit.SECONDS.sleep(30);
         batchJob = client.batches.get(jobName, GetBatchJobConfig.builder().build());
-        jobState = batchJob.state();
-        jobState.ifPresent(state -> System.out.println("Job state: " + state));
+        jobState =
+            batchJob
+                .state()
+                .orElseThrow(() -> new IllegalStateException("Missing job state during polling"));
+        System.out.println("Job state: " + jobState);
       }
       // Example response:
       // Job state: JOB_STATE_QUEUED
