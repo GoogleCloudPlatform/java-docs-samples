@@ -23,8 +23,12 @@ import com.google.api.gax.paging.Page;
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.UUID;
+import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,6 +42,8 @@ public class VideoGenerationIT {
   private static final String BUCKET_NAME = "java-docs-samples-testing";
   private static final String PREFIX = "genai-video-generation-" + UUID.randomUUID();
   private static final String OUTPUT_GCS_URI = String.format("gs://%s/%s", BUCKET_NAME, PREFIX);
+  private ByteArrayOutputStream bout;
+  private PrintStream out;
 
   // Check if the required environment variables are set.
   public static void requireEnvVar(String envVarName) {
@@ -61,15 +67,30 @@ public class VideoGenerationIT {
     }
   }
 
+  @Before
+  public void setUp() {
+    bout = new ByteArrayOutputStream();
+    out = new PrintStream(bout);
+    System.setOut(out);
+  }
+
+  @After
+  public void tearDown() {
+    System.setOut(null);
+    bout.reset();
+  }
+
   @Test
   public void testVideoGenWithImg() throws InterruptedException {
     String response = VideoGenWithImg.generateContent(VIDEO_GEN_PREVIEW_MODEL, OUTPUT_GCS_URI);
     assertThat(response).isNotEmpty();
+    assertThat(bout.toString()).contains(OUTPUT_GCS_URI);
   }
 
   @Test
   public void testVideoGenWithTxt() throws InterruptedException {
     String response = VideoGenWithTxt.generateContent(VIDEO_GEN_MODEL, OUTPUT_GCS_URI);
     assertThat(response).isNotEmpty();
+    assertThat(bout.toString()).contains(OUTPUT_GCS_URI);
   }
 }
