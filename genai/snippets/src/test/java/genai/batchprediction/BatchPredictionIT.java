@@ -53,8 +53,9 @@ import org.mockito.MockedStatic;
 public class BatchPredictionIT {
 
   private static final String GEMINI_FLASH = "gemini-2.5-flash";
+  private static final String EMBEDDING_MODEL = "text-embedding-005";
   private static String jobName;
-  private static String outputBqUri;
+  private static String outputGcsUri;
   private ByteArrayOutputStream bout;
   private Batches mockedBatches;
   private MockedStatic<Client> mockedStatic;
@@ -70,7 +71,7 @@ public class BatchPredictionIT {
   public static void checkRequirements() {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
     jobName = "projects/project_id/locations/us-central1/batchPredictionJobs/job_id";
-    outputBqUri = "bq://your-project.your_dataset.your_table";
+    outputGcsUri = "gs://your-bucket/your-prefix";
   }
 
   @Before
@@ -92,7 +93,7 @@ public class BatchPredictionIT {
     field.setAccessible(true);
     field.set(mockedClient, mockedBatches);
 
-    // Mock the sequence of job states to test the polling loop.
+    // Mock the sequence of job states to test the polling loop
     BatchJob pendingJob = mock(BatchJob.class);
     when(pendingJob.name()).thenReturn(Optional.of(jobName));
     when(pendingJob.state()).thenReturn(Optional.of(new JobState(JOB_STATE_PENDING)));
@@ -118,9 +119,51 @@ public class BatchPredictionIT {
   }
 
   @Test
+  public void testBatchPredictionWithGcs() throws InterruptedException {
+    // Act
+    JobState response = BatchPredictionWithGcs.createBatchJob(GEMINI_FLASH, outputGcsUri);
+
+    // Assert
+    verify(mockedBatches, times(1))
+        .create(anyString(), any(BatchJobSource.class), any(CreateBatchJobConfig.class));
+    verify(mockedBatches, times(2)).get(anyString(), any(GetBatchJobConfig.class));
+
+    assertThat(response).isNotNull();
+    assertThat(response.knownEnum()).isEqualTo(JOB_STATE_SUCCEEDED);
+
+    String output = bout.toString();
+    assertThat(output).contains("Job name: " + jobName);
+    assertThat(output).contains("Job state: JOB_STATE_PENDING");
+    assertThat(output).contains("Job state: JOB_STATE_RUNNING");
+    assertThat(output).contains("Job state: JOB_STATE_SUCCEEDED");
+  }
+
+  @Test
   public void testBatchPredictionWithBq() throws InterruptedException {
     // Act
+    String outputBqUri = "bq://test-project.test_dataset.test_table";
     JobState response = BatchPredictionWithBq.createBatchJob(GEMINI_FLASH, outputBqUri);
+
+    // Assert
+    verify(mockedBatches, times(1))
+            .create(anyString(), any(BatchJobSource.class), any(CreateBatchJobConfig.class));
+    verify(mockedBatches, times(2)).get(anyString(), any(GetBatchJobConfig.class));
+
+    assertThat(response).isNotNull();
+    assertThat(response.knownEnum()).isEqualTo(JOB_STATE_SUCCEEDED);
+
+    String output = bout.toString();
+    assertThat(output).contains("Job name: " + jobName);
+    assertThat(output).contains("Job state: JOB_STATE_PENDING");
+    assertThat(output).contains("Job state: JOB_STATE_RUNNING");
+    assertThat(output).contains("Job state: JOB_STATE_SUCCEEDED");
+  }
+
+  @Test
+  public void testBatchPredictionEmbeddingsWithGcs() throws InterruptedException {
+    // Act
+    JobState response =
+        BatchPredictionEmbeddingsWithGcs.createBatchJob(EMBEDDING_MODEL, outputGcsUri);
 
     // Assert
     verify(mockedBatches, times(1))
