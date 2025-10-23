@@ -43,7 +43,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.MockedStatic;
 
-
 @RunWith(JUnit4.class)
 public class ToolsIT {
 
@@ -115,21 +114,49 @@ public class ToolsIT {
   }
 
   @Test
+  public void testToolsGoogleMapsCoordinatesWithTxt() {
+    String response = ToolsGoogleMapsCoordinatesWithTxt.generateContent(GEMINI_FLASH);
+    assertThat(response).isNotEmpty();
+  }
+
+  @Test
+  public void testToolsGoogleSearchAndUrlContextWithTxt() {
+    String url = "https://www.google.com/search?q=events+in+New+York";
+    String response = ToolsGoogleSearchAndUrlContextWithTxt.generateContent(GEMINI_FLASH, url);
+    assertThat(response).isNotEmpty();
+  }
+
+  @Test
   public void testToolsGoogleSearchWithText() {
     String response = ToolsGoogleSearchWithText.generateContent(GEMINI_FLASH);
     assertThat(response).isNotEmpty();
   }
 
   @Test
+  public void testToolsUrlContextWithTxt() {
+    String url1 = "https://cloud.google.com/vertex-ai/generative-ai/docs";
+    String url2 = "https://cloud.google.com/docs/overview";
+    String response = ToolsUrlContextWithTxt.generateContent(GEMINI_FLASH, url1, url2);
+    assertThat(response).isNotEmpty();
+    String output = bout.toString();
+    assertThat(output).contains("UrlContextMetadata");
+    assertThat(output).contains("urlRetrievalStatus");
+    assertThat(output).contains("URL_RETRIEVAL_STATUS_SUCCESS");
+    assertThat(output).contains(url1);
+    assertThat(output).contains(url2);
+  }
+
+  @Test
   public void testToolsVaisWithText() throws NoSuchFieldException, IllegalAccessException {
-    String response = "The process for making an appointment to renew your driver's license"
+    String response =
+        "The process for making an appointment to renew your driver's license"
             + " varies depending on your location.";
 
     String datastore =
-            String.format(
-                    "projects/%s/locations/global/collections/default_collection/"
-                            + "dataStores/grounding-test-datastore",
-                    PROJECT_ID);
+        String.format(
+            "projects/%s/locations/global/collections/default_collection/"
+                + "dataStores/grounding-test-datastore",
+            PROJECT_ID);
 
     Client.Builder mockedBuilder = mock(Client.Builder.class, RETURNS_SELF);
     Client mockedClient = mock(Client.class);
