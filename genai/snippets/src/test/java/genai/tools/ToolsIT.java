@@ -117,6 +117,7 @@ public class ToolsIT {
   public void testToolsGoogleMapsCoordinatesWithTxt() {
     String response = ToolsGoogleMapsCoordinatesWithTxt.generateContent(GEMINI_FLASH);
     assertThat(response).isNotEmpty();
+    assertThat(bout.toString()).contains(response);
   }
 
   @Test
@@ -124,6 +125,7 @@ public class ToolsIT {
     String url = "https://www.google.com/search?q=events+in+New+York";
     String response = ToolsGoogleSearchAndUrlContextWithTxt.generateContent(GEMINI_FLASH, url);
     assertThat(response).isNotEmpty();
+    assertThat(bout.toString()).contains(response);
   }
 
   @Test
