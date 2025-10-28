@@ -30,7 +30,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
-import org.bouncycastle.util.encoders.Base64;
 
 public class CreatePasswordLeakAssessment {
 
@@ -93,9 +92,8 @@ public class CreatePasswordLeakAssessment {
     PasswordCheckVerification verification =
         passwordLeak.createVerification(username, password).get();
 
-    byte[] lookupHashPrefix = Base64.encode(verification.getLookupHashPrefix());
-    byte[] encryptedUserCredentialsHash = Base64.encode(
-        verification.getEncryptedUserCredentialsHash());
+    byte[] lookupHashPrefix = verification.getLookupHashPrefix();
+    byte[] encryptedUserCredentialsHash = verification.getEncryptedUserCredentialsHash();
 
     // Pass the credentials to the createPasswordLeakAssessment() to get back
     // the matching database entry for the hash prefix.
@@ -108,7 +106,7 @@ public class CreatePasswordLeakAssessment {
     // Convert to appropriate input format.
     List<byte[]> leakMatchPrefixes =
         credentials.getEncryptedLeakMatchPrefixesList().stream()
-            .map(x -> Base64.decode(x.toByteArray()))
+            .map(x -> x.toByteArray())
             .collect(Collectors.toList());
 
     // Verify if the encrypted credentials are present in the obtained match list.
@@ -116,7 +114,7 @@ public class CreatePasswordLeakAssessment {
         passwordLeak
             .verify(
                 verification,
-                Base64.decode(credentials.getReencryptedUserCredentialsHash().toByteArray()),
+                credentials.getReencryptedUserCredentialsHash().toByteArray(),
                 leakMatchPrefixes)
             .get();
 
