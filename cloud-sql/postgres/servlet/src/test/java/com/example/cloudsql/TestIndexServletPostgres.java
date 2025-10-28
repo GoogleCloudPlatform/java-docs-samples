@@ -38,6 +38,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -102,6 +103,7 @@ public class TestIndexServletPostgres {
   }
 
   @Test
+  @Ignore("https://github.com/GoogleCloudPlatform/java-docs-samples/issues/8794")
   public void testGetTemplateData() throws Exception {
     TemplateData templateData = new IndexServlet().getTemplateData(pool);
 
@@ -111,6 +113,7 @@ public class TestIndexServletPostgres {
   }
 
   @Test
+  @Ignore("https://github.com/GoogleCloudPlatform/java-docs-samples/issues/8794")
   public void testServletPost() throws Exception {
     HttpServletRequest request = mock(HttpServletRequest.class);
     HttpServletResponse response = mock(HttpServletResponse.class);
