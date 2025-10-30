@@ -82,7 +82,7 @@ public class CountTokensIT {
   public void testCountTokensComputeWithText() {
 
     List<TokensInfo> response =
-            CountTokensComputeWithText.computeTokens(GEMINI_FLASH).orElse(new ArrayList<>());
+        CountTokensComputeWithText.computeTokens(GEMINI_FLASH).orElse(new ArrayList<>());
 
     assertThat(response).isNotEmpty();
     TokensInfo tokensInfo = response.get(0);
@@ -94,20 +94,44 @@ public class CountTokensIT {
 
     assertThat(tokensInfo.tokens()).isPresent();
     assertThat(tokensInfo.tokens().get()).isNotEmpty();
+  }
 
+  @Test
+  public void testCountTokensLocalTokenizerComputeWithTxt() {
+
+    List<TokensInfo> response =
+        CountTokensLocalTokenizerComputeWithTxt.computeTokens(GEMINI_FLASH)
+            .orElse(new ArrayList<>());
+
+    assertThat(response).isNotEmpty();
+    TokensInfo tokensInfo = response.get(0);
+
+    assertThat(tokensInfo.role()).isPresent();
+
+    assertThat(tokensInfo.tokenIds()).isPresent();
+    assertThat(tokensInfo.tokenIds().get()).isNotEmpty();
+
+    assertThat(tokensInfo.tokens()).isPresent();
+    assertThat(tokensInfo.tokens().get()).isNotEmpty();
+  }
+
+  @Test
+  public void testCountTokensLocalTokenizerWithTxt() {
+    Optional<Integer> response = CountTokensLocalTokenizerWithTxt.countTokens(GEMINI_FLASH);
+    assertThat(response).isPresent();
+    assertThat(response.get()).isGreaterThan(0);
   }
 
   @Test
   public void testCountTokensResponseWithText() {
 
     Optional<GenerateContentResponseUsageMetadata> response =
-            CountTokensResponseWithText.countTokens(GEMINI_FLASH);
+        CountTokensResponseWithText.countTokens(GEMINI_FLASH);
 
     assertThat(response).isPresent();
     assertThat(response.get().totalTokenCount()).isPresent();
     assertThat(response.get().totalTokenCount().get()).isGreaterThan(0);
     assertThat(response.get().promptTokenCount()).isPresent();
     assertThat(response.get().promptTokenCount().get()).isGreaterThan(0);
-
   }
 }
