@@ -93,27 +93,29 @@ public class LiveTranscribeWithAudio {
   private static void handleLiveServerMessage(
       LiveServerMessage message, CompletableFuture<Void> turnComplete) {
 
-    if (message.serverContent().isPresent()) {
-      LiveServerContent serverContent = message.serverContent().get();
-      serverContent
-          .modelTurn()
-          .ifPresent(modelTurn -> System.out.println("Model turn: " + modelTurn.parts()));
+    message
+        .serverContent()
+        .ifPresent(
+            serverContent -> {
+              serverContent
+                  .modelTurn()
+                  .ifPresent(modelTurn -> System.out.println("Model turn: " + modelTurn.parts()));
 
-      serverContent
-          .inputTranscription()
-          .flatMap(Transcription::text)
-          .ifPresent(text -> System.out.println("Input transcript: " + text));
+              serverContent
+                  .inputTranscription()
+                  .flatMap(Transcription::text)
+                  .ifPresent(text -> System.out.println("Input transcript: " + text));
 
-      serverContent
-          .outputTranscription()
-          .flatMap(Transcription::text)
-          .ifPresent(text -> System.out.println("Output transcript: " + text));
+              serverContent
+                  .outputTranscription()
+                  .flatMap(Transcription::text)
+                  .ifPresent(text -> System.out.println("Output transcript: " + text));
 
-      if (serverContent.turnComplete().orElse(false)) {
-        System.out.println("The model is done generating.");
-        turnComplete.complete(null);
-      }
-    }
+              if (serverContent.turnComplete().orElse(false)) {
+                System.out.println("The model is done generating.");
+                turnComplete.complete(null);
+              }
+            });
   }
 }
 // [END googlegenaisdk_live_transcribe_with_audio]
