@@ -104,8 +104,8 @@ public class Main {
     holderJsp.setInitParameter("logVerbosityLevel", "DEBUG");
     holderJsp.setInitParameter("fork", "false");
     holderJsp.setInitParameter("xpoweredBy", "false");
-    holderJsp.setInitParameter("compilerTargetVM", "1.8");
-    holderJsp.setInitParameter("compilerSourceVM", "1.8");
+    holderJsp.setInitParameter("compilerTargetVM", "25");
+    holderJsp.setInitParameter("compilerSourceVM", "25");
     holderJsp.setInitParameter("keepgenerated", "true");
     servletContextHandler.addServlet(holderJsp, "*.jsp");
   }

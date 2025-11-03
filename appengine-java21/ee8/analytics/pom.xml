@@ -32,9 +32,9 @@
   </parent>
 
   <properties>
-    <maven.compiler.target>1.8</maven.compiler.target>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <appengine.sdk.version>2.0.23</appengine.sdk.version>
+    <maven.compiler.target>25</maven.compiler.target>
+    <maven.compiler.source>25</maven.compiler.source>
+    <appengine.sdk.version>3.0.1</appengine.sdk.version>
   </properties>
 
   <dependencyManagement>

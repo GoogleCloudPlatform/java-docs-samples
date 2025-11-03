@@ -34,8 +34,8 @@
   </parent>
 
   <properties>
-    <maven.compiler.target>17</maven.compiler.target>
-    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>25</maven.compiler.target>
+    <maven.compiler.source>25</maven.compiler.source>
     <failOnMissingWebXml>false</failOnMissingWebXml> <!-- REQUIRED -->
     <jetty.version>9.4.57.v20241219</jetty.version>
     <spring.boot.version>2.7.18</spring.boot.version>

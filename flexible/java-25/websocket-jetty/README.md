@@ -37,9 +37,7 @@ test against the Websocket server.
 
 ## Deploy
 
-The sample application is packaged as a war, and hence will be automatically run
-using the [Java 8/Jetty 9 with Servlet 3.1
-Runtime](https://cloud.google.com/appengine/docs/flexible/java/dev-jetty9).
+The sample application is packaged as a jar and runs on the Java 25 runtime.
 
 ```sh
 mvn clean package appengine:deploy
