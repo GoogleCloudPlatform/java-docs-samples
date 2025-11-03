@@ -16,7 +16,7 @@
 <appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
   <runtime>java25</runtime>
   <app-engine-apis>true</app-engine-apis>
-  <service>appengine-analytics-j25-ee9</service>
+  <service>appengine-analytics-j25-ee8</service>
   <system-properties>
     <property name="appengine.use.EE8" value="true"/>
   </system-properties>

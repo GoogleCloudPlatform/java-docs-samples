@@ -1,4 +1,4 @@
-HelloWorld for App Engine Standard (Java 21)
+HelloWorld for App Engine Standard (Java 25)
 ============================
 
 This sample demonstrates how to deploy an application on Google App Engine.
@@ -9,7 +9,7 @@ detailed instructions.
 [ae-docs]: https://cloud.google.com/appengine/docs/java/
 
 
-* [Java 21](https://www.oracle.com/java/technologies/downloads/)
+* [Java 25](https://www.oracle.com/java/technologies/downloads/)
 * [Maven](https://maven.apache.org/download.cgi) (at least 3.5)
 * [Google Cloud SDK](https://cloud.google.com/sdk/) (aka gcloud)
 
@@ -34,7 +34,7 @@ with your Google Cloud Project Id:
 <plugin>
   <groupId>com.google.cloud.tools</groupId>
   <artifactId>appengine-maven-plugin</artifactId>
-  <version>2.8.0</version>
+  <version>2.8.3</version>
   <configuration>
     <projectId>myProjectId</projectId>
     <version>GCLOUD_CONFIG</version>
@@ -74,7 +74,7 @@ to (`src/main/test/...`).  The following resources are quite useful:
 
     ./gradlew appengineRun
 
-To use vist: http://localhost:8080/
+To use visit: http://localhost:8080/
 
 ### Deploying
 
