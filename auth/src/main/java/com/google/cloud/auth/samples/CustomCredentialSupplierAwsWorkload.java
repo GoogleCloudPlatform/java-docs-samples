@@ -1,5 +1,3 @@
-package com.google.cloud.auth.samples;
-
 /*
  * Copyright 2025 Google LLC
  *
@@ -16,6 +14,8 @@ package com.google.cloud.auth.samples;
  * limitations under the License.
  */
 
+package com.google.cloud.auth.samples;
+
 // [START auth_custom_credential_supplier_aws]
 import com.google.auth.oauth2.AwsCredentials;
 import com.google.auth.oauth2.AwsSecurityCredentials;
@@ -31,6 +31,7 @@ import software.amazon.awssdk.auth.credentials.AwsSessionCredentials;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.regions.providers.DefaultAwsRegionProviderChain;
+
 // [END auth_custom_credential_supplier_aws]
 
 /**
@@ -39,117 +40,117 @@ import software.amazon.awssdk.regions.providers.DefaultAwsRegionProviderChain;
  */
 public class CustomCredentialSupplierAwsWorkload {
 
-    public static void main(String[] args) throws IOException {
-        // The audience for the workload identity federation.
-        // Format:
-        // //iam.googleapis.com/projects/<project-number>/locations/global/workloadIdentityPools/<pool-id>/providers/<provider-id>
-        String gcpWorkloadAudience = System.getenv("GCP_WORKLOAD_AUDIENCE");
+  public static void main(String[] args) throws IOException {
+    // The audience for the workload identity federation.
+    // Format: //iam.googleapis.com/projects/<project-number>/locations/global/
+    //         workloadIdentityPools/<pool-id>/providers/<provider-id>
+    String gcpWorkloadAudience = System.getenv("GCP_WORKLOAD_AUDIENCE");
 
-        // The bucket to fetch data from.
-        String gcsBucketName = System.getenv("GCS_BUCKET_NAME");
+    // The bucket to fetch data from.
+    String gcsBucketName = System.getenv("GCS_BUCKET_NAME");
 
-        // (Optional) The service account impersonation URL.
-        String saImpersonationUrl = System.getenv("GCP_SERVICE_ACCOUNT_IMPERSONATION_URL");
+    // (Optional) The service account impersonation URL.
+    String saImpersonationUrl = System.getenv("GCP_SERVICE_ACCOUNT_IMPERSONATION_URL");
 
-        if (gcpWorkloadAudience == null || gcsBucketName == null) {
-            System.err.println(
-                    "Error: GCP_WORKLOAD_AUDIENCE and GCS_BUCKET_NAME environment variables are required.");
-            return;
-        }
-
-        System.out.println("Getting metadata for bucket: " + gcsBucketName + "...");
-        Bucket bucket =
-                authenticateWithAwsCredentials(gcpWorkloadAudience, saImpersonationUrl, gcsBucketName);
-
-        System.out.println(" --- SUCCESS! ---");
-        System.out.printf("Bucket Name: %s%n", bucket.getName());
-        System.out.printf("Bucket Location: %s%n", bucket.getLocation());
+    if (gcpWorkloadAudience == null || gcsBucketName == null) {
+      System.err.println(
+          "Error: GCP_WORKLOAD_AUDIENCE and GCS_BUCKET_NAME environment variables are required.");
+      return;
     }
 
-    /**
-     * Authenticates using a custom AWS credential supplier and retrieves bucket metadata.
-     *
-     * @param gcpWorkloadAudience The WIF provider audience.
-     * @param saImpersonationUrl Optional service account impersonation URL.
-     * @param gcsBucketName The GCS bucket name.
-     * @return The Bucket object containing metadata.
-     * @throws IOException If authentication fails.
-     */
-    // [START auth_custom_credential_supplier_aws]
-    public static Bucket authenticateWithAwsCredentials(
-            String gcpWorkloadAudience, String saImpersonationUrl, String gcsBucketName)
-            throws IOException {
+    System.out.println("Getting metadata for bucket: " + gcsBucketName + "...");
+    Bucket bucket =
+        authenticateWithAwsCredentials(gcpWorkloadAudience, saImpersonationUrl, gcsBucketName);
 
-        // 1. Instantiate the custom supplier.
-        CustomAwsSupplier customSupplier = new CustomAwsSupplier();
+    System.out.println(" --- SUCCESS! ---");
+    System.out.printf("Bucket Name: %s%n", bucket.getName());
+    System.out.printf("Bucket Location: %s%n", bucket.getLocation());
+  }
 
-        // 2. Configure the AwsCredentials options.
-        AwsCredentials.Builder credentialsBuilder =
-                AwsCredentials.newBuilder()
-                        .setAudience(gcpWorkloadAudience)
-                        // This token type indicates that the subject token is an AWS Signature Version 4 signed
-                        // request. This is required for AWS Workload Identity Federation.
-                        .setSubjectTokenType("urn:ietf:params:aws:token-type:aws4_request")
-                        .setAwsSecurityCredentialsSupplier(customSupplier);
+  /**
+   * Authenticates using a custom AWS credential supplier and retrieves bucket metadata.
+   *
+   * @param gcpWorkloadAudience The WIF provider audience.
+   * @param saImpersonationUrl Optional service account impersonation URL.
+   * @param gcsBucketName The GCS bucket name.
+   * @return The Bucket object containing metadata.
+   * @throws IOException If authentication fails.
+   */
+  // [START auth_custom_credential_supplier_aws]
+  public static Bucket authenticateWithAwsCredentials(
+      String gcpWorkloadAudience, String saImpersonationUrl, String gcsBucketName)
+      throws IOException {
 
-        if (saImpersonationUrl != null) {
-            credentialsBuilder.setServiceAccountImpersonationUrl(saImpersonationUrl);
-        }
+    // 1. Instantiate the custom supplier.
+    CustomAwsSupplier customSupplier = new CustomAwsSupplier();
 
-        GoogleCredentials credentials = credentialsBuilder.build();
+    // 2. Configure the AwsCredentials options.
+    AwsCredentials.Builder credentialsBuilder =
+        AwsCredentials.newBuilder()
+            .setAudience(gcpWorkloadAudience)
+            // This token type indicates that the subject token is an AWS Signature Version 4 signed
+            // request. This is required for AWS Workload Identity Federation.
+            .setSubjectTokenType("urn:ietf:params:aws:token-type:aws4_request")
+            .setAwsSecurityCredentialsSupplier(customSupplier);
 
-        // 3. Use the credentials to make an authenticated request.
-        Storage storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
-
-        return storage.get(gcsBucketName);
+    if (saImpersonationUrl != null) {
+      credentialsBuilder.setServiceAccountImpersonationUrl(saImpersonationUrl);
     }
 
-    /**
-     * Custom AWS Security Credentials Supplier.
-     *
-     * <p>This implementation resolves AWS credentials and regions using the default provider chains
-     * from the AWS SDK (v2). This supports environment variables, ~/.aws/credentials, and EC2/EKS
-     * metadata.
-     */
-    private static class CustomAwsSupplier implements AwsSecurityCredentialsSupplier {
-        private final AwsCredentialsProvider awsCredentialsProvider;
-        private String region;
+    GoogleCredentials credentials = credentialsBuilder.build();
 
-        public CustomAwsSupplier() {
-            // The AWS SDK handles memoization and refreshing internally.
-            this.awsCredentialsProvider = DefaultCredentialsProvider.create();
-        }
+    // 3. Use the credentials to make an authenticated request.
+    Storage storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
 
-        @Override
-        public String getRegion(ExternalAccountSupplierContext context) {
-            if (this.region == null) {
-                Region awsRegion = new DefaultAwsRegionProviderChain().getRegion();
-                if (awsRegion == null) {
-                    throw new IllegalStateException(
-                            "Unable to resolve AWS region. Ensure AWS_REGION is set or configured.");
-                }
-                this.region = awsRegion.id();
-            }
-            return this.region;
-        }
+    return storage.get(gcsBucketName);
+  }
 
-        @Override
-        public AwsSecurityCredentials getCredentials(ExternalAccountSupplierContext context) {
-            software.amazon.awssdk.auth.credentials.AwsCredentials credentials =
-                    this.awsCredentialsProvider.resolveCredentials();
+  /**
+   * Custom AWS Security Credentials Supplier.
+   *
+   * <p>This implementation resolves AWS credentials and regions using the default provider chains
+   * from the AWS SDK (v2). This supports environment variables, ~/.aws/credentials, and EC2/EKS
+   * metadata.
+   */
+  private static class CustomAwsSupplier implements AwsSecurityCredentialsSupplier {
+    private final AwsCredentialsProvider awsCredentialsProvider;
+    private String region;
 
-            if (credentials == null) {
-                throw new IllegalStateException("Unable to resolve AWS credentials.");
-            }
-
-            String sessionToken = null;
-            if (credentials instanceof AwsSessionCredentials) {
-                sessionToken = ((AwsSessionCredentials) credentials).sessionToken();
-            }
-
-            return new AwsSecurityCredentials(
-                    credentials.accessKeyId(), credentials.secretAccessKey(), sessionToken);
-        }
+    public CustomAwsSupplier() {
+      // The AWS SDK handles memoization and refreshing internally.
+      this.awsCredentialsProvider = DefaultCredentialsProvider.create();
     }
-    // [END auth_custom_credential_supplier_aws]
+
+    @Override
+    public String getRegion(ExternalAccountSupplierContext context) {
+      if (this.region == null) {
+        Region awsRegion = new DefaultAwsRegionProviderChain().getRegion();
+        if (awsRegion == null) {
+          throw new IllegalStateException(
+              "Unable to resolve AWS region. Ensure AWS_REGION is set or configured.");
+        }
+        this.region = awsRegion.id();
+      }
+      return this.region;
+    }
+
+    @Override
+    public AwsSecurityCredentials getCredentials(ExternalAccountSupplierContext context) {
+      software.amazon.awssdk.auth.credentials.AwsCredentials credentials =
+          this.awsCredentialsProvider.resolveCredentials();
+
+      if (credentials == null) {
+        throw new IllegalStateException("Unable to resolve AWS credentials.");
+      }
+
+      String sessionToken = null;
+      if (credentials instanceof AwsSessionCredentials) {
+        sessionToken = ((AwsSessionCredentials) credentials).sessionToken();
+      }
+
+      return new AwsSecurityCredentials(
+          credentials.accessKeyId(), credentials.secretAccessKey(), sessionToken);
+    }
+  }
+  // [END auth_custom_credential_supplier_aws]
 }
