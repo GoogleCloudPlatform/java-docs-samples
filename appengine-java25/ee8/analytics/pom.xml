@@ -32,8 +32,9 @@
   </parent>
 
   <properties>
-    <maven.compiler.target>25</maven.compiler.target>
-    <maven.compiler.source>25</maven.compiler.source>
+    <!--Change this to 25 in your workspace-->
+    <maven.compiler.target>21</maven.compiler.target>
+    <maven.compiler.source>21</maven.compiler.source>
     <appengine.sdk.version>3.0.1</appengine.sdk.version>
   </properties>
 
