@@ -16,16 +16,19 @@
 
 package genai.tools;
 
-// [START googlegenaisdk_tools_google_search_with_txt]
+// [START googlegenaisdk_tools_google_maps_coordinates_with_txt]
 
 import com.google.genai.Client;
 import com.google.genai.types.GenerateContentConfig;
 import com.google.genai.types.GenerateContentResponse;
-import com.google.genai.types.GoogleSearch;
+import com.google.genai.types.GoogleMaps;
 import com.google.genai.types.HttpOptions;
+import com.google.genai.types.LatLng;
+import com.google.genai.types.RetrievalConfig;
 import com.google.genai.types.Tool;
+import com.google.genai.types.ToolConfig;
 
-public class ToolsGoogleSearchWithText {
+public class ToolsGoogleMapsCoordinatesWithTxt {
 
   public static void main(String[] args) {
     // TODO(developer): Replace these variables before running the sample.
@@ -33,10 +36,9 @@ public class ToolsGoogleSearchWithText {
     generateContent(modelId);
   }
 
-  // Generates content with Google Search tool
+  // Generates content with Google Maps Tool.
   public static String generateContent(String modelId) {
-    // Initialize client that will be used to send requests. This client only needs to be created
-    // once, and can be reused for multiple requests.
+    // Client Initialization. Once created, it can be reused for multiple requests.
     try (Client client =
         Client.builder()
             .location("global")
@@ -44,21 +46,31 @@ public class ToolsGoogleSearchWithText {
             .httpOptions(HttpOptions.builder().apiVersion("v1").build())
             .build()) {
 
-      // Create a GenerateContentConfig and set Google Search tool
-      GenerateContentConfig contentConfig =
-          GenerateContentConfig.builder()
-              .tools(Tool.builder().googleSearch(GoogleSearch.builder().build()).build())
+      // Set the Google Maps Tool.
+      Tool tool = Tool.builder().googleMaps(GoogleMaps.builder().build()).build();
+
+      ToolConfig toolConfig =
+          ToolConfig.builder()
+              .retrievalConfig(
+                  RetrievalConfig.builder()
+                      // Pass coordinates for location-aware grounding
+                      .latLng(LatLng.builder().latitude(40.7128).longitude(-74.006).build())
+                      // Localize Maps results
+                      .languageCode("en_US")
+                      .build())
               .build();
 
       GenerateContentResponse response =
           client.models.generateContent(
-              modelId, "When is the next total solar eclipse in the United States?", contentConfig);
+              modelId,
+              "Where can I get the best espresso near me?",
+              GenerateContentConfig.builder().tools(tool).toolConfig(toolConfig).build());
 
-      System.out.print(response.text());
+      System.out.println(response.text());
       // Example response:
-      // The next total solar eclipse in the United States will occur on...
+      // Here are some of the top-rated coffee shops near you that serve excellent espresso...
       return response.text();
     }
   }
 }
-// [END googlegenaisdk_tools_google_search_with_txt]
+// [END googlegenaisdk_tools_google_maps_coordinates_with_txt]
