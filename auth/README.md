@@ -67,6 +67,51 @@ You can then run `DownscopingExample` via:
 
 	mvn exec:java -Dexec.mainClass=com.google.cloud.auth.samples.DownscopingExample
 
+## Custom Credential Suppliers
+
+If you want to use external credentials (like AWS or Okta) that require custom retrieval logic not supported natively by the library, you can provide a custom supplier implementation.
+
+### Authenticate with Okta (Custom Supplier)
+
+This sample demonstrates how to use a custom `IdentityPoolSubjectTokenSupplier` to fetch an OIDC token from Okta using the Client Credentials flow and exchange it for Google Cloud credentials.
+
+1.  **Set required environment variables:**
+    ```bash
+    export OKTA_DOMAIN="https://your-domain.okta.com"
+    export OKTA_CLIENT_ID="your-client-id"
+    export OKTA_CLIENT_SECRET="your-client-secret"
+    export GCP_WORKLOAD_AUDIENCE="//iam.googleapis.com/projects/123456/locations/global/workloadIdentityPools/my-pool/providers/my-provider"
+    export GCS_BUCKET_NAME="your-bucket-name"
+    # Optional:
+    # export GCP_SERVICE_ACCOUNT_IMPERSONATION_URL="..."
+    ```
+
+2.  **Run the sample:**
+    ```bash
+    mvn exec:java -Dexec.mainClass=com.google.cloud.auth.samples.CustomCredentialSupplierOktaWorkload
+    ```
+
+### Authenticate with AWS (Custom Supplier)
+
+This sample demonstrates how to use the **AWS SDK for Java (v2)** as a custom `AwsSecurityCredentialsSupplier` to bridge AWS credentials (from environment, `~/.aws/credentials`, or EKS/ECS metadata) to Google Cloud Workload Identity.
+
+1.  **Set required environment variables:**
+    ```bash
+    # Google Cloud Config
+    export GCP_WORKLOAD_AUDIENCE="//iam.googleapis.com/projects/123456/locations/global/workloadIdentityPools/my-pool/providers/my-aws-provider"
+    export GCS_BUCKET_NAME="your-bucket-name"
+    
+    # AWS Credentials (or use ~/.aws/credentials)
+    export AWS_ACCESS_KEY_ID="your-aws-key"
+    export AWS_SECRET_ACCESS_KEY="your-aws-secret"
+    export AWS_REGION="us-east-1"
+    ```
+
+2.  **Run the sample:**
+    ```bash
+    mvn exec:java -Dexec.mainClass=com.google.cloud.auth.samples.CustomCredentialSupplierAwsWorkload
+    ```
+
 ## Tests
 Run all tests:
 ```
