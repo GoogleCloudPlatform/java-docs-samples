@@ -41,7 +41,7 @@ public class LiveCodeExecWithTxt {
   }
 
   // Shows how to generate content with the Code Execution tool and a text input.
-  public static void generateContent(String modelId) {
+  public static String generateContent(String modelId) {
     // Client Initialization. Once created, it can be reused for multiple requests.
     try (Client client = Client.builder().location("us-central1").vertexAI(true).build()) {
 
@@ -54,33 +54,36 @@ public class LiveCodeExecWithTxt {
                   .tools(Tool.builder().codeExecution(ToolCodeExecution.builder().build()).build())
                   .build());
 
-      // Sends and receives messages from the server.
-      sessionFuture
-          .thenCompose(
+      // Sends and receives messages from the live session.
+      CompletableFuture<String> responseFuture =
+          sessionFuture.thenCompose(
               session -> {
-                // A future that completes when the server signals the end of its turn.
+                // A future that completes when the model signals the end of its turn.
                 CompletableFuture<Void> turnComplete = new CompletableFuture<>();
-                // Starts receiving messages from the live server.
-                session.receive(message -> handleLiveServerMessage(message, turnComplete));
-                // Sends content to the server and waits for the turn to complete.
+                // A variable to concatenate the text response from the model.
+                StringBuilder modelResponse = new StringBuilder();
+                // Starts receiving messages from the live session.
+                session.receive(
+                    message -> handleLiveServerMessage(message, turnComplete, modelResponse));
+                // Sends content to the live session and waits for the turn to complete.
                 return sendContent(session)
                     .thenCompose(unused -> turnComplete)
-                    .thenCompose(unused -> session.close());
-              })
-          .join();
+                    .thenCompose(
+                        unused -> session.close().thenApply(result -> modelResponse.toString()));
+              });
 
+      String response = responseFuture.join();
+      System.out.println(response);
       // Example output:
       // > Compute the largest prime palindrome under 100000
-      // text: Okay, I need
-      // text:  to find the largest prime palindrome less than 100000...
-      // code: ExecutableCode{code=Optional[def is_prime(n):...
-      // result: CodeExecutionResult{outcome=Optional[OUTCOME_OK],
-      // output=Optional[largest_prime_palindrome=98689...
-      // The model is done generating.
+      //
+      // Okay, I understand. I need to find the largest prime number that is also a palindrome
+      // and is less than 100000. Here's my plan...
+      return response;
     }
   }
 
-  // Sends content to the server.
+  // Sends content to the live session.
   private static CompletableFuture<Void> sendContent(AsyncSession session) {
     String textInput = "Compute the largest prime palindrome under 100000";
     System.out.printf("> %s\n", textInput);
@@ -91,9 +94,10 @@ public class LiveCodeExecWithTxt {
             .build());
   }
 
-  // Prints response messages from the server and signals `turnComplete` when the server is done.
+  // Concatenates the response messages from the model and signals
+  // `turnComplete` when the model is done generating the response.
   private static void handleLiveServerMessage(
-      LiveServerMessage message, CompletableFuture<Void> turnComplete) {
+      LiveServerMessage message, CompletableFuture<Void> turnComplete, StringBuilder response) {
     message
         .serverContent()
         .flatMap(LiveServerContent::modelTurn)
@@ -102,14 +106,13 @@ public class LiveCodeExecWithTxt {
             parts ->
                 parts.forEach(
                     part -> {
-                      part.text().ifPresent(text -> System.out.println("text: " + text));
+                      part.text().ifPresent(response::append);
                       part.executableCode().ifPresent(code -> System.out.println("code: " + code));
                       part.codeExecutionResult()
                           .ifPresent(result -> System.out.println("result: " + result));
                     }));
-
+    // Checks if the model's turn is over.
     if (message.serverContent().flatMap(LiveServerContent::turnComplete).orElse(false)) {
-      System.out.println("The model is done generating.");
       turnComplete.complete(null);
     }
   }

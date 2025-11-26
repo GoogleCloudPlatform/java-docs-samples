@@ -39,8 +39,8 @@ public class LiveWithTxt {
     generateContent(modelId);
   }
 
-  // Shows how to send a text prompt and receive messages from the live server.
-  public static void generateContent(String modelId) {
+  // Shows how to send a text prompt and receive messages from the live session.
+  public static String generateContent(String modelId) {
     // Client Initialization. Once created, it can be reused for multiple requests.
     try (Client client =
         Client.builder()
@@ -54,29 +54,35 @@ public class LiveWithTxt {
           client.async.live.connect(
               modelId, LiveConnectConfig.builder().responseModalities(TEXT).build());
 
-      // Sends and receives messages from the server.
-      sessionFuture
-          .thenCompose(
+      // Sends and receives messages from the live session.
+      CompletableFuture<String> responseFuture =
+          sessionFuture.thenCompose(
               session -> {
-                // A future that completes when the server signals the end of its turn.
+                // A future that completes when the model signals the end of its turn.
                 CompletableFuture<Void> turnComplete = new CompletableFuture<>();
-                // Starts receiving messages from the live server.
-                session.receive(message -> handleLiveServerMessage(message, turnComplete));
-                // Sends content to the server and waits for the turn to complete.
+                // A variable to concatenate the text response from the model.
+                StringBuilder modelResponse = new StringBuilder();
+                // Starts receiving messages from the live session.
+                session.receive(
+                    message -> handleLiveServerMessage(message, turnComplete, modelResponse));
+                // Sends content to the live session and waits for the turn to complete.
                 return sendContent(session)
                     .thenCompose(unused -> turnComplete)
-                    .thenCompose(unused -> session.close());
-              })
-          .join();
+                    .thenCompose(
+                        unused -> session.close().thenApply(result -> modelResponse.toString()));
+              });
+
+      String response = responseFuture.join();
+      System.out.println(response);
       // Example output:
       // > Hello? Gemini, are you there?
-      // Output: Yes
-      // Output: , I'm here. How can I help you today?
-      // The model is done generating.
+      //
+      // Yes, I am here. How can I help you today?
+      return response;
     }
   }
 
-  // Sends content to the server.
+  // Sends content to the live session.
   private static CompletableFuture<Void> sendContent(AsyncSession session) {
     String textInput = "Hello? Gemini, are you there?";
     System.out.printf("> %s\n", textInput);
@@ -87,20 +93,17 @@ public class LiveWithTxt {
             .build());
   }
 
-  // Prints response messages from the server and signals `turnComplete` when the server is done.
+  // Concatenates the output transcription from the model and signals
+  // `turnComplete` when the model is done generating the response.
   private static void handleLiveServerMessage(
-      LiveServerMessage message, CompletableFuture<Void> turnComplete) {
+      LiveServerMessage message, CompletableFuture<Void> turnComplete, StringBuilder response) {
     message
         .serverContent()
         .flatMap(LiveServerContent::modelTurn)
         .flatMap(Content::parts)
-        .ifPresent(
-            parts ->
-                parts.forEach(
-                    part -> part.text().ifPresent(text -> System.out.println("Output: " + text))));
-
+        .ifPresent(parts -> parts.forEach(part -> part.text().ifPresent(response::append)));
+    // Checks if the model's turn is over.
     if (message.serverContent().flatMap(LiveServerContent::turnComplete).orElse(false)) {
-      System.out.println("The model is done generating.");
       turnComplete.complete(null);
     }
   }

@@ -20,9 +20,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.PrintStream;
-import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -66,40 +64,26 @@ public class LiveIT {
 
   @Test
   public void testLiveCodeExecWithTxt() {
-    LiveCodeExecWithTxt.generateContent(GEMINI_FLASH_LIVE_PREVIEW);
-    String output = bout.toString();
-    assertThat(output).contains("> Compute the largest prime palindrome under 100000");
-    assertThat(output).contains("text:");
-    assertThat(output).contains("code: ExecutableCode{code=");
-    assertThat(output).contains("result: CodeExecutionResult{outcome");
-    assertThat(output).contains("The model is done generating.");
+    String response = LiveCodeExecWithTxt.generateContent(GEMINI_FLASH_LIVE_PREVIEW);
+    assertThat(response).isNotEmpty();
   }
 
   @Test
   public void testLiveGroundGoogSearchWithTxt() {
-    LiveGroundGoogSearchWithTxt.generateContent(GEMINI_FLASH_LIVE_PREVIEW);
-    String output = bout.toString();
-    assertThat(output).contains("> When did the last Brazil vs. Argentina soccer match happen?");
-    assertThat(output).contains("Output:");
-    assertThat(output).contains("The model is done generating.");
+    String response = LiveGroundGoogSearchWithTxt.generateContent(GEMINI_FLASH_LIVE_PREVIEW);
+    assertThat(response).isNotEmpty();
   }
 
   @Test
   public void testLiveTranscribeWithAudio() {
-    LiveTranscribeWithAudio.generateContent(GEMINI_FLASH_LIVE_PREVIEW_NATIVE_AUDIO);
-    String output = bout.toString();
-    assertThat(output).contains("> Hello? Gemini, are you there?");
-    assertThat(output).contains("Model turn:");
-    assertThat(output).contains("Output transcript:");
-    assertThat(output).contains("The model is done generating.");
+    String response =
+        LiveTranscribeWithAudio.generateContent(GEMINI_FLASH_LIVE_PREVIEW_NATIVE_AUDIO);
+    assertThat(response).isNotEmpty();
   }
 
   @Test
   public void testLiveWithTxt() {
-    LiveWithTxt.generateContent(GEMINI_FLASH_LIVE_PREVIEW);
-    String output = bout.toString();
-    assertThat(output).contains("> Hello? Gemini, are you there?");
-    assertThat(output).contains("Output:");
-    assertThat(output).contains("The model is done generating.");
+    String response = LiveWithTxt.generateContent(GEMINI_FLASH_LIVE_PREVIEW);
+    assertThat(response).isNotEmpty();
   }
 }

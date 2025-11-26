@@ -40,8 +40,8 @@ public class LiveTranscribeWithAudio {
     generateContent(modelId);
   }
 
-  // Shows how to transcribe audio
-  public static void generateContent(String modelId) {
+  // Shows how to transcribe audio.
+  public static String generateContent(String modelId) {
     // Client Initialization. Once created, it can be reused for multiple requests.
     try (Client client = Client.builder().location("us-central1").vertexAI(true).build()) {
 
@@ -55,30 +55,35 @@ public class LiveTranscribeWithAudio {
                   .outputAudioTranscription(AudioTranscriptionConfig.builder().build())
                   .build());
 
-      // Sends and receives messages from the live server.
-      sessionFuture
-          .thenCompose(
+      // Sends and receives messages from the live session.
+      CompletableFuture<String> responseFuture =
+          sessionFuture.thenCompose(
               session -> {
-                // A future that completes when the server signals the end of its turn.
+                // A future that completes when the model signals the end of its turn.
                 CompletableFuture<Void> turnComplete = new CompletableFuture<>();
-                // Starts receiving messages from the live server.
-                session.receive(message -> handleLiveServerMessage(message, turnComplete));
-                // Sends content to the server and waits for the turn to complete.
+                // A variable to concatenate the text response from the model.
+                StringBuilder modelResponse = new StringBuilder();
+                // Starts receiving messages from the live session.
+                session.receive(
+                    message -> handleLiveServerMessage(message, turnComplete, modelResponse));
+                // Sends content to the live session and waits for the turn to complete.
                 return sendContent(session)
                     .thenCompose(unused -> turnComplete)
-                    .thenCompose(unused -> session.close());
-              })
-          .join();
+                    .thenCompose(
+                        unused -> session.close().thenApply(result -> modelResponse.toString()));
+              });
+
+      String response = responseFuture.join();
+      System.out.println(response);
       // Example output:
       // > Hello? Gemini, are you there?
-      // Output transcript: Yes, I'm here
-      // Output transcript: How can I help you today?
-      // ...
-      // The model is done generating.
+      //
+      // Yes, I'm here. How can I help you today?
+      return response;
     }
   }
 
-  // Sends content to the live server.
+  // Sends content to the live session.
   private static CompletableFuture<Void> sendContent(AsyncSession session) {
     String textInput = "Hello? Gemini, are you there?";
     System.out.printf("> %s\n", textInput);
@@ -89,9 +94,10 @@ public class LiveTranscribeWithAudio {
             .build());
   }
 
-  // Prints response messages from the server and signals `turnComplete` when the server is done.
+  // Concatenates the output transcription from the model and signals
+  // `turnComplete` when the model is done generating the response.
   private static void handleLiveServerMessage(
-      LiveServerMessage message, CompletableFuture<Void> turnComplete) {
+      LiveServerMessage message, CompletableFuture<Void> turnComplete, StringBuilder response) {
 
     message
         .serverContent()
@@ -109,10 +115,9 @@ public class LiveTranscribeWithAudio {
               serverContent
                   .outputTranscription()
                   .flatMap(Transcription::text)
-                  .ifPresent(text -> System.out.println("Output transcript: " + text));
-
+                  .ifPresent(response::append);
+              // Checks if the model's turn is over.
               if (serverContent.turnComplete().orElse(false)) {
-                System.out.println("The model is done generating.");
                 turnComplete.complete(null);
               }
             });
