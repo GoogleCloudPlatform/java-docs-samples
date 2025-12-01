@@ -52,7 +52,7 @@ public class MdcSample {
       String messageId = message.getMessageId();
 
       try (MDC.MDCCloseable ignored = MDC.putCloseable("messageId", messageId)) {
-        String payload = new String(message.getPayload());
+        String payload = new String(message.getPayload(), java.nio.charset.StandardCharsets.UTF_8);
         logger.info("Received message with payload: {}", payload);
 
         // This is the example task
