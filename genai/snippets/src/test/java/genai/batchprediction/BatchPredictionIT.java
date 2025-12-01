@@ -139,6 +139,27 @@ public class BatchPredictionIT {
   }
 
   @Test
+  public void testBatchPredictionWithBq() throws InterruptedException {
+    // Act
+    String outputBqUri = "bq://test-project.test_dataset.test_table";
+    JobState response = BatchPredictionWithBq.createBatchJob(GEMINI_FLASH, outputBqUri);
+
+    // Assert
+    verify(mockedBatches, times(1))
+        .create(anyString(), any(BatchJobSource.class), any(CreateBatchJobConfig.class));
+    verify(mockedBatches, times(2)).get(anyString(), any(GetBatchJobConfig.class));
+
+    assertThat(response).isNotNull();
+    assertThat(response.knownEnum()).isEqualTo(JOB_STATE_SUCCEEDED);
+
+    String output = bout.toString();
+    assertThat(output).contains("Job name: " + jobName);
+    assertThat(output).contains("Job state: JOB_STATE_PENDING");
+    assertThat(output).contains("Job state: JOB_STATE_RUNNING");
+    assertThat(output).contains("Job state: JOB_STATE_SUCCEEDED");
+  }
+
+  @Test
   public void testBatchPredictionEmbeddingsWithGcs() throws InterruptedException {
     // Act
     JobState response =
