@@ -58,7 +58,7 @@ public class MdcSample {
         // This is the example task
         logger.info("Executing example task...");
       } catch (Exception e) {
-        logger.info("failure");
+        logger.error("Failed to process message", e);
       }
     }
   }
