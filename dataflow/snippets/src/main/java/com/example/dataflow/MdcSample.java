@@ -53,7 +53,7 @@ public class MdcSample {
 
       try (MDC.MDCCloseable ignored = MDC.putCloseable("messageId", messageId)) {
         String payload = new String(message.getPayload());
-        logger.info("Received message with payload: " + payload);
+        logger.info("Received message with payload: {}", payload);
 
         // This is the example task
         logger.info("Executing example task...");
