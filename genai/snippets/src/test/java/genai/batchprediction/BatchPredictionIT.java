@@ -146,7 +146,7 @@ public class BatchPredictionIT {
 
     // Assert
     verify(mockedBatches, times(1))
-            .create(anyString(), any(BatchJobSource.class), any(CreateBatchJobConfig.class));
+        .create(anyString(), any(BatchJobSource.class), any(CreateBatchJobConfig.class));
     verify(mockedBatches, times(2)).get(anyString(), any(GetBatchJobConfig.class));
 
     assertThat(response).isNotNull();
