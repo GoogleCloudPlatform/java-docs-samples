@@ -131,7 +131,7 @@ public class BoundingBoxWithTxtImg {
     // Client Initialization. Once created, it can be reused for multiple requests.
     try (Client client =
         Client.builder()
-            .location("us-central1")
+            .location("global")
             .httpOptions(HttpOptions.builder().apiVersion("v1").build())
             .vertexAI(true)
             .build()) {
