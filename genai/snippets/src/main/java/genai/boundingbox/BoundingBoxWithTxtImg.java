@@ -173,7 +173,6 @@ public class BoundingBoxWithTxtImg {
                       .threshold(HarmBlockThreshold.Known.BLOCK_ONLY_HIGH)
                       .build())
               .responseMimeType("application/json")
-              .responseSchema(Schema.builder().build())
               .responseSchema(responseSchema)
               .build();
 
