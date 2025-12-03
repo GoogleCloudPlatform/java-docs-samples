@@ -94,20 +94,20 @@ public class BoundingBoxWithTxtImg {
       List<Integer> box2d = boundingBox.getBox2d();
 
       // Scale normalized coordinates (0-1000) to image dimensions.
-      int absYMin = (int) (box2d.get(0) / 1000.0 * height);
-      int absXMin = (int) (box2d.get(1) / 1000.0 * width);
-      int absYMax = (int) (box2d.get(2) / 1000.0 * height);
-      int absXMax = (int) (box2d.get(3) / 1000.0 * width);
+      int topY = (int) (box2d.get(0) / 1000.0 * height);
+      int leftX = (int) (box2d.get(1) / 1000.0 * width);
+      int bottomY = (int) (box2d.get(2) / 1000.0 * height);
+      int rightX = (int) (box2d.get(3) / 1000.0 * width);
 
       Color color = colors.get(i % colors.size());
       graphics2D.setColor(color);
 
       // Draw the rectangle.
-      graphics2D.drawRect(absXMin, absYMin, absXMax - absXMin, absYMax - absYMin);
+      graphics2D.drawRect(leftX, topY, rightX - leftX, bottomY - topY);
 
       // Draw the label text.
       if (boundingBox.getLabel() != null && !boundingBox.getLabel().isEmpty()) {
-        graphics2D.drawString(boundingBox.getLabel(), absXMin + 8, absYMin + 20);
+        graphics2D.drawString(boundingBox.getLabel(), leftX + 8, topY + 20);
       }
     }
     graphics2D.dispose();
