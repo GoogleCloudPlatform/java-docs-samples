@@ -31,7 +31,7 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class ControlledGenerationWithResponseSchemaIT {
 
-    private static final String MODEL = "gemini-2.5-flash";
+    private static final String GEMINI_FLASH = "gemini-2.5-flash";
     private ByteArrayOutputStream bout;
     private PrintStream out;
 
@@ -62,7 +62,7 @@ public class ControlledGenerationWithResponseSchemaIT {
     public void testControlledGenerationWithResponseSchema() {
         String prompt = "List a few popular cookie recipes.";
 
-        String response = ControlledGenerationWithResponseSchema.generateContent(MODEL, prompt);
+        String response = ControlledGenerationWithResponseSchema.generateContent(GEMINI_FLASH, prompt);
 
         assertThat(response).isNotEmpty();
         assertThat(response).contains("recipe_name");

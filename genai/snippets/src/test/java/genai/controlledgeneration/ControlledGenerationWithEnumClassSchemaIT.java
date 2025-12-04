@@ -31,7 +31,7 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class ControlledGenerationWithEnumClassSchemaIT {
 
-    private static final String MODEL = "gemini-2.5-flash";
+    private static final String GEMINI_FLASH = "gemini-2.5-flash";
     private ByteArrayOutputStream bout;
     private PrintStream out;
 
@@ -62,11 +62,11 @@ public class ControlledGenerationWithEnumClassSchemaIT {
     public void testControlledGenerationWithEnumClassSchema() {
         String prompt = "What type of instrument is a guitar?";
         String response =
-                ControlledGenerationWithEnumClassSchema.generateContent(MODEL, prompt);
+                ControlledGenerationWithEnumClassSchema.generateContent(GEMINI_FLASH, prompt);
 
         assertThat(response).isNotEmpty();
         // The response *should* contain one of the expected enum values
         assertThat(response)
-                .contains("String");
+                .isEqualTo("String");
     }
 }
