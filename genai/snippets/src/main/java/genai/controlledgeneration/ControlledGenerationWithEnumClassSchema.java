@@ -24,70 +24,73 @@ import com.google.genai.types.GenerateContentResponse;
 import com.google.genai.types.HttpOptions;
 import com.google.genai.types.Schema;
 import com.google.genai.types.Type;
-
 import java.util.List;
 
 public class ControlledGenerationWithEnumClassSchema {
 
-    // Enum mirroring the Python sample
-    public enum InstrumentClass {
-        PERCUSSION("Percussion"),
-        STRING("String"),
-        WOODWIND("Woodwind"),
-        BRASS("Brass"),
-        KEYBOARD("Keyboard");
+  public static void main(String[] args) {
+    // TODO(developer): Replace these variables before running the sample.
+    String modelId = "gemini-2.5-flash";
+    String prompt = "What type of instrument is a guitar?";
+    generateContent(modelId, prompt);
+  }
 
-        private final String value;
+  // Generates content with an enum class response schema
+  public static String generateContent(String modelId, String contents) {
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests.
+    try (Client client =
+        Client.builder()
+            .location("global")
+            .vertexAI(true)
+            .httpOptions(HttpOptions.builder().apiVersion("v1").build())
+            .build()) {
 
-        InstrumentClass(String value) {
-            this.value = value;
-        }
+      // Build schema using enum values
+      Schema responseSchema =
+          Schema.builder()
+              .type(Type.Known.STRING)
+              .enum_(
+                  List.of(
+                      InstrumentClass.PERCUSSION.getValue(),
+                      InstrumentClass.STRING.getValue(),
+                      InstrumentClass.WOODWIND.getValue(),
+                      InstrumentClass.BRASS.getValue(),
+                      InstrumentClass.KEYBOARD.getValue()))
+              .build();
 
-        public String getValue() {
-            return value;
-        }
+      GenerateContentConfig config =
+          GenerateContentConfig.builder()
+              .responseMimeType("text/x.enum")
+              .responseSchema(responseSchema)
+              .build();
+
+      GenerateContentResponse response = client.models.generateContent(modelId, contents, config);
+
+      System.out.println(response.text());
+      // Example response:
+      // String
+      return response.text();
+    }
+  }
+
+  // Enum mirroring the Python sample
+  public enum InstrumentClass {
+    PERCUSSION("Percussion"),
+    STRING("String"),
+    WOODWIND("Woodwind"),
+    BRASS("Brass"),
+    KEYBOARD("Keyboard");
+
+    private final String value;
+
+    InstrumentClass(String value) {
+      this.value = value;
     }
 
-    public static void main(String[] args) {
-        String modelId = "gemini-2.5-flash";
-        String prompt = "What type of instrument is a guitar?";
-        generateContent(modelId, prompt);
+    public String getValue() {
+      return value;
     }
-
-    public static String generateContent(String modelId, String contents) {
-
-        try (Client client =
-                     Client.builder()
-                             .location("global")
-                             .vertexAI(true)
-                             .httpOptions(HttpOptions.builder().apiVersion("v1").build())
-                             .build()) {
-
-            // Build schema using enum values
-            Schema responseSchema =
-                    Schema.builder()
-                            .type(Type.Known.STRING)
-                            .enum_(List.of(
-                                    InstrumentClass.PERCUSSION.getValue(),
-                                    InstrumentClass.STRING.getValue(),
-                                    InstrumentClass.WOODWIND.getValue(),
-                                    InstrumentClass.BRASS.getValue(),
-                                    InstrumentClass.KEYBOARD.getValue()))
-                            .build();
-
-            GenerateContentConfig config =
-                    GenerateContentConfig.builder()
-                            .responseMimeType("text/x.enum")
-                            .responseSchema(responseSchema)
-                            .build();
-
-            GenerateContentResponse response = client.models.generateContent(modelId, contents, config);
-
-            System.out.println(response.text());
-            // Example response:
-            // String
-            return response.text();
-        }
-    }
+  }
 }
 // [END googlegenaisdk_ctrlgen_with_enum_class_schema]

@@ -66,45 +66,49 @@ public class ControlledGenerationIT {
     assertThat(response).isNotEmpty();
   }
 
-    @Test
-    public void testControlledGenerationWithEnumClassSchema() {
-        String prompt = "What type of instrument is a guitar?";
-        String response = ControlledGenerationWithEnumClassSchema.generateContent(GEMINI_FLASH, prompt);
+  @Test
+  public void testControlledGenerationWithEnumClassSchema() {
+    String prompt = "What type of instrument is a guitar?";
+    String response = ControlledGenerationWithEnumClassSchema.generateContent(GEMINI_FLASH, prompt);
 
-        assertThat(response).isNotEmpty();
-        assertThat(response).isEqualTo("String");
-    }
+    assertThat(response).isNotEmpty();
+    assertThat(response).isEqualTo("String");
+  }
 
-    @Test
-    public void testControlledGenerationWithNullableSchema() {
-        String prompt =
-                "The week ahead brings a mix of weather conditions.\n"
-                        + "Sunday is expected to be sunny with a temperature of 77°F and a humidity level of 50%. "
-                        + "Winds will be light at around 10 km/h.\n"
-                        + "Monday will see partly cloudy skies with a slightly cooler temperature of 72°F and the winds "
-                        + "will pick up slightly to around 15 km/h.\n"
-                        + "Tuesday brings rain showers, with temperatures dropping to 64°F and humidity rising to 70%.\n"
-                        + "Wednesday may see thunderstorms, with a temperature of 68°F.\n"
-                        + "Thursday will be cloudy with a temperature of 66°F and moderate humidity at 60%.\n"
-                        + "Friday returns to partly cloudy conditions, with a temperature of 73°F and the Winds will be "
-                        + "light at 12 km/h.\n"
-                        + "Finally, Saturday rounds off the week with sunny skies, a temperature of 80°F, and a humidity "
-                        + "level of 40%. Winds will be gentle at 8 km/h.\n";
+  @Test
+  public void testControlledGenerationWithNullableSchema() {
+    String prompt =
+        "The week ahead brings a mix of weather conditions.\n"
+            + "Sunday is expected to be sunny with a temperature "
+            + "of 77°F and a humidity level of 50%. "
+            + "Winds will be light at around 10 km/h.\n"
+            + "Monday will see partly cloudy skies with "
+            + "a slightly cooler temperature of 72°F and the winds "
+            + "will pick up slightly to around 15 km/h.\n"
+            + "Tuesday brings rain showers, with temperatures dropping "
+            + "to 64°F and humidity rising to 70%.\n"
+            + "Wednesday may see thunderstorms, with a temperature of 68°F.\n"
+            + "Thursday will be cloudy with a temperature of 66°F and moderate humidity at 60%.\n"
+            + "Friday returns to partly cloudy conditions, with "
+            + "a temperature of 73°F and the Winds will be "
+            + "light at 12 km/h.\n"
+            + "Finally, Saturday rounds off the week with sunny skies, a "
+            + "temperature of 80°F, and a humidity "
+            + "level of 40%. Winds will be gentle at 8 km/h.\n";
 
-        String response = ControlledGenerationWithNullableSchema.generateContent(GEMINI_FLASH, prompt);
+    String response = ControlledGenerationWithNullableSchema.generateContent(GEMINI_FLASH, prompt);
 
-        assertThat(response).isNotEmpty();
-        assertThat(response).contains("forecast");
-    }
+    assertThat(response).isNotEmpty();
+    assertThat(response).contains("forecast");
+  }
 
-    @Test
-    public void testControlledGenerationWithResponseSchema() {
-        String prompt = "List a few popular cookie recipes.";
+  @Test
+  public void testControlledGenerationWithResponseSchema() {
+    String prompt = "List a few popular cookie recipes.";
 
-        String response = ControlledGenerationWithResponseSchema.generateContent(GEMINI_FLASH, prompt);
+    String response = ControlledGenerationWithResponseSchema.generateContent(GEMINI_FLASH, prompt);
 
-        assertThat(response).isNotEmpty();
-        assertThat(response).contains("recipe_name");
-    }
-
+    assertThat(response).isNotEmpty();
+    assertThat(response).contains("recipe_name");
+  }
 }
