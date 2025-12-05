@@ -65,4 +65,26 @@ public class ControlledGenerationIT {
     String response = ControlledGenerationWithEnumSchema.generateContent(GEMINI_FLASH, prompt);
     assertThat(response).isNotEmpty();
   }
+
+  @Test
+  public void testControlledGenerationWithClassSchema() {
+    String prompt = "List a few popular cookie recipes.";
+
+    String response = ControlledGenerationWithClassSchema.generateContent(GEMINI_FLASH, prompt);
+
+    assertThat(response).isNotEmpty();
+    assertThat(response).contains("recipe_name");
+    assertThat(response).contains("ingredients");
+  }
+
+  @Test
+  public void testControlledGenerationWithNestedClassSchema() {
+    String prompt = "List about 10 home-baked cookies and give them grades based on tastiness.";
+
+    String response = ControlledGenerationWithNestedSchema.generateContent(GEMINI_FLASH, prompt);
+
+    assertThat(response).isNotEmpty();
+    assertThat(response).contains("recipe_name");
+    assertThat(response).contains("rating");
+  }
 }
