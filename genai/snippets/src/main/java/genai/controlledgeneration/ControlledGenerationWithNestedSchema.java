@@ -39,7 +39,10 @@ public class ControlledGenerationWithNestedSchema {
     generateContent(modelId, contents);
   }
 
+  // Generates content with a nested response schema
   public static String generateContent(String modelId, String contents) {
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests.
     try (Client client =
         Client.builder()
             .location("global")
