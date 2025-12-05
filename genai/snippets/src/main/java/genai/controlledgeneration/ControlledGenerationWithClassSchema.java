@@ -86,32 +86,36 @@ public class ControlledGenerationWithClassSchema {
         System.out.println(r);
       }
       // Example response:
-      // [Recipe(recipe_name='Chocolate Chip Cookies', ingredients=['2 1/4 cups all-purpose flour'
-      //    {
-      //      "ingredients": [
-      //        "2 1/4 cups all-purpose flour",
-      //        "1 teaspoon baking soda",
-      //        "1 teaspoon salt",
-      //        "1 cup (2 sticks) unsalted butter, softened",
-      //        "3/4 cup granulated sugar",
-      //        "3/4 cup packed brown sugar",
-      //        "1 teaspoon vanilla extract",
-      //        "2 large eggs",
-      //        "2 cups chocolate chips"
-      //      ],
-      //      "recipe_name": "Classic Chocolate Chip Cookies"
-      //    }, ... ]
+      // [
+      //   {
+      //     "recipe_name": "Classic Chocolate Chip Cookies",
+      //     "ingredients": [
+      //       "2 1/4 cups all-purpose flour",
+      //       "1 teaspoon baking soda",
+      //       "1 teaspoon salt",
+      //       "1 cup (2 sticks) unsalted butter, softened",
+      //       "3/4 cup granulated sugar",
+      //       "3/4 cup packed brown sugar",
+      //       "1 teaspoon vanilla extract",
+      //       "2 large eggs",
+      //       "2 cups chocolate chips"
+      //     ]
+      //   },
+      //   ...
+      // ]
       return response.text();
     }
   }
 
   public static class Recipe {
-    public String recipe_name;
+    @com.google.gson.annotations.SerializedName("recipe_name")
+    public String recipeName;
+
     public List<String> ingredients;
 
     @Override
     public String toString() {
-      return "Recipe{name='" + recipe_name + "', ingredients=" + ingredients + "}";
+      return "Recipe{name='" + recipeName + "', ingredients=" + ingredients + "}";
     }
   }
 }

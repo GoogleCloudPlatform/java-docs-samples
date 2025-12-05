@@ -93,32 +93,29 @@ public class ControlledGenerationWithNestedSchema {
   }
 
   public enum Grade {
-    A_PLUS("a+"),
-    A("a"),
-    B("b"),
-    C("c"),
-    D("d"),
-    F("f");
-
-    public final String value;
-
-    Grade(String value) {
-      this.value = value;
-    }
-
-    @Override
-    public String toString() {
-      return value;
-    }
+    @com.google.gson.annotations.SerializedName("a+")
+    A_PLUS,
+    @com.google.gson.annotations.SerializedName("a")
+    A,
+    @com.google.gson.annotations.SerializedName("b")
+    B,
+    @com.google.gson.annotations.SerializedName("c")
+    C,
+    @com.google.gson.annotations.SerializedName("d")
+    D,
+    @com.google.gson.annotations.SerializedName("f")
+    F
   }
 
   public static class Recipe {
-    public String recipe_name;
+    @com.google.gson.annotations.SerializedName("recipe_name")
+    public String recipeName;
+
     public Grade rating;
 
     @Override
     public String toString() {
-      return "Recipe{name='" + recipe_name + "', rating=" + rating + "}";
+      return "Recipe{name='" + recipeName + "', rating=" + rating + "}";
     }
   }
 }
