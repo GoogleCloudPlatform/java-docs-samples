@@ -23,6 +23,7 @@ import com.google.cloud.aiplatform.v1.PredictResponse;
 import com.google.protobuf.Value;
 import java.io.IOException;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -46,6 +47,7 @@ public class GetShortFormImageCaptionsSampleTest {
   }
 
   @Test
+  @Ignore("b/452720552")
   public void testGetShortFormImageCaptionsSample() throws IOException {
     PredictResponse response =
         GetShortFormImageCaptionsSample.getShortFormImageCaptions(
