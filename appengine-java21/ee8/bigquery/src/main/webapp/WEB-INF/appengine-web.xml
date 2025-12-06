@@ -1,0 +1,10 @@
+<appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
+
+  <runtime>java21</runtime>
+  <app-engine-apis>true</app-engine-apis>
+  <system-properties>
+    <property name="appengine.use.EE8" value="true"/>
+  </system-properties>
+
+  <application>dzlier-work</application>
+</appengine-web-app>
