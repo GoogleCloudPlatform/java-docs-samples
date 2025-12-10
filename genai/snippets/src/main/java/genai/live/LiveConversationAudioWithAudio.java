@@ -22,8 +22,14 @@ import static com.google.genai.types.Modality.Known.AUDIO;
 
 import com.google.genai.AsyncSession;
 import com.google.genai.Client;
-import com.google.genai.types.*;
-
+import com.google.genai.types.AudioTranscriptionConfig;
+import com.google.genai.types.Blob;
+import com.google.genai.types.Content;
+import com.google.genai.types.HttpOptions;
+import com.google.genai.types.LiveConnectConfig;
+import com.google.genai.types.LiveSendRealtimeInputParameters;
+import com.google.genai.types.LiveServerMessage;
+import com.google.genai.types.Transcription;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -41,12 +47,11 @@ public class LiveConversationAudioWithAudio {
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
     String modelId = "gemini-live-2.5-flash-preview-native-audio-09-2025";
-    String audioFilePath = "resources/hello_gemini_are_you_there.wav";
-    generateContent(modelId, audioFilePath);
+    generateContent(modelId);
   }
 
   // Shows how to get voice responses from text input.
-  public static void generateContent(String modelId, String audioFilePath) throws IOException {
+  public static void generateContent(String modelId) throws IOException {
     // Client Initialization. Once created, it can be reused for multiple requests.
     try (Client client =
         Client.builder()
@@ -56,7 +61,7 @@ public class LiveConversationAudioWithAudio {
             .build()) {
 
       // Reads the local audio file.
-      byte[] audioBytes = Files.readAllBytes(Paths.get(audioFilePath));
+      byte[] audioBytes = Files.readAllBytes(Paths.get("resources/hello_gemini_are_you_there.wav"));
 
       LiveConnectConfig liveConnectConfig =
           LiveConnectConfig.builder()
