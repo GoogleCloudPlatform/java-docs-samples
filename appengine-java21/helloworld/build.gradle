@@ -24,8 +24,8 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.google.cloud.tools:appengine-gradle-plugin:2.8.1'
-        classpath 'org.gretty:gretty:4.1.5'
+        classpath 'com.google.cloud.tools:appengine-gradle-plugin:2.8.6'
+        classpath 'org.gretty:gretty:4.1.10'
     }
 }
 apply plugin: 'org.gretty'
@@ -53,15 +53,15 @@ sourceSets {
 }
 
 dependencies {
-    implementation 'com.google.appengine:appengine-api-1.0-sdk:2.0.30'
+    implementation 'com.google.appengine:appengine-api-1.0-sdk:2.0.39'
     implementation 'jakarta.servlet:jakarta.servlet-api:6.1.0'
 
     // Test Dependencies
-    testImplementation 'com.google.appengine:appengine-testing:2.0.30'
-    testImplementation 'com.google.appengine:appengine-api-stubs:2.0.30'
-    testImplementation 'com.google.appengine:appengine-tools-sdk:2.0.30'
+    testImplementation 'com.google.appengine:appengine-testing:2.0.39'
+    testImplementation 'com.google.appengine:appengine-api-stubs:2.0.39'
+    testImplementation 'com.google.appengine:appengine-tools-sdk:2.0.39'
 
-    testImplementation 'com.google.truth:truth:1.1.5'
+    testImplementation 'com.google.truth:truth:1.4.5'
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.mockito:mockito-core:4.11.0'
 }
