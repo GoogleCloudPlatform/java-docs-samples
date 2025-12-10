@@ -59,6 +59,11 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>com.openai</groupId>
+            <artifactId>openai-java</artifactId>
+            <version>4.6.1</version>
+        </dependency>
+        <dependency>
             <artifactId>junit</artifactId>
             <groupId>junit</groupId>
             <scope>test</scope>
