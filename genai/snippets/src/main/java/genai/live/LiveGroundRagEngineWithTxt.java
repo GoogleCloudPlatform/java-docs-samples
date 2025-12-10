@@ -35,7 +35,7 @@ import java.util.concurrent.CompletableFuture;
 public class LiveGroundRagEngineWithTxt {
 
   public static void main(String[] args) {
-    // TODO(developer): Replace these variables before running the sample.s
+    // TODO(developer): Replace these variables before running the sample
     String modelId = "gemini-2.0-flash-live-preview-04-09";
     String ragCorpus = "projects/{project}/locations/{location}/ragCorpora/{rag_corpus}";
     generateContent(modelId, ragCorpus);

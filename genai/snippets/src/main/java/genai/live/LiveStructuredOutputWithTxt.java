@@ -42,7 +42,7 @@ public class LiveStructuredOutputWithTxt {
   }
 
   public static void main(String[] args) throws GeneralSecurityException, IOException {
-    // TODO(developer): Replace these variables before running the sample.s
+    // TODO(developer): Replace these variables before running the sample
     String projectId = "your-project-id";
     String location = "us-central1";
     // If you are calling a Gemini model, set the endpointId variable to use openapi.
