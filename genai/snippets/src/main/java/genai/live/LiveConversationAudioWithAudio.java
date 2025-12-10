@@ -50,7 +50,7 @@ public class LiveConversationAudioWithAudio {
     generateContent(modelId);
   }
 
-  // Shows how to get voice responses from text input.
+  // Shows how to get an audio response from an audio input.
   public static void generateContent(String modelId) throws IOException {
     // Client Initialization. Once created, it can be reused for multiple requests.
     try (Client client =
