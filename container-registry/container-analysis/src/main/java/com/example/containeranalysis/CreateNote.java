@@ -41,14 +41,9 @@ public class CreateNote {
         // Associate the Note with the metadata type
         // https://cloud.google.com/container-registry/docs/container-analysis#supported_metadata_types
         // Here, we use the type "vulnerability"
-        .setVulnerability(VulnerabilityNote.newBuilder()
-            .addDetails(VulnerabilityNote.Detail.newBuilder()
-                .setAffectedCpeUri("your-uri-here")
-                .setAffectedPackage("your-package-here")
-                .setAffectedVersionStart(Version.newBuilder()
-                    .setKind(Version.VersionKind.MINIMUM))
-                .setAffectedVersionEnd(Version.newBuilder()
-                    .setKind(Version.VersionKind.MAXIMUM))))
+        .setAttestation(AttestationNote.newBuilder()
+            .setHint(AttestationNote.Hint.newBuilder()
+                .setHumanReadableName("my-attestation-authority")))
         .build();
 
     // Initialize client that will be used to send requests. After completing all of your requests, 
