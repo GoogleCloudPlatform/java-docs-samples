@@ -91,7 +91,7 @@ For more detailed information, see the documentation on [Configuring Workload Id
 
 Create a `Dockerfile` for the Java application and push the image to a container registry (for example Amazon ECR) that your EKS cluster can access.
 
-**Note:** The provided [`Dockerfile`](Dockerfile) uses a multi-stage build to compile the Java code. It is an example that may need modification for your specific needs.
+**Note:** The provided [`Dockerfile`](Dockerfile) is an example that may need modification for your specific needs.
 
 Build and push the image:
 ```bash

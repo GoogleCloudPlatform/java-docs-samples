@@ -22,8 +22,7 @@ RUN useradd -m appuser
 USER appuser
 WORKDIR /app
 
-# Copy the Thin Jar (Your application code)
-# Ensure the name 'auth-1.0.jar' matches your pom.xml artifactId/version
+# Copy the Thin Jar
 COPY --from=builder --chown=appuser:appuser /app/target/auth-1.0.jar app.jar
 
 # Copy the Dependencies (The libraries)
@@ -31,5 +30,4 @@ COPY --from=builder --chown=appuser:appuser /app/target/libs lib/
 
 # Run with Classpath
 # We add 'app.jar' and everything in 'lib/' to the classpath.
-# We explicitly specify the Main Class here, so your shared pom.xml doesn't need to change.
 CMD ["java", "-cp", "app.jar:lib/*", "com.google.cloud.auth.samples.customcredentials.aws.CustomCredentialSupplierAwsWorkload"]

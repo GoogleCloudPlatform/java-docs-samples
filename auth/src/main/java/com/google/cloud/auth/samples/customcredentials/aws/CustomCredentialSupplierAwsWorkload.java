@@ -105,12 +105,13 @@ public class CustomCredentialSupplierAwsWorkload {
    * current process.
    */
   static void loadConfigFromFile() {
-    String secretsFile = "custom-credentials-aws-secrets.json";
-    if (!Files.exists(Paths.get(secretsFile))) {
+    // By default, this expects the file to be in the project root.
+    String secretsFilePath = "custom-credentials-aws-secrets.json";
+    if (!Files.exists(Paths.get(secretsFilePath))) {
       return;
     }
 
-    try (Reader reader = Files.newBufferedReader(Paths.get(secretsFile))) {
+    try (Reader reader = Files.newBufferedReader(Paths.get(secretsFilePath))) {
       // Use Gson to parse the JSON file into a Map
       Gson gson = new Gson();
       Type type = new TypeToken<Map<String, String>>() {}.getType();
@@ -164,10 +165,8 @@ public class CustomCredentialSupplierAwsWorkload {
       String gcpWorkloadAudience, String saImpersonationUrl, String gcsBucketName)
       throws IOException {
 
-    // 1. Instantiate the custom supplier.
     CustomAwsSupplier customSupplier = new CustomAwsSupplier();
 
-    // 2. Configure the AwsCredentials options.
     AwsCredentials.Builder credentialsBuilder =
         AwsCredentials.newBuilder()
             .setAudience(gcpWorkloadAudience)
@@ -182,7 +181,6 @@ public class CustomCredentialSupplierAwsWorkload {
 
     GoogleCredentials credentials = credentialsBuilder.build();
 
-    // 3. Use the credentials to make an authenticated request.
     Storage storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
 
     return storage.get(gcsBucketName);

@@ -1,4 +1,4 @@
-# Running the Custom Okta Credential Supplier Sample
+# Running the Custom Okta Credential Supplier Sample (Java)
 
 This sample demonstrates how to use a custom subject token supplier to authenticate with Google Cloud using Okta as an external identity provider. It uses the Client Credentials flow for machine-to-machine (M2M) authentication.
 
@@ -47,7 +47,7 @@ For detailed instructions, refer to the [Workload Identity Federation documentat
 
 ## Running the Sample
 
-To run the sample on your local system, you need to build the project and configure your credentials as environment variables.
+To run the sample on your local system, you need to build the project and provide configuration via a secrets file.
 
 ### 1. Build the Project
 
@@ -56,23 +56,13 @@ This command compiles your code and downloads all dependencies.
 mvn clean package
 ```
 
-### 2. Configure Credentials
+### Configure Credentials for Local Development
 
-This sample reads its configuration from environment variables. Set the following variables in your shell:
-
-*   `OKTA_DOMAIN`: Your Okta developer domain (for example `https://dev-123456.okta.com`).
-*   `OKTA_CLIENT_ID`: The client ID for your application.
-*   `OKTA_CLIENT_SECRET`: The client secret for your application.
-*   `GCP_WORKLOAD_AUDIENCE`: The audience for the Google Cloud Workload Identity Pool. This is the full identifier of the Workload Identity Pool provider.
-*   `GCS_BUCKET_NAME`: The name of the Google Cloud Storage bucket to access.
-*   `GCP_SERVICE_ACCOUNT_IMPERSONATION_URL`: (Optional) The URL for service account impersonation.
-
-Example:
-```bash
-export OKTA_DOMAIN="https://dev-123456.okta.com"
-export OKTA_CLIENT_ID="your-client-id"
-# ... and so on for the other variables
-```
+1.  Copy the example secrets file to a new file named `custom-credentials-okta-secrets.json` in the project root:
+    ```bash
+    cp custom-credentials-okta-secrets.json.example custom-credentials-okta-secrets.json
+    ```
+2.  Open `custom-credentials-okta-secrets.json` and fill in the required values for your AWS and Google Cloud configuration. Do not check your `custom-credentials-okta-secrets.json` file into version control.
 
 ### 3. Run the Application
 
@@ -81,12 +71,12 @@ First, generate the classpath file:
 mvn dependency:build-classpath -Dmdep.outputFile=cp.txt
 ```
 
-Now, run the application, providing the generated classpath.
+Now, run the application, providing the generated classpath:
 ```bash
 java -cp "target/auth-1.0.jar:$(cat cp.txt)" com.google.cloud.auth.samples.customcredentials.okta.CustomCredentialSupplierOktaWorkload
 ```
 
-The script authenticates with Okta to get an OIDC token, exchanges that token for a Google Cloud federated token, and uses it to list metadata for the specified Google Cloud Storage bucket.
+The script will detect the `custom-credentials-okta-secrets.json` file, authenticate with Okta to get an OIDC token, exchange it for a Google Cloud federated token, and retrieve metadata for your GCS bucket.
 
 ## Testing
 

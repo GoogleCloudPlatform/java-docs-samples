@@ -27,6 +27,7 @@ import com.google.cloud.storage.Bucket;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -122,13 +123,13 @@ public class CustomCredentialSupplierOktaWorkload {
    * current process.
    */
   static void loadConfigFromFile() {
-    String secretsFile =
-        "custom-credentials-okta-secrets.json";
-    if (!Files.exists(Paths.get(secretsFile))) {
+    // By default, this expects the file to be in the project root.
+    String secretsFilePath = "custom-credentials-okta-secrets.json";
+    if (!Files.exists(Paths.get(secretsFilePath))) {
       return;
     }
 
-    try (Reader reader = Files.newBufferedReader(Paths.get(secretsFile))) {
+    try (Reader reader = Files.newBufferedReader(Paths.get(secretsFilePath))) {
       Gson gson = new Gson();
       Type type = new TypeToken<Map<String, String>>() {}.getType();
       Map<String, String> secrets = gson.fromJson(reader, type);
@@ -161,7 +162,7 @@ public class CustomCredentialSupplierOktaWorkload {
 
     } catch (IOException e) {
       System.err.println("Error reading secrets file: " + e.getMessage());
-    } catch (com.google.gson.JsonSyntaxException e) {
+    } catch (JsonSyntaxException e) {
       System.err.println("Error: File is not valid JSON.");
     }
   }
@@ -188,11 +189,9 @@ public class CustomCredentialSupplierOktaWorkload {
       String oktaClientSecret)
       throws IOException {
 
-    // 1. Instantiate our custom supplier with Okta credentials.
     OktaClientCredentialsSupplier oktaSupplier =
         new OktaClientCredentialsSupplier(oktaDomain, oktaClientId, oktaClientSecret);
 
-    // 2. Instantiate an IdentityPoolCredentials with the required configuration.
     IdentityPoolCredentials.Builder credentialsBuilder =
         IdentityPoolCredentials.newBuilder()
             .setAudience(gcpWorkloadAudience)
@@ -208,7 +207,6 @@ public class CustomCredentialSupplierOktaWorkload {
 
     GoogleCredentials credentials = credentialsBuilder.build();
 
-    // 3. Use the credentials to make an authenticated request.
     Storage storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
 
     return storage.get(gcsBucketName);
