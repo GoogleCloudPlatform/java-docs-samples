@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.cloud.auth.samples;
+package com.google.cloud.auth.samples.customcredentials.aws;
 
 // [START auth_custom_credential_supplier_aws]
 import com.google.auth.oauth2.AwsCredentials;
@@ -25,7 +25,14 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.storage.Bucket;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import java.io.IOException;
+import java.io.Reader;
+import java.lang.reflect.Type;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Map;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.AwsSessionCredentials;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
@@ -41,30 +48,106 @@ import software.amazon.awssdk.regions.providers.DefaultAwsRegionProviderChain;
 public class CustomCredentialSupplierAwsWorkload {
 
   public static void main(String[] args) throws IOException {
+
+    // Reads the custom-credentials-aws-secrets.json if running locally.
+    loadConfigFromFile();
+
     // The audience for the workload identity federation.
     // Format: //iam.googleapis.com/projects/<project-number>/locations/global/
     //         workloadIdentityPools/<pool-id>/providers/<provider-id>
-    String gcpWorkloadAudience = System.getenv("GCP_WORKLOAD_AUDIENCE");
+    String gcpWorkloadAudience = getConfiguration("GCP_WORKLOAD_AUDIENCE");
 
     // The bucket to fetch data from.
-    String gcsBucketName = System.getenv("GCS_BUCKET_NAME");
+    String gcsBucketName = getConfiguration("GCS_BUCKET_NAME");
 
     // (Optional) The service account impersonation URL.
-    String saImpersonationUrl = System.getenv("GCP_SERVICE_ACCOUNT_IMPERSONATION_URL");
+    String saImpersonationUrl = getConfiguration("GCP_SERVICE_ACCOUNT_IMPERSONATION_URL");
 
     if (gcpWorkloadAudience == null || gcsBucketName == null) {
       System.err.println(
-          "Error: GCP_WORKLOAD_AUDIENCE and GCS_BUCKET_NAME environment variables are required.");
+          "Required configuration missing. Please provide it in a "
+              + "custom-credentials-aws-secrets.json file or as environment variables: "
+              + "GCP_WORKLOAD_AUDIENCE, GCS_BUCKET_NAME");
       return;
     }
 
-    System.out.println("Getting metadata for bucket: " + gcsBucketName + "...");
-    Bucket bucket =
-        authenticateWithAwsCredentials(gcpWorkloadAudience, saImpersonationUrl, gcsBucketName);
+    try {
+      System.out.println("Retrieving metadata for bucket: " + gcsBucketName + "...");
+      Bucket bucket =
+          authenticateWithAwsCredentials(gcpWorkloadAudience, saImpersonationUrl, gcsBucketName);
 
-    System.out.println(" --- SUCCESS! ---");
-    System.out.printf("Bucket Name: %s%n", bucket.getName());
-    System.out.printf("Bucket Location: %s%n", bucket.getLocation());
+      System.out.println(" --- SUCCESS! ---");
+      System.out.println("Bucket details:");
+      System.out.printf("  Name: %s%n", bucket.getName());
+      System.out.printf("  Location: %s%n", bucket.getLocation());
+      System.out.printf("  Storage Class: %s%n", bucket.getStorageClass());
+      System.out.printf("  Metageneration: %s%n", bucket.getMetageneration());
+    } catch (Exception e) {
+      System.err.println("Authentication or Request failed: " + e.getMessage());
+    }
+  }
+
+  /**
+   * Helper method to retrieve configuration. It checks Environment variables first, then System
+   * properties (populated by loadConfigFromFile).
+   */
+  static String getConfiguration(String key) {
+    String value = System.getenv(key);
+    if (value == null) {
+      value = System.getProperty(key);
+    }
+    return value;
+  }
+
+  /**
+   * If a local secrets file is present, load it into the System Properties. This is a
+   * "just-in-time" configuration for local development. These variables are only set for the
+   * current process.
+   */
+  static void loadConfigFromFile() {
+    String secretsFile = "custom-credentials-aws-secrets.json";
+    if (!Files.exists(Paths.get(secretsFile))) {
+      return;
+    }
+
+    try (Reader reader = Files.newBufferedReader(Paths.get(secretsFile))) {
+      // Use Gson to parse the JSON file into a Map
+      Gson gson = new Gson();
+      Type type = new TypeToken<Map<String, String>>() {}.getType();
+      Map<String, String> secrets = gson.fromJson(reader, type);
+
+      if (secrets == null) {
+        return;
+      }
+
+      // AWS SDK for Java looks for System Properties with specific names (camelCase)
+      // if environment variables are missing.
+      if (secrets.containsKey("aws_access_key_id")) {
+        System.setProperty("aws.accessKeyId", secrets.get("aws_access_key_id"));
+      }
+      if (secrets.containsKey("aws_secret_access_key")) {
+        System.setProperty("aws.secretAccessKey", secrets.get("aws_secret_access_key"));
+      }
+      if (secrets.containsKey("aws_region")) {
+        System.setProperty("aws.region", secrets.get("aws_region"));
+      }
+
+      // Set custom GCP variables as System Properties so getConfiguration() can find them.
+      if (secrets.containsKey("gcp_workload_audience")) {
+        System.setProperty("GCP_WORKLOAD_AUDIENCE", secrets.get("gcp_workload_audience"));
+      }
+      if (secrets.containsKey("gcs_bucket_name")) {
+        System.setProperty("GCS_BUCKET_NAME", secrets.get("gcs_bucket_name"));
+      }
+      if (secrets.containsKey("gcp_service_account_impersonation_url")) {
+        System.setProperty(
+            "GCP_SERVICE_ACCOUNT_IMPERSONATION_URL",
+            secrets.get("gcp_service_account_impersonation_url"));
+      }
+
+    } catch (IOException e) {
+      System.err.println("Error reading secrets file: " + e.getMessage());
+    }
   }
 
   /**
@@ -117,7 +200,7 @@ public class CustomCredentialSupplierAwsWorkload {
     private String region;
 
     public CustomAwsSupplier() {
-      // The AWS SDK handles memoization and refreshing internally.
+      // The AWS SDK handles caching internally.
       this.awsCredentialsProvider = DefaultCredentialsProvider.create();
     }
 

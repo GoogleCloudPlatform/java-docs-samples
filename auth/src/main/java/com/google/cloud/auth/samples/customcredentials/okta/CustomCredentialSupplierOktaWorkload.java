@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.cloud.auth.samples;
+package com.google.cloud.auth.samples.customcredentials.okta;
 
 // [START auth_custom_credential_supplier_okta]
 import com.google.api.client.json.GenericJson;
@@ -26,15 +26,22 @@ import com.google.auth.oauth2.IdentityPoolSubjectTokenSupplier;
 import com.google.cloud.storage.Bucket;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Reader;
+import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.Base64;
+import java.util.Map;
 
 // [END auth_custom_credential_supplier_okta]
 
@@ -45,21 +52,25 @@ import java.util.Base64;
 public class CustomCredentialSupplierOktaWorkload {
 
   public static void main(String[] args) throws IOException {
+
+    // Reads the custom-credentials-okta-secrets.json if running locally.
+    loadConfigFromFile();
+
     // The audience for the workload identity federation.
     // Format: //iam.googleapis.com/projects/<project-number>/locations/global/
     //         workloadIdentityPools/<pool-id>/providers/<provider-id>
-    String gcpWorkloadAudience = System.getenv("GCP_WORKLOAD_AUDIENCE");
+    String gcpWorkloadAudience = getConfiguration("GCP_WORKLOAD_AUDIENCE");
 
     // The bucket to fetch data from.
-    String gcsBucketName = System.getenv("GCS_BUCKET_NAME");
+    String gcsBucketName = getConfiguration("GCS_BUCKET_NAME");
 
     // (Optional) The service account impersonation URL.
-    String saImpersonationUrl = System.getenv("GCP_SERVICE_ACCOUNT_IMPERSONATION_URL");
+    String saImpersonationUrl = getConfiguration("GCP_SERVICE_ACCOUNT_IMPERSONATION_URL");
 
     // Okta Configuration
-    String oktaDomain = System.getenv("OKTA_DOMAIN");
-    String oktaClientId = System.getenv("OKTA_CLIENT_ID");
-    String oktaClientSecret = System.getenv("OKTA_CLIENT_SECRET");
+    String oktaDomain = getConfiguration("OKTA_DOMAIN");
+    String oktaClientId = getConfiguration("OKTA_CLIENT_ID");
+    String oktaClientSecret = getConfiguration("OKTA_CLIENT_SECRET");
 
     if (gcpWorkloadAudience == null
         || gcsBucketName == null
@@ -67,25 +78,92 @@ public class CustomCredentialSupplierOktaWorkload {
         || oktaClientId == null
         || oktaClientSecret == null) {
       System.err.println(
-          "Error: Missing required environment variables. "
-              + "Required: GCP_WORKLOAD_AUDIENCE, GCS_BUCKET_NAME, "
+          "Error: Missing required configuration. "
+              + "Please provide it in a custom-credentials-okta-secrets.json file or as "
+              + "environment variables: GCP_WORKLOAD_AUDIENCE, GCS_BUCKET_NAME, "
               + "OKTA_DOMAIN, OKTA_CLIENT_ID, OKTA_CLIENT_SECRET");
       return;
     }
 
-    System.out.println("Getting metadata for bucket: " + gcsBucketName + "...");
-    Bucket bucket =
-        authenticateWithOktaCredentials(
-            gcpWorkloadAudience,
-            saImpersonationUrl,
-            gcsBucketName,
-            oktaDomain,
-            oktaClientId,
-            oktaClientSecret);
+    try {
+      System.out.println("Getting metadata for bucket: " + gcsBucketName + "...");
+      Bucket bucket =
+          authenticateWithOktaCredentials(
+              gcpWorkloadAudience,
+              saImpersonationUrl,
+              gcsBucketName,
+              oktaDomain,
+              oktaClientId,
+              oktaClientSecret);
 
-    System.out.println(" --- SUCCESS! ---");
-    System.out.printf("Bucket Name: %s%n", bucket.getName());
-    System.out.printf("Bucket Location: %s%n", bucket.getLocation());
+      System.out.println(" --- SUCCESS! ---");
+      System.out.printf("Bucket Name: %s%n", bucket.getName());
+      System.out.printf("Bucket Location: %s%n", bucket.getLocation());
+    } catch (Exception e) {
+      System.err.println("Authentication or Request failed: " + e.getMessage());
+    }
+  }
+
+  /**
+   * Helper method to retrieve configuration. It checks Environment variables first, then System
+   * properties (populated by loadConfigFromFile).
+   */
+  static String getConfiguration(String key) {
+    String value = System.getenv(key);
+    if (value == null) {
+      value = System.getProperty(key);
+    }
+    return value;
+  }
+
+  /**
+   * If a local secrets file is present, load it into the System Properties. This is a
+   * "just-in-time" configuration for local development. These variables are only set for the
+   * current process.
+   */
+  static void loadConfigFromFile() {
+    String secretsFile =
+        "custom-credentials-okta-secrets.json";
+    if (!Files.exists(Paths.get(secretsFile))) {
+      return;
+    }
+
+    try (Reader reader = Files.newBufferedReader(Paths.get(secretsFile))) {
+      Gson gson = new Gson();
+      Type type = new TypeToken<Map<String, String>>() {}.getType();
+      Map<String, String> secrets = gson.fromJson(reader, type);
+
+      if (secrets == null) {
+        return;
+      }
+
+      // Map JSON keys (snake_case) to System Properties (UPPER_UNDERSCORE)
+      if (secrets.containsKey("gcp_workload_audience")) {
+        System.setProperty("GCP_WORKLOAD_AUDIENCE", secrets.get("gcp_workload_audience"));
+      }
+      if (secrets.containsKey("gcs_bucket_name")) {
+        System.setProperty("GCS_BUCKET_NAME", secrets.get("gcs_bucket_name"));
+      }
+      if (secrets.containsKey("gcp_service_account_impersonation_url")) {
+        System.setProperty(
+            "GCP_SERVICE_ACCOUNT_IMPERSONATION_URL",
+            secrets.get("gcp_service_account_impersonation_url"));
+      }
+      if (secrets.containsKey("okta_domain")) {
+        System.setProperty("OKTA_DOMAIN", secrets.get("okta_domain"));
+      }
+      if (secrets.containsKey("okta_client_id")) {
+        System.setProperty("OKTA_CLIENT_ID", secrets.get("okta_client_id"));
+      }
+      if (secrets.containsKey("okta_client_secret")) {
+        System.setProperty("OKTA_CLIENT_SECRET", secrets.get("okta_client_secret"));
+      }
+
+    } catch (IOException e) {
+      System.err.println("Error reading secrets file: " + e.getMessage());
+    } catch (com.google.gson.JsonSyntaxException e) {
+      System.err.println("Error: File is not valid JSON.");
+    }
   }
 
   /**
