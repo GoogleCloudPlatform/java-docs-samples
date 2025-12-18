@@ -272,11 +272,11 @@ public class CustomCredentialSupplierOktaWorkload {
       conn.setRequestProperty("Authorization", "Basic " + encodedAuth);
 
       conn.setDoOutput(true);
-      try (DataOutputStream out = new DataOutputStream(conn.getOutputStream())) {
+      try (java.io.OutputStream out = conn.getOutputStream()) {
         // Scopes define the permissions the access token will have.
         // Update "gcp.test.read" to match your Okta configuration.
         String params = "grant_type=client_credentials&scope=gcp.test.read";
-        out.writeBytes(params);
+        out.write(params.getBytes(StandardCharsets.UTF_8));
         out.flush();
       }
 
