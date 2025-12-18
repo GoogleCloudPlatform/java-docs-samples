@@ -85,7 +85,7 @@ public class LiveTxtWithAudio {
     }
   }
 
-  // Download the audio file and return a byte array.
+  // Downloads the audio file and returns a byte array.
   private static byte[] downloadAudioFile(String audioUrl) throws IOException {
     URL url = new URL(audioUrl);
     try (InputStream in = url.openStream();

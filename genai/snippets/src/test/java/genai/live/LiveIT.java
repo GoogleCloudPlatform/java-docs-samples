@@ -39,7 +39,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.lang.reflect.Field;
-import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
 import java.util.List;
 import java.util.Optional;
@@ -57,10 +56,7 @@ import org.mockito.MockedStatic;
 public class LiveIT {
 
   private static final String GEMINI_FLASH_LIVE_PREVIEW = "gemini-2.0-flash-live-preview-04-09";
-  private static final String GEMINI_FLASH_LIVE_PREVIEW_NATIVE_AUDIO =
-      "gemini-live-2.5-flash-preview-native-audio";
-  private static final String GEMINI_FLASH_LIVE_PREVIEW_NATIVE_AUDIO_09_2025 =
-      "gemini-live-2.5-flash-preview-native-audio-09-2025";
+  private static final String GEMINI_FLASH_LIVE_2_5_GA = "gemini-live-2.5-flash-native-audio";
   private ByteArrayOutputStream bout;
   private PrintStream out;
 
@@ -91,7 +87,7 @@ public class LiveIT {
 
   @Test
   public void testLiveAudioWithTxt() {
-    LiveAudioWithTxt.generateContent(GEMINI_FLASH_LIVE_PREVIEW);
+    LiveAudioWithTxt.generateContent(GEMINI_FLASH_LIVE_2_5_GA);
     String output = bout.toString();
     assertThat(output).contains("> Hello? Gemini, are you there?");
     assertThat(output).contains("Successfully saved audio to: ");
@@ -105,7 +101,7 @@ public class LiveIT {
 
   @Test
   public void testLiveConversationAudioWithAudio() throws IOException {
-    LiveConversationAudioWithAudio.generateContent(GEMINI_FLASH_LIVE_PREVIEW_NATIVE_AUDIO_09_2025);
+    LiveConversationAudioWithAudio.generateContent(GEMINI_FLASH_LIVE_2_5_GA);
     String output = bout.toString();
     assertThat(output).contains("Input transcription:");
     assertThat(output).contains("Output transcription:");
@@ -216,8 +212,7 @@ public class LiveIT {
 
   @Test
   public void testLiveTranscribeWithAudio() {
-    String response =
-        LiveTranscribeWithAudio.generateContent(GEMINI_FLASH_LIVE_PREVIEW_NATIVE_AUDIO);
+    String response = LiveTranscribeWithAudio.generateContent(GEMINI_FLASH_LIVE_2_5_GA);
     assertThat(response).isNotEmpty();
   }
 

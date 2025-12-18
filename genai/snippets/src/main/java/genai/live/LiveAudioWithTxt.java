@@ -47,7 +47,7 @@ public class LiveAudioWithTxt {
 
   public static void main(String[] args) {
     // TODO(developer): Replace these variables before running the sample.
-    String modelId = "gemini-2.0-flash-live-preview-04-09";
+    String modelId = "gemini-live-2.5-flash-native-audio";
     generateContent(modelId);
   }
 

@@ -33,7 +33,8 @@ import com.google.genai.types.Transcription;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
+import java.io.InputStream;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.CompletableFuture;
@@ -46,7 +47,7 @@ public class LiveConversationAudioWithAudio {
 
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
-    String modelId = "gemini-live-2.5-flash-preview-native-audio-09-2025";
+    String modelId = "gemini-live-2.5-flash-native-audio";
     generateContent(modelId);
   }
 
@@ -59,9 +60,6 @@ public class LiveConversationAudioWithAudio {
             .vertexAI(true)
             .httpOptions(HttpOptions.builder().apiVersion("v1beta1").build())
             .build()) {
-
-      // Reads the local audio file.
-      byte[] audioBytes = Files.readAllBytes(Paths.get("resources/hello_gemini_are_you_there.wav"));
 
       LiveConnectConfig liveConnectConfig =
           LiveConnectConfig.builder()
@@ -76,6 +74,10 @@ public class LiveConversationAudioWithAudio {
       // Connects to the live server.
       CompletableFuture<AsyncSession> sessionFuture =
           client.async.live.connect(modelId, liveConnectConfig);
+
+      String audioUrl =
+          "https://storage.googleapis.com/cloud-samples-data/generative-ai/audio/hello_gemini_are_you_there.wav";
+      byte[] audioBytes = downloadAudioFile(audioUrl);
 
       // Sends content and receives response from the live server.
       sessionFuture
@@ -112,11 +114,25 @@ public class LiveConversationAudioWithAudio {
     }
   }
 
+  // Downloads the audio file and returns a byte array.
+  private static byte[] downloadAudioFile(String audioUrl) throws IOException {
+    URL url = new URL(audioUrl);
+    try (InputStream in = url.openStream();
+        ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+      byte[] buffer = new byte[1024];
+      int bytesRead;
+      while ((bytesRead = in.read(buffer)) != -1) {
+        out.write(buffer, 0, bytesRead);
+      }
+      return out.toByteArray();
+    }
+  }
+
   // Sends content to the live session.
   private static CompletableFuture<Void> sendAudio(AsyncSession session, byte[] audioBytes) {
     return session.sendRealtimeInput(
         LiveSendRealtimeInputParameters.builder()
-            .audio(Blob.builder().data(audioBytes).mimeType("audio/pcm;rate=16000").build())
+            .media(Blob.builder().data(audioBytes).mimeType("audio/pcm;rate=16000").build())
             .build());
   }
 
