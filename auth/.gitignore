@@ -1,0 +1,3 @@
+# Ignore GCP and IdP secret files
+src/main/java/com/google/cloud/auth/samples/customcredentials/aws/custom-credentials-aws-secrets.json
+src/main/java/com/google/cloud/auth/samples/customcredentials/okta/custom-credentials-okta-secrets.json
