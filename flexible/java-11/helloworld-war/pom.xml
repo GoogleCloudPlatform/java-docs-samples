@@ -37,8 +37,8 @@
 
     <failOnMissingWebXml>false</failOnMissingWebXml>    <!-- REQUIRED -->
 
-    <appengine.maven.plugin>2.8.0</appengine.maven.plugin>
-    <jetty>11.0.20</jetty>
+    <appengine.maven.plugin>2.8.6</appengine.maven.plugin>
+    <jetty>11.0.26</jetty>
   </properties>
 
   <dependencies>
@@ -59,7 +59,7 @@
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
-      <version>5.10.0</version>
+      <version>5.21.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -78,7 +78,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
-        <version>3.4.0</version>
+        <version>3.5.1</version>
       </plugin>
 
       <plugin>
@@ -99,7 +99,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
-        <version>3.6.1</version>
+        <version>3.9.0</version>
         <executions>
           <execution>
             <id>copy</id>
