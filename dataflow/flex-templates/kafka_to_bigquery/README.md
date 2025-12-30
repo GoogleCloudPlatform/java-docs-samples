@@ -8,6 +8,12 @@ Samples showing how to create and run an
 
 ## Before you begin
 
+NOTE: These instructions used to use Bitnami version of Kafka, but due to a recent 
+untagging event on [Docker Hub]((https://hub.docker.com/r/bitnami/kafka)) for
+all Bitnami images, these instructions have switched over to Apache Kafka.
+They are still pinned to a Zookeeper compatible [version](https://kafka.apache.org/blog/2024/11/06/apache-kafka-3.9.0-release-announcement/) 
+of Kafka for now.
+
 If you are not familiar with Dataflow Flex templates, please see the
 [Streaming Beam SQL](../streaming-beam-sql/) sample first.
 
@@ -234,7 +240,7 @@ $ gcloud compute ssh kafka-vm --zone "$ZONE"
 1. Create a Topic
 
 ```sh
-docker run --rm --network host apache/kafka:latest \
+docker run --rm --network host apache/kafka:3.9.1 \
 /opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 \
 --create --topic <topic-name> --partitions 1 --replication-factor 1
 ```
@@ -250,7 +256,7 @@ Note: You can run this step either before starting the Dataflow template
 they arrive).
 
 ```sh
-docker run -i --rm --network host apache/kafka:latest \
+docker run -i --rm --network host apache/kafka:3.9.1 \
 /opt/kafka/bin/kafka-console-producer.sh \
 --bootstrap-server localhost:9092 --topic <topic-name>
 ```
@@ -262,7 +268,7 @@ This will print all messages from the beginning of the topic. Press Ctrl+C to
 exit.
 
 ```sh
-docker run -it --rm --network host apache/kafka:latest \
+docker run -it --rm --network host apache/kafka:3.9.1 \
 /opt/kafka/bin/kafka-console-consumer.sh \
 --bootstrap-server localhost:9092 --topic <topic-name> --from-beginning
 ```
@@ -270,7 +276,7 @@ docker run -it --rm --network host apache/kafka:latest \
 4. (Optional) Delete a Topic
 
 ```sh
-docker run --rm --network host apache/kafka:latest \
+docker run --rm --network host apache/kafka:3.9.1 \
 /opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 \
 --delete --topic <topic-name>
 ```
