@@ -9,7 +9,7 @@ Samples showing how to create and run an
 ## Before you begin
 
 NOTE: These instructions used to use Bitnami version of Kafka, but due to a recent 
-untagging event on [Docker Hub]((https://hub.docker.com/r/bitnami/kafka)) for
+untagging event on [Docker Hub](https://hub.docker.com/r/bitnami/kafka) for
 all Bitnami images, these instructions have switched over to Apache Kafka images.
 They are still pinned to a Zookeeper compatible 
 [version](https://kafka.apache.org/blog/2024/11/06/apache-kafka-3.9.0-release-announcement/) 
