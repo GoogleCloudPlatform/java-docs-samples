@@ -67,7 +67,7 @@
       <artifactId>truth</artifactId>
       <groupId>com.google.truth</groupId>
       <scope>test</scope>
-      <version>1.4.0</version>
+      <version>1.4.5</version>
     </dependency>
     <dependency>
       <artifactId>junit</artifactId>
@@ -85,7 +85,7 @@
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
-      <version>5.10.2</version>
+      <version>5.14.1</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -97,7 +97,7 @@
         <groupId>com.google.cloud</groupId>
         <scope>import</scope>
         <type>pom</type>
-        <version>26.40.0</version>
+        <version>26.73.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -110,7 +110,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.2.5</version>
+        <version>3.5.4</version>
         <configuration>
           <!-- run both classes and methods in parallel -->
           <parallel>all</parallel>
@@ -126,7 +126,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
-        <version>3.2.5</version>
+        <version>3.5.4</version>
         <configuration>
           <skip>true</skip>
         </configuration>

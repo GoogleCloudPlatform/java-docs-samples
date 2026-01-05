@@ -41,7 +41,7 @@ Copyright 2019 Google LLC
     <maven.compiler.showWarnings>true</maven.compiler.showWarnings>
     <maven.compiler.failOnWarning>false</maven.compiler.failOnWarning>
     <maven.war.filteringDeploymentDescriptors>false</maven.war.filteringDeploymentDescriptors>
-    <jetty.version>11.0.20</jetty.version>
+    <jetty.version>11.0.26</jetty.version>
   </properties>
 
   <dependencyManagement>
@@ -51,7 +51,7 @@ Copyright 2019 Google LLC
         <groupId>com.google.cloud</groupId>
         <scope>import</scope>
         <type>pom</type>
-        <version>26.32.0</version>
+        <version>26.73.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -85,7 +85,7 @@ Copyright 2019 Google LLC
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-chrome-driver</artifactId>
-      <version>4.17.0</version>
+      <version>4.39.0</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -99,7 +99,7 @@ Copyright 2019 Google LLC
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
-        <version>3.4.0</version>
+        <version>3.5.1</version>
       </plugin>
       <plugin>
         <groupId>org.eclipse.jetty</groupId>
@@ -109,7 +109,7 @@ Copyright 2019 Google LLC
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>jib-maven-plugin</artifactId>
-        <version>3.4.0</version>
+        <version>3.5.1</version>
         <configuration>
           <to>
             <image>gcr.io/${gcloud.appId}/session-handling</image>

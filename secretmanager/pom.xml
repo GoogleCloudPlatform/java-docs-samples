@@ -45,7 +45,7 @@
         <groupId>com.google.cloud</groupId>
         <scope>import</scope>
         <type>pom</type>
-        <version>26.62.0</version>
+        <version>26.73.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -54,12 +54,12 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-secretmanager</artifactId>
-      <version>2.66.0</version>
+      <version>2.81.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.api.grpc</groupId>
       <artifactId>proto-google-cloud-secretmanager-v1</artifactId>
-      <version>2.66.0</version>
+      <version>2.81.0</version>
     </dependency>
     <dependency>
         <groupId>com.google.cloud</groupId>
@@ -73,7 +73,7 @@
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
-      <version>1.18.30</version>
+      <version>1.18.42</version>
       <scope>provided</scope>
     </dependency>
 
@@ -87,7 +87,7 @@
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>1.4.0</version>
+      <version>1.4.5</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -97,7 +97,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.12.1</version>
+        <version>3.14.1</version>
         <configuration>
           <source>11</source> <!-- depending on your project -->
           <target>11</target> <!-- depending on your project -->
@@ -105,7 +105,7 @@
             <path>
               <groupId>org.projectlombok</groupId>
               <artifactId>lombok</artifactId>
-              <version>1.18.30</version>
+              <version>1.18.42</version>
             </path>
           </annotationProcessorPaths>
         </configuration>
