@@ -15,7 +15,7 @@
 # [START cloudrun_system_package_dockerfile]
 # Use the Official eclipse-temurin image for a lean production stage of our multi-stage build.
 # https://hub.docker.com/_/eclipse-temurin/
-FROM eclipse-temurin:17.0.16_8-jre
+FROM eclipse-temurin:17.0.17_10-jre
 
 RUN apt-get update -y && apt-get install -y \
   graphviz \
