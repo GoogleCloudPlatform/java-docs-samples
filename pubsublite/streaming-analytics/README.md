@@ -55,7 +55,7 @@ Resources needed for this example:
    export PROJECT_ID=$(gcloud config get-value project)
    export BUCKET=your-gcs-bucket
 
-   gsutil mb gs://$BUCKET
+   gcloud storage buckets create gs://$BUCKET
    ```
 
 1. Create a Pub/Sub Lite topic and subscription. Set `LITE_LOCATION` to a
@@ -130,7 +130,7 @@ mvn compile exec:java \
 Storage bucket.
 
 ```sh
-gsutil ls "gs://$BUCKET/samples/output*"
+gcloud storage ls "gs://$BUCKET/samples/output*"
 ```
 
 ## (Optional) Creating a custom Dataflow template
@@ -199,7 +199,7 @@ input parameters.
 1. Delete the Cloud Storage objects:
 
    ```sh
-   gsutil -m rm -rf "gs://$BUCKET/samples/output*"
+   gcloud storage rm --recursive --continue-on-error "gs://$BUCKET/samples/output*"
    ```
 
 1. Delete the template image in Cloud Registry and delete the Flex template if
@@ -207,13 +207,13 @@ input parameters.
 
    ```sh
    gcloud container images delete $TEMPLATE_IMAGE
-   gsutil rm $TEMPLATE_PATH
+   gcloud storage rm $TEMPLATE_PATH
    ```
 
 1. Delete the Cloud Storage bucket:
 
    ```sh
-   gsutil rb "gs://$BUCKET"
+   gcloud storage buckets delete "gs://$BUCKET"
    ```
 
 [Apache Beam]: https://beam.apache.org/
