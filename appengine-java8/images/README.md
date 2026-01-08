@@ -14,7 +14,7 @@ detailed instructions.
 
 Using the [Google Cloud SDK](https://cloud.google.com/sdk/) create a bucket
 
-    $ gsutil mb YOUR-PROJECT-ID.appspot.com
+    $ gcloud storage buckets create YOUR-PROJECT-ID.appspot.com
 
 * Edit `src/main/java/com/example/appengine/images/ImageServlet.java` and set your `bucket` name.
 
