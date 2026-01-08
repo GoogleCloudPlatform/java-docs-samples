@@ -139,7 +139,7 @@ Google Cloud Storage.
 1. Observe the output on GCS and see the most popular songs.
 
     ```sh
-    gsutil cat ${OUTPUT_LOCATION}/song-charts/GlobalWindow-pane-0-00000-of-00001.txt 
+    gcloud storage cat ${OUTPUT_LOCATION}/song-charts/GlobalWindow-pane-0-00000-of-00001.txt 
     ```
 
    Example output:
