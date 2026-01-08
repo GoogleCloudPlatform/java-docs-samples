@@ -26,7 +26,7 @@ Before you can run or deploy the sample, you will need to do the following:
    SDK](https://cloud.google.com/sdk) using the following command:
 
   ```sh
-  gcloud storage buckets update gs://[your-bucket-name] --predefined-default-object-acl=public-read
+  gcloud storage buckets update gs://[your-bucket-name] --predefined-default-object-acl=publicRead
   ```
 
 1. Update the bucket name in `src/main/appengine/app.yaml`. This makes the
