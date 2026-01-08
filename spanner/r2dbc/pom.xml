@@ -29,7 +29,7 @@
       <dependency>
         <groupId>com.google.cloud</groupId>
         <artifactId>libraries-bom</artifactId>
-        <version>26.32.0</version>
+        <version>26.73.0</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -61,7 +61,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>cloud-spanner-r2dbc</artifactId>
-      <version>1.3.0</version>
+      <version>1.4.1</version>
     </dependency>
     <!-- [END spanner_r2dbc_dependency] -->
 
@@ -101,7 +101,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
-        <version>3.2.5</version>
+        <version>3.5.4</version>
         <configuration>
           <systemPropertyVariables>
             <spanner.test.instance>default-instance</spanner.test.instance>
