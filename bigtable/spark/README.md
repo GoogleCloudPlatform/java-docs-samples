@@ -317,23 +317,23 @@ One notable change (compared to the earlier executions) is that the example uses
 1. Create a bucket.
 
 ```
-gsutil mb \
-  -b on \
-  -l $BIGTABLE_SPARK_DATAPROC_REGION \
-  -p $BIGTABLE_SPARK_PROJECT_ID \
+gcloud storage buckets create \
+  --uniform-bucket-level-access \
+  --location=$BIGTABLE_SPARK_DATAPROC_REGION \
+  --project=$BIGTABLE_SPARK_PROJECT_ID \
   $BIGTABLE_SPARK_BUCKET_NAME
 ```
 
 1. Upload an input file into the bucket.
 
 ```
-gsutil cp src/test/resources/Romeo-and-Juliet-prologue.txt $BIGTABLE_SPARK_BUCKET_NAME
+gcloud storage cp src/test/resources/Romeo-and-Juliet-prologue.txt $BIGTABLE_SPARK_BUCKET_NAME
 ```
 
 1. List contents of the bucket.
 
 ```
-gsutil ls $BIGTABLE_SPARK_BUCKET_NAME
+gcloud storage ls $BIGTABLE_SPARK_BUCKET_NAME
 ```
    
 Output should be:
@@ -413,6 +413,6 @@ gcloud dataproc clusters list \
 Remove the input file in the bucket and the bucket itself.
 
 ```
-gsutil rm $BIGTABLE_SPARK_BUCKET_NAME/Romeo-and-Juliet-prologue.txt
-gsutil rb $BIGTABLE_SPARK_BUCKET_NAME
+gcloud storage rm $BIGTABLE_SPARK_BUCKET_NAME/Romeo-and-Juliet-prologue.txt
+gcloud storage buckets delete $BIGTABLE_SPARK_BUCKET_NAME
 ```
