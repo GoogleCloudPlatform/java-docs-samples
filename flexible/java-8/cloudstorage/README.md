@@ -17,7 +17,7 @@ Before you can run or deploy the sample, you will need to do the following:
 3. Set the default ACL on your bucket to public read in order to serve files directly from Cloud Storage. You can do this with the [Google Cloud SDK](https://cloud.google.com/sdk) using the following command:
 
   ```
-  $ gcloud storage buckets update gs://[your-bucket-name] --predefined-default-object-acl=public-read
+  $ gcloud storage buckets update gs://[your-bucket-name] --predefined-default-object-acl=publicRead
   ```
 4. Update the bucket name in `src/main/appengine/app.yaml`. This makes the bucket name an environment variable in deployment. You still need to set the environment variable when running locally, as shown below.
 
