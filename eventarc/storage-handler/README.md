@@ -37,7 +37,7 @@ gcloud run deploy $MY_RUN_SERVICE \
 Create a _single region_ Cloud Storage bucket:
 
 ```sh
-gsutil mb -p $PROJECT_ID -l us-central1 gs://"$MY_GCS_BUCKET"
+gcloud storage buckets create gs://"$MY_GCS_BUCKET" --project $PROJECT_ID --location us-central1
 ```
 
 Create a Service Account for Eventarc trigger
@@ -67,7 +67,7 @@ Test your Cloud Run service by creating a GCS event:
 
 ```sh
 touch testfile.txt
-gsutil copy testfile.txt gs://$MY_GCS_BUCKET
+gcloud storage cp testfile.txt gs://$MY_GCS_BUCKET
 ```
 
 Observe the Cloud Run service printing upon receiving an event in Cloud Logging:
