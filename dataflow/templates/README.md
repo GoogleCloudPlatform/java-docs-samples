@@ -18,7 +18,7 @@ Additionally, for this sample you need the following:
 
    ```sh
    export BUCKET=your-gcs-bucket
-   gsutil mb gs://$BUCKET
+   gcloud storage buckets create gs://$BUCKET
    ```
 
 1. Clone the `java-docs-samples` repository.
@@ -64,7 +64,7 @@ mvn compile exec:java \
     --runner=DataflowRunner"
 
 # Upload the metadata file.
-gsutil cp WordCount_metadata "$TEMPLATE_LOCATION"_metadata
+gcloud storage cp WordCount_metadata "$TEMPLATE_LOCATION"_metadata
 ```
 
 > For more information, see
@@ -94,9 +94,9 @@ To avoid incurring charges to your GCP account for the resources used:
 
 ```bash
 # Remove only the files created by this sample.
-gsutil -m rm -rf "$TEMPLATE_LOCATION*"
-gsutil -m rm -rf "gs://$BUCKET/samples/dataflow/wordcount/"
+gcloud storage rm --recursive --continue-on-error "$TEMPLATE_LOCATION*"
+gcloud storage rm --recursive --continue-on-error "gs://$BUCKET/samples/dataflow/wordcount/"
 
 # [optional] Remove the Cloud Storage bucket.
-gsutil rb gs://$BUCKET
+gcloud storage buckets delete gs://$BUCKET
 ```
