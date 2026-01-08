@@ -21,7 +21,7 @@ PROJECTID=$(curl -s "http://metadata.google.internal/computeMetadata/v1/project/
 GCS_BUCKET_NAME=$(curl -s "http://metadata.google.internal/computeMetadata/v1/instance/attributes/gcs-bucket" -H "Metadata-Flavor: Google")
 WAR=$(curl -s "http://metadata.google.internal/computeMetadata/v1/instance/attributes/app-war" -H "Metadata-Flavor: Google")
 
-gsutil cp gs://"$GCS_BUCKET_NAME"/gce/"$WAR" .
+gcloud storage cp gs://"$GCS_BUCKET_NAME"/gce/"$WAR" .
 
 # Install dependencies from apt
 apt-get update

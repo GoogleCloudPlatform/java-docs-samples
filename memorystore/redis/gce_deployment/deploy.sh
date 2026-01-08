@@ -33,7 +33,7 @@ cd ..
 mvn clean package
 
 #Copy the WAR artifact to the GCS bucket location
-gsutil cp -r target/${WAR} gs://"$GCS_BUCKET_NAME"/gce/
+gcloud storage cp --recursive target/${WAR} gs://"$GCS_BUCKET_NAME"/gce/
 
 cd gce_deployment
 
