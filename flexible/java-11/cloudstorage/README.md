@@ -18,7 +18,7 @@ Before you can run or deploy the sample, you will need to do the following:
    SDK](https://cloud.google.com/sdk) using the following command:
 
   ```sh
-  gsutil mb gs://[your-bucket-name]
+  gcloud storage buckets create gs://[your-bucket-name]
   ```
 
 1. Set the default ACL on your bucket to public read in order to serve files
@@ -26,7 +26,7 @@ Before you can run or deploy the sample, you will need to do the following:
    SDK](https://cloud.google.com/sdk) using the following command:
 
   ```sh
-  gsutil defacl set public-read gs://[your-bucket-name]
+  gcloud storage buckets update gs://[your-bucket-name] --predefined-default-object-acl=publicRead
   ```
 
 1. Update the bucket name in `src/main/appengine/app.yaml`. This makes the
