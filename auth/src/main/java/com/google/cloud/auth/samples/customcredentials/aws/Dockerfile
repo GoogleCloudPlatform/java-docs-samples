@@ -15,7 +15,7 @@ RUN mvn clean package dependency:copy-dependencies \
     -DskipTests
 
 # Run the application
-FROM eclipse-temurin:17-jre-focal
+FROM eclipse-temurin:17.0.15_6-jre-focal
 
 # Security: Create a non-root user
 RUN useradd -m appuser
