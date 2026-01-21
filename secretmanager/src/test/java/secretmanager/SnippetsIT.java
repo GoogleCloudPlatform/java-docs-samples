@@ -18,6 +18,7 @@ package secretmanager;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.resourcemanager.v3.CreateTagKeyMetadata;
@@ -77,11 +78,13 @@ public class SnippetsIT {
   private static final String IAM_USER =
       "serviceAccount:iam-samples@java-docs-samples-testing.iam.gserviceaccount.com";
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+  private static final String KMS_KEY_NAME = System.getenv("GOOGLE_CLOUD_KMS_KEY");
   private static final String LABEL_KEY = "examplelabelkey";
   private static final String LABEL_VALUE = "examplelabelvalue";
   private static final String UPDATED_LABEL_KEY = "updatedlabelkey";
   private static final String UPDATED_LABEL_VALUE = "updatedlabelvalue";
-  private static final String ANNOTATION_KEY = "exampleannotationkey";
+  private static final String ANNOTATION_KEY = 
+      "exampleannotationkey";
   private static final String ANNOTATION_VALUE = "exampleannotationvalue";
   private static final String UPDATED_ANNOTATION_KEY = "updatedannotationkey";
   private static final String UPDATED_ANNOTATION_VALUE = "updatedannotationvalue";
@@ -96,6 +99,7 @@ public class SnippetsIT {
   private static SecretName TEST_SECRET_WITH_LABEL_TO_CREATE_NAME;
   private static SecretName TEST_SECRET_WITH_TAGS_TO_CREATE_NAME;
   private static SecretName TEST_SECRET_WITH_ANNOTATION_TO_CREATE_NAME;
+  private static SecretName TEST_SECRET_WITH_CMEK_TO_CREATE_NAME;
   private static SecretName TEST_UMMR_SECRET_TO_CREATE_NAME;
   private static SecretVersion TEST_SECRET_VERSION;
   private static SecretVersion TEST_SECRET_VERSION_TO_DESTROY;
@@ -125,6 +129,7 @@ public class SnippetsIT {
     TEST_SECRET_WITH_TAGS_TO_CREATE_NAME = SecretName.of(PROJECT_ID, randomSecretId());
     TEST_SECRET_WITH_LABEL_TO_CREATE_NAME = SecretName.of(PROJECT_ID, randomSecretId());
     TEST_SECRET_WITH_ANNOTATION_TO_CREATE_NAME = SecretName.of(PROJECT_ID, randomSecretId());
+    TEST_SECRET_WITH_CMEK_TO_CREATE_NAME = SecretName.of(PROJECT_ID, randomSecretId());
 
     TEST_SECRET_VERSION = addSecretVersion(TEST_SECRET_WITH_VERSIONS);
     TEST_SECRET_VERSION_TO_DESTROY = addSecretVersion(TEST_SECRET_WITH_VERSIONS);
@@ -154,12 +159,14 @@ public class SnippetsIT {
   @AfterClass
   public static void afterAll() throws Exception {
     Assert.assertFalse("missing GOOGLE_CLOUD_PROJECT", Strings.isNullOrEmpty(PROJECT_ID));
+    Assert.assertFalse("missing GOOGLE_CLOUD_KMS_KEY", Strings.isNullOrEmpty(KMS_KEY_NAME));
 
     deleteSecret(TEST_SECRET.getName());
     deleteSecret(TEST_SECRET_TO_CREATE_NAME.toString());
     deleteSecret(TEST_SECRET_WITH_TAGS_TO_CREATE_NAME.toString());
     deleteSecret(TEST_SECRET_WITH_LABEL_TO_CREATE_NAME.toString());
     deleteSecret(TEST_SECRET_WITH_ANNOTATION_TO_CREATE_NAME.toString());
+    deleteSecret(TEST_SECRET_WITH_CMEK_TO_CREATE_NAME.toString());
     deleteSecret(TEST_UMMR_SECRET_TO_CREATE_NAME.toString());
     deleteSecret(TEST_SECRET_TO_DELETE.getName());
     deleteSecret(TEST_SECRET_TO_DELETE_WITH_ETAG.getName());
@@ -365,6 +372,16 @@ public class SnippetsIT {
         name.getProject(), name.getSecret(), ANNOTATION_KEY, ANNOTATION_VALUE);
 
     assertThat(secret.getAnnotationsMap()).containsEntry(ANNOTATION_KEY, ANNOTATION_VALUE);
+  }
+
+  @Test
+  public void testCreateSecretWithCmek() throws IOException {
+    SecretName name = TEST_SECRET_WITH_CMEK_TO_CREATE_NAME;
+    Secret secret = CreateSecretWithCmek.createSecretWithCmek(
+        name.getProject(), name.getSecret(), KMS_KEY_NAME);
+
+    assertThat(secret.getReplication().getAutomatic().getCustomerManagedEncryption()
+        .getKmsKeyName()).isEqualTo(KMS_KEY_NAME);
   }
 
   @Test
@@ -579,6 +596,15 @@ public class SnippetsIT {
 
     assertThat(updatedSecret.getAnnotationsMap()).containsEntry(
         UPDATED_ANNOTATION_KEY, UPDATED_ANNOTATION_VALUE);
+  }
+
+  @Test
+  public void testDeleteSecretAnnotations() throws IOException {
+    SecretName name = SecretName.parse(TEST_SECRET.getName());
+    Secret updatedSecret = 
+        DeleteSecretAnnotations.deleteSecretAnnotations(name.getProject(), name.getSecret());
+
+    assertTrue(updatedSecret.getAnnotationsMap().isEmpty());
   }
 
   @Test

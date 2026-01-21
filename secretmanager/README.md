@@ -16,10 +16,12 @@ You must [enable the Secret Manager API](https://console.cloud.google.com/flows/
 
 ### Set Environment Variables
 
-You must set your project ID in order to run the tests
+You must set your project ID, KMS Keys (Global and Regional) in order to run the tests
 
 ```text
 $ export GOOGLE_CLOUD_PROJECT=<your-project-id-here>
+$ export GOOGLE_CLOUD_REGIONAL_KMS_KEY=<full-name-of-regional-kms-key> (region same as location)
+$ export GOOGLE_CLOUD_KMS_KEY=<full-name-of-global-kms-key>
 ```
 
 ### Grant Permissions
