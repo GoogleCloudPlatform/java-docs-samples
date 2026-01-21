@@ -100,6 +100,7 @@ public class SnippetsIT {
   private static Secret TEST_REGIONAL_SECRET;
   private static Secret TEST_REGIONAL_SECRET_TO_DELETE;
   private static Secret TEST_REGIONAL_SECRET_TO_DELETE_WITH_ETAG;
+  private static Secret TEST_REGIONAL_SECRET_TO_DELETE_ANNOTATIONS;
   private static Secret TEST_REGIONAL_SECRET_WITH_VERSIONS;
   private static Secret TEST_REGIONAL_SECRET_TO_DELAYED_DESTROY;
   private static SecretName TEST_REGIONAL_SECRET_WITH_DELAYED_DESTROY;
@@ -132,6 +133,7 @@ public class SnippetsIT {
     TEST_REGIONAL_SECRET = createRegionalSecret();
     TEST_REGIONAL_SECRET_TO_DELETE = createRegionalSecret();
     TEST_REGIONAL_SECRET_TO_DELETE_WITH_ETAG = createRegionalSecret();
+    TEST_REGIONAL_SECRET_TO_DELETE_ANNOTATIONS = createRegionalSecret();
     TEST_REGIONAL_SECRET_WITH_VERSIONS = createRegionalSecret();
     TEST_REGIONAL_SECRET_TO_DELAYED_DESTROY = createRegionalSecret();
     TEST_REGIONAL_SECRET_WITH_DELAYED_DESTROY =
@@ -190,6 +192,7 @@ public class SnippetsIT {
     deleteRegionalSecret(TEST_REGIONAL_SECRET_WITH_CMEK_TO_CREATE_NAME.toString());
     deleteRegionalSecret(TEST_REGIONAL_SECRET_TO_DELETE.getName());
     deleteRegionalSecret(TEST_REGIONAL_SECRET_TO_DELETE_WITH_ETAG.getName());
+    deleteRegionalSecret(TEST_REGIONAL_SECRET_TO_DELETE_ANNOTATIONS.getName());
     deleteRegionalSecret(TEST_REGIONAL_SECRET_WITH_VERSIONS.getName());
     deleteRegionalSecret(TEST_REGIONAL_SECRET_WITH_DELAYED_DESTROY.toString());
     deleteRegionalSecret(TEST_REGIONAL_SECRET_TO_DELAYED_DESTROY.getName());
@@ -703,7 +706,7 @@ public class SnippetsIT {
 
   @Test
   public void testDeleteRegionalSecretAnnotations() throws IOException {
-    SecretName name = SecretName.parse(TEST_REGIONAL_SECRET.getName());
+    SecretName name = SecretName.parse(TEST_REGIONAL_SECRET_TO_DELETE_ANNOTATIONS.getName());
     Secret updatedSecret = DeleteRegionalSecretAnnotations.deleteRegionalSecretAnnotations(
         name.getProject(), name.getLocation(), name.getSecret());
 

@@ -92,6 +92,7 @@ public class SnippetsIT {
   private static Secret TEST_SECRET;
   private static Secret TEST_SECRET_TO_DELETE;
   private static Secret TEST_SECRET_TO_DELETE_WITH_ETAG;
+  private static Secret TEST_SECRET_TO_DELETE_ANNOTATIONS;
   private static Secret TEST_SECRET_TO_DELAYED_DESTROY;
   private static Secret TEST_SECRET_WITH_VERSIONS;
   private static SecretName TEST_SECRET_WITH_DELAYED_DESTROY;
@@ -121,6 +122,7 @@ public class SnippetsIT {
     TEST_SECRET = createSecret(true);
     TEST_SECRET_TO_DELETE = createSecret(false);
     TEST_SECRET_TO_DELETE_WITH_ETAG = createSecret(false);
+    TEST_SECRET_TO_DELETE_ANNOTATIONS = createSecret(true);
     TEST_SECRET_WITH_VERSIONS = createSecret(false);
     TEST_SECRET_TO_DELAYED_DESTROY = createSecret(false);
     TEST_SECRET_WITH_DELAYED_DESTROY = SecretName.of(PROJECT_ID, randomSecretId());
@@ -170,6 +172,7 @@ public class SnippetsIT {
     deleteSecret(TEST_UMMR_SECRET_TO_CREATE_NAME.toString());
     deleteSecret(TEST_SECRET_TO_DELETE.getName());
     deleteSecret(TEST_SECRET_TO_DELETE_WITH_ETAG.getName());
+    deleteSecret(TEST_SECRET_TO_DELETE_ANNOTATIONS.getName());
     deleteSecret(TEST_SECRET_WITH_VERSIONS.getName());
     deleteSecret(TEST_SECRET_WITH_DELAYED_DESTROY.toString());
     deleteSecret(TEST_SECRET_TO_DELAYED_DESTROY.getName());
@@ -600,7 +603,7 @@ public class SnippetsIT {
 
   @Test
   public void testDeleteSecretAnnotations() throws IOException {
-    SecretName name = SecretName.parse(TEST_SECRET.getName());
+    SecretName name = SecretName.parse(TEST_SECRET_TO_DELETE_ANNOTATIONS.getName());
     Secret updatedSecret = 
         DeleteSecretAnnotations.deleteSecretAnnotations(name.getProject(), name.getSecret());
 

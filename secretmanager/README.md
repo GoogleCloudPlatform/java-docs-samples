@@ -12,7 +12,7 @@ the Secret Manager API using the Google Java API Client Libraries.
 
 ### Enable the API
 
-You must [enable the Secret Manager API](https://console.cloud.google.com/flows/enableapi?apiid=secretmanager.googleapis.com) for your project in order to use these samples
+You must enable the [Secret Manager API](https://console.cloud.google.com/flows/enableapi?apiid=secretmanager.googleapis.com) and [Cloud KMS API](https://console.cloud.google.com/flows/enableapi?apiid=cloudkms.googleapis.com) for your project in order to use these samples
 
 ### Set Environment Variables
 
@@ -30,5 +30,6 @@ You must ensure that the [user account or service account](https://cloud.google.
 
 * Secret Manager Admin (`roles/secretmanager.admin`)
 * Secret Manager Secret Accessor (`roles/secretmanager.secretAccessor`)
+* Cloud KMS Encrypter / Decrypter (`roles/cloudkms.cryptoKeyEncrypterDecrypter`) on the regional and global KMS key used for testing
 
 More information can be found in the [Secret Manager Docs](https://cloud.google.com/secret-manager/docs/access-control)
