@@ -59,19 +59,11 @@ public class DeleteRegionalSecretAnnotations {
       SecretName secretName =
           SecretName.ofProjectLocationSecretName(projectId, locationId, secretId);
 
-      // Get the current secret
-      Secret existingSecret = client.getSecret(secretName);
-
-      // Remove all annotations
-      Map<String, String> existingAnnotationsMap =
-          new HashMap<String, String>(existingSecret.getAnnotationsMap());
-      existingAnnotationsMap.clear();
-
-      // Build the updated secret.
+      // Build the updated secret with an empty annotations map.
       Secret secret =
           Secret.newBuilder()
               .setName(secretName.toString())
-              .putAllAnnotations(existingAnnotationsMap)
+              .putAllAnnotations(new HashMap<>())
               .build();
 
       // Create the field mask for updating only the annotations

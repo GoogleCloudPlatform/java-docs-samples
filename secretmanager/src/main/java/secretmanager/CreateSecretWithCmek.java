@@ -16,7 +16,7 @@
 
 package secretmanager;
 
-// [START secretmanager_create_secret_with_annotations]
+// [START secretmanager_create_secret_with_cmek]
 import com.google.cloud.secretmanager.v1.CustomerManagedEncryption;
 import com.google.cloud.secretmanager.v1.ProjectName;
 import com.google.cloud.secretmanager.v1.Replication;
@@ -38,7 +38,7 @@ public class CreateSecretWithCmek {
     createSecretWithCmek(projectId, secretId, kmsKeyName);
   }
 
-  // Create a secret with annotations.
+  // Create a secret with a customer-managed encryption key (CMEK).
   public static Secret createSecretWithCmek(String projectId, String secretId, String kmsKeyName)
       throws IOException {
 
@@ -63,7 +63,7 @@ public class CreateSecretWithCmek {
                       .build())
               .build();
 
-      // Build the secret to create with labels.
+      // Build the secret to create with the replication policy.
       Secret secret = Secret.newBuilder().setReplication(secretReplication).build();
 
       // Create the secret.
@@ -73,4 +73,4 @@ public class CreateSecretWithCmek {
     }
   }
 }
-// [END secretmanager_create_secret_with_annotations]
+// [END secretmanager_create_secret_with_cmek]
