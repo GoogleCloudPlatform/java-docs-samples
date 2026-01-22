@@ -118,6 +118,7 @@ public class SnippetsIT {
   @BeforeClass
   public static void beforeAll() throws Exception {
     Assert.assertFalse("missing GOOGLE_CLOUD_PROJECT", Strings.isNullOrEmpty(PROJECT_ID));
+    Assert.assertFalse("missing GOOGLE_CLOUD_KMS_KEY", Strings.isNullOrEmpty(KMS_KEY_NAME));
 
     TEST_SECRET = createSecret(true);
     TEST_SECRET_TO_DELETE = createSecret(false);
@@ -160,8 +161,6 @@ public class SnippetsIT {
 
   @AfterClass
   public static void afterAll() throws Exception {
-    Assert.assertFalse("missing GOOGLE_CLOUD_PROJECT", Strings.isNullOrEmpty(PROJECT_ID));
-    Assert.assertFalse("missing GOOGLE_CLOUD_KMS_KEY", Strings.isNullOrEmpty(KMS_KEY_NAME));
 
     deleteSecret(TEST_SECRET.getName());
     deleteSecret(TEST_SECRET_TO_CREATE_NAME.toString());
