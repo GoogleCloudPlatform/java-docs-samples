@@ -597,7 +597,7 @@ public class SnippetsIT {
       throws IOException, InterruptedException, ExecutionException {
     
     SecretName name = SecretName.parse(TEST_SECRET.getName());
-    RemoveTagFromSecret.removeTagFromSecret(
+    DeleteSecretTag.deleteSecretTag(
         name.getProject(),
         name.getSecret(),
         TAG_VALUE.getName());

@@ -14,40 +14,50 @@
  * limitations under the License.
  */
 
-package secretmanager;
+package secretmanager.regionalsamples;
 
-// [START secretmanager_remove_tag_from_secret]
+// [START secretmanager_delete_regional_secret_tag]
 import com.google.cloud.resourcemanager.v3.ListTagBindingsRequest;
 import com.google.cloud.resourcemanager.v3.TagBinding;
 import com.google.cloud.resourcemanager.v3.TagBindingsClient;
+import com.google.cloud.resourcemanager.v3.TagBindingsSettings;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
-public class RemoveTagFromSecret {
+public class DeleteRegionalSecretTag {
 
   public static void main(String[] args) throws Exception {
     // TODO(developer): replace these variables before running the sample.
 
     // This is the id of the GCP project
     String projectId = "your-project-id";
+    // Location of the secret.
+    String locationId = "your-location-id";
     // This is the id of the secret to act on
     String secretId = "your-secret-id";
-    // Tag value to remove, e.g. "tagValues/123"
+    // Tag value to bind, e.g. "tagValues/123"
     String tagValueName = "your-tag-value";
 
-    removeTagFromSecret(projectId, secretId, tagValueName);
+    deleteRegionalSecretTag(projectId, locationId, secretId, tagValueName);
   }
 
-  // Remove a TagValue from a Secret by deleting the TagBinding.
-  public static void removeTagFromSecret(String projectId, String secretId, String tagValueName)
+  // Remove a TagValue from a regional Secret by deleting the TagBinding.
+  public static void deleteRegionalSecretTag(
+      String projectId, String locationId, String secretId, String tagValueName)
       throws IOException, InterruptedException, ExecutionException {
 
-    String parent = String.format("//secretmanager.googleapis.com/projects/%s/secrets/%s",
-        projectId, secretId);
+    String parent = String.format(
+        "//secretmanager.googleapis.com/projects/%s/locations/%s/secrets/%s",
+        projectId, locationId, secretId);
 
-    try (TagBindingsClient tagBindingsClient = TagBindingsClient.create()) {
-      ListTagBindingsRequest request = 
-          ListTagBindingsRequest.newBuilder().setParent(parent).build();
+    // Endpoint to call the regional secret manager server
+    String apiEndpoint = String.format("%s-cloudresourcemanager.googleapis.com:443", locationId);
+    TagBindingsSettings tagBindingsSettings = 
+        TagBindingsSettings.newBuilder().setEndpoint(apiEndpoint).build();
+
+    try (TagBindingsClient tagBindingsClient = TagBindingsClient.create(tagBindingsSettings)) {
+      ListTagBindingsRequest request = ListTagBindingsRequest.newBuilder()
+          .setParent(parent).build();
 
       // Iterate over tag bindings
       for (TagBinding binding : tagBindingsClient.listTagBindings(request).iterateAll()) {
@@ -61,4 +71,4 @@ public class RemoveTagFromSecret {
     }
   }
 }
-// [END secretmanager_remove_tag_from_secret]
+// [END secretmanager_delete_regional_secret_tag]

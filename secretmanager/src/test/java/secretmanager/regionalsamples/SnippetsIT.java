@@ -687,7 +687,7 @@ public class SnippetsIT {
       throws IOException, InterruptedException, ExecutionException {
 
     SecretName name = SecretName.parse(TEST_REGIONAL_SECRET.getName());
-    RemoveTagFromRegionalSecret.removeTagFromRegionalSecret(
+    DeleteRegionalSecretTag.deleteRegionalSecretTag(
         name.getProject(),
         name.getLocation(),
         name.getSecret(),
