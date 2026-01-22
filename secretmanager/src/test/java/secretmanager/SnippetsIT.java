@@ -58,6 +58,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.ExecutionException;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -570,6 +571,38 @@ public class SnippetsIT {
 
     assertThat(stdOut.toString()).contains("Secret projects/");
     assertThat(stdOut.toString()).contains(name.getSecret());
+  }
+
+  @Test
+  public void testListSecretTagBindings() throws IOException {
+    SecretName name = TEST_SECRET_WITH_TAGS_TO_CREATE_NAME;
+    ListSecretTagBindings.listSecretTagBindings(name.getProject(), name.getSecret());
+
+    assertThat(stdOut.toString()).contains("Found TagBinding");
+  }
+
+  @Test
+  public void testBindSecretTag() throws IOException, InterruptedException, ExecutionException {
+    SecretName name = SecretName.parse(TEST_SECRET.getName());
+    BindSecretTag.bindSecretTag(
+        name.getProject(),
+        name.getSecret(),
+        TAG_VALUE.getName());
+
+    assertThat(stdOut.toString()).contains("Created TagBinding");
+  }
+
+  @Test
+  public void testRemoveTagFromSecret() 
+      throws IOException, InterruptedException, ExecutionException {
+    
+    SecretName name = SecretName.parse(TEST_SECRET.getName());
+    RemoveTagFromSecret.removeTagFromSecret(
+        name.getProject(),
+        name.getSecret(),
+        TAG_VALUE.getName());
+
+    assertThat(stdOut.toString()).contains("Deleted TagBinding");
   }
 
   @Test

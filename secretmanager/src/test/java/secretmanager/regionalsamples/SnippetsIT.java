@@ -64,6 +64,7 @@ import java.io.PrintStream;
 import java.lang.Exception;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.ExecutionException;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -655,6 +656,44 @@ public class SnippetsIT {
       }
     }
     assertTrue(secretPresentInList);
+  }
+
+  @Test
+  public void testListRegionalSecretTagBindings() throws IOException {
+    SecretName name = TEST_REGIONAL_SECRET_WITH_TAGS_TO_CREATE_NAME;
+    ListRegionalSecretTagBindings.listRegionalSecretTagBindings(
+        name.getProject(), name.getLocation(), name.getSecret()
+    );
+
+    assertThat(stdOut.toString()).contains("Found TagBinding");
+  }
+
+  @Test
+  public void testBindRegionalSecretTag() 
+      throws IOException, InterruptedException, ExecutionException {
+    
+    SecretName name = SecretName.parse(TEST_REGIONAL_SECRET.getName());
+    BindRegionalSecretTag.bindRegionalSecretTag(
+        name.getProject(),
+        name.getLocation(),
+        name.getSecret(),
+        TAG_VALUE.getName());
+
+    assertThat(stdOut.toString()).contains("Created TagBinding");
+  }
+
+  @Test
+  public void testRemoveTagFromRegionalSecret() 
+      throws IOException, InterruptedException, ExecutionException {
+
+    SecretName name = SecretName.parse(TEST_REGIONAL_SECRET.getName());
+    RemoveTagFromRegionalSecret.removeTagFromRegionalSecret(
+        name.getProject(),
+        name.getLocation(),
+        name.getSecret(),
+        TAG_VALUE.getName());
+
+    assertThat(stdOut.toString()).contains("Deleted TagBinding");
   }
 
   @Test
