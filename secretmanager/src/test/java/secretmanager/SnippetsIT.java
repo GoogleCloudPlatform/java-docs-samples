@@ -96,7 +96,9 @@ public class SnippetsIT {
   private static Secret TEST_SECRET_TO_DELETE_ANNOTATIONS;
   private static Secret TEST_SECRET_TO_DELAYED_DESTROY;
   private static Secret TEST_SECRET_WITH_VERSIONS;
+  private static Secret TEST_SECRET_WITH_EXPIRATION;
   private static SecretName TEST_SECRET_WITH_DELAYED_DESTROY;
+  private static SecretName TEST_SECRET_WITH_EXPIRATION_TO_CREATE_NAME;
   private static SecretName TEST_SECRET_TO_CREATE_NAME;
   private static SecretName TEST_SECRET_WITH_LABEL_TO_CREATE_NAME;
   private static SecretName TEST_SECRET_WITH_TAGS_TO_CREATE_NAME;
@@ -134,6 +136,8 @@ public class SnippetsIT {
     TEST_SECRET_WITH_LABEL_TO_CREATE_NAME = SecretName.of(PROJECT_ID, randomSecretId());
     TEST_SECRET_WITH_ANNOTATION_TO_CREATE_NAME = SecretName.of(PROJECT_ID, randomSecretId());
     TEST_SECRET_WITH_CMEK_TO_CREATE_NAME = SecretName.of(PROJECT_ID, randomSecretId());
+    TEST_SECRET_WITH_EXPIRATION_TO_CREATE_NAME = SecretName.of(PROJECT_ID, randomSecretId());
+    TEST_SECRET_WITH_EXPIRATION = createSecret(false);
 
     TEST_SECRET_VERSION = addSecretVersion(TEST_SECRET_WITH_VERSIONS);
     TEST_SECRET_VERSION_TO_DESTROY = addSecretVersion(TEST_SECRET_WITH_VERSIONS);
@@ -176,6 +180,8 @@ public class SnippetsIT {
     deleteSecret(TEST_SECRET_WITH_VERSIONS.getName());
     deleteSecret(TEST_SECRET_WITH_DELAYED_DESTROY.toString());
     deleteSecret(TEST_SECRET_TO_DELAYED_DESTROY.getName());
+    deleteSecret(TEST_SECRET_WITH_EXPIRATION_TO_CREATE_NAME.toString());
+    deleteSecret(TEST_SECRET_WITH_EXPIRATION.getName());
     deleteTags();
   }
 
@@ -695,5 +701,37 @@ public class SnippetsIT {
     String log = ConsumeEventNotification.accept(pubSubMessage);
     assertThat(log).isEqualTo(
         "Received SECRET_UPDATE for projects/p/secrets/s. New metadata: hello!");
+  }
+
+  @Test
+  public void testCreateSecretWithExpiration() throws IOException {
+    SecretName name = TEST_SECRET_WITH_EXPIRATION_TO_CREATE_NAME;
+    Secret secret = CreateSecretWithExpiration.createSecretWithExpiration(
+        name.getProject(), name.getSecret(), 86400);
+
+    assertThat(stdOut.toString()).contains("Created secret");
+    assertThat(stdOut.toString()).contains("with expire time");
+    assertThat(secret.hasExpireTime()).isTrue();
+  }
+
+  @Test
+  public void testUpdateSecretExpiration() throws IOException {
+    SecretName name = SecretName.parse(TEST_SECRET_WITH_EXPIRATION.getName());
+    Secret secret = UpdateSecretExpiration.updateSecretExpiration(
+        name.getProject(), name.getSecret(), 172800);
+
+    assertThat(stdOut.toString()).contains("Updated secret");
+    assertThat(stdOut.toString()).contains("with new expiration time");
+    assertThat(secret.hasExpireTime()).isTrue();
+  }
+
+  @Test
+  public void testDeleteSecretExpiration() throws IOException {
+    SecretName name = SecretName.parse(TEST_SECRET_WITH_EXPIRATION.getName());
+    Secret secret = DeleteSecretExpiration.deleteSecretExpiration(
+        name.getProject(), name.getSecret());
+
+    assertThat(stdOut.toString()).contains("Deleted expiration from secret");
+    assertThat(secret.hasExpireTime()).isFalse();
   }
 }

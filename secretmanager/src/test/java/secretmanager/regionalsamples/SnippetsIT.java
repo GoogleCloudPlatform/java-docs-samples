@@ -104,7 +104,9 @@ public class SnippetsIT {
   private static Secret TEST_REGIONAL_SECRET_TO_DELETE_ANNOTATIONS;
   private static Secret TEST_REGIONAL_SECRET_WITH_VERSIONS;
   private static Secret TEST_REGIONAL_SECRET_TO_DELAYED_DESTROY;
+  private static Secret TEST_REGIONAL_SECRET_WITH_EXPIRATION;
   private static SecretName TEST_REGIONAL_SECRET_WITH_DELAYED_DESTROY;
+  private static SecretName TEST_REGIONAL_SECRET_WITH_EXPIRATION_TO_CREATE_NAME;
   private static SecretName TEST_REGIONAL_SECRET_TO_CREATE_NAME;
   private static SecretName TEST_REGIONAL_SECRET_WITH_LABEL_TO_CREATE_NAME;
   private static SecretName TEST_REGIONAL_SECRET_WITH_TAGS_TO_CREATE_NAME;
@@ -150,6 +152,9 @@ public class SnippetsIT {
         SecretName.ofProjectLocationSecretName(PROJECT_ID, LOCATION_ID, randomSecretId());
     TEST_REGIONAL_SECRET_WITH_TAGS_TO_CREATE_NAME =
     SecretName.ofProjectLocationSecretName(PROJECT_ID, LOCATION_ID,  randomSecretId());
+    TEST_REGIONAL_SECRET_WITH_EXPIRATION_TO_CREATE_NAME =
+        SecretName.ofProjectLocationSecretName(PROJECT_ID, LOCATION_ID, randomSecretId());
+    TEST_REGIONAL_SECRET_WITH_EXPIRATION = createRegionalSecret();
     TEST_REGIONAL_SECRET_VERSION = addRegionalSecretVersion(TEST_REGIONAL_SECRET_WITH_VERSIONS);
     TEST_REGIONAL_SECRET_VERSION_TO_DESTROY = 
         addRegionalSecretVersion(TEST_REGIONAL_SECRET_WITH_VERSIONS);
@@ -197,6 +202,8 @@ public class SnippetsIT {
     deleteRegionalSecret(TEST_REGIONAL_SECRET_WITH_VERSIONS.getName());
     deleteRegionalSecret(TEST_REGIONAL_SECRET_WITH_DELAYED_DESTROY.toString());
     deleteRegionalSecret(TEST_REGIONAL_SECRET_TO_DELAYED_DESTROY.getName());
+    deleteRegionalSecret(TEST_REGIONAL_SECRET_WITH_EXPIRATION_TO_CREATE_NAME.toString());
+    deleteRegionalSecret(TEST_REGIONAL_SECRET_WITH_EXPIRATION.getName());
     deleteTags();
   }
 
@@ -781,6 +788,38 @@ public class SnippetsIT {
 
     assertThat(stdOut.toString()).contains("Updated secret");
     assertThat(secret.getVersionDestroyTtl().getSeconds()).isEqualTo(0);
+  }
+
+  @Test
+  public void testCreateRegionalSecretWithExpiration() throws IOException {
+    SecretName name = TEST_REGIONAL_SECRET_WITH_EXPIRATION_TO_CREATE_NAME;
+    Secret secret = CreateRegionalSecretWithExpiration.createRegionalSecretWithExpiration(
+        name.getProject(), name.getLocation(), name.getSecret(), 86400);
+
+    assertThat(stdOut.toString()).contains("Created secret");
+    assertThat(stdOut.toString()).contains("with expire time");
+    assertThat(secret.hasExpireTime()).isTrue();
+  }
+
+  @Test
+  public void testUpdateRegionalSecretExpiration() throws IOException {
+    SecretName name = SecretName.parse(TEST_REGIONAL_SECRET_WITH_EXPIRATION.getName());
+    Secret secret = UpdateRegionalSecretExpiration.updateRegionalSecretExpiration(
+        name.getProject(), name.getLocation(), name.getSecret(), 172800);
+
+    assertThat(stdOut.toString()).contains("Updated secret");
+    assertThat(stdOut.toString()).contains("with new expiration time");
+    assertThat(secret.hasExpireTime()).isTrue();
+  }
+
+  @Test
+  public void testDeleteRegionalSecretExpiration() throws IOException {
+    SecretName name = SecretName.parse(TEST_REGIONAL_SECRET_WITH_EXPIRATION.getName());
+    Secret secret = DeleteRegionalSecretExpiration.deleteRegionalSecretExpiration(
+        name.getProject(), name.getLocation(), name.getSecret());
+
+    assertThat(stdOut.toString()).contains("Deleted expiration from secret");
+    assertThat(secret.hasExpireTime()).isFalse();
   }
 }
  
