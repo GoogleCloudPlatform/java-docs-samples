@@ -25,11 +25,10 @@ import com.google.protobuf.FieldMask;
 import com.google.protobuf.util.FieldMaskUtil;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Map;
 
 public class DeleteRegionalSecretAnnotations {
 
-  public static void main() throws IOException {
+  public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
 
     // This is the id of the GCP project

@@ -26,7 +26,7 @@ import java.io.IOException;
 
 public class CreateRegionalSecretWithCmek {
 
-  public static void main() throws IOException {
+  public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
 
     // This is the id of the GCP project
