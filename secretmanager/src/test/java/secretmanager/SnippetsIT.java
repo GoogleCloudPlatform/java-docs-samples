@@ -84,8 +84,7 @@ public class SnippetsIT {
   private static final String LABEL_VALUE = "examplelabelvalue";
   private static final String UPDATED_LABEL_KEY = "updatedlabelkey";
   private static final String UPDATED_LABEL_VALUE = "updatedlabelvalue";
-  private static final String ANNOTATION_KEY = 
-      "exampleannotationkey";
+  private static final String ANNOTATION_KEY = "exampleannotationkey";
   private static final String ANNOTATION_VALUE = "exampleannotationvalue";
   private static final String UPDATED_ANNOTATION_KEY = "updatedannotationkey";
   private static final String UPDATED_ANNOTATION_VALUE = "updatedannotationvalue";
