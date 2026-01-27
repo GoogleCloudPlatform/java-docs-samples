@@ -86,6 +86,7 @@ public class SnippetsIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String REGIONAL_KMS_KEY_NAME = 
       System.getenv("GOOGLE_CLOUD_REGIONAL_KMS_KEY");
+  private static final String PUBSUB_TOPIC_NAME = System.getenv("GOOGLE_CLOUD_PUBSUB_TOPIC");
   private static final String LABEL_KEY = "examplelabelkey";
   private static final String LABEL_VALUE = "examplelabelvalue";
   private static final String UPDATED_LABEL_KEY = "updatedlabelkey";
@@ -105,8 +106,11 @@ public class SnippetsIT {
   private static Secret TEST_REGIONAL_SECRET_WITH_VERSIONS;
   private static Secret TEST_REGIONAL_SECRET_TO_DELAYED_DESTROY;
   private static Secret TEST_REGIONAL_SECRET_WITH_EXPIRATION;
+  private static Secret TEST_REGIONAL_SECRET_WITH_ROTATION;
   private static SecretName TEST_REGIONAL_SECRET_WITH_DELAYED_DESTROY;
   private static SecretName TEST_REGIONAL_SECRET_WITH_EXPIRATION_TO_CREATE_NAME;
+  private static SecretName TEST_REGIONAL_SECRET_WITH_ROTATION_TO_CREATE_NAME;
+  private static SecretName TEST_REGIONAL_SECRET_WITH_TOPIC_TO_CREATE_NAME;
   private static SecretName TEST_REGIONAL_SECRET_TO_CREATE_NAME;
   private static SecretName TEST_REGIONAL_SECRET_WITH_LABEL_TO_CREATE_NAME;
   private static SecretName TEST_REGIONAL_SECRET_WITH_TAGS_TO_CREATE_NAME;
@@ -132,6 +136,8 @@ public class SnippetsIT {
         Strings.isNullOrEmpty(LOCATION_ID));
     Assert.assertFalse("missing REGIONAL_KMS_KEY_NAME", 
         Strings.isNullOrEmpty(REGIONAL_KMS_KEY_NAME));
+    Assert.assertFalse("missing GOOGLE_CLOUD_PUBSUB_TOPIC", 
+        Strings.isNullOrEmpty(PUBSUB_TOPIC_NAME));
 
     TEST_REGIONAL_SECRET = createRegionalSecret();
     TEST_REGIONAL_SECRET_TO_DELETE = createRegionalSecret();
@@ -154,7 +160,12 @@ public class SnippetsIT {
     SecretName.ofProjectLocationSecretName(PROJECT_ID, LOCATION_ID,  randomSecretId());
     TEST_REGIONAL_SECRET_WITH_EXPIRATION_TO_CREATE_NAME =
         SecretName.ofProjectLocationSecretName(PROJECT_ID, LOCATION_ID, randomSecretId());
+    TEST_REGIONAL_SECRET_WITH_ROTATION_TO_CREATE_NAME =
+        SecretName.ofProjectLocationSecretName(PROJECT_ID, LOCATION_ID, randomSecretId());
+    TEST_REGIONAL_SECRET_WITH_TOPIC_TO_CREATE_NAME =
+        SecretName.ofProjectLocationSecretName(PROJECT_ID, LOCATION_ID, randomSecretId());
     TEST_REGIONAL_SECRET_WITH_EXPIRATION = createRegionalSecret();
+    TEST_REGIONAL_SECRET_WITH_ROTATION = createRegionalSecret();
     TEST_REGIONAL_SECRET_VERSION = addRegionalSecretVersion(TEST_REGIONAL_SECRET_WITH_VERSIONS);
     TEST_REGIONAL_SECRET_VERSION_TO_DESTROY = 
         addRegionalSecretVersion(TEST_REGIONAL_SECRET_WITH_VERSIONS);
@@ -204,6 +215,9 @@ public class SnippetsIT {
     deleteRegionalSecret(TEST_REGIONAL_SECRET_TO_DELAYED_DESTROY.getName());
     deleteRegionalSecret(TEST_REGIONAL_SECRET_WITH_EXPIRATION_TO_CREATE_NAME.toString());
     deleteRegionalSecret(TEST_REGIONAL_SECRET_WITH_EXPIRATION.getName());
+    deleteRegionalSecret(TEST_REGIONAL_SECRET_WITH_ROTATION_TO_CREATE_NAME.toString());
+    deleteRegionalSecret(TEST_REGIONAL_SECRET_WITH_ROTATION.getName());
+    deleteRegionalSecret(TEST_REGIONAL_SECRET_WITH_TOPIC_TO_CREATE_NAME.toString());
     deleteTags();
   }
 
@@ -820,6 +834,51 @@ public class SnippetsIT {
 
     assertThat(stdOut.toString()).contains("Deleted expiration from secret");
     assertThat(secret.hasExpireTime()).isFalse();
+  }
+
+  @Test
+  public void testCreateRegionalSecretWithRotation() throws IOException {
+    SecretName name = TEST_REGIONAL_SECRET_WITH_ROTATION_TO_CREATE_NAME;
+    Secret secret = CreateRegionalSecretWithRotation.createRegionalSecretWithRotation(
+        name.getProject(), name.getLocation(), name.getSecret(), 2592000, PUBSUB_TOPIC_NAME);
+
+    assertThat(stdOut.toString()).contains("Created secret");
+    assertThat(stdOut.toString()).contains("with rotation");
+    assertThat(secret.hasRotation()).isTrue();
+    assertThat(secret.getTopicsCount()).isGreaterThan(0);
+  }
+
+  @Test
+  public void testUpdateRegionalSecretRotation() throws IOException {
+    SecretName name = SecretName.parse(TEST_REGIONAL_SECRET_WITH_ROTATION.getName());
+    Secret secret = UpdateRegionalSecretRotation.updateRegionalSecretRotation(
+        name.getProject(), name.getLocation(), name.getSecret(), 3600000, PUBSUB_TOPIC_NAME);
+
+    assertThat(stdOut.toString()).contains("Updated secret");
+    assertThat(stdOut.toString()).contains("with new rotation policy");
+    assertThat(secret.hasRotation()).isTrue();
+    assertThat(secret.getTopicsCount()).isGreaterThan(0);
+  }
+
+  @Test
+  public void testDeleteRegionalSecretRotation() throws IOException {
+    SecretName name = SecretName.parse(TEST_REGIONAL_SECRET_WITH_ROTATION.getName());
+    Secret secret = DeleteRegionalSecretRotation.deleteRegionalSecretRotation(
+        name.getProject(), name.getLocation(), name.getSecret());
+
+    assertThat(stdOut.toString()).contains("Deleted rotation from secret");
+    assertThat(secret.hasRotation()).isFalse();
+  }
+
+  @Test
+  public void testCreateRegionalSecretWithTopic() throws IOException {
+    SecretName name = TEST_REGIONAL_SECRET_WITH_TOPIC_TO_CREATE_NAME;
+    Secret secret = CreateRegionalSecretWithTopic.createRegionalSecretWithTopic(
+        name.getProject(), name.getLocation(), name.getSecret(), PUBSUB_TOPIC_NAME);
+
+    assertThat(stdOut.toString()).contains("Created secret");
+    assertThat(stdOut.toString()).contains("with topic");
+    assertThat(secret.getTopicsCount()).isGreaterThan(0);
   }
 }
  

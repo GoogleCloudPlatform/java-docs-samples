@@ -80,6 +80,7 @@ public class SnippetsIT {
       "serviceAccount:iam-samples@java-docs-samples-testing.iam.gserviceaccount.com";
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String KMS_KEY_NAME = System.getenv("GOOGLE_CLOUD_KMS_KEY");
+  private static final String PUBSUB_TOPIC_NAME = System.getenv("GOOGLE_CLOUD_PUBSUB_TOPIC");
   private static final String LABEL_KEY = "examplelabelkey";
   private static final String LABEL_VALUE = "examplelabelvalue";
   private static final String UPDATED_LABEL_KEY = "updatedlabelkey";
@@ -96,8 +97,11 @@ public class SnippetsIT {
   private static Secret TEST_SECRET_TO_DELAYED_DESTROY;
   private static Secret TEST_SECRET_WITH_VERSIONS;
   private static Secret TEST_SECRET_WITH_EXPIRATION;
+  private static Secret TEST_SECRET_WITH_ROTATION;
   private static SecretName TEST_SECRET_WITH_DELAYED_DESTROY;
   private static SecretName TEST_SECRET_WITH_EXPIRATION_TO_CREATE_NAME;
+  private static SecretName TEST_SECRET_WITH_ROTATION_TO_CREATE_NAME;
+  private static SecretName TEST_SECRET_WITH_TOPIC_TO_CREATE_NAME;
   private static SecretName TEST_SECRET_TO_CREATE_NAME;
   private static SecretName TEST_SECRET_WITH_LABEL_TO_CREATE_NAME;
   private static SecretName TEST_SECRET_WITH_TAGS_TO_CREATE_NAME;
@@ -121,6 +125,8 @@ public class SnippetsIT {
   public static void beforeAll() throws Exception {
     Assert.assertFalse("missing GOOGLE_CLOUD_PROJECT", Strings.isNullOrEmpty(PROJECT_ID));
     Assert.assertFalse("missing GOOGLE_CLOUD_KMS_KEY", Strings.isNullOrEmpty(KMS_KEY_NAME));
+    Assert.assertFalse(
+        "missing GOOGLE_CLOUD_PUBSUB_TOPIC", Strings.isNullOrEmpty(PUBSUB_TOPIC_NAME));
 
     TEST_SECRET = createSecret(true);
     TEST_SECRET_TO_DELETE = createSecret(false);
@@ -136,7 +142,10 @@ public class SnippetsIT {
     TEST_SECRET_WITH_ANNOTATION_TO_CREATE_NAME = SecretName.of(PROJECT_ID, randomSecretId());
     TEST_SECRET_WITH_CMEK_TO_CREATE_NAME = SecretName.of(PROJECT_ID, randomSecretId());
     TEST_SECRET_WITH_EXPIRATION_TO_CREATE_NAME = SecretName.of(PROJECT_ID, randomSecretId());
+    TEST_SECRET_WITH_ROTATION_TO_CREATE_NAME = SecretName.of(PROJECT_ID, randomSecretId());
+    TEST_SECRET_WITH_TOPIC_TO_CREATE_NAME = SecretName.of(PROJECT_ID, randomSecretId());
     TEST_SECRET_WITH_EXPIRATION = createSecret(false);
+    TEST_SECRET_WITH_ROTATION = createSecret(false);
 
     TEST_SECRET_VERSION = addSecretVersion(TEST_SECRET_WITH_VERSIONS);
     TEST_SECRET_VERSION_TO_DESTROY = addSecretVersion(TEST_SECRET_WITH_VERSIONS);
@@ -181,6 +190,9 @@ public class SnippetsIT {
     deleteSecret(TEST_SECRET_TO_DELAYED_DESTROY.getName());
     deleteSecret(TEST_SECRET_WITH_EXPIRATION_TO_CREATE_NAME.toString());
     deleteSecret(TEST_SECRET_WITH_EXPIRATION.getName());
+    deleteSecret(TEST_SECRET_WITH_ROTATION_TO_CREATE_NAME.toString());
+    deleteSecret(TEST_SECRET_WITH_ROTATION.getName());
+    deleteSecret(TEST_SECRET_WITH_TOPIC_TO_CREATE_NAME.toString());
     deleteTags();
   }
 
@@ -732,5 +744,50 @@ public class SnippetsIT {
 
     assertThat(stdOut.toString()).contains("Deleted expiration from secret");
     assertThat(secret.hasExpireTime()).isFalse();
+  }
+
+  @Test
+  public void testCreateSecretWithRotation() throws IOException {
+    SecretName name = TEST_SECRET_WITH_ROTATION_TO_CREATE_NAME;
+    Secret secret = CreateSecretWithRotation.createSecretWithRotation(
+        name.getProject(), name.getSecret(), 2592000, PUBSUB_TOPIC_NAME);
+
+    assertThat(stdOut.toString()).contains("Created secret");
+    assertThat(stdOut.toString()).contains("with rotation");
+    assertThat(secret.hasRotation()).isTrue();
+    assertThat(secret.getTopicsCount()).isGreaterThan(0);
+  }
+
+  @Test
+  public void testUpdateSecretRotation() throws IOException {
+    SecretName name = SecretName.parse(TEST_SECRET_WITH_ROTATION.getName());
+    Secret secret = UpdateSecretRotation.updateSecretRotation(
+        name.getProject(), name.getSecret(), 3600000, PUBSUB_TOPIC_NAME);
+
+    assertThat(stdOut.toString()).contains("Updated secret");
+    assertThat(stdOut.toString()).contains("with new rotation policy");
+    assertThat(secret.hasRotation()).isTrue();
+    assertThat(secret.getTopicsCount()).isGreaterThan(0);
+  }
+
+  @Test
+  public void testDeleteSecretRotation() throws IOException {
+    SecretName name = SecretName.parse(TEST_SECRET_WITH_ROTATION.getName());
+    Secret secret = DeleteSecretRotation.deleteSecretRotation(
+        name.getProject(), name.getSecret());
+
+    assertThat(stdOut.toString()).contains("Deleted rotation from secret");
+    assertThat(secret.hasRotation()).isFalse();
+  }
+
+  @Test
+  public void testCreateSecretWithTopic() throws IOException {
+    SecretName name = TEST_SECRET_WITH_TOPIC_TO_CREATE_NAME;
+    Secret secret = CreateSecretWithTopic.createSecretWithTopic(
+        name.getProject(), name.getSecret(), PUBSUB_TOPIC_NAME);
+
+    assertThat(stdOut.toString()).contains("Created secret");
+    assertThat(stdOut.toString()).contains("with topic");
+    assertThat(secret.getTopicsCount()).isGreaterThan(0);
   }
 }
