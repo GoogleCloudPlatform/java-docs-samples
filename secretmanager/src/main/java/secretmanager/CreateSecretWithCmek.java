@@ -42,8 +42,7 @@ public class CreateSecretWithCmek {
   public static Secret createSecretWithCmek(String projectId, String secretId, String kmsKeyName)
       throws IOException {
 
-    // Initialize client that will be used to send requests. This client only needs
-    // to be created
+    // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (SecretManagerServiceClient client = SecretManagerServiceClient.create()) {
 

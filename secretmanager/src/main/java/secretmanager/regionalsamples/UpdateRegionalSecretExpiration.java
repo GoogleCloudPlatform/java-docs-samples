@@ -52,8 +52,7 @@ public class UpdateRegionalSecretExpiration {
     String apiEndpoint = String.format("secretmanager.%s.rep.googleapis.com:443", locationId);
     SecretManagerServiceSettings secretManagerServiceSettings =
         SecretManagerServiceSettings.newBuilder().setEndpoint(apiEndpoint).build();
-    
-    // Initialize the client that will be used to send requests. This client only needs to be
+    // created once, and can be reused for multiple requests.
     // created once, and can be reused for multiple requests.
     try (SecretManagerServiceClient client = 
         SecretManagerServiceClient.create(secretManagerServiceSettings)) {

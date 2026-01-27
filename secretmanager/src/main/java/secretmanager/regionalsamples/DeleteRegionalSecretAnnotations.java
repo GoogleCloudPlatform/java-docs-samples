@@ -50,9 +50,7 @@ public class DeleteRegionalSecretAnnotations {
         SecretManagerServiceSettings.newBuilder().setEndpoint(apiEndpoint).build();
 
     // Initialize client that will be used to send requests. This client only needs
-    // to be created
     // once, and can be reused for multiple requests.
-    try (SecretManagerServiceClient client =
         SecretManagerServiceClient.create(secretManagerServiceSettings)) {
       // Build the name of the secret.
       SecretName secretName =
