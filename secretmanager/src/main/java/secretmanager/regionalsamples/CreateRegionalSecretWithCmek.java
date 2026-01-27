@@ -50,7 +50,8 @@ public class CreateRegionalSecretWithCmek {
         SecretManagerServiceSettings.newBuilder().setEndpoint(apiEndpoint).build();
 
     // Initialize client that will be used to send requests. This client only needs
-    // once, and can be reused for multiple requests.
+    // to be created once, and can be reused for multiple requests.
+    try (SecretManagerServiceClient client =
         SecretManagerServiceClient.create(secretManagerServiceSettings)) {
       // Build the parent name from the project and location.
       LocationName locationName = LocationName.of(projectId, locationId);
