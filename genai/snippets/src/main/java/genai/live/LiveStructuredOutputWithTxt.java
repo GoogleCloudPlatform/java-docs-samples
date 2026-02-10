@@ -78,7 +78,7 @@ public class LiveStructuredOutputWithTxt {
             .completions()
             .create(
                 ChatCompletionCreateParams.builder()
-                    .model("google/gemini-2.0-flash-001")
+                    .model("google/gemini-2.5-flash")
                     .addSystemMessage("Extract the event information.")
                     .addUserMessage("Alice and Bob are going to a science fair on Friday.")
                     .responseFormat(CalendarEvent.class)
