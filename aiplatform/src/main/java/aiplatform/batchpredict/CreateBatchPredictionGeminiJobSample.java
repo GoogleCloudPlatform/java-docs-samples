@@ -72,7 +72,7 @@ public class CreateBatchPredictionGeminiJobSample {
       String modelName =
           String.format(
               "projects/%s/locations/%s/publishers/google/models/%s",
-              project, location, "gemini-2.0-flash-001");
+              project, location, "gemini-2.5-flash");
 
       BatchPredictionJob batchPredictionJob =
           BatchPredictionJob.newBuilder()
