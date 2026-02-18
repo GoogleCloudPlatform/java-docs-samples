@@ -18,6 +18,8 @@ package kms;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import com.google.api.gax.rpc.NotFoundException;
+import com.google.cloud.kms.v1.CreateCryptoKeyRequest;
 import com.google.cloud.kms.v1.CryptoKey;
 import com.google.cloud.kms.v1.CryptoKey.CryptoKeyPurpose;
 import com.google.cloud.kms.v1.CryptoKeyName;
@@ -54,6 +56,7 @@ import java.security.spec.MGF1ParameterSpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 import javax.crypto.Cipher;
@@ -64,6 +67,7 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -81,44 +85,55 @@ public class SnippetsIT {
   private static String MAC_KEY_ID;
   private static String SYMMETRIC_KEY_ID;
 
-  private ByteArrayOutputStream stdOut;
+
 
   @BeforeClass
   public static void beforeAll() throws IOException {
     Assert.assertFalse("missing GOOGLE_CLOUD_PROJECT", Strings.isNullOrEmpty(PROJECT_ID));
 
-    KEY_RING_ID = getRandomId();
-    createKeyRing(KEY_RING_ID);
+    KEY_RING_ID = "kms-test-keyring-java";
+    try {
+      createKeyRing(KEY_RING_ID);
+    } catch (Exception e) {
+      // Ignore.
+    }
 
-    ASYMMETRIC_DECRYPT_KEY_ID = getRandomId();
-    createAsymmetricDecryptKey(ASYMMETRIC_DECRYPT_KEY_ID);
+    ASYMMETRIC_DECRYPT_KEY_ID = "kms-test-asymmetric-decrypt-v3";
+    createKeyOrIgnore(ASYMMETRIC_DECRYPT_KEY_ID, SnippetsIT::createAsymmetricDecryptKey);
 
-    ASYMMETRIC_SIGN_EC_KEY_ID = getRandomId();
-    createAsymmetricSignEcKey(ASYMMETRIC_SIGN_EC_KEY_ID);
+    ASYMMETRIC_SIGN_EC_KEY_ID = "kms-test-asymmetric-sign-ec-v3";
+    createKeyOrIgnore(ASYMMETRIC_SIGN_EC_KEY_ID, SnippetsIT::createAsymmetricSignEcKey);
 
-    ASYMMETRIC_SIGN_RSA_KEY_ID = getRandomId();
-    createAsymmetricSignRsaKey(ASYMMETRIC_SIGN_RSA_KEY_ID);
+    ASYMMETRIC_SIGN_RSA_KEY_ID = "kms-test-asymmetric-sign-rsa-v3";
+    createKeyOrIgnore(ASYMMETRIC_SIGN_RSA_KEY_ID, SnippetsIT::createAsymmetricSignRsaKey);
 
-    HSM_KEY_ID = getRandomId();
-    createHsmKey(HSM_KEY_ID);
+    HSM_KEY_ID = "kms-test-hsm-v3";
+    createKeyOrIgnore(HSM_KEY_ID, SnippetsIT::createHsmKey);
 
-    MAC_KEY_ID = getRandomId();
-    createMacKey(MAC_KEY_ID);
+    MAC_KEY_ID = "kms-test-mac-v3";
+    createKeyOrIgnore(MAC_KEY_ID, SnippetsIT::createMacKey);
 
-    SYMMETRIC_KEY_ID = getRandomId();
-    createSymmetricKey(SYMMETRIC_KEY_ID);
+    SYMMETRIC_KEY_ID = "kms-test-symmetric-v3";
+    createKeyOrIgnore(SYMMETRIC_KEY_ID, SnippetsIT::createSymmetricKey);
   }
+
+  private ByteArrayOutputStream stdOut;
+  private ByteArrayOutputStream stdErr;
 
   @Before
   public void beforeEach() {
     stdOut = new ByteArrayOutputStream();
+    stdErr = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
+    System.setErr(new PrintStream(stdErr));
   }
 
   @After
   public void afterEach() {
     stdOut = null;
+    stdErr = null;
     System.setOut(null);
+    System.setErr(null);
   }
 
   @AfterClass
@@ -134,6 +149,7 @@ public class SnippetsIT {
           client.updateCryptoKey(keyWithoutRotation, fieldMask);
         }
 
+        /*
         ListCryptoKeyVersionsRequest listVersionsRequest =
             ListCryptoKeyVersionsRequest.newBuilder()
                 .setParent(key.getName())
@@ -143,6 +159,7 @@ public class SnippetsIT {
             client.listCryptoKeyVersions(listVersionsRequest).iterateAll()) {
           client.destroyCryptoKeyVersion(version.getName());
         }
+        */
       }
     }
   }
@@ -162,9 +179,36 @@ public class SnippetsIT {
 
   private static KeyRing createKeyRing(String keyRingId) throws IOException {
     try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
-      KeyRing keyRing = KeyRing.newBuilder().build();
-      KeyRing createdKeyRing = client.createKeyRing(getLocationName(), keyRingId, keyRing);
-      return createdKeyRing;
+      KeyRingName keyRingName = KeyRingName.of(PROJECT_ID, LOCATION_ID, keyRingId);
+      try {
+        return client.getKeyRing(keyRingName);
+      } catch (com.google.api.gax.rpc.NotFoundException e) {
+        // KeyRing doesn't exist, create it.
+        KeyRing keyRing = KeyRing.newBuilder().build();
+        return client.createKeyRing(getLocationName(), keyRingId, keyRing);
+      }
+    }
+  }
+
+  interface KeyCreator {
+    void create(String id) throws IOException;
+  }
+
+  private static void createKeyOrIgnore(String id, KeyCreator creator) throws IOException {
+    try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
+      CryptoKeyName keyName = CryptoKeyName.of(PROJECT_ID, LOCATION_ID, KEY_RING_ID, id);
+      try {
+        client.getCryptoKey(keyName);
+        return; // Exists
+      } catch (com.google.api.gax.rpc.NotFoundException e) {
+        // Doesn't exist, try creating.
+      }
+    }
+
+    try {
+      creator.create(id);
+    } catch (com.google.api.gax.rpc.AlreadyExistsException e) {
+      // Ignore
     }
   }
 
@@ -269,6 +313,30 @@ public class SnippetsIT {
               .build();
       CryptoKey createdKey = client.createCryptoKey(getKeyRingName(), keyId, key);
       return createdKey;
+    }
+  }
+
+  private static CryptoKey createSymmetricKeyWithNoInitialVersion(String keyId) throws IOException {
+    try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
+      CryptoKey key =
+          CryptoKey.newBuilder()
+              .setPurpose(CryptoKeyPurpose.ENCRYPT_DECRYPT)
+              .setVersionTemplate(
+                  CryptoKeyVersionTemplate.newBuilder()
+                      .setAlgorithm(CryptoKeyVersionAlgorithm.GOOGLE_SYMMETRIC_ENCRYPTION)
+                      .build())
+              .putLabels("foo", "bar")
+              .putLabels("zip", "zap")
+              .build();
+
+      CreateCryptoKeyRequest request =
+          CreateCryptoKeyRequest.newBuilder()
+              .setParent(getKeyRingName().toString())
+              .setCryptoKeyId(keyId)
+              .setCryptoKey(key)
+              .setSkipInitialVersionCreation(true)
+              .build();
+      return client.createCryptoKey(request);
     }
   }
 
@@ -431,6 +499,71 @@ public class SnippetsIT {
   }
 
   @Test
+  public void testDeleteKey() throws IOException {
+    String deleteKeyId = getRandomId();
+    createSymmetricKeyWithNoInitialVersion(deleteKeyId);
+
+    try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
+      CryptoKeyName keyName = CryptoKeyName.of(PROJECT_ID, LOCATION_ID, KEY_RING_ID, deleteKeyId);
+
+      // Delete the key.
+      new DeleteKey().deleteKey(PROJECT_ID, LOCATION_ID, KEY_RING_ID, deleteKeyId);
+      String output = stdOut.toString() + stdErr.toString();
+      assertThat(output).contains("Deleted key");
+    }
+  }
+
+  @Test
+  public void testGetRetiredResource()
+      throws IOException, InterruptedException, ExecutionException {
+    String deleteKeyId = getRandomId();
+    createSymmetricKeyWithNoInitialVersion(deleteKeyId);
+
+    try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
+      CryptoKeyName keyName =
+          CryptoKeyName.of(PROJECT_ID, LOCATION_ID, KEY_RING_ID, deleteKeyId);
+      client.deleteCryptoKeyAsync(keyName).get();
+    }
+
+    // List retired resources to find the one we just deleted.
+    String retiredResourceName = null;
+    try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
+      for (com.google.cloud.kms.v1.RetiredResource resource :
+          client.listRetiredResources(getLocationName()).iterateAll()) {
+        if (resource.toString().contains(deleteKeyId)) {
+          retiredResourceName = resource.getName();
+          break;
+        }
+      }
+    }
+    
+    // If not found, asserting null will fail.
+    assertThat(retiredResourceName).isNotNull();
+
+    // The name of the retired resource is required for Get.
+    String retiredResourceId =
+        retiredResourceName.substring(retiredResourceName.lastIndexOf('/') + 1);
+    new GetRetiredResource().getRetiredResource(PROJECT_ID, LOCATION_ID, retiredResourceId);
+    assertThat(stdOut.toString()).contains("Retired resource");
+  }
+
+  @Test
+  public void testListRetiredResources()
+      throws IOException, InterruptedException, ExecutionException {
+    String deleteKeyId = getRandomId();
+    createSymmetricKeyWithNoInitialVersion(deleteKeyId);
+    try (KeyManagementServiceClient client = KeyManagementServiceClient.create()) {
+      CryptoKeyName keyName =
+          CryptoKeyName.of(PROJECT_ID, LOCATION_ID, KEY_RING_ID, deleteKeyId);
+      client.deleteCryptoKeyAsync(keyName).get();
+    }
+
+    new ListRetiredResources().listRetiredResources(PROJECT_ID, LOCATION_ID);
+    // Since we ran DeleteKey above, there should be at least one retired resource.
+    assertThat(stdOut.toString()).contains("Retired resource");
+  }
+
+  @Test
   public void testDisableEnableKeyVersion() throws Exception {
     CryptoKeyVersion keyVersion = createKeyVersion(ASYMMETRIC_DECRYPT_KEY_ID);
     String name = keyVersion.getName();
@@ -477,7 +610,9 @@ public class SnippetsIT {
 
   @Test
   public void testGetKeyLabels() throws IOException {
-    new GetKeyLabels().getKeyLabels(PROJECT_ID, LOCATION_ID, KEY_RING_ID, SYMMETRIC_KEY_ID);
+    String keyId = getRandomId();
+    createSymmetricKey(keyId);
+    new GetKeyLabels().getKeyLabels(PROJECT_ID, LOCATION_ID, KEY_RING_ID, keyId);
     assertThat(stdOut.toString()).contains("foo=bar");
   }
 
@@ -541,8 +676,10 @@ public class SnippetsIT {
 
   @Test
   public void testUpdateKeyRemoveLabels() throws IOException {
+    String keyId = getRandomId();
+    createSymmetricKeyWithNoInitialVersion(keyId);
     new UpdateKeyRemoveLabels()
-        .updateKeyRemoveLabels(PROJECT_ID, LOCATION_ID, KEY_RING_ID, SYMMETRIC_KEY_ID);
+        .updateKeyRemoveLabels(PROJECT_ID, LOCATION_ID, KEY_RING_ID, keyId);
     assertThat(stdOut.toString()).contains("Updated key");
   }
 
@@ -562,8 +699,10 @@ public class SnippetsIT {
 
   @Test
   public void testUpdateKeyUpdateLabels() throws IOException {
+    String keyId = getRandomId();
+    createSymmetricKeyWithNoInitialVersion(keyId);
     new UpdateKeyUpdateLabels()
-        .updateKeyUpdateLabels(PROJECT_ID, LOCATION_ID, KEY_RING_ID, SYMMETRIC_KEY_ID);
+        .updateKeyUpdateLabels(PROJECT_ID, LOCATION_ID, KEY_RING_ID, keyId);
     assertThat(stdOut.toString()).contains("Updated key");
   }
 

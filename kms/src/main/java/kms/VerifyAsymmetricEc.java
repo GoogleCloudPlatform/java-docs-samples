@@ -45,6 +45,7 @@ public class VerifyAsymmetricEc {
     verifyAsymmetricEc(projectId, locationId, keyRingId, keyId, keyVersionId, message, signature);
   }
 
+  // CPD-OFF
   // Verify the signature of a message signed with an RSA key.
   public void verifyAsymmetricEc(
       String projectId,

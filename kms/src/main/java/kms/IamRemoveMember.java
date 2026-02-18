@@ -56,13 +56,29 @@ public class IamRemoveMember {
 
       // Search through the bindings and remove matches.
       String roleToFind = "roles/cloudkms.cryptoKeyEncrypterDecrypter";
+      // Create a new list of bindings, removing the member from the role.
+      java.util.List<Binding> newBindings = new java.util.ArrayList<>();
       for (Binding binding : policy.getBindingsList()) {
         if (binding.getRole().equals(roleToFind) && binding.getMembersList().contains(member)) {
-          binding.getMembersList().remove(member);
+          Binding.Builder bindingBuilder = binding.toBuilder();
+          // Remove the member.
+          // Note: ProtocolStringList is immutable, so we need to rebuild the members list.
+          java.util.List<String> validMembers = new java.util.ArrayList<>(binding.getMembersList());
+          validMembers.remove(member);
+          
+          bindingBuilder.clearMembers().addAllMembers(validMembers);
+          if (!validMembers.isEmpty()) {
+            newBindings.add(bindingBuilder.build());
+          }
+          // If no members left, we can just omit the binding (effective removal).
+        } else {
+          newBindings.add(binding);
         }
       }
 
-      client.setIamPolicy(resourceName, policy);
+      Policy newPolicy = policy.toBuilder().clearBindings().addAllBindings(newBindings).build();
+
+      client.setIamPolicy(resourceName, newPolicy);
       System.out.printf("Updated IAM policy for %s%n", resourceName.toString());
     }
   }
