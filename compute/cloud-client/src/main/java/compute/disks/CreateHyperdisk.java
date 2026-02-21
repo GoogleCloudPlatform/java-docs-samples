@@ -36,7 +36,9 @@ public class CreateHyperdisk {
     // Name of the disk you want to create.
     String diskName = "YOUR_DISK_NAME";
     // The type of disk you want to create. This value uses the following format:
-    // "zones/{zone}/diskTypes/(hyperdisk-balanced|hyperdisk-extreme|hyperdisk-throughput|hyperdisk-ml|hyperdisk-balanced-high-availability)".
+    // "zones/{zone}/diskTypes/{disktype}".
+    // disktype is one of hyperdisk-balanced, hyperdisk-extreme, hyperdisk-throughput
+    // hyperdisk-ml, hyperdisk-balanced-high-availability
     // For example: "zones/us-west3-b/diskTypes/hyperdisk-balanced"
     String diskType = String.format("zones/%s/diskTypes/hyperdisk-balanced", zone);
     // Size of the new disk in gigabytes.
