@@ -32,7 +32,17 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 public class ParseXml implements HttpFunction {
-  private static DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+  private static DocumentBuilderFactory dbFactory;
+
+  static {
+    dbFactory = DocumentBuilderFactory.newInstance();
+    try {
+      // Prevent XXE attacks (see https://cheatsheetseries.owasp.org/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.html)
+      dbFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+    } catch (ParserConfigurationException e) {
+      throw new RuntimeException(e);
+    }
+  }
 
   // Parses a HTTP request in XML format
   // (Responds with a 400 error if the HTTP request isn't valid XML.)
