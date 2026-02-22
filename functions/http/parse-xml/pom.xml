@@ -94,7 +94,7 @@
         <artifactId>function-maven-plugin</artifactId>
         <version>0.11.0</version>
         <configuration>
-          <functionTarget>functions.ParseContentType</functionTarget>
+          <functionTarget>functions.ParseXml</functionTarget>
         </configuration>
       </plugin>
       <plugin>

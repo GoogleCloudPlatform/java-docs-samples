@@ -32,13 +32,18 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 public class ParseXml implements HttpFunction {
-  private static DocumentBuilderFactory dbFactory;
+  private static final DocumentBuilderFactory dbFactory;
 
   static {
     dbFactory = DocumentBuilderFactory.newInstance();
     try {
       // Prevent XXE attacks (see https://cheatsheetseries.owasp.org/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.html)
       dbFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+      dbFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+      dbFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+      dbFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+      dbFactory.setXIncludeAware(false);
+      dbFactory.setExpandEntityReferences(false);
     } catch (ParserConfigurationException e) {
       throw new RuntimeException(e);
     }
