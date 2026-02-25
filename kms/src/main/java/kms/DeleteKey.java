@@ -34,7 +34,8 @@ public class DeleteKey {
     deleteKey(projectId, locationId, keyRingId, keyId);
   }
 
-  // Schedule deletion of the given key.
+  // deleteKey deletes a crypto key. This action is permanent and cannot be undone. Once the key
+  // is deleted, it will no longer exist.
   public void deleteKey(String projectId, String locationId, String keyRingId, String keyId)
       throws IOException {
     // Initialize client that will be used to send requests. This client only
@@ -46,6 +47,7 @@ public class DeleteKey {
       CryptoKeyName keyName = CryptoKeyName.of(projectId, locationId, keyRingId, keyId);
 
       // Delete the key.
+      // Warning: This operation is permanent and cannot be undone.
       // Wait for the operation to complete.
       client.deleteCryptoKeyAsync(keyName).get();
       System.out.printf("Deleted key: %s%n", keyName.toString());

@@ -33,7 +33,8 @@ public class DeleteKeyVersion {
     deleteKeyVersion(projectId, locationId, keyRingId, keyId, keyVersionId);
   }
 
-  // Schedule deletion of the given key version.
+  // deleteKeyVersion deletes a key version. This action is permanent and cannot be undone. Once the
+  // key version is deleted, it will no longer exist.
   public void deleteKeyVersion(
       String projectId, String locationId, String keyRingId, String keyId, String keyVersionId)
       throws IOException {
@@ -48,6 +49,7 @@ public class DeleteKeyVersion {
           CryptoKeyVersionName.of(projectId, locationId, keyRingId, keyId, keyVersionId);
 
       // Delete the key version.
+      // Warning: This operation is permanent and cannot be undone.
       // Wait for the operation to complete.
       client.deleteCryptoKeyVersionAsync(keyVersionName).get();
       System.out.printf("Deleted key version: %s%n", keyVersionName.toString());
