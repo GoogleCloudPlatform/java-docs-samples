@@ -33,7 +33,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 
 public class PostgresWriteIT {
 
-  private static final String TABLE_NAME = "test_table";
+  private static final String TABLE_NAME = "test_write_table";
   private static final PostgreSQLContainer<?> postgres =
       new PostgreSQLContainer<>("postgres:15-alpine");
 

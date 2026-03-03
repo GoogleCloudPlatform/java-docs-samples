@@ -34,7 +34,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 
 public class PostgresReadIT {
 
-  private static final String TABLE_NAME = "test_table";
+  private static final String TABLE_NAME = "test_read_table";
   private static final String OUTPUT_PATH = "test-output";
   // The TextIO connector appends this suffix to the pipeline output file.
   private static final String OUTPUT_FILE_SUFFIX = "-00000-of-00001.txt";
@@ -56,8 +56,7 @@ public class PostgresReadIT {
       stmt.execute(
           String.format("CREATE TABLE %s (id INT PRIMARY KEY, name VARCHAR(255))", TABLE_NAME));
       stmt.execute(String.format("INSERT INTO %s (id, name) VALUES (1, 'John Doe')", TABLE_NAME));
-      stmt.execute(
-          String.format("INSERT INTO test_table (id, name) VALUES (2, 'Jane Smith')", TABLE_NAME));
+      stmt.execute(String.format("INSERT INTO %s (id, name) VALUES (2, 'Jane Smith')", TABLE_NAME));
     }
   }
 
