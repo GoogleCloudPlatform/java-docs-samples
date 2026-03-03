@@ -42,12 +42,12 @@ public class PostgresWriteIT {
     postgres.start();
 
     // Pre-create the table so the Managed I/O can find it.
-    try (Connection conn = DriverManager.getConnection(
-        postgres.getJdbcUrl(),
-        postgres.getUsername(),
-        postgres.getPassword())) {
+    try (Connection conn =
+        DriverManager.getConnection(
+            postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword())) {
       Statement stmt = conn.createStatement();
-      stmt.execute(String.format("CREATE TABLE %s (id INT PRIMARY KEY, name VARCHAR(255))", TABLE_NAME));
+      stmt.execute(
+          String.format("CREATE TABLE %s (id INT PRIMARY KEY, name VARCHAR(255))", TABLE_NAME));
     }
   }
 
@@ -61,25 +61,27 @@ public class PostgresWriteIT {
   @Test
   public void testPostgresWrite() throws Exception {
     // Execute the Beam pipeline
-    PipelineResult.State state = PostgresWrite.main(new String[] {
-        "--runner=DirectRunner",
-        "--jdbcUrl=" + postgres.getJdbcUrl(),
-        "--table=" + TABLE_NAME,
-        "--username=" + postgres.getUsername(),
-        "--password=" + postgres.getPassword()
-    });
+    PipelineResult.State state =
+        PostgresWrite.main(
+            new String[] {
+              "--runner=DirectRunner",
+              "--jdbcUrl=" + postgres.getJdbcUrl(),
+              "--table=" + TABLE_NAME,
+              "--username=" + postgres.getUsername(),
+              "--password=" + postgres.getPassword()
+            });
 
     assertEquals(PipelineResult.State.DONE, state);
     verifyDatabaseContent();
   }
 
   private void verifyDatabaseContent() throws Exception {
-    try (Connection conn = DriverManager.getConnection(
-        postgres.getJdbcUrl(),
-        postgres.getUsername(),
-        postgres.getPassword())) {
+    try (Connection conn =
+        DriverManager.getConnection(
+            postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword())) {
       Statement stmt = conn.createStatement();
-      ResultSet rs = stmt.executeQuery(String.format("SELECT id, name FROM %s ORDER BY id", TABLE_NAME));
+      ResultSet rs =
+          stmt.executeQuery(String.format("SELECT id, name FROM %s ORDER BY id", TABLE_NAME));
 
       List<String> results = new ArrayList<>();
       while (rs.next()) {

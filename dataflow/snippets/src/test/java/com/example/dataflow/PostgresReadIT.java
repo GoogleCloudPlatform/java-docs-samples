@@ -48,15 +48,16 @@ public class PostgresReadIT {
     postgres.start();
 
     // Initialize the database with table and data
-    try (Connection conn = DriverManager.getConnection(
-        postgres.getJdbcUrl(),
-        postgres.getUsername(),
-        postgres.getPassword())) {
+    try (Connection conn =
+        DriverManager.getConnection(
+            postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword())) {
 
       Statement stmt = conn.createStatement();
-      stmt.execute(String.format("CREATE TABLE %s (id INT PRIMARY KEY, name VARCHAR(255))", TABLE_NAME));
+      stmt.execute(
+          String.format("CREATE TABLE %s (id INT PRIMARY KEY, name VARCHAR(255))", TABLE_NAME));
       stmt.execute(String.format("INSERT INTO %s (id, name) VALUES (1, 'John Doe')", TABLE_NAME));
-      stmt.execute(String.format("INSERT INTO test_table (id, name) VALUES (2, 'Jane Smith')", TABLE_NAME));
+      stmt.execute(
+          String.format("INSERT INTO test_table (id, name) VALUES (2, 'Jane Smith')", TABLE_NAME));
     }
   }
 
@@ -71,14 +72,16 @@ public class PostgresReadIT {
   @Test
   public void testPostgresRead() throws IOException {
     // Execute the Beam pipeline
-    PipelineResult.State state = PostgresRead.main(new String[] {
-        "--runner=DirectRunner",
-        "--jdbcUrl=" + postgres.getJdbcUrl(),
-        "--table=" + TABLE_NAME,
-        "--username=" + postgres.getUsername(),
-        "--password=" + postgres.getPassword(),
-        "--outputPath=" + OUTPUT_PATH
-    });
+    PipelineResult.State state =
+        PostgresRead.main(
+            new String[] {
+              "--runner=DirectRunner",
+              "--jdbcUrl=" + postgres.getJdbcUrl(),
+              "--table=" + TABLE_NAME,
+              "--username=" + postgres.getUsername(),
+              "--password=" + postgres.getPassword(),
+              "--outputPath=" + OUTPUT_PATH
+            });
 
     assertEquals(PipelineResult.State.DONE, state);
     verifyOutput();

@@ -18,7 +18,6 @@ package com.example.dataflow;
 
 // [START dataflow_postgres_read]
 import com.google.common.collect.ImmutableMap;
-import java.io.UnsupportedEncodingException;
 import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.PipelineResult;
 import org.apache.beam.sdk.io.TextIO;
@@ -62,7 +61,8 @@ public class PostgresRead {
     // Parse the pipeline options passed into the application. Example:
     //   --runner=DirectRunner --jdbcUrl=$JDBC_URL --table=$TABLE
     //   --username=$USERNAME --password=$PASSWORD --outputPath=$OUTPUT_FILE
-    // For more information, see https://beam.apache.org/documentation/programming-guide/#configuring-pipeline-options
+    // For more information, see
+    // https://beam.apache.org/documentation/programming-guide/#configuring-pipeline-options
     var options = PipelineOptionsFactory.fromArgs(args).withValidation().as(Options.class);
     Pipeline pipeline = createPipeline(options);
     return pipeline.run().waitUntilFinish();
@@ -71,32 +71,31 @@ public class PostgresRead {
   public static Pipeline createPipeline(Options options) {
 
     // Create configuration parameters for the Managed I/O transform.
-    ImmutableMap<String, Object> config = ImmutableMap.<String, Object>builder()
-        .put("jdbc_url", options.getJdbcUrl())
-        .put("location", options.getTable())
-        .put("username", options.getUsername())
-        .put("password", options.getPassword())
-        .build();
+    ImmutableMap<String, Object> config =
+        ImmutableMap.<String, Object>builder()
+            .put("jdbc_url", options.getJdbcUrl())
+            .put("location", options.getTable())
+            .put("username", options.getUsername())
+            .put("password", options.getPassword())
+            .build();
 
     // Build the pipeline.
     var pipeline = Pipeline.create(options);
     pipeline
         // Read data from Postgres database via managed io.
-        .apply(Managed.read(Managed.POSTGRES).withConfig(config)).getSinglePCollection()
+        .apply(Managed.read(Managed.POSTGRES).withConfig(config))
+        .getSinglePCollection()
         // Convert each row to a string.
-        .apply(MapElements
-            .into(TypeDescriptors.strings())
-            .via((row -> {
-              var id = row.getInt32("id");
-              var name = row.getString("name");
-              return String.format("%d,%s", id, name);
-            })))
+        .apply(
+            MapElements.into(TypeDescriptors.strings())
+                .via(
+                    (row -> {
+                      var id = row.getInt32("id");
+                      var name = row.getString("name");
+                      return String.format("%d,%s", id, name);
+                    })))
         // Write strings to a text file.
-        .apply(TextIO
-            .write()
-            .to(options.getOutputPath())
-            .withSuffix(".txt")
-            .withNumShards(1));
+        .apply(TextIO.write().to(options.getOutputPath()).withSuffix(".txt").withNumShards(1));
     return pipeline;
   }
 }
