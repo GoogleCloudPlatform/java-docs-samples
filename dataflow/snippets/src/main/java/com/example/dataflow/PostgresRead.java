@@ -88,12 +88,7 @@ public class PostgresRead {
         // Convert each row to a string.
         .apply(
             MapElements.into(TypeDescriptors.strings())
-                .via(
-                    (row -> {
-                      var id = row.getInt32("id");
-                      var name = row.getString("name");
-                      return String.format("%d,%s", id, name);
-                    })))
+                .via((row -> String.format("%d,%s", row.getInt32("id"), row.getString("name")))))
         // Write strings to a text file.
         .apply(TextIO.write().to(options.getOutputPath()).withSuffix(".txt").withNumShards(1));
     return pipeline;
