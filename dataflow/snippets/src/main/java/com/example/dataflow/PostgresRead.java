@@ -31,27 +31,28 @@ import org.apache.beam.sdk.values.TypeDescriptors;
 public class PostgresRead {
 
   public interface Options extends PipelineOptions {
-    @Description("The jdbc url of PostgreSQL database to read from.")
+    @Description("The JDBC URL of the PostgreSQL database to read from.")
     String getJdbcUrl();
 
     void setJdbcUrl(String value);
 
-    @Description("The table of PostgresSQL to read from.")
+    @Description("The PostgresSQL table to read from.")
     String getTable();
 
     void setTable(String value);
 
-    @Description("The username of PostgreSQL database.")
+    @Description("The username for the PostgreSQL database.")
     String getUsername();
 
     void setUsername(String value);
 
-    @Description("The password of PostgreSQL database.")
+    @Description("The password for the PostgreSQL database.")
     String getPassword();
 
     void setPassword(String value);
 
-    @Description("Path to write the output file")
+    @Description("The path to write the output file. Can be a local file path, "
+      + "a GCS path, or a path to any other supported file systems.")
     String getOutputPath();
 
     void setOutputPath(String value);
@@ -82,7 +83,7 @@ public class PostgresRead {
     // Build the pipeline.
     var pipeline = Pipeline.create(options);
     pipeline
-        // Read data from Postgres database via managed io.
+        // Read data from a Postgres database using Managed I/O.
         .apply(Managed.read(Managed.POSTGRES).withConfig(config))
         .getSinglePCollection()
         // Convert each row to a string.

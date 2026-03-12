@@ -41,7 +41,7 @@ public class PostgresWriteIT {
   public void setUp() throws Exception {
     postgres.start();
 
-    // Pre-create the table so the Managed I/O can find it.
+    // Create the table so the Managed I/O can find it.
     try (Connection conn =
         DriverManager.getConnection(
             postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword())) {
@@ -60,7 +60,7 @@ public class PostgresWriteIT {
 
   @Test
   public void testPostgresWrite() throws Exception {
-    // Execute the Beam pipeline
+    // Execute the Beam pipeline.
     PipelineResult.State state =
         PostgresWrite.main(
             new String[] {

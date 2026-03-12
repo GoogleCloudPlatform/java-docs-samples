@@ -53,22 +53,22 @@ public class PostgresWrite {
               .build());
 
   public interface Options extends PipelineOptions {
-    @Description("The jdbc url of PostgreSQL database to write to.")
+    @Description("The JDBC URL of the PostgreSQL database to write to.")
     String getJdbcUrl();
 
     void setJdbcUrl(String value);
 
-    @Description("The table of PostgresSQL to write to.")
+    @Description("The PostgresSQL table to write to.")
     String getTable();
 
     void setTable(String value);
 
-    @Description("The username of PostgreSQL database.")
+    @Description("The username for the PostgreSQL database.")
     String getUsername();
 
     void setUsername(String value);
 
-    @Description("The password of PostgreSQL database.")
+    @Description("The password for the PostgreSQL database.")
     String getPassword();
 
     void setPassword(String value);
@@ -102,7 +102,7 @@ public class PostgresWrite {
         // Create data to write to Postgres.
         .apply(Create.of(ROWS))
         .setRowSchema(INPUT_SCHEMA)
-        // Write rows to Postgres database via managed io.
+        // Write data to a Postgres database using Managed I/O.
         .apply(Managed.write(Managed.POSTGRES).withConfig(config))
         .getSinglePCollection();
     return pipeline;

@@ -47,7 +47,7 @@ public class PostgresReadIT {
   public void setUp() throws Exception {
     postgres.start();
 
-    // Initialize the database with table and data
+    // Initialize the database with table and data.
     try (Connection conn =
         DriverManager.getConnection(
             postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword())) {
@@ -70,7 +70,7 @@ public class PostgresReadIT {
 
   @Test
   public void testPostgresRead() throws IOException {
-    // Execute the Beam pipeline
+    // Execute the Beam pipeline.
     PipelineResult.State state =
         PostgresRead.main(
             new String[] {
