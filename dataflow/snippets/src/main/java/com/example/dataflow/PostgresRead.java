@@ -51,8 +51,9 @@ public class PostgresRead {
 
     void setPassword(String value);
 
-    @Description("The path to write the output file. Can be a local file path, "
-      + "a GCS path, or a path to any other supported file systems.")
+    @Description(
+        "The path to write the output file. Can be a local file path, "
+            + "a GCS path, or a path to any other supported file systems.")
     String getOutputPath();
 
     void setOutputPath(String value);
