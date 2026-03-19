@@ -43,7 +43,7 @@ gcloud run deploy $MY_RUN_SERVICE \
 Create a _single region_ Cloud Storage bucket:
 
 ```sh
-gsutil mb -p $(gcloud config get-value project) -l us-central1 gs://"$MY_GCS_BUCKET"
+gcloud storage buckets create gs://"$MY_GCS_BUCKET" --project $(gcloud config get-value project) --location us-central1
 ```
 
 Create a Cloud Storage (via Audit Log) trigger:
@@ -62,7 +62,7 @@ gcloud alpha events triggers create $MY_GCS_TRIGGER \
 Test your Cloud Run service by creating a GCS event:
 
 ```sh
-gsutil defstorageclass set NEARLINE gs://$MY_GCS_BUCKET
+gcloud storage buckets update gs://$MY_GCS_BUCKET --default-storage-class=NEARLINE
 ```
 
 Observe the Cloud Run service printing upon receiving an event in Cloud Logging:
