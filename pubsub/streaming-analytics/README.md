@@ -51,7 +51,7 @@ Dataflow].
    BUCKET_NAME=your-gcs-bucket
    PROJECT_NAME=$(gcloud config get-value project)
    
-   gsutil mb gs://$BUCKET_NAME
+   gcloud storage buckets create gs://$BUCKET_NAME
    ```
 
 1. Start a [Google Cloud Scheduler] job that publishes one message to a [Google
@@ -155,7 +155,7 @@ in the [GCP Console Storage page]. You may need to wait a few minutes for the
 files to appear.
 
 ```bash
-gsutil ls gs://$BUCKET_NAME/samples/
+gcloud storage ls gs://$BUCKET_NAME/samples/
 ```
 
 ## Cleanup
@@ -185,10 +185,10 @@ gsutil ls gs://$BUCKET_NAME/samples/
 
     ```bash
     # Delete only the files created by this sample.
-    gsutil -m rm -rf "gs://$BUCKET_NAME/samples/output*"
+    gcloud storage rm --recursive --continue-on-error "gs://$BUCKET_NAME/samples/output*"
     
     # [optional] Remove the Cloud Storage bucket.
-    gsutil rb gs://$BUCKET_NAME
+    gcloud storage buckets delete gs://$BUCKET_NAME
     ```
 
 [Google Cloud Pub/Sub]: https://cloud.google.com/pubsub/docs/
