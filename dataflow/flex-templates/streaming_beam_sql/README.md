@@ -25,7 +25,7 @@ Additionally, for this sample you need the following:
 
     ```sh
     export BUCKET="your-gcs-bucket"
-    gsutil mb gs://$BUCKET
+    gcloud storage buckets create gs://$BUCKET
     ```
 
 1. Create a
@@ -241,7 +241,7 @@ The following sections describe how to delete or turn off these resources.
 1. Delete the template spec file from Cloud Storage.
 
     ```sh
-    gsutil rm $TEMPLATE_PATH
+    gcloud storage rm $TEMPLATE_PATH
     ```
 
 1. Delete the Flex Template container image from Container Registry.
@@ -287,7 +287,7 @@ The following sections describe how to delete or turn off these resources.
     > These objects cannot be recovered.
     >
     > ```sh
-    > gsutil rm -r gs://$BUCKET
+    > gcloud storage rm --recursive gs://$BUCKET
     > ```
 
 ## Limitations
