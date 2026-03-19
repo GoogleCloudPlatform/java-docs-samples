@@ -98,7 +98,7 @@ public class ApacheIcebergIT {
 
     FileAppender<Record> appender =
         Parquet.write(HadoopOutputFile.fromPath(path, hadoopConf))
-            .createWriterFunc(GenericParquetWriter::buildWriter)
+            .createWriterFunc(msgType -> GenericParquetWriter.create(table.schema(), msgType))
             .schema(table.schema())
             .overwrite()
             .build();
@@ -166,7 +166,7 @@ public class ApacheIcebergIT {
       RemoteStorageHelper.forceDelete(storage, bucketName, 1, TimeUnit.MINUTES);
     }
   }
- 
+
   @Test
   public void testApacheIcebergRestCatalog() throws IOException, InterruptedException {
     String warehouse = "gs://" + bucketName;
