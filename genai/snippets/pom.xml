@@ -42,7 +42,7 @@
                 <groupId>com.google.cloud</groupId>
                 <scope>import</scope>
                 <type>pom</type>
-                <version>26.64.0</version>
+                <version>26.79.0</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -51,7 +51,7 @@
         <dependency>
             <groupId>com.google.genai</groupId>
             <artifactId>google-genai</artifactId>
-            <version>1.28.0</version>
+            <version>1.47.0</version>
         </dependency>
         <dependency>
             <groupId>com.google.cloud</groupId>
@@ -61,7 +61,7 @@
         <dependency>
             <groupId>com.openai</groupId>
             <artifactId>openai-java</artifactId>
-            <version>4.6.1</version>
+            <version>4.31.0</version>
         </dependency>
         <dependency>
             <artifactId>junit</artifactId>
@@ -72,13 +72,13 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>5.19.0</version>
+            <version>5.23.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.google.truth</groupId>
             <artifactId>truth</artifactId>
-            <version>1.4.4</version>
+            <version>1.4.5</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
