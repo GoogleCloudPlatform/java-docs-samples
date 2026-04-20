@@ -25,6 +25,7 @@ import java.io.IOException;
 /**
  * This class demonstrates how to render a parameter version using the Parameter Manager SDK for
  * GCP.
+ * The version can be a version ID as a string (e.g. "parameter1") or an alias (e.g. "latest")
  */
 public class RenderParamVersion {
 
