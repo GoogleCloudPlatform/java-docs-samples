@@ -15,7 +15,7 @@
 # [START cloudrun_helloworld_dockerfile]
 # Use the official maven image to create a build artifact.
 # https://hub.docker.com/_/maven
-FROM maven:3-eclipse-temurin-17-alpine as builder
+FROM maven:3-eclipse-temurin-25-alpine as builder
 
 # Copy local code to the container image.
 WORKDIR /app
@@ -27,7 +27,7 @@ RUN mvn package -DskipTests
 
 # Use Eclipse Temurin for base image.
 # https://docs.docker.com/develop/develop-images/multistage-build/#use-multi-stage-builds
-FROM eclipse-temurin:17.0.16_8-jre-alpine
+FROM eclipse-temurin:25.0.1_8-jre-alpine
 
 # Copy the jar to the production image from the builder stage.
 COPY --from=builder /app/target/helloworld-*.jar /helloworld.jar
