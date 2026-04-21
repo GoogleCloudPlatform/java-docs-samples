@@ -27,6 +27,7 @@ import com.google.cloud.spanner.SpannerOptions;
 import com.google.cloud.spanner.Statement;
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.exporter.otlp.trace.OtlpGrpcSpanExporter;
+import io.opentelemetry.exporter.otlp.trace.OtlpGrpcSpanExporterBuilder;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
 import io.opentelemetry.sdk.resources.Resource;
 import io.opentelemetry.sdk.trace.SdkTracerProvider;
@@ -34,8 +35,8 @@ import io.opentelemetry.sdk.trace.export.BatchSpanProcessor;
 import io.opentelemetry.sdk.trace.export.SpanExporter;
 import io.opentelemetry.sdk.trace.samplers.Sampler;
 import java.io.IOException;
+import java.net.URI;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -50,9 +51,21 @@ public class OpenTelemetryUsage {
   static String instanceId = "my-instance";
   static String databaseId = "my-database";
 
-  static boolean useCloudTraceExporter = false; // Replace to true for Cloud Trace exporter
-  static String otlpEndpoint =
-      "https://telemetry.googleapis.com"; // Replace with your OTLP endpoint
+  // Use the OTLP exporter by default. Set to true to use the Cloud Trace exporter instead.
+  static boolean useCloudTraceExporter = false;
+
+  // The OTLP endpoint to send traces to.
+  // It is recommended to use environment variables (OTEL_EXPORTER_OTLP_ENDPOINT) for configuration.
+  static String otlpEndpoint = System.getenv("OTEL_EXPORTER_OTLP_TRACES_ENDPOINT");
+
+  static {
+    if (otlpEndpoint == null) {
+      otlpEndpoint = System.getenv("OTEL_EXPORTER_OTLP_ENDPOINT");
+    }
+    if (otlpEndpoint == null) {
+      otlpEndpoint = "https://telemetry.googleapis.com"; // Google OTLP gRPC endpoint
+    }
+  }
 
   public static void main(String[] args) throws IOException {
 
@@ -81,52 +94,31 @@ public class OpenTelemetryUsage {
   public static Spanner getSpannerWithOtlpExporter() throws IOException {
     // [START spanner_opentelemetry_traces_otlp_usage]
     Resource resource =
-        Resource.getDefault()
-            .merge(
-                Resource.builder()
-                    .put("service.name", "My App")
-                    .put("gcp.project_id", projectId)
-                    .build());
+        Resource.getDefault().merge(Resource.builder().put("gcp.project_id", projectId).build());
 
-    GoogleCredentials credentials =
-        GoogleCredentials.getApplicationDefault()
-            .createScoped(Collections.singleton("https://www.googleapis.com/auth/trace.append"));
-    OtlpGrpcSpanExporter otlpGrpcSpanExporter =
-        OtlpGrpcSpanExporter.builder()
-            .setEndpoint(otlpEndpoint)
-            .setHeaders(
-                () -> {
-                  try {
-                    credentials.refreshIfExpired();
-                    Map<String, List<String>> metadata = credentials.getRequestMetadata();
-                    Map<String, String> headers = new HashMap<>();
-                    if (metadata != null) {
-                      metadata.forEach((key, values) -> headers.put(key, String.join(",", values)));
-                    }
-                    return headers;
-                  } catch (Exception e) {
-                    // Handle error fetching credentials
-                    return Collections.emptyMap();
-                  }
-                }) // Replace with your OTLP endpoint
-            .build();
+    OtlpGrpcSpanExporterBuilder exporterBuilder =
+        OtlpGrpcSpanExporter.builder().setEndpoint(otlpEndpoint);
 
-    // Using a batch span processor
-    // You can use `.setScheduleDelay()`, `.setExporterTimeout()`,
-    // `.setMaxQueueSize`(), and `.setMaxExportBatchSize()` to further customize.
-    BatchSpanProcessor otlpGrpcSpanProcessor =
-        BatchSpanProcessor.builder(otlpGrpcSpanExporter).build();
+    // Add authentication only if the endpoint is the Google Cloud Telemetry API.
+    // The standard endpoint is telemetry.googleapis.com
+    if (otlpEndpoint.contains("telemetry.googleapis.com")) {
+      GoogleCredentials credentials =
+          GoogleCredentials.getApplicationDefault()
+              .createScoped(Collections.singleton("https://www.googleapis.com/auth/trace.append"));
+      credentials.refreshIfExpired();
+      Map<String, List<String>> metadata = credentials.getRequestMetadata(URI.create(otlpEndpoint));
+      if (metadata != null) {
+        metadata.forEach((key, values) -> exporterBuilder.addHeader(key, String.join(",", values)));
+      }
+    }
 
-    // Create a new tracer provider
     sdkTracerProvider =
         SdkTracerProvider.builder()
-            // Use Otlp exporter or any other exporter of your choice.
-            .addSpanProcessor(otlpGrpcSpanProcessor)
+            .addSpanProcessor(BatchSpanProcessor.builder(exporterBuilder.build()).build())
             .setResource(resource)
             .setSampler(Sampler.traceIdRatioBased(0.1))
             .build();
 
-    // Export to a collector that is expecting OTLP using gRPC.
     OpenTelemetry openTelemetry =
         OpenTelemetrySdk.builder().setTracerProvider(sdkTracerProvider).build();
 
@@ -135,10 +127,8 @@ public class OpenTelemetryUsage {
 
     // Inject OpenTelemetry object via Spanner options or register as GlobalOpenTelemetry.
     SpannerOptions options = SpannerOptions.newBuilder().setOpenTelemetry(openTelemetry).build();
-    Spanner spanner = options.getService();
+    return options.getService();
     // [END spanner_opentelemetry_traces_otlp_usage]
-
-    return spanner;
   }
 
   public static Spanner getSpannerWithCloudTraceExporter() {
