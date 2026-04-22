@@ -64,6 +64,7 @@ import java.io.PrintStream;
 import java.lang.Exception;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.ExecutionException;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -83,6 +84,8 @@ public class SnippetsIT {
   private static final String IAM_USER =
       "serviceAccount:iam-samples@java-docs-samples-testing.iam.gserviceaccount.com";
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+  private static final String REGIONAL_KMS_KEY_NAME = 
+      System.getenv("GOOGLE_CLOUD_REGIONAL_KMS_KEY");
   private static final String LABEL_KEY = "examplelabelkey";
   private static final String LABEL_VALUE = "examplelabelvalue";
   private static final String UPDATED_LABEL_KEY = "updatedlabelkey";
@@ -98,6 +101,7 @@ public class SnippetsIT {
   private static Secret TEST_REGIONAL_SECRET;
   private static Secret TEST_REGIONAL_SECRET_TO_DELETE;
   private static Secret TEST_REGIONAL_SECRET_TO_DELETE_WITH_ETAG;
+  private static Secret TEST_REGIONAL_SECRET_TO_DELETE_ANNOTATIONS;
   private static Secret TEST_REGIONAL_SECRET_WITH_VERSIONS;
   private static Secret TEST_REGIONAL_SECRET_TO_DELAYED_DESTROY;
   private static SecretName TEST_REGIONAL_SECRET_WITH_DELAYED_DESTROY;
@@ -105,6 +109,7 @@ public class SnippetsIT {
   private static SecretName TEST_REGIONAL_SECRET_WITH_LABEL_TO_CREATE_NAME;
   private static SecretName TEST_REGIONAL_SECRET_WITH_TAGS_TO_CREATE_NAME;
   private static SecretName TEST_REGIONAL_SECRET_WITH_ANNOTATION_TO_CREATE_NAME;
+  private static SecretName TEST_REGIONAL_SECRET_WITH_CMEK_TO_CREATE_NAME;
   private static SecretVersion TEST_REGIONAL_SECRET_VERSION;
   private static SecretVersion TEST_REGIONAL_SECRET_VERSION_TO_DESTROY;
   private static SecretVersion TEST_REGIONAL_SECRET_VERSION_TO_DESTROY_WITH_ETAG;
@@ -123,10 +128,13 @@ public class SnippetsIT {
     Assert.assertFalse("missing GOOGLE_CLOUD_PROJECT", Strings.isNullOrEmpty(PROJECT_ID));
     Assert.assertFalse("missing GOOGLE_CLOUD_PROJECT_LOCATION",
         Strings.isNullOrEmpty(LOCATION_ID));
+    Assert.assertFalse("missing REGIONAL_KMS_KEY_NAME", 
+        Strings.isNullOrEmpty(REGIONAL_KMS_KEY_NAME));
 
     TEST_REGIONAL_SECRET = createRegionalSecret();
     TEST_REGIONAL_SECRET_TO_DELETE = createRegionalSecret();
     TEST_REGIONAL_SECRET_TO_DELETE_WITH_ETAG = createRegionalSecret();
+    TEST_REGIONAL_SECRET_TO_DELETE_ANNOTATIONS = createRegionalSecret();
     TEST_REGIONAL_SECRET_WITH_VERSIONS = createRegionalSecret();
     TEST_REGIONAL_SECRET_TO_DELAYED_DESTROY = createRegionalSecret();
     TEST_REGIONAL_SECRET_WITH_DELAYED_DESTROY =
@@ -134,6 +142,8 @@ public class SnippetsIT {
     TEST_REGIONAL_SECRET_TO_CREATE_NAME = 
         SecretName.ofProjectLocationSecretName(PROJECT_ID, LOCATION_ID, randomSecretId());
     TEST_REGIONAL_SECRET_WITH_ANNOTATION_TO_CREATE_NAME =
+        SecretName.ofProjectLocationSecretName(PROJECT_ID, LOCATION_ID, randomSecretId());
+    TEST_REGIONAL_SECRET_WITH_CMEK_TO_CREATE_NAME = 
         SecretName.ofProjectLocationSecretName(PROJECT_ID, LOCATION_ID, randomSecretId());
 
     TEST_REGIONAL_SECRET_WITH_LABEL_TO_CREATE_NAME =
@@ -180,8 +190,10 @@ public class SnippetsIT {
     deleteRegionalSecret(TEST_REGIONAL_SECRET_WITH_LABEL_TO_CREATE_NAME.toString());
     deleteRegionalSecret(TEST_REGIONAL_SECRET_WITH_TAGS_TO_CREATE_NAME.toString());
     deleteRegionalSecret(TEST_REGIONAL_SECRET_WITH_ANNOTATION_TO_CREATE_NAME.toString());
+    deleteRegionalSecret(TEST_REGIONAL_SECRET_WITH_CMEK_TO_CREATE_NAME.toString());
     deleteRegionalSecret(TEST_REGIONAL_SECRET_TO_DELETE.getName());
     deleteRegionalSecret(TEST_REGIONAL_SECRET_TO_DELETE_WITH_ETAG.getName());
+    deleteRegionalSecret(TEST_REGIONAL_SECRET_TO_DELETE_ANNOTATIONS.getName());
     deleteRegionalSecret(TEST_REGIONAL_SECRET_WITH_VERSIONS.getName());
     deleteRegionalSecret(TEST_REGIONAL_SECRET_WITH_DELAYED_DESTROY.toString());
     deleteRegionalSecret(TEST_REGIONAL_SECRET_TO_DELAYED_DESTROY.getName());
@@ -396,6 +408,17 @@ public class SnippetsIT {
         name.getProject(), name.getLocation(), name.getSecret(), ANNOTATION_KEY, ANNOTATION_VALUE);
     SecretName createdSecretName = SecretName.parse(secret.getName());
     assertEquals(name.getSecret(), createdSecretName.getSecret());
+  }
+
+  @Test
+  public void testCreateRegionalSecretWithCmek() throws IOException {
+    SecretName name = TEST_REGIONAL_SECRET_WITH_CMEK_TO_CREATE_NAME;
+    Secret secret = CreateRegionalSecretWithCmek.createRegionalSecretWithCmek(
+        name.getProject(), name.getLocation(), name.getSecret(), REGIONAL_KMS_KEY_NAME);
+
+    assertThat(
+      secret.getCustomerManagedEncryption().getKmsKeyName()
+    ).isEqualTo(REGIONAL_KMS_KEY_NAME);
   }
 
   @Test
@@ -636,6 +659,44 @@ public class SnippetsIT {
   }
 
   @Test
+  public void testListRegionalSecretTagBindings() throws IOException {
+    SecretName name = TEST_REGIONAL_SECRET_WITH_TAGS_TO_CREATE_NAME;
+    ListRegionalSecretTagBindings.listRegionalSecretTagBindings(
+        name.getProject(), name.getLocation(), name.getSecret()
+    );
+
+    assertThat(stdOut.toString()).contains("Found TagBinding");
+  }
+
+  @Test
+  public void testBindRegionalSecretTag() 
+      throws IOException, InterruptedException, ExecutionException {
+    
+    SecretName name = SecretName.parse(TEST_REGIONAL_SECRET.getName());
+    BindRegionalSecretTag.bindRegionalSecretTag(
+        name.getProject(),
+        name.getLocation(),
+        name.getSecret(),
+        TAG_VALUE.getName());
+
+    assertThat(stdOut.toString()).contains("Created TagBinding");
+  }
+
+  @Test
+  public void testRemoveTagFromRegionalSecret() 
+      throws IOException, InterruptedException, ExecutionException {
+
+    SecretName name = SecretName.parse(TEST_REGIONAL_SECRET.getName());
+    DeleteRegionalSecretTag.deleteRegionalSecretTag(
+        name.getProject(),
+        name.getLocation(),
+        name.getSecret(),
+        TAG_VALUE.getName());
+
+    assertThat(stdOut.toString()).contains("Deleted TagBinding");
+  }
+
+  @Test
   public void testEditRegionalSecretLabel() throws IOException {
     SecretName name = SecretName.parse(TEST_REGIONAL_SECRET.getName());
     Secret updatedSecret = EditRegionalSecretLabel.editRegionalSecretLabel(
@@ -681,6 +742,16 @@ public class SnippetsIT {
     assertThat(updatedSecret.getAnnotationsMap()).containsEntry(
         UPDATED_ANNOTATION_KEY, UPDATED_ANNOTATION_VALUE);
   }
+
+  @Test
+  public void testDeleteRegionalSecretAnnotations() throws IOException {
+    SecretName name = SecretName.parse(TEST_REGIONAL_SECRET_TO_DELETE_ANNOTATIONS.getName());
+    Secret updatedSecret = DeleteRegionalSecretAnnotations.deleteRegionalSecretAnnotations(
+        name.getProject(), name.getLocation(), name.getSecret());
+
+    assertTrue(updatedSecret.getAnnotationsMap().isEmpty());
+  }
+
 
   @Test
   public void testCreateRegionalSecretWithDelayedDestroy() throws IOException {
