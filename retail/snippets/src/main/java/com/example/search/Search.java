@@ -39,7 +39,9 @@ public class Search {
     search(projectId, visitorId, query, categories);
   }
 
-  public static void search(String projectId, String visitorId, String query, List<String> categories) throws IOException {
+  public static void search(
+      String projectId, String visitorId, String query, List<String> categories)
+      throws IOException {
     try (SearchServiceClient searchServiceClient = SearchServiceClient.create()) {
       ServingConfigName servingConfigName =
           ServingConfigName.of(projectId, "global", "default_catalog", "default_search");
