@@ -27,17 +27,19 @@ import com.google.cloud.retail.v2.SearchServiceClient;
 import com.google.cloud.retail.v2.SearchServiceClient.SearchPagedResponse;
 import com.google.cloud.retail.v2.ServingConfigName;
 import java.io.IOException;
+import java.util.List;
 
 public class Search {
   public static void main(String[] args) throws IOException {
     String projectId = "my-project-id";
     String visitorId = "my-visitor-id";
     String query = "my search query";
+    List<String> categories = List.of("category");
 
-    search(projectId, visitorId, query);
+    search(projectId, visitorId, query, categories);
   }
 
-  public static void search(String projectId, String visitorId, String query) throws IOException {
+  public static void search(String projectId, String visitorId, String query, List<String> categories) throws IOException {
     try (SearchServiceClient searchServiceClient = SearchServiceClient.create()) {
       ServingConfigName servingConfigName =
           ServingConfigName.of(projectId, "global", "default_catalog", "default_search");
@@ -49,6 +51,7 @@ public class Search {
               .setBranch(branchName.toString())
               .setVisitorId(visitorId)
               .setQuery(query)
+              .addAllPageCategories(categories)
               .setPageSize(10)
               .build();
       SearchPagedResponse response = searchServiceClient.search(searchRequest);

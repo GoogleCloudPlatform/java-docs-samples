@@ -36,6 +36,7 @@ public class SearchIT {
   private static final String VISITOR_ID = "test_visitor";
   private static final int NUM_PRODUCTS_TO_TEST = 2;
   private static final String PRODUCT_TITLE = "Hot Java Testing";
+  private static final List<String> CATEGORIES = List.of("Beverages");
   private static List<Product> productsToTest;
 
   private static void requireEnvVar(String varName) {
@@ -69,7 +70,7 @@ public class SearchIT {
 
   @Test
   public void testSearch() throws Exception {
-    Search.search(PROJECT_ID, VISITOR_ID, PRODUCT_TITLE);
+    Search.search(PROJECT_ID, VISITOR_ID, PRODUCT_TITLE, CATEGORIES);
     String output = bout.toString();
     assertThat(output).contains("Found " + NUM_PRODUCTS_TO_TEST + " results in current page");
     assertThat(output).contains("Product Name:");
@@ -77,14 +78,14 @@ public class SearchIT {
 
   @Test
   public void testSearchWithoutQueryString() throws Exception {
-    Search.search(PROJECT_ID, VISITOR_ID, "");
+    Search.search(PROJECT_ID, VISITOR_ID, "", CATEGORIES);
     String output = bout.toString();
     assertThat(output).contains("Product Name:");
   }
 
   @Test
   public void testSearch_productsNotFound() throws Exception {
-    Search.search(PROJECT_ID, VISITOR_ID, "INVALID_QUERY_VALUE_FOR_TEST");
+    Search.search(PROJECT_ID, VISITOR_ID, "INVALID_QUERY_VALUE_FOR_TEST", CATEGORIES);
     String output = bout.toString();
     assertThat(output).contains("Found " + 0 + " results in current page");
   }
