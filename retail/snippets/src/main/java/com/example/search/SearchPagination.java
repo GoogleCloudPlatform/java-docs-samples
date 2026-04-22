@@ -60,9 +60,9 @@ public class SearchPagination {
         SearchPage page = response.getPage();
         currentPage++;
         System.out.println("\nResults of page number " + currentPage + ":");
-        System.out.println("Found " + page.getResponse().getResultsCount() + " results");
+        System.out.println(
+            "Found " + page.getResponse().getResultsCount() + " results in current page");
         for (SearchResult searchResult : page.getResponse().getResultsList()) {
-          System.out.println("Search Result: \n" + searchResult);
           Product product = searchResult.getProduct();
           System.out.println("---- Search Result ----");
           System.out.println("Product Name: " + product.getName());

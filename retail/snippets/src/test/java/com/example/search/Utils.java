@@ -92,7 +92,8 @@ public class Utils {
     }
   }
 
-  public static int amountOfProductsReadyToTest(String projectId, String query) throws IOException {
+  public static boolean areProductsReadyToTest(String projectId, String query, int amountOfProducts)
+      throws IOException {
     try (SearchServiceClient searchServiceClient = SearchServiceClient.create()) {
       ServingConfigName servingConfigName =
           ServingConfigName.of(projectId, "global", "default_catalog", "default_search");
@@ -104,11 +105,11 @@ public class Utils {
               .setBranch(branchName.toString())
               .setVisitorId("test_visitor")
               .setQuery(query)
-              .setPageSize(2)
+              .setPageSize(amountOfProducts)
               .build();
       SearchPagedResponse response = searchServiceClient.search(searchRequest);
 
-      return response.getPage().getResponse().getResultsCount();
+      return response.getPage().getResponse().getResultsCount() >= amountOfProducts;
     }
   }
 
@@ -117,7 +118,7 @@ public class Utils {
       throws InterruptedException, IOException {
     for (int i = 0; i < 3; i++) {
       Thread.sleep(10000);
-      if (amountOfProductsReadyToTest(projectId, productTitle) >= products.size()) {
+      if (areProductsReadyToTest(projectId, productTitle, products.size())) {
         break;
       }
     }

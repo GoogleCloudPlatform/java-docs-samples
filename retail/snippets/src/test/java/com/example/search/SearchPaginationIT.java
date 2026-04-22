@@ -74,9 +74,9 @@ public class SearchPaginationIT {
     SearchPagination.searchWithPagination(PROJECT_ID, VISITOR_ID, PRODUCT_TITLE, 1);
     String output = bout.toString();
     assertThat(output).contains("Results of page number 1:");
-    assertThat(output).contains("Found 1 results");
+    assertThat(output).contains("Found 1 results in current page");
     assertThat(output).contains("Results of page number 2:");
-    assertThat(output).contains("Found 1 results");
+    assertThat(output).contains("Found 1 results in current page");
     assertThat(output).contains("No more available pages.");
   }
 
@@ -85,7 +85,7 @@ public class SearchPaginationIT {
     SearchPagination.searchWithPagination(PROJECT_ID, VISITOR_ID, PRODUCT_TITLE, 10);
     String output = bout.toString();
     assertThat(output).contains("Results of page number 1:");
-    assertThat(output).contains("Found " + NUM_PRODUCTS_TO_TEST + " results");
+    assertThat(output).contains("Found " + NUM_PRODUCTS_TO_TEST + " results in current page");
     assertThat(output).contains("No more available pages.");
   }
 

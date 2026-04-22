@@ -71,7 +71,7 @@ public class SearchIT {
   public void testSearch() throws Exception {
     Search.search(PROJECT_ID, VISITOR_ID, PRODUCT_TITLE);
     String output = bout.toString();
-    assertThat(output).contains("Found " + NUM_PRODUCTS_TO_TEST + " results");
+    assertThat(output).contains("Found " + NUM_PRODUCTS_TO_TEST + " results in current page");
     assertThat(output).contains("Product Name:");
   }
 
@@ -86,6 +86,6 @@ public class SearchIT {
   public void testSearch_productsNotFound() throws Exception {
     Search.search(PROJECT_ID, VISITOR_ID, "INVALID_QUERY_VALUE_FOR_TEST");
     String output = bout.toString();
-    assertThat(output).contains("Found " + 0 + " results");
+    assertThat(output).contains("Found " + 0 + " results in current page");
   }
 }

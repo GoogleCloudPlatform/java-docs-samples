@@ -74,7 +74,8 @@ public class SearchOffsetIT {
     int offset = 1;
     SearchOffset.searchWithOffset(PROJECT_ID, VISITOR_ID, PRODUCT_TITLE, offset);
     String output = bout.toString();
-    assertThat(output).contains("Found " + (NUM_PRODUCTS_TO_TEST - offset) + " results");
+    assertThat(output)
+        .contains("Found " + (NUM_PRODUCTS_TO_TEST - offset) + " results in current page");
     assertThat(output).contains("Product Name:");
   }
 
@@ -83,7 +84,7 @@ public class SearchOffsetIT {
     int offset = 0;
     SearchOffset.searchWithOffset(PROJECT_ID, VISITOR_ID, PRODUCT_TITLE, offset);
     String output = bout.toString();
-    assertThat(output).contains("Found " + NUM_PRODUCTS_TO_TEST + " results");
+    assertThat(output).contains("Found " + NUM_PRODUCTS_TO_TEST + " results in current page");
     assertThat(output).contains("Product Name:");
   }
 
@@ -92,7 +93,7 @@ public class SearchOffsetIT {
     int offset = 5;
     SearchOffset.searchWithOffset(PROJECT_ID, VISITOR_ID, PRODUCT_TITLE, offset);
     String output = bout.toString();
-    assertThat(output).contains("Found 0 results");
+    assertThat(output).contains("Found 0 results in current page");
   }
 
   @Test

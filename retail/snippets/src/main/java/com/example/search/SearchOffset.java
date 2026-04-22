@@ -58,7 +58,7 @@ public class SearchOffset {
 
       SearchResponse searchResponse = response.getPage().getResponse();
 
-      System.out.println("Found " + searchResponse.getResultsCount() + " results");
+      System.out.println("Found " + searchResponse.getResultsCount() + " results in current page");
       for (SearchResult searchResult : searchResponse.getResultsList()) {
         Product product = searchResult.getProduct();
         System.out.println("---- Search Result ----");
