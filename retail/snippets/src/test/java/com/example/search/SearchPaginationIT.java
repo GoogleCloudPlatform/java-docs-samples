@@ -52,7 +52,7 @@ public class SearchPaginationIT {
 
     // Create products to be searched
     productsToTest = Utils.createProductsToTest(NUM_PRODUCTS_TO_TEST, PROJECT_ID, PRODUCT_TITLE);
-    Utils.waitForProductsToBeIndexed(PROJECT_ID, productsToTest, PRODUCT_TITLE);
+    Utils.waitForProductsToBeReadyToTest(PROJECT_ID, productsToTest, PRODUCT_TITLE);
 
     origPrintStream = System.out;
     bout = new ByteArrayOutputStream();
