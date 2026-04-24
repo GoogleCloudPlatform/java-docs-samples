@@ -38,6 +38,17 @@ public class SearchPagination {
     searchWithPagination(projectId, visitorId, query, pageSize);
   }
 
+  /**
+   * Search for products with pagination using Vertex AI Search for commerce.
+   *
+   * Performs a search request, then uses the next_page_token to get the next page.
+   *
+   * @param projectId The Google Cloud project ID.
+   * @param visitorId A unique identifier for the user.
+   * @param query The search term for text search.
+   * @param pageSize The amount of results per page.
+   * @throws IOException
+   */
   public static void searchWithPagination(
       String projectId, String visitorId, String query, int pageSize) throws IOException {
     try (SearchServiceClient searchServiceClient = SearchServiceClient.create()) {

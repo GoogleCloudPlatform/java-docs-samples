@@ -38,6 +38,17 @@ public class SearchOffset {
     searchWithOffset(projectId, visitorId, query, offset);
   }
 
+  /**
+   * Search for products with an offset using Vertex AI Search for commerce.
+   *
+   * Performs a search request starting from a specified position.
+   *
+   * @param projectId The Google Cloud project ID.
+   * @param visitorId A unique identifier for the user.
+   * @param query The search term for text search.
+   * @param offset The number of results to skip.
+   * @throws IOException
+   */
   public static void searchWithOffset(String projectId, String visitorId, String query, int offset)
       throws IOException {
     try (SearchServiceClient searchServiceClient = SearchServiceClient.create()) {

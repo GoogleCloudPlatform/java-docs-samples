@@ -39,6 +39,18 @@ public class Search {
     search(projectId, visitorId, query, categories);
   }
 
+  /**
+   * Search for products using Vertex AI Search for commerce.
+   *
+   * Performs a search request for a specific placement. Handles both text search (using query)
+   * and browse search (using page_categories).
+   *
+   * @param projectId The Google Cloud project ID.
+   * @param visitorId A unique identifier for the user.
+   * @param query The search term for text search.
+   * @param categories The categories for browse search.
+   * @throws IOException
+   */
   public static void search(
       String projectId, String visitorId, String query, List<String> categories)
       throws IOException {
