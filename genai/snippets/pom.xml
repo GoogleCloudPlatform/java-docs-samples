@@ -56,7 +56,6 @@
         <dependency>
             <groupId>com.google.cloud</groupId>
             <artifactId>google-cloud-storage</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.openai</groupId>

@@ -36,7 +36,7 @@ public class ImageGenVirtualTryOnWithTextAndImage {
 
   public static void main(String[] args) throws IOException {
     // TODO(developer): Replace these variables before running the sample.
-    String modelId = "virtual-try-on-preview-08-04";
+    String modelId = "virtual-try-on-001";
     String outputFile = "resources/output/man_in_sweater.png";
     generateContent(modelId, outputFile);
   }
