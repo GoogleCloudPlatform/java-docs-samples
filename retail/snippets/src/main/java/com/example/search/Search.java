@@ -49,7 +49,6 @@ public class Search {
    * @param visitorId A unique identifier for the user.
    * @param query The search term for text search.
    * @param categories The categories for browse search.
-   * @throws IOException
    */
   public static void search(
       String projectId, String visitorId, String query, List<String> categories)

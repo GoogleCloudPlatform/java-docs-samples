@@ -47,7 +47,6 @@ public class SearchOffset {
    * @param visitorId A unique identifier for the user.
    * @param query The search term for text search.
    * @param offset The number of results to skip.
-   * @throws IOException
    */
   public static void searchWithOffset(String projectId, String visitorId, String query, int offset)
       throws IOException {

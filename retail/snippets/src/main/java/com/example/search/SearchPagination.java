@@ -47,7 +47,6 @@ public class SearchPagination {
    * @param visitorId A unique identifier for the user.
    * @param query The search term for text search.
    * @param pageSize The amount of results per page.
-   * @throws IOException
    */
   public static void searchWithPagination(
       String projectId, String visitorId, String query, int pageSize) throws IOException {
