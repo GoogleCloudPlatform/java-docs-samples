@@ -83,12 +83,14 @@ public class Utils {
     return createdProducts;
   }
 
-  public static void deleteProduct(String productName) throws IOException {
-    DeleteProductRequest deleteProductRequest =
-        DeleteProductRequest.newBuilder().setName(productName).build();
-
+  public static void deleteProducts(List<Product> products) throws IOException {
     try (ProductServiceClient serviceClient = ProductServiceClient.create()) {
-      serviceClient.deleteProduct(deleteProductRequest);
+      for (Product product : products) {
+        DeleteProductRequest deleteProductRequest =
+            DeleteProductRequest.newBuilder().setName(product.getName()).build();
+
+        serviceClient.deleteProduct(deleteProductRequest);
+      }
     }
   }
 

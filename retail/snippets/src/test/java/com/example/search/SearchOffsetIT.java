@@ -62,9 +62,7 @@ public class SearchOffsetIT {
   @AfterAll
   public static void tearDown() throws IOException {
     // Clean up products created for testing
-    for (Product product : productsToTest) {
-      Utils.deleteProduct(product.getName());
-    }
+    Utils.deleteProducts(productsToTest);
 
     System.setOut(origPrintStream);
   }
