@@ -51,7 +51,8 @@ public class SearchPagination {
    * @param pageSize The amount of results per page.
    */
   public static void searchWithPagination(
-      String projectId, String placementId, String visitorId, String query, int pageSize) throws IOException {
+      String projectId, String placementId, String visitorId, String query, int pageSize)
+      throws IOException {
     try (SearchServiceClient searchServiceClient = SearchServiceClient.create()) {
       ServingConfigName placementName =
           ServingConfigName.of(projectId, "global", "default_catalog", placementId);

@@ -50,7 +50,8 @@ public class SearchOffset {
    * @param query The search term for text search.
    * @param offset The number of results to skip.
    */
-  public static void searchWithOffset(String projectId, String placementId, String visitorId, String query, int offset)
+  public static void searchWithOffset(
+      String projectId, String placementId, String visitorId, String query, int offset)
       throws IOException {
     try (SearchServiceClient searchServiceClient = SearchServiceClient.create()) {
       ServingConfigName placementName =

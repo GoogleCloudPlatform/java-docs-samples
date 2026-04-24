@@ -101,6 +101,8 @@ public class SearchOffsetIT {
     int offset = -1;
     assertThrows(
         InvalidArgumentException.class,
-        () -> SearchOffset.searchWithOffset(PROJECT_ID, PLACEMENT_ID, VISITOR_ID, PRODUCT_TITLE, offset));
+        () ->
+            SearchOffset.searchWithOffset(
+                PROJECT_ID, PLACEMENT_ID, VISITOR_ID, PRODUCT_TITLE, offset));
   }
 }

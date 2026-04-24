@@ -95,6 +95,7 @@ public class SearchPaginationIT {
     assertThrows(
         InvalidArgumentException.class,
         () ->
-            SearchPagination.searchWithPagination(PROJECT_ID, PLACEMENT_ID, VISITOR_ID, PRODUCT_TITLE, pageSize));
+            SearchPagination.searchWithPagination(
+                PROJECT_ID, PLACEMENT_ID, VISITOR_ID, PRODUCT_TITLE, pageSize));
   }
 }
