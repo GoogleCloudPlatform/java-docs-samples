@@ -33,6 +33,7 @@ public class SearchIT {
   private static ByteArrayOutputStream bout;
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+  private static final String PLACEMENT_ID = "default_search";
   private static final String VISITOR_ID = "test_visitor";
   private static final int NUM_PRODUCTS_TO_TEST = 2;
   private static final String PRODUCT_TITLE = "Hot Java Testing";
@@ -68,7 +69,7 @@ public class SearchIT {
 
   @Test
   public void testSearch() throws Exception {
-    Search.search(PROJECT_ID, VISITOR_ID, PRODUCT_TITLE, CATEGORIES);
+    Search.search(PROJECT_ID, PLACEMENT_ID, VISITOR_ID, PRODUCT_TITLE, CATEGORIES);
     String output = bout.toString();
     assertThat(output).contains("Found " + NUM_PRODUCTS_TO_TEST + " results in current page");
     assertThat(output).contains("Product Name:");
@@ -76,14 +77,14 @@ public class SearchIT {
 
   @Test
   public void testSearchWithoutQueryString() throws Exception {
-    Search.search(PROJECT_ID, VISITOR_ID, "", CATEGORIES);
+    Search.search(PROJECT_ID, PLACEMENT_ID, VISITOR_ID, "", CATEGORIES);
     String output = bout.toString();
     assertThat(output).contains("Product Name:");
   }
 
   @Test
   public void testSearch_productsNotFound() throws Exception {
-    Search.search(PROJECT_ID, VISITOR_ID, "INVALID_QUERY_VALUE_FOR_TEST", CATEGORIES);
+    Search.search(PROJECT_ID, PLACEMENT_ID, VISITOR_ID, "INVALID_QUERY_VALUE_FOR_TEST", CATEGORIES);
     String output = bout.toString();
     assertThat(output).contains("Found " + 0 + " results in current page");
   }

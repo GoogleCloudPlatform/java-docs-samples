@@ -31,11 +31,12 @@ import java.io.IOException;
 public class SearchPagination {
   public static void main(String[] args) throws IOException {
     String projectId = "my-project-id";
+    String placementId = "default_search";
     String visitorId = "my-visitor-id";
     String query = "my search query";
     int pageSize = 10;
 
-    searchWithPagination(projectId, visitorId, query, pageSize);
+    searchWithPagination(projectId, placementId, visitorId, query, pageSize);
   }
 
   /**
@@ -44,20 +45,21 @@ public class SearchPagination {
    * Performs a search request, then uses the next_page_token to get the next page.
    *
    * @param projectId The Google Cloud project ID.
+   * @param placementId The placement name for the search.
    * @param visitorId A unique identifier for the user.
    * @param query The search term for text search.
    * @param pageSize The amount of results per page.
    */
   public static void searchWithPagination(
-      String projectId, String visitorId, String query, int pageSize) throws IOException {
+      String projectId, String placementId, String visitorId, String query, int pageSize) throws IOException {
     try (SearchServiceClient searchServiceClient = SearchServiceClient.create()) {
-      ServingConfigName servingConfigName =
-          ServingConfigName.of(projectId, "global", "default_catalog", "default_search");
+      ServingConfigName placementName =
+          ServingConfigName.of(projectId, "global", "default_catalog", placementId);
       BranchName branchName =
           BranchName.of(projectId, "global", "default_catalog", "default_branch");
       SearchRequest request =
           SearchRequest.newBuilder()
-              .setPlacement(servingConfigName.toString())
+              .setPlacement(placementName.toString())
               .setBranch(branchName.toString())
               .setVisitorId(visitorId)
               .setQuery(query)

@@ -35,6 +35,7 @@ public class SearchOffsetIT {
   private static ByteArrayOutputStream bout;
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+  private static final String PLACEMENT_ID = "default_search";
   private static final String VISITOR_ID = "test_visitor";
   private static final int NUM_PRODUCTS_TO_TEST = 2;
   private static final String PRODUCT_TITLE = "Hot Java Testing";
@@ -70,7 +71,7 @@ public class SearchOffsetIT {
   @Test
   public void testSearchWithOffset() throws Exception {
     int offset = 1;
-    SearchOffset.searchWithOffset(PROJECT_ID, VISITOR_ID, PRODUCT_TITLE, offset);
+    SearchOffset.searchWithOffset(PROJECT_ID, PLACEMENT_ID, VISITOR_ID, PRODUCT_TITLE, offset);
     String output = bout.toString();
     assertThat(output)
         .contains("Found " + (NUM_PRODUCTS_TO_TEST - offset) + " results in current page");
@@ -80,7 +81,7 @@ public class SearchOffsetIT {
   @Test
   public void testSearchWithOffset_offsetEqualsZero() throws Exception {
     int offset = 0;
-    SearchOffset.searchWithOffset(PROJECT_ID, VISITOR_ID, PRODUCT_TITLE, offset);
+    SearchOffset.searchWithOffset(PROJECT_ID, PLACEMENT_ID, VISITOR_ID, PRODUCT_TITLE, offset);
     String output = bout.toString();
     assertThat(output).contains("Found " + NUM_PRODUCTS_TO_TEST + " results in current page");
     assertThat(output).contains("Product Name:");
@@ -89,7 +90,7 @@ public class SearchOffsetIT {
   @Test
   public void testSearchWithOffset_offsetTooLarge_foundZeroResults() throws Exception {
     int offset = 5;
-    SearchOffset.searchWithOffset(PROJECT_ID, VISITOR_ID, PRODUCT_TITLE, offset);
+    SearchOffset.searchWithOffset(PROJECT_ID, PLACEMENT_ID, VISITOR_ID, PRODUCT_TITLE, offset);
     String output = bout.toString();
     assertThat(output).contains("Found 0 results in current page");
   }
@@ -100,6 +101,6 @@ public class SearchOffsetIT {
     int offset = -1;
     assertThrows(
         InvalidArgumentException.class,
-        () -> SearchOffset.searchWithOffset(PROJECT_ID, VISITOR_ID, PRODUCT_TITLE, offset));
+        () -> SearchOffset.searchWithOffset(PROJECT_ID, PLACEMENT_ID, VISITOR_ID, PRODUCT_TITLE, offset));
   }
 }

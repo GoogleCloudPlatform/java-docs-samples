@@ -32,11 +32,12 @@ import java.util.List;
 public class Search {
   public static void main(String[] args) throws IOException {
     String projectId = "my-project-id";
+    String placementId = "default_search";
     String visitorId = "my-visitor-id";
     String query = "my search query";
     List<String> categories = List.of("category");
 
-    search(projectId, visitorId, query, categories);
+    search(projectId, placementId, visitorId, query, categories);
   }
 
   /**
@@ -46,21 +47,22 @@ public class Search {
    * and browse search (using page_categories).
    *
    * @param projectId The Google Cloud project ID.
+   * @param placementId The placement name for the search.
    * @param visitorId A unique identifier for the user.
    * @param query The search term for text search.
    * @param categories The categories for browse search.
    */
   public static void search(
-      String projectId, String visitorId, String query, List<String> categories)
+      String projectId, String placementId, String visitorId, String query, List<String> categories)
       throws IOException {
     try (SearchServiceClient searchServiceClient = SearchServiceClient.create()) {
-      ServingConfigName servingConfigName =
-          ServingConfigName.of(projectId, "global", "default_catalog", "default_search");
+      ServingConfigName placementName =
+          ServingConfigName.of(projectId, "global", "default_catalog", placementId);
       BranchName branchName =
           BranchName.of(projectId, "global", "default_catalog", "default_branch");
       SearchRequest searchRequest =
           SearchRequest.newBuilder()
-              .setPlacement(servingConfigName.toString())
+              .setPlacement(placementName.toString())
               .setBranch(branchName.toString())
               .setVisitorId(visitorId)
               .setQuery(query)

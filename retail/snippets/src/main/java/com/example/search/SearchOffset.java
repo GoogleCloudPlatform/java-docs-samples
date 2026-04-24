@@ -31,11 +31,12 @@ import java.io.IOException;
 public class SearchOffset {
   public static void main(String[] args) throws IOException {
     String projectId = "my-project-id";
+    String placementId = "default_search";
     String visitorId = "my-visitor-id";
     String query = "my search query";
     int offset = 10;
 
-    searchWithOffset(projectId, visitorId, query, offset);
+    searchWithOffset(projectId, placementId, visitorId, query, offset);
   }
 
   /**
@@ -44,20 +45,21 @@ public class SearchOffset {
    * Performs a search request starting from a specified position.
    *
    * @param projectId The Google Cloud project ID.
+   * @param placementId The placement name for the search.
    * @param visitorId A unique identifier for the user.
    * @param query The search term for text search.
    * @param offset The number of results to skip.
    */
-  public static void searchWithOffset(String projectId, String visitorId, String query, int offset)
+  public static void searchWithOffset(String projectId, String placementId, String visitorId, String query, int offset)
       throws IOException {
     try (SearchServiceClient searchServiceClient = SearchServiceClient.create()) {
-      ServingConfigName servingConfigName =
-          ServingConfigName.of(projectId, "global", "default_catalog", "default_search");
+      ServingConfigName placementName =
+          ServingConfigName.of(projectId, "global", "default_catalog", placementId);
       BranchName branchName =
           BranchName.of(projectId, "global", "default_catalog", "default_branch");
       SearchRequest searchRequest =
           SearchRequest.newBuilder()
-              .setPlacement(servingConfigName.toString())
+              .setPlacement(placementName.toString())
               .setBranch(branchName.toString())
               .setVisitorId(visitorId)
               .setQuery(query)

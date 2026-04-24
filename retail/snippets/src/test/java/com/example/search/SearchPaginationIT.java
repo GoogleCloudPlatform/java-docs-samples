@@ -35,6 +35,7 @@ public class SearchPaginationIT {
   private static ByteArrayOutputStream bout;
 
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+  private static final String PLACEMENT_ID = "default_search";
   private static final String VISITOR_ID = "test_visitor";
   private static final int NUM_PRODUCTS_TO_TEST = 2;
   private static final String PRODUCT_TITLE = "Hot Java Testing";
@@ -69,7 +70,7 @@ public class SearchPaginationIT {
 
   @Test
   public void testSearchWithPaginationAndMultiplePages() throws Exception {
-    SearchPagination.searchWithPagination(PROJECT_ID, VISITOR_ID, PRODUCT_TITLE, 1);
+    SearchPagination.searchWithPagination(PROJECT_ID, PLACEMENT_ID, VISITOR_ID, PRODUCT_TITLE, 1);
     String output = bout.toString();
     assertThat(output).contains("Results of page number 1:");
     assertThat(output).contains("Found 1 results in current page");
@@ -80,7 +81,7 @@ public class SearchPaginationIT {
 
   @Test
   public void testSearchWithPaginationAndSinglePage() throws Exception {
-    SearchPagination.searchWithPagination(PROJECT_ID, VISITOR_ID, PRODUCT_TITLE, 10);
+    SearchPagination.searchWithPagination(PROJECT_ID, PLACEMENT_ID, VISITOR_ID, PRODUCT_TITLE, 10);
     String output = bout.toString();
     assertThat(output).contains("Results of page number 1:");
     assertThat(output).contains("Found " + NUM_PRODUCTS_TO_TEST + " results in current page");
@@ -94,6 +95,6 @@ public class SearchPaginationIT {
     assertThrows(
         InvalidArgumentException.class,
         () ->
-            SearchPagination.searchWithPagination(PROJECT_ID, VISITOR_ID, PRODUCT_TITLE, pageSize));
+            SearchPagination.searchWithPagination(PROJECT_ID, PLACEMENT_ID, VISITOR_ID, PRODUCT_TITLE, pageSize));
   }
 }
