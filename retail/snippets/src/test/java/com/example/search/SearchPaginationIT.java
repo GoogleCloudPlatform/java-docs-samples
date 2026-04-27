@@ -89,6 +89,16 @@ public class SearchPaginationIT {
   }
 
   @Test
+  public void testSearchWithPaginationAndNoResults() throws Exception {
+    SearchPagination.searchWithPagination(
+        PROJECT_ID, PLACEMENT_ID, VISITOR_ID, "INVALID_QUERY_VALUE_FOR_TEST", 10);
+    String output = bout.toString();
+    assertThat(output).contains("Results of page number 1:");
+    assertThat(output).contains("Found 0 results in current page");
+    assertThat(output).contains("No more available pages.");
+  }
+
+  @Test
   public void testSearchWithPagination_negativePageSize_throwsInvalidArgumentException()
       throws Exception {
     int pageSize = -1;
