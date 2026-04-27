@@ -38,7 +38,6 @@ import org.junit.runners.JUnit4;
 public class VideoGenerationIT {
 
   private static final String VIDEO_GEN_MODEL = "veo-3.1-generate-001";
-  private static final String VIDEO_GEN_PREVIEW_MODEL = "veo-3.1-generate-preview";
   private static final String BUCKET_NAME = "java-docs-samples-testing";
   private static final String PREFIX = "genai-video-generation-" + UUID.randomUUID();
   private static final String OUTPUT_GCS_URI = String.format("gs://%s/%s", BUCKET_NAME, PREFIX);
