@@ -45,7 +45,7 @@ public class ImageGenerationIT {
   private static final String PREFIX = "genai-img-generation-" + UUID.randomUUID();
   private static final String OUTPUT_GCS_URI = String.format("gs://%s/%s", BUCKET_NAME, PREFIX);
   private static final String IMAGEN_4_MODEL = "imagen-4.0-generate-001";
-  private static final String VIRTUAL_TRY_ON_MODEL = "virtual-try-on-preview-08-04";
+  private static final String VIRTUAL_TRY_ON_MODEL = "virtual-try-on-001";
 
   private ByteArrayOutputStream bout;
   private PrintStream out;
