@@ -32,7 +32,7 @@ public class VideoGenWithImg {
 
   public static void main(String[] args) throws InterruptedException {
     // TODO(developer): Replace these variables before running the sample.
-    String modelId = "veo-3.0-generate-preview";
+    String modelId = "veo-3.1-generate-001";
     String outputGcsUri = "gs://your-bucket/your-prefix";
     generateContent(modelId, outputGcsUri);
   }
