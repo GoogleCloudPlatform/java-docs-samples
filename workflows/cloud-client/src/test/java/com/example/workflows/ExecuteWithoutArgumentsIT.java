@@ -52,7 +52,7 @@ public class ExecuteWithoutArgumentsIT {
   }
 
   @AfterClass
-  public static void tearDown() throws IOException, InterruptedException {
+  public static void tearDown() throws IOException, InterruptedException, ExecutionException {
     // Delete workflow
     Utils.deleteWorkflow(PROJECT_ID, LOCATION, WORKFLOW_ID);
 

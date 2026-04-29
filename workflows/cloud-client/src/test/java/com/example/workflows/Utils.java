@@ -37,37 +37,13 @@ public class Utils {
       Workflow workflow = Workflow.newBuilder().setSourceContents(source).build();
 
       workflowsClient.createWorkflowAsync(parent, workflow, workflowId).get();
-      long backoffDelay = 1_000;
-
-      while (!workflowExists(workflowsClient, projectId, location, workflowId)) {
-        Thread.sleep(backoffDelay);
-        backoffDelay *= 2;
-      }
-    }
-  }
-
-  private static boolean workflowExists(
-      WorkflowsClient workflowsClient, String projectId, String location, String workflowId) {
-    try {
-      WorkflowName workflowName = WorkflowName.of(projectId, location, workflowId);
-      workflowsClient.getWorkflow(workflowName);
-      return true;
-    } catch (Exception e) {
-      System.out.println("Workflow doesn't exist");
-      return false;
     }
   }
 
   public static void deleteWorkflow(String projectId, String location, String workflowId)
-      throws IOException, InterruptedException {
+      throws IOException, InterruptedException, ExecutionException {
     try (WorkflowsClient workflowsClient = WorkflowsClient.create()) {
-      workflowsClient.deleteWorkflowAsync(WorkflowName.of(projectId, location, workflowId));
-
-      long backoffDelay = 1_000;
-      while (workflowExists(workflowsClient, projectId, location, workflowId)) {
-        Thread.sleep(backoffDelay);
-        backoffDelay *= 2;
-      }
+      workflowsClient.deleteWorkflowAsync(WorkflowName.of(projectId, location, workflowId)).get();
     }
   }
 }
