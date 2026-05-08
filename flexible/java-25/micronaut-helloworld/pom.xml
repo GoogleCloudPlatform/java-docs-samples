@@ -33,7 +33,7 @@
     <exec.mainClass>com.example.appengine.Application</exec.mainClass>
     <maven.compiler.target>21</maven.compiler.target>
     <maven.compiler.source>21</maven.compiler.source>
-    <micronaut.version>3.10.3</micronaut.version>
+    <micronaut.version>4.10.22</micronaut.version>
     <jacoco.agent.argLine>${argLine}</jacoco.agent.argLine>
   </properties>
 
