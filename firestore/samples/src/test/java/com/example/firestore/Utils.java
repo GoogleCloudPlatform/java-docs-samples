@@ -29,10 +29,13 @@ public class Utils {
     // Create collection and document to be deleted
     FirestoreOptions firestoreOptions =
         FirestoreOptions.getDefaultInstance().toBuilder().setProjectId(projectId).build();
-    Firestore db = firestoreOptions.getService();
-    Map<String, Object> docData = new HashMap<>();
-    docData.put("name", name);
-    ApiFuture<WriteResult> future = db.collection(collectionName).document(documentName).set(docData);
-    future.get();
+    try (Firestore db = firestoreOptions.getService()) {
+
+      Map<String, Object> docData = new HashMap<>();
+      docData.put("name", name);
+      ApiFuture<WriteResult> future =
+          db.collection(collectionName).document(documentName).set(docData);
+      future.get();
+    }
   }
 }

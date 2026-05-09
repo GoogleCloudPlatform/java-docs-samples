@@ -16,21 +16,19 @@
 
 package com.example.firestore;
 
-import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.util.concurrent.ExecutionException;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import com.example.firestore.DeleteCollection;
-
 public class DeleteCollectionIT {
 
   private static ByteArrayOutputStream bout;
+  private static PrintStream prevPrintStream;
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String COLLECTION_NAME = "usa-cities";
   private static final String DOCUMENT_NAME = "LA";
@@ -51,17 +49,18 @@ public class DeleteCollectionIT {
     // Create collection
     Utils.createCollection(PROJECT_ID, COLLECTION_NAME, DOCUMENT_NAME, NAME);
 
+    prevPrintStream = System.out;
     bout = new ByteArrayOutputStream();
     System.setOut(new PrintStream(bout));
   }
 
   @AfterAll
   public static void tearDown() {
-    System.setOut(null);
+    System.setOut(prevPrintStream);
   }
 
   @Test
-  public void testDeleteCollection() throws ExecutionException, InterruptedException {
+  public void testDeleteCollection() throws Exception {
     DeleteCollection.deleteCollection(PROJECT_ID, COLLECTION_NAME);
 
     String output = bout.toString();

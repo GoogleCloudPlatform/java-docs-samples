@@ -22,27 +22,31 @@ import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.CollectionReference;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.FirestoreOptions;
-import java.util.concurrent.ExecutionException;
 
 public class DeleteCollection {
 
-  /** Delete a collection and all its subcollections. */
-  public static void deleteCollection(String projectId, String collectionName)
-      throws ExecutionException, InterruptedException {
+  /**
+   * Delete a collection and all its subcollections.
+   *
+   * @param projectId The Google Cloud project ID
+   * @param collectionName The name of the collection to delete
+   */
+  public static void deleteCollection(String projectId, String collectionName) throws Exception {
     FirestoreOptions firestoreOptions =
         FirestoreOptions.getDefaultInstance().toBuilder().setProjectId(projectId).build();
-    Firestore db = firestoreOptions.getService();
-    CollectionReference collection = db.collection(collectionName);
+    try (Firestore db = firestoreOptions.getService()) {
+      CollectionReference collection = db.collection(collectionName);
 
-    ApiFuture<Void> future = db.recursiveDelete(collection);
+      ApiFuture<Void> future = db.recursiveDelete(collection);
 
-    future.get();
-    System.out.println("Collection and all its subcollections deleted successfully.");
+      future.get();
+      System.out.println("Collection and all its subcollections deleted successfully.");
+    }
   }
 
-  public static void main(String[] args) throws ExecutionException, InterruptedException {
-    String projectId = "your-project-id";
-    String collectionName = "your-collection-name";
+  public static void main(String[] args) throws Exception {
+    String projectId = "example-project-id";
+    String collectionName = "example-collection-name";
 
     deleteCollection(projectId, collectionName);
   }
