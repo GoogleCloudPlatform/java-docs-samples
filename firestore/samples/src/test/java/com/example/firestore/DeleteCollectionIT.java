@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.firebase;
+package com.example.firestore;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -25,6 +25,8 @@ import java.util.concurrent.ExecutionException;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import com.example.firestore.DeleteCollection;
 
 public class DeleteCollectionIT {
 

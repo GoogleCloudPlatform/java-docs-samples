@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.firebase;
+package com.example.firestore;
 
 // [START firestore_data_delete_collection]
 

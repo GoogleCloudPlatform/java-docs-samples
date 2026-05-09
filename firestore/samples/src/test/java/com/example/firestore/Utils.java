@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.firebase;
+package com.example.firestore;
 
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.Firestore;
