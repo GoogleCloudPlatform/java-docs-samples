@@ -9,7 +9,7 @@ RUN mvn clean package dependency:copy-dependencies \
     -DoutputDirectory=target/libs \
     -DskipTests
 
-FROM eclipse-temurin:17.0.17_10-jre
+FROM eclipse-temurin:17.0.18_8-jre
 
 RUN useradd -m appuser
 USER appuser
