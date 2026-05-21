@@ -53,6 +53,6 @@ abstract class AbstractGuestbookServlet extends HttpServlet {
       return;
     }
     guestbook.appendGreeting(content);
-    renderGuestbook(req, resp);
+    resp.sendRedirect(req.getRequestURI());
   }
 }

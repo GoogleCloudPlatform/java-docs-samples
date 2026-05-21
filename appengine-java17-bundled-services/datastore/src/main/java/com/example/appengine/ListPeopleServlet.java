@@ -85,7 +85,9 @@ public class ListPeopleServlet extends HttpServlet {
     String cursorString = results.getCursor().toWebSafeString();
 
     // This servlet lives at '/people'.
-    w.println("<a href='/people?cursor=" + cursorString + "'>Next page</a>");
+    if (results.size() == PAGE_SIZE) {
+      w.println("<a href='/people?cursor=" + cursorString + "'>Next page</a>");
+    }
   }
 }
 // [END cursors]
