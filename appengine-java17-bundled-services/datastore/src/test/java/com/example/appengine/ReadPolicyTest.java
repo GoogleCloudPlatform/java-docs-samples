@@ -62,7 +62,6 @@ public class ReadPolicyTest {
 
   @Test
   public void readPolicy_eventual_returnsNoResults() {
-    // [START data_consistency]
     double deadline = 5.0;
 
     // Construct a read policy for eventual consistency
@@ -81,7 +80,6 @@ public class ReadPolicyTest {
 
     // Get Datastore service with the given configuration
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService(datastoreConfig);
-    // [END data_consistency]
 
     Entity parent = new Entity("Person", "a");
     Entity child = new Entity("Person", "b", parent.getKey());

@@ -69,7 +69,6 @@ public class MetadataEntityGroupTest {
     helper.tearDown();
   }
 
-  // [START entity_group_1]
   private static long getEntityGroupVersion(DatastoreService ds, Transaction tx, Key entityKey) {
     try {
       return Entities.getVersionProperty(ds.get(tx, Entities.createEntityGroupKey(entityKey)));
@@ -102,7 +101,6 @@ public class MetadataEntityGroupTest {
     // Will print a higher version, as entity1's entity group has changed
     writer.println("version " + getEntityGroupVersion(ds, null, key1));
   }
-  // [END entity_group_1]
 
   @Test
   public void printEntityGroupVersions_printsVersions() throws Exception {
@@ -111,7 +109,6 @@ public class MetadataEntityGroupTest {
     assertThat(responseWriter.toString()).contains("version");
   }
 
-  // [START entity_group_2]
   // A simple class for tracking consistent entity group counts.
   private static class EntityGroupCount implements Serializable {
 
@@ -145,7 +142,6 @@ public class MetadataEntityGroupTest {
       }
     }
   }
-  // [END entity_group_2]
 
   @Test
   public void entityGroupCount_printsCount() throws Exception {

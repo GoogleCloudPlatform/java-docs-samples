@@ -70,7 +70,6 @@ public class MetadataNamespacesTest {
     helper.tearDown();
   }
 
-  // [START queries_intro_example]
   void printAllNamespaces(DatastoreService ds, PrintWriter writer) {
     Query q = new Query(Entities.NAMESPACE_METADATA_KIND);
 
@@ -84,7 +83,6 @@ public class MetadataNamespacesTest {
       }
     }
   }
-  // [END queries_intro_example]
 
   @Test
   public void printAllNamespaces_printsNamespaces() throws Exception {
@@ -99,7 +97,6 @@ public class MetadataNamespacesTest {
     assertThat(response).contains("another-namespace");
   }
 
-  // [START namespace_query_example]
   List<String> getNamespaces(DatastoreService ds, String start, String end) {
 
     // Start with unrestricted namespace query
@@ -134,7 +131,6 @@ public class MetadataNamespacesTest {
     // Return result list
     return results;
   }
-  // [END namespace_query_example]
 
   @Test
   public void getNamespaces_returnsNamespaces() throws Exception {

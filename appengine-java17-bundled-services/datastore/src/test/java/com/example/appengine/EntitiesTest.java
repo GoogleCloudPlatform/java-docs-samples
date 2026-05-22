@@ -68,7 +68,6 @@ public class EntitiesTest {
 
   @Test
   public void kindExample_writesEntity() throws Exception {
-    // [START kind_example]
     Entity employee = new Entity("Employee", "asalieri");
     employee.setProperty("firstName", "Antonio");
     employee.setProperty("lastName", "Salieri");
@@ -77,7 +76,6 @@ public class EntitiesTest {
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(employee);
-    // [END kind_example]
 
     Entity got = datastore.get(employee.getKey());
     assertWithMessage("got.firstName")
@@ -94,9 +92,7 @@ public class EntitiesTest {
 
   @Test
   public void identifiers_keyName_setsKeyName() throws Exception {
-    // [START identifiers_1]
     Entity employee = new Entity("Employee", "asalieri");
-    // [END identifiers_1]
     datastore.put(employee);
 
     assertWithMessage("key name").that(employee.getKey().getName()).isEqualTo("asalieri");
@@ -107,9 +103,7 @@ public class EntitiesTest {
     KeyRange keys = datastore.allocateIds("Employee", 1);
     long usedId = keys.getStart().getId();
 
-    // [START identifiers_2]
     Entity employee = new Entity("Employee");
-    // [END identifiers_2]
     datastore.put(employee);
 
     assertWithMessage("key id").that(employee.getKey().getId()).isNotEqualTo(usedId);
@@ -117,13 +111,11 @@ public class EntitiesTest {
 
   @Test
   public void parent_withinEntityConstructor_setsParent() throws Exception {
-    // [START parent_1]
     Entity employee = new Entity("Employee");
     datastore.put(employee);
 
     Entity address = new Entity("Address", employee.getKey());
     datastore.put(address);
-    // [END parent_1]
 
     assertWithMessage("address parent").that(address.getParent()).isEqualTo(employee.getKey());
   }
@@ -133,9 +125,7 @@ public class EntitiesTest {
     Entity employee = new Entity("Employee");
     datastore.put(employee);
 
-    // [START parent_2]
     Entity address = new Entity("Address", "addr1", employee.getKey());
-    // [END parent_2]
     datastore.put(address);
 
     assertWithMessage("address key name").that(address.getKey().getName()).isEqualTo("addr1");
@@ -143,41 +133,33 @@ public class EntitiesTest {
 
   @Test
   public void datastoreServiceFactory_returnsDatastoreService() throws Exception {
-    // [START working_with_entities]
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    // [END working_with_entities]
     assertWithMessage("datastore").that(datastore).isNotNull();
   }
 
   @Test
   public void creatingAnEntity_withKeyName_writesEntity() throws Exception {
-    // [START creating_an_entity_1]
     Entity employee = new Entity("Employee", "asalieri");
     // Set the entity properties.
     // ...
     datastore.put(employee);
-    // [END creating_an_entity_1]
 
     assertWithMessage("employee key name").that(employee.getKey().getName()).isEqualTo("asalieri");
   }
 
   private Key writeEmptyEmployee() {
-    // [START creating_an_entity_2]
     Entity employee = new Entity("Employee");
     // Set the entity properties.
     // ...
     datastore.put(employee);
-    // [END creating_an_entity_2]
     return employee.getKey();
   }
 
   @Test
   public void creatingAnEntity_withoutKeyName_writesEntity() throws Exception {
     Key employeeKey = writeEmptyEmployee();
-    // [START retrieving_an_entity]
     // Key employeeKey = ...;
     Entity employee = datastore.get(employeeKey);
-    // [END retrieving_an_entity]
 
     assertWithMessage("retrieved key ID")
         .that(employee.getKey().getId())
@@ -190,10 +172,8 @@ public class EntitiesTest {
     datastore.put(employee);
 
     Key employeeKey = KeyFactory.createKey("Employee", "asalieri");
-    // [START deleting_an_entity]
     // Key employeeKey = ...;
     datastore.delete(employeeKey);
-    // [END deleting_an_entity]
 
     try {
       Entity got = datastore.get(employeeKey);
@@ -207,7 +187,6 @@ public class EntitiesTest {
 
   @Test
   public void repeatedProperties_storesList() throws Exception {
-    // [START repeated_properties]
     Entity employee = new Entity("Employee");
     ArrayList<String> favoriteFruit = new ArrayList<>();
     favoriteFruit.add("Pear");
@@ -219,7 +198,6 @@ public class EntitiesTest {
     employee = datastore.get(employee.getKey());
     @SuppressWarnings("unchecked") // Cast can't verify generic type.
     ArrayList<String> retrievedFruits = (ArrayList<String>) employee.getProperty("favoriteFruit");
-    // [END repeated_properties]
 
     assertThat(retrievedFruits).containsExactlyElementsIn(favoriteFruit).inOrder();
   }
@@ -229,7 +207,6 @@ public class EntitiesTest {
   @Test
   public void embeddedEntity_fromEmbedded_embedsProperties() throws Exception {
     Entity employee = new Entity("Employee");
-    // [START embedded_entities_1]
     // Entity employee = ...;
     EmbeddedEntity embeddedContactInfo = new EmbeddedEntity();
 
@@ -238,7 +215,6 @@ public class EntitiesTest {
     embeddedContactInfo.setProperty("emailAddress", "test@example.com");
 
     employee.setProperty("contactInfo", embeddedContactInfo);
-    // [END embedded_entities_1]
     datastore.put(employee);
 
     Entity gotEmployee = datastore.get(employee.getKey());
@@ -251,7 +227,6 @@ public class EntitiesTest {
 
   private Key putEmployeeWithContactInfo(Entity contactInfo) {
     Entity employee = new Entity("Employee");
-    // [START embedded_entities_2]
     // Entity employee = ...;
     // Entity contactInfo = ...;
     EmbeddedEntity embeddedContactInfo = new EmbeddedEntity();
@@ -260,7 +235,6 @@ public class EntitiesTest {
     embeddedContactInfo.setPropertiesFrom(contactInfo);
 
     employee.setProperty("contactInfo", embeddedContactInfo);
-    // [END embedded_entities_2]
     datastore.put(employee);
     return employee.getKey();
   }
@@ -274,14 +248,12 @@ public class EntitiesTest {
     datastore.put(initialContactInfo);
     Key employeeKey = putEmployeeWithContactInfo(initialContactInfo);
 
-    // [START embedded_entities_3]
     Entity employee = datastore.get(employeeKey);
     EmbeddedEntity embeddedContactInfo = (EmbeddedEntity) employee.getProperty("contactInfo");
 
     Key infoKey = embeddedContactInfo.getKey();
     Entity contactInfo = new Entity(infoKey);
     contactInfo.setPropertiesFrom(embeddedContactInfo);
-    // [END embedded_entities_3]
     datastore.put(contactInfo);
 
     Entity got = datastore.get(infoKey);
@@ -293,7 +265,6 @@ public class EntitiesTest {
 
   @Test
   public void batchOperations_putsEntities() {
-    // [START gae_batch_operations]
     Entity employee1 = new Entity("Employee");
     Entity employee2 = new Entity("Employee");
     Entity employee3 = new Entity("Employee");
@@ -305,7 +276,6 @@ public class EntitiesTest {
 
     List<Entity> employees = Arrays.asList(employee1, employee2, employee3);
     datastore.put(employees);
-    // [END gae_batch_operations]
 
     Map<Key, Entity> got =
         datastore.get(Arrays.asList(employee1.getKey(), employee2.getKey(), employee3.getKey()));
@@ -322,10 +292,8 @@ public class EntitiesTest {
 
   @Test
   public void createKey_makesKey() {
-    // [START generating_keys_1]
     Key k1 = KeyFactory.createKey("Person", "GreatGrandpa");
     Key k2 = KeyFactory.createKey("Person", 74219);
-    // [END generating_keys_1]
 
     assertThat(k1).isNotNull();
     assertThat(k2).isNotNull();
@@ -338,14 +306,12 @@ public class EntitiesTest {
     Key dadKey = KeyFactory.createKey(grandKey, "Person", "Dad");
     Key meKey = KeyFactory.createKey(dadKey, "Person", "Me");
 
-    // [START generating_keys_2]
     Key k =
         new KeyFactory.Builder("Person", "GreatGrandpa")
             .addChild("Person", "Grandpa")
             .addChild("Person", "Dad")
             .addChild("Person", "Me")
             .getKey();
-    // [END generating_keys_2]
 
     assertThat(k).isEqualTo(meKey);
   }
@@ -357,13 +323,11 @@ public class EntitiesTest {
     datastore.put(p);
     Key k = p.getKey();
 
-    // [START generating_keys_3]
     String personKeyStr = KeyFactory.keyToString(k);
 
     // Some time later (for example, after using personKeyStr in a link).
     Key personKey = KeyFactory.stringToKey(personKeyStr);
     Entity person = datastore.get(personKey);
-    // [END generating_keys_3]
 
     assertThat(personKey).isEqualTo(k);
     assertWithMessage("person.relationship")

@@ -16,7 +16,6 @@
 
 package com.example.appengine;
 
-// [START cursors]
 
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.datastore.DatastoreService;
@@ -90,4 +89,3 @@ public class ListPeopleServlet extends HttpServlet {
     }
   }
 }
-// [END cursors]

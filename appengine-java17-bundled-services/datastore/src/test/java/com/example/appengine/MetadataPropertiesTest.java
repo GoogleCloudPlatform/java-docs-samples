@@ -71,7 +71,6 @@ public class MetadataPropertiesTest {
     helper.tearDown();
   }
 
-  // [START property_query_example]
   void printProperties(DatastoreService ds, PrintWriter writer) {
 
     // Create unrestricted keys-only property query
@@ -82,7 +81,6 @@ public class MetadataPropertiesTest {
       writer.println(e.getKey().getParent().getName() + ": " + e.getKey().getName());
     }
   }
-  // [END property_query_example]
 
   @Test
   public void printProperties_printsProperties() throws Exception {
@@ -107,7 +105,6 @@ public class MetadataPropertiesTest {
     assertThat(response).contains("Ship: motor");
   }
 
-  // [START property_filtering_example]
   void printPropertyRange(DatastoreService ds, PrintWriter writer) {
 
     // Start with unrestricted keys-only property query
@@ -131,7 +128,6 @@ public class MetadataPropertiesTest {
       writer.println(e.getKey().getParent().getName() + ": " + e.getKey().getName());
     }
   }
-  // [END property_filtering_example]
 
   @Test
   public void printPropertyRange_printsProperties() throws Exception {
@@ -159,7 +155,6 @@ public class MetadataPropertiesTest {
         .isEqualTo("Employee: ssn\nInvoice: amount\nInvoice: date\nManager: name\n");
   }
 
-  // [START property_ancestor_query_example]
   List<String> propertiesOfKind(DatastoreService ds, String kind) {
 
     // Start with unrestricted keys-only property query
@@ -179,7 +174,6 @@ public class MetadataPropertiesTest {
     // Return result list
     return results;
   }
-  // [END property_ancestor_query_example]
 
   @Test
   public void propertiesOfKind_returnsProperties() throws Exception {
@@ -199,7 +193,6 @@ public class MetadataPropertiesTest {
     assertThat(properties).containsExactly("beta", "charlie", "delta");
   }
 
-  // [START property_representation_query_example]
   Collection<String> representationsOfProperty(DatastoreService ds, String kind, String property) {
 
     // Start with unrestricted non-keys-only property query
@@ -216,7 +209,6 @@ public class MetadataPropertiesTest {
     // Return collection of property representations
     return (Collection<String>) propInfo.getProperty("property_representation");
   }
-  // [END property_representation_query_example]
 
   @Test
   public void representationsOfProperty_returnsRepresentations() throws Exception {
