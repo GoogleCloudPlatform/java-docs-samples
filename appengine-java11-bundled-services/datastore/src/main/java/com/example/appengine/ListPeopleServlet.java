@@ -77,7 +77,8 @@ public class ListPeopleServlet extends HttpServlet {
     w.println("<title>Cloud Datastore Cursor Sample</title>");
     w.println("<ul>");
     for (Entity entity : results) {
-      w.println("<li>" + HtmlEscapers.htmlEscaper().escape((String) entity.getProperty("name")) + "</li>");
+      String name = (String) entity.getProperty("name");
+      w.println("<li>" + HtmlEscapers.htmlEscaper().escape(name) + "</li>");
     }
     w.println("</ul>");
 
