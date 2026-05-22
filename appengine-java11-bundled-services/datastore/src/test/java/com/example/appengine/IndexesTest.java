@@ -66,7 +66,6 @@ public class IndexesTest {
 
   @Test
   public void propertyFilterExample_returnsMatchingEntities() throws Exception {
-    // [START unindexed_properties_1]
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
     Key acmeKey = KeyFactory.createKey("Company", "Acme");
@@ -87,7 +86,6 @@ public class IndexesTest {
 
     // Returns tom but not lucy, because her age is unindexed
     List<Entity> results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
-    // [END unindexed_properties_1]
 
     assertWithMessage("query results").that(results).containsExactly(tom);
   }

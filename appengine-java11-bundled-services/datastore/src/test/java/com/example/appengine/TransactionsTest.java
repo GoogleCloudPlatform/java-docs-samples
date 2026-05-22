@@ -78,7 +78,6 @@ public class TransactionsTest {
     Entity joe = new Entity("Employee", "Joe");
     datastore.put(joe);
 
-    // [START using_transactions]
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Transaction txn = datastore.beginTransaction();
     try {
@@ -94,13 +93,11 @@ public class TransactionsTest {
         txn.rollback();
       }
     }
-    // [END using_transactions]
   }
 
   @Test
   public void entityGroups() throws Exception {
     try {
-      // [START entity_groups]
       DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
       Entity person = new Entity("Person", "tom");
       datastore.put(person);
@@ -133,7 +130,6 @@ public class TransactionsTest {
       // Throws IllegalArgumentException because the Person entity
       // and the Photo entity belong to different entity groups.
       txn.commit();
-      // [END entity_groups]
       fail("Expected IllegalArgumentException");
     } catch (IllegalArgumentException expected) {
       // We expect to get an exception that complains that we don't have a XG-transaction.
@@ -145,7 +141,6 @@ public class TransactionsTest {
   public void creatingAnEntityInASpecificEntityGroup() throws Exception {
     String boardName = "my-message-board";
 
-    // [START creating_an_entity_in_a_specific_entity_group]
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
     String messageTitle = "Some Title";
@@ -163,12 +158,10 @@ public class TransactionsTest {
     datastore.put(txn, message);
 
     txn.commit();
-    // [END creating_an_entity_in_a_specific_entity_group]
   }
 
   @Test
   public void crossGroupTransactions() throws Exception {
-    // [START cross-group_XG_transactions_using_the_Java_low-level_API]
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     TransactionOptions options = TransactionOptions.Builder.withXG(true);
     Transaction txn = datastore.beginTransaction(options);
@@ -182,7 +175,6 @@ public class TransactionsTest {
     datastore.put(txn, b);
 
     txn.commit();
-    // [END cross-group_XG_transactions_using_the_Java_low-level_API]
   }
 
   @Test
@@ -192,7 +184,6 @@ public class TransactionsTest {
     b.setProperty("count", 41);
     datastore.put(b);
 
-    // [START uses_for_transactions_1]
     int retries = 3;
     while (true) {
       Transaction txn = datastore.beginTransaction();
@@ -219,14 +210,12 @@ public class TransactionsTest {
         }
       }
     }
-    // [END uses_for_transactions_1]
 
     b = datastore.get(KeyFactory.createKey("MessageBoard", boardName));
     assertWithMessage("board.count").that((long) b.getProperty("count")).isEqualTo(42L);
   }
 
   private Entity fetchOrCreate(String boardName) {
-    // [START uses_for_transactions_2]
     Transaction txn = datastore.beginTransaction();
     Entity messageBoard;
     Key boardKey;
@@ -239,7 +228,6 @@ public class TransactionsTest {
       boardKey = datastore.put(txn, messageBoard);
     }
     txn.commit();
-    // [END uses_for_transactions_2]
 
     return messageBoard;
   }
@@ -268,7 +256,6 @@ public class TransactionsTest {
     b.setProperty("count", 13);
     datastore.put(b);
 
-    // [START uses_for_transactions_3]
     DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
 
     // Display information about a message board and its first 10 messages.
@@ -286,14 +273,12 @@ public class TransactionsTest {
     List<Entity> messages = pq.asList(FetchOptions.Builder.withLimit(10));
 
     txn.commit();
-    // [END uses_for_transactions_3]
 
     assertWithMessage("board.count").that(count).isEqualTo(13L);
   }
 
   @Test
   public void transactionalTaskEnqueuing() throws Exception {
-    // [START transactional_task_enqueuing]
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Queue queue = QueueFactory.getDefaultQueue();
     Transaction txn = datastore.beginTransaction();
@@ -304,6 +289,5 @@ public class TransactionsTest {
     // ...
 
     txn.commit();
-    // [END transactional_task_enqueuing]
   }
 }

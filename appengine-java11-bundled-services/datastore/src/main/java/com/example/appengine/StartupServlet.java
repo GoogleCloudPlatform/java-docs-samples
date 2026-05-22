@@ -106,13 +106,14 @@ public class StartupServlet extends HttpServlet {
       return;
     }
 
-    ImmutableList.Builder<Entity> people = ImmutableList.builder();
-    for (String name : US_PRESIDENTS) {
-      Entity person = new Entity(PERSON_ENTITY);
-      person.setProperty(NAME_PROPERTY, name);
-      people.add(person);
-    }
-    datastore.put(people.build());
+    ImmutableList<Entity> people = US_PRESIDENTS.stream()
+        .map(name -> {
+          Entity person = new Entity(PERSON_ENTITY);
+          person.setProperty(NAME_PROPERTY, name);
+          return person;
+        })
+        .collect(ImmutableList.toImmutableList());
+    datastore.put(people);
     datastore.put(new Entity(isPopulatedKey));
     resp.getWriter().println("ok");
   }

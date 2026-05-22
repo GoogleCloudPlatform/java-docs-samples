@@ -25,7 +25,7 @@
     <h2>Latest Greetings</h2>
     <c:forEach items="${greetings}" var="greeting">
       <p>
-        ${greeting.content}<br>
+        <c:out value="${greeting.content}"/><br>
         Posted: ${greeting.date}
       </p>
     </c:forEach>

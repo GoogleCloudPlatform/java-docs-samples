@@ -75,6 +75,8 @@ public class GuestbookTest {
   @Before
   public void setUp() throws Exception {
     helper.setUp();
+    CustomHighRepJobPolicy.newJobCounter = 0;
+    CustomHighRepJobPolicy.existingJobCounter = 0;
     clock = new FakeClock();
     guestbookUnderTest = new Guestbook(clock);
   }

@@ -62,11 +62,9 @@ abstract class AbstractGuestbook {
    * Return a list of the most recent greetings.
    */
   public List<Greeting> listGreetings() {
-    ImmutableList.Builder<Greeting> greetings = ImmutableList.builder();
-    for (Entity entity : listGreetingEntities(datastore)) {
-      greetings.add(Greeting.create(entity));
-    }
-    return greetings.build();
+    return listGreetingEntities(datastore).stream()
+        .map(Greeting::create)
+        .collect(ImmutableList.toImmutableList());
   }
 
   /**

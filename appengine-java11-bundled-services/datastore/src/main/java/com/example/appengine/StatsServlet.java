@@ -32,12 +32,10 @@ public class StatsServlet extends HttpServlet {
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
-    // [START stat_example]
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Entity globalStat = datastore.prepare(new Query("__Stat_Total__")).asSingleEntity();
     Long totalBytes = (Long) globalStat.getProperty("bytes");
     Long totalEntities = (Long) globalStat.getProperty("count");
-    // [END stat_example]
 
     resp.setContentType("text/plain");
     resp.setCharacterEncoding("UTF-8");

@@ -70,7 +70,6 @@ public class MetadataNamespacesTest {
     helper.tearDown();
   }
 
-  // [START queries_intro_example]
   void printAllNamespaces(DatastoreService ds, PrintWriter writer) {
     Query q = new Query(Entities.NAMESPACE_METADATA_KIND);
 
@@ -84,7 +83,6 @@ public class MetadataNamespacesTest {
       }
     }
   }
-  // [END queries_intro_example]
 
   @Test
   public void printAllNamespaces_printsNamespaces() throws Exception {
@@ -99,7 +97,6 @@ public class MetadataNamespacesTest {
     assertThat(response).contains("another-namespace");
   }
 
-  // [START namespace_query_example]
   List<String> getNamespaces(DatastoreService ds, String start, String end) {
 
     // Start with unrestricted namespace query
@@ -121,20 +118,19 @@ public class MetadataNamespacesTest {
               Entities.createNamespaceKey(end)));
     }
 
-    q.setFilter(CompositeFilterOperator.and(subFilters));
-
-    // Initialize result list
-    List<String> results = new ArrayList<>();
-
-    // Build list of query results
-    for (Entity e : ds.prepare(q).asIterable()) {
-      results.add(Entities.getNamespaceFromNamespaceKey(e.getKey()));
+    if (!subFilters.isEmpty()) {
+      if (subFilters.size() == 1) {
+        q.setFilter(subFilters.get(0));
+      } else {
+        q.setFilter(CompositeFilterOperator.and(subFilters));
+      }
     }
 
-    // Return result list
-    return results;
+    // Build list of query results
+    return com.google.common.collect.Streams.stream(ds.prepare(q).asIterable())
+        .map(e -> Entities.getNamespaceFromNamespaceKey(e.getKey()))
+        .collect(java.util.stream.Collectors.toList());
   }
-  // [END namespace_query_example]
 
   @Test
   public void getNamespaces_returnsNamespaces() throws Exception {

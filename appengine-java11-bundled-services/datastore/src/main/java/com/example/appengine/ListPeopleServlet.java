@@ -16,8 +16,6 @@
 
 package com.example.appengine;
 
-// [START cursors]
-
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -27,6 +25,7 @@ import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.datastore.QueryResultList;
+import com.google.common.html.HtmlEscapers;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -78,7 +77,7 @@ public class ListPeopleServlet extends HttpServlet {
     w.println("<title>Cloud Datastore Cursor Sample</title>");
     w.println("<ul>");
     for (Entity entity : results) {
-      w.println("<li>" + entity.getProperty("name") + "</li>");
+      w.println("<li>" + HtmlEscapers.htmlEscaper().escape((String) entity.getProperty("name")) + "</li>");
     }
     w.println("</ul>");
 
@@ -88,4 +87,3 @@ public class ListPeopleServlet extends HttpServlet {
     w.println("<a href='/people?cursor=" + cursorString + "'>Next page</a>");
   }
 }
-// [END cursors]
