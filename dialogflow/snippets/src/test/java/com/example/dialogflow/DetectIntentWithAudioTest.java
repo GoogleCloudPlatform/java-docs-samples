@@ -49,6 +49,7 @@ public class DetectIntentWithAudioTest {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
   }
+
   protected static String PROJECT_ID = System.getenv().get("GOOGLE_CLOUD_PROJECT");
   protected static String SESSION_ID = UUID.randomUUID().toString();
   protected static String LANGUAGE_CODE = "en-US";
