@@ -18,6 +18,7 @@ package com.example.dialogflow;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import com.google.common.collect.ImmutableList;
@@ -30,6 +31,7 @@ import java.util.Map;
 import java.util.UUID;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -37,6 +39,16 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class DetectIntentWithAudioTest {
+
+  private static void requireEnvVar(String varName) {
+    assertNotNull(System.getenv(varName));
+  }
+
+  @BeforeClass
+  public static void checkRequirements() {
+    requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
+    requireEnvVar("GOOGLE_CLOUD_PROJECT");
+  }
   protected static String PROJECT_ID = System.getenv().get("GOOGLE_CLOUD_PROJECT");
   protected static String SESSION_ID = UUID.randomUUID().toString();
   protected static String LANGUAGE_CODE = "en-US";
