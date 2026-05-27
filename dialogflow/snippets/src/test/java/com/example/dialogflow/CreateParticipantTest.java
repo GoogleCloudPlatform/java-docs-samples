@@ -26,7 +26,6 @@ import com.google.cloud.dialogflow.v2.Participant.Role;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.Optional;
 import java.util.UUID;
 import org.junit.After;
 import org.junit.Before;
@@ -72,8 +71,8 @@ public class CreateParticipantTest {
     System.setOut(newOutputStream);
 
     // Create a conversation profile
-    ConversationProfileManagement.createConversationProfileArticleSuggestion(
-        PROJECT_ID, CONVERSATION_PROFILE_DISPLAY_NAME, LOCATION, Optional.empty());
+    ConversationProfileManagement.createConversationProfile(
+        PROJECT_ID, CONVERSATION_PROFILE_DISPLAY_NAME, LOCATION);
     String output = bout.toString();
     assertThat(output).contains(NAME_PREFIX_IN_OUTPUT);
     conversationProfileName =

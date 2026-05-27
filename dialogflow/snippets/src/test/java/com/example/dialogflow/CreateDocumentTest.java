@@ -50,7 +50,7 @@ public class CreateDocumentTest {
   private PrintStream originalOutputStream;
 
   private static void requireEnvVar(String varName) {
-    assertNotNull(String.format(varName));
+    assertNotNull(System.getenv(varName));
   }
 
   @BeforeClass

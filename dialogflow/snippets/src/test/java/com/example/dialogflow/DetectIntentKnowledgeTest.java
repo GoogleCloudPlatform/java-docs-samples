@@ -18,6 +18,7 @@ package com.example.dialogflow;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import com.google.cloud.dialogflow.v2beta1.DocumentName;
 import com.google.cloud.dialogflow.v2beta1.KnowledgeAnswers;
@@ -31,6 +32,7 @@ import java.util.Map;
 import java.util.UUID;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -38,6 +40,16 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class DetectIntentKnowledgeTest {
+
+  private static void requireEnvVar(String varName) {
+    assertNotNull(System.getenv(varName));
+  }
+
+  @BeforeClass
+  public static void checkRequirements() {
+    requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
+    requireEnvVar("GOOGLE_CLOUD_PROJECT");
+  }
 
   private static String PROJECT_ID = System.getenv().get("GOOGLE_CLOUD_PROJECT");
   private static String TEST_KNOWLEDGE_BASE_ID = "MTA4MzE0ODY5NTczMTQzNzU2ODA";
