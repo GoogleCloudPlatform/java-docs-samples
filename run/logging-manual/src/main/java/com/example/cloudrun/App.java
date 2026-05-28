@@ -16,7 +16,6 @@
 
 package com.example.cloudrun;
 
-import static net.logstash.logback.argument.StructuredArguments.kv;
 import static spark.Spark.get;
 import static spark.Spark.port;
 
@@ -27,6 +26,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 public class App {
 
@@ -41,30 +41,27 @@ public class App {
         "/",
         (req, res) -> {
           // [START cloudrun_manual_logging]
-          // Build structured log messages as an object.
-          Object globalLogFields = null;
-
           // Add log correlation to nest all log messages beneath request log in Log Viewer.
           // TODO(developer): delete this code if you're creating a Cloud
           //                  Function and it is *NOT* triggered by HTTP.
           String traceHeader = req.headers("x-cloud-trace-context");
           if (traceHeader != null && project != null) {
             String trace = traceHeader.split("/")[0];
-            globalLogFields =
-                kv(
-                    "logging.googleapis.com/trace",
-                    String.format("projects/%s/traces/%s", project, trace));
+            MDC.put(
+                "logging.googleapis.com/trace",
+                String.format("projects/%s/traces/%s", project, trace));
           }
           // -- End log correlation code --
 
-          // Create a structured log entry using key value pairs.
+          // Create a structured log entry using MDC (Mapped Diagnostic Context) keys.
           // For instantiating the "logger" variable, see
           // https://cloud.google.com/run/docs/logging#run_manual_logging-java
-          logger.error(
-              "This is the default display field.",
-              kv("component", "arbitrary-property"),
-              kv("severity", "NOTICE"),
-              globalLogFields);
+          MDC.put("component", "arbitrary-property");
+
+          logger.info("This is the default display field.");
+
+          // Clear MDC at the end of the request to avoid resource leaks
+          MDC.clear();
           // [END cloudrun_manual_logging]
           res.status(200);
           return "Hello Logger!";

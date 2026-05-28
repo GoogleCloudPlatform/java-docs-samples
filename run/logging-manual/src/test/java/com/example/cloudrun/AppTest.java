@@ -34,11 +34,15 @@ import spark.utils.IOUtils;
 
 public class AppTest {
 
-  private ByteArrayOutputStream bout;
-  private PrintStream out;
+  private static ByteArrayOutputStream bout;
+  private static PrintStream out;
 
   @BeforeClass
   public static void beforeClass() {
+    bout = new ByteArrayOutputStream();
+    out = new PrintStream(bout);
+    System.setOut(out);
+
     App app = new App();
     app.main(new String[] {});
     awaitInitialization();
@@ -51,9 +55,7 @@ public class AppTest {
 
   @Before
   public void setUp() {
-    bout = new ByteArrayOutputStream();
-    out = new PrintStream(bout);
-    System.setOut(out);
+    bout.reset();
   }
 
   @Test
@@ -63,7 +65,7 @@ public class AppTest {
     assertEquals("Hello Logger!", response.body);
     String output = bout.toString();
     assertTrue(output.toString().contains("This is the default display field."));
-    assertTrue(output.toString().contains("NOTICE"));
+    assertTrue(output.toString().contains("INFO"));
     assertTrue(output.toString().contains("arbitrary-property"));
   }
 
