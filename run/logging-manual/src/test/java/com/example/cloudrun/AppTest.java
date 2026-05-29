@@ -36,9 +36,11 @@ public class AppTest {
 
   private static ByteArrayOutputStream bout;
   private static PrintStream out;
+  private static PrintStream originalOut;
 
   @BeforeClass
   public static void beforeClass() {
+    originalOut = System.out;
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
     System.setOut(out);
@@ -50,6 +52,7 @@ public class AppTest {
 
   @AfterClass
   public static void afterClass() {
+    System.setOut(originalOut);
     stop();
   }
 
