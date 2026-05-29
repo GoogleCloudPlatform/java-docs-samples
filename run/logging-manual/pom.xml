@@ -26,7 +26,6 @@ limitations under the License.
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
-    <jacoco.skip>true</jacoco.skip>
   </properties>
 
   <dependencyManagement>
@@ -90,11 +89,6 @@ limitations under the License.
             <image>gcr.io/PROJECT_ID/logging-manual</image>
           </to>
         </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.jacoco</groupId>
-        <artifactId>jacoco-maven-plugin</artifactId>
-        <version>0.8.12</version>
       </plugin>
     </plugins>
   </build>
