@@ -1,21 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- [START cloudrun_manual_logging_logback] -->
 <configuration>
-  <appender name="jsonConsoleAppender" class="ch.qos.logback.core.ConsoleAppender">
-    <encoder class="net.logstash.logback.encoder.LogstashEncoder">
-      <!-- Ignore default logging fields -->
-      <fieldNames>
-        <timestamp>[ignore]</timestamp>
-        <version>[ignore]</version>
-        <logger>[ignore]</logger>
-        <thread>[ignore]</thread>
-        <level>[ignore]</level>
-        <levelValue>[ignore]</levelValue>
-      </fieldNames>
-    </encoder>
+  <appender name="CLOUD" class="com.google.cloud.logging.logback.LoggingAppender">
+    <!-- Optional : filter logs at or above a level -->
+    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+      <level>INFO</level>
+    </filter>
+    <log>application.log</log> <!-- Optional : default java.log -->
+    <resourceType>gae_app</resourceType> <!-- Optional : default: auto-detected, fallback: global -->
+    <enhancer>com.example.logging.logback.enhancers.ExampleEnhancer</enhancer> <!-- Optional -->
+    <flushLevel>WARN</flushLevel> <!-- Optional : default ERROR -->
+    <!-- Redirect logs to stdout in JSON format for Cloud Run to capture -->
+    <redirectToStdout>true</redirectToStdout>
   </appender>
   <root level="INFO">
-    <appender-ref ref="jsonConsoleAppender"/>
+    <appender-ref ref="CLOUD"/>
   </root>
 </configuration>
 <!-- [END cloudrun_manual_logging_logback] -->
