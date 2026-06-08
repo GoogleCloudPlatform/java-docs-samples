@@ -78,12 +78,14 @@
       <version>v1-rev20211203-2.0.0</version>
     </dependency>
     <!-- [END iamcredentials_java_dependency]-->
+    <!-- [START policytroubleshooter_java_dependency]-->
     <!-- [START troubleshooter_java_dependency]-->
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-policy-troubleshooter</artifactId>
     </dependency>
     <!-- [END troubleshooter_java_dependency]-->
+    <!-- [END policytroubleshooter_java_dependency]-->
 
     <!-- Test dependencies -->
     <dependency>
