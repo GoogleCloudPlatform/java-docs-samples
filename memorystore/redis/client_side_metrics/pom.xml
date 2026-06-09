@@ -1,3 +1,4 @@
+<!-- [START memorystore_redis_client_side_metrics_dependencies] -->
 <dependencies>
     <dependency>
         <groupId>redis.clients</groupId>
@@ -25,3 +26,4 @@
         <version>0.28.0-alpha</version>
     </dependency>
 </dependencies>
+<!-- [END memorystore_redis_client_side_metrics_dependencies] -->
