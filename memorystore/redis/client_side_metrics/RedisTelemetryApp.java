@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+// [START memorystore_redis_client_side_metrics]
 import com.google.cloud.opentelemetry.metric.GoogleCloudMetricExporter;
 import com.google.cloud.opentelemetry.trace.TraceExporter;
 import io.opentelemetry.api.OpenTelemetry;
@@ -136,3 +137,4 @@ public class RedisTelemetryApp {
         }
     }
 }
+// [END memorystore_redis_client_side_metrics]
