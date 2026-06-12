@@ -20,9 +20,6 @@ import com.google.cloud.Identity;
 import com.google.cloud.Policy;
 import com.google.cloud.Role;
 import com.google.cloud.bigquery.Acl;
-import com.google.cloud.bigquery.Acl.Entity;
-import com.google.cloud.bigquery.Acl.Group;
-import com.google.cloud.bigquery.Acl.Role;
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.BigQuery.DatasetDeleteOption;
 import com.google.cloud.bigquery.BigQueryException;
@@ -88,8 +85,8 @@ public class Util {
     DatasetId datasetId = DatasetId.of(projectId, datasetName);
     Dataset dataset = bigquery.getDataset(datasetId);
 
-    Entity entity = new Group(entityEmail);
-    Acl newEntry = Acl.of(entity, Role.READER);
+    Acl.Entity entity = new Acl.Group(entityEmail);
+    Acl newEntry = Acl.of(entity, Acl.Role.READER);
     List<Acl> acls = new ArrayList<>(dataset.getAcl());
     acls.add(newEntry);
 
