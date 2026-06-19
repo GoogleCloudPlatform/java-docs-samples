@@ -54,7 +54,6 @@ public class FindingSnippets {
    *
    * @param sourceName The source for the finding.
    */
-  // [START securitycenter_create_finding]
   static Finding createFinding(SourceName sourceName, String findingId) {
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
       // SourceName sourceName = SourceName.of(/*organization=*/"123234324",/*source=*/
@@ -91,14 +90,12 @@ public class FindingSnippets {
       throw new RuntimeException("Couldn't create client.", e);
     }
   }
-  // [END securitycenter_create_finding]
 
   /**
    * Create a finding with source properties under a source.
    *
    * @param sourceName The source for the finding.
    */
-  // [START securitycenter_create_finding_with_source_properties]
   static Finding createFindingWithSourceProperties(SourceName sourceName) {
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
       // SourceName sourceName = SourceName.of(/*organization=*/"123234324",/*source=*/
@@ -143,14 +140,12 @@ public class FindingSnippets {
       throw new RuntimeException("Couldn't create client.", e);
     }
   }
-  // [END securitycenter_create_finding_with_source_properties]
 
   /**
    * Update a finding's source properties.
    *
    * @param findingName The finding to update.
    */
-  // [START securitycenter_update_finding_source_properties]
   static Finding updateFinding(FindingName findingName) {
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
       // FindingName findingName = FindingName.of(/*organization=*/"123234324",
@@ -190,14 +185,12 @@ public class FindingSnippets {
       throw new RuntimeException("Couldn't create client.", e);
     }
   }
-  // [END securitycenter_update_finding_source_properties]
 
   /**
    * Updates a finding's state to INACTIVE.
    *
    * @param findingName The finding to update.
    */
-  // [START securitycenter_update_finding_state]
   static Finding setFindingState(FindingName findingName) {
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
       // FindingName findingName = FindingName.of(/*organization=*/"123234324",
@@ -221,14 +214,12 @@ public class FindingSnippets {
       throw new RuntimeException("Couldn't create client.", e);
     }
   }
-  // [END securitycenter_update_finding_state]
 
   /**
    * List all findings under an organization.
    *
    * @param organizationName The source to list all findings for.
    */
-  // [START securitycenter_list_all_findings]
   static ImmutableList<ListFindingsResult> listAllFindings(OrganizationName organizationName) {
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
       // Input parameters for SourceName must be in one of the following formats:
@@ -259,14 +250,12 @@ public class FindingSnippets {
       throw new RuntimeException("Couldn't create client.", e);
     }
   }
-  // [END securitycenter_list_all_findings]
 
   /**
    * List filtered findings under a source.
    *
    * @param sourceName The source to list filtered findings for.
    */
-  // [START securitycenter_list_filtered_findings]
   static ImmutableList<ListFindingsResult> listFilteredFindings(SourceName sourceName) {
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
       // parentId: must be one of the following:
@@ -295,7 +284,6 @@ public class FindingSnippets {
       throw new RuntimeException("Couldn't create client.", e);
     }
   }
-  // [END securitycenter_list_filtered_findings]
 
   /**
    * List findings at a specific time under a source.
@@ -342,7 +330,6 @@ public class FindingSnippets {
    *
    * @param sourceName The source to create a finding for.
    */
-  // [START securitycenter_test_iam]
   static TestIamPermissionsResponse testIamPermissions(SourceName sourceName) {
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
       // SourceName sourceName = SourceName.of(/*organizationId=*/"123234324",
@@ -363,7 +350,6 @@ public class FindingSnippets {
       throw new RuntimeException("Couldn't create client.", e);
     }
   }
-  // [END securitycenter_test_iam]
 
   /**
    * Group all findings under an organization across all sources by their specified properties (e.g.
@@ -371,7 +357,6 @@ public class FindingSnippets {
    *
    * @param organizationName The organization to group all findings for.
    */
-  // [START securitycenter_group_all_findings]
   static ImmutableList<GroupResult> groupFindings(OrganizationName organizationName) {
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
       // Input parameters for 'SourceName' must be in one of the following formats:
@@ -401,7 +386,6 @@ public class FindingSnippets {
       throw new RuntimeException("Couldn't create client.", e);
     }
   }
-  // [END securitycenter_group_all_findings]
 
   /**
    * Group findings under an organization and a source by their specified properties (e.g.
@@ -409,7 +393,6 @@ public class FindingSnippets {
    *
    * @param sourceName The source to limit the findings to.
    */
-  // [START securitycenter_group_findings_with_source]
   static ImmutableList<GroupResult> groupFindingsWithSource(SourceName sourceName) {
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
       // parentId: must be one of the following:
@@ -436,7 +419,6 @@ public class FindingSnippets {
       throw new RuntimeException("Couldn't create client.", e);
     }
   }
-  // [END securitycenter_group_findings_with_source]
 
   /**
    * Group active findings under an organization and a source by their specified properties (e.g.
@@ -444,7 +426,6 @@ public class FindingSnippets {
    *
    * @param sourceName The source to limit the findings to.
    */
-  // [START securitycenter_group_active_findings_with_source]
   static ImmutableList<GroupResult> groupActiveFindingsWithSource(SourceName sourceName) {
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
       // parentId: must be one of the following:
@@ -474,7 +455,6 @@ public class FindingSnippets {
       throw new RuntimeException("Couldn't create client.", e);
     }
   }
-  // [END securitycenter_group_active_findings_with_source]
 
   /**
    * Group active findings under an organization and a source by their specified properties (e.g.
@@ -482,7 +462,6 @@ public class FindingSnippets {
    *
    * @param sourceName The source to limit the findings to.
    */
-  // [START securitycenter_group_active_findings_with_source_at_time]
   static ImmutableList<GroupResult> groupActiveFindingsWithSourceAtTime(SourceName sourceName) {
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
       // parentId: must be one of the following:
@@ -519,7 +498,6 @@ public class FindingSnippets {
       throw new RuntimeException("Couldn't create client.", e);
     }
   }
-  // [END securitycenter_group_active_findings_with_source_at_time]
 
   /**
    * Group active findings under an organization and a source by their state_changes
@@ -527,7 +505,6 @@ public class FindingSnippets {
    *
    * @param sourceName The source to limit the findings to.
    */
-  // [START securitycenter_group_active_findings_with_source_and_compare_duration]
   static ImmutableList<GroupResult> groupActiveFindingsWithSourceAndCompareDuration(
       SourceName sourceName, Duration duration) {
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
@@ -562,5 +539,4 @@ public class FindingSnippets {
       throw new RuntimeException("Couldn't create client.", e);
     }
   }
-  // [END securitycenter_group_active_findings_with_source_and_compare_duration]
 }
