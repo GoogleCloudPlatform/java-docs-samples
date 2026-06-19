@@ -16,6 +16,7 @@
 
 package com.example.securitycenter;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -52,6 +53,7 @@ public class ITSourceSnippets {
   public void testUpdateSource() throws IOException {
     assertEquals(
         "Updated Display Name", SourceSnippets.updateSource(SOURCE_NAME).getDisplayName());
+  }
 
   @Test
   public void testGetSource() throws IOException {

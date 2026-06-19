@@ -26,9 +26,9 @@ import com.google.cloud.securitycenter.v1.OrganizationName;
 import com.google.cloud.securitycenter.v1.SourceName;
 import com.google.protobuf.Value;
 import java.io.IOException;
+import java.time.Duration;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import java.time.Duration;
 
 /** Smoke tests for {@link com.google.cloud.examples.securitycenter.snippets.FindingSnippets} */
 public class ITFindingSnippets {
@@ -68,7 +68,6 @@ public class ITFindingSnippets {
 
   @Test
   public void testUpdateFindingState() throws IOException {
-    Value stringValue = Value.newBuilder().setStringValue("value").build();
     assertEquals(State.INACTIVE, FindingSnippets.setFindingState(FINDING_NAME).getState());
   }
 

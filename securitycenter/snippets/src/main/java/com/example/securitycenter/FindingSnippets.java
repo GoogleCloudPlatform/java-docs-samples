@@ -36,10 +36,9 @@ import com.google.protobuf.FieldMask;
 import com.google.protobuf.Timestamp;
 import com.google.protobuf.Value;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.List;
 
 /**
  * Snippets for how to work with Findings in Security Command Center.
