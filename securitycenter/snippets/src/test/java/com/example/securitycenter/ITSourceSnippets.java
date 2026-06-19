@@ -16,8 +16,8 @@
 
 package com.example.securitycenter;
 
-import static junit.framework.TestCase.assertNotNull;
-import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import com.google.cloud.securitycenter.v1.OrganizationName;
 import com.google.cloud.securitycenter.v1.SourceName;
@@ -50,9 +50,8 @@ public class ITSourceSnippets {
 
   @Test
   public void testUpdateSource() throws IOException {
-    assertTrue(
-        SourceSnippets.updateSource(SOURCE_NAME).getDisplayName().equals("Updated Display Name"));
-  }
+    assertEquals(
+        "Updated Display Name", SourceSnippets.updateSource(SOURCE_NAME).getDisplayName());
 
   @Test
   public void testGetSource() throws IOException {

@@ -16,9 +16,9 @@
 
 package com.example.securitycenter;
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertNotNull;
-import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import com.google.cloud.securitycenter.v1.Finding.State;
 import com.google.cloud.securitycenter.v1.FindingName;
@@ -28,7 +28,7 @@ import com.google.protobuf.Value;
 import java.io.IOException;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.threeten.bp.Duration;
+import java.time.Duration;
 
 /** Smoke tests for {@link com.google.cloud.examples.securitycenter.snippets.FindingSnippets} */
 public class ITFindingSnippets {
@@ -59,17 +59,17 @@ public class ITFindingSnippets {
   @Test
   public void testUpdateFinding() throws IOException {
     Value stringValue = Value.newBuilder().setStringValue("value").build();
-    assertTrue(
+    assertEquals(
+        stringValue,
         FindingSnippets.updateFinding(FINDING_NAME)
             .getSourcePropertiesMap()
-            .get("stringKey")
-            .equals(stringValue));
+            .get("stringKey"));
   }
 
   @Test
   public void testUpdateFindingState() throws IOException {
     Value stringValue = Value.newBuilder().setStringValue("value").build();
-    assertTrue(FindingSnippets.setFindingState(FINDING_NAME).getState().equals(State.INACTIVE));
+    assertEquals(State.INACTIVE, FindingSnippets.setFindingState(FINDING_NAME).getState());
   }
 
   @Test
@@ -84,7 +84,7 @@ public class ITFindingSnippets {
 
   @Test
   public void testListFindingsAtTime() throws IOException {
-    assertTrue(FindingSnippets.listFindingsAtTime(SOURCE_NAME).size() == 0);
+    assertEquals(0, FindingSnippets.listFindingsAtTime(SOURCE_NAME).size());
   }
 
   @Test

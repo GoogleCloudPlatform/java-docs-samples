@@ -38,8 +38,8 @@ import com.google.protobuf.Value;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import org.threeten.bp.Duration;
-import org.threeten.bp.Instant;
+import java.time.Duration;
+import java.time.Instant;
 
 /**
  * Snippets for how to work with Findings in Security Command Center.
@@ -349,8 +349,8 @@ public class FindingSnippets {
       // /*sourceId=*/"423432321");
 
       // Iam permission to test.
-      List<String> permissionsToTest = new ArrayList<>();
-      permissionsToTest.add("securitycenter.findings.update");
+      List<String> permissionsToTest =
+          ImmutableList.of("securitycenter.findings.update");
 
       // Call the API.
       TestIamPermissionsResponse response =
