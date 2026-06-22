@@ -54,9 +54,6 @@
   </properties>
 
   <!-- [START healthcare_java_dependencies] -->
-  <!-- [START dependencies] -->
-  <!--  Using libraries-bom to manage versions.
-  See https://github.com/GoogleCloudPlatform/cloud-opensource-java/wiki/The-Google-Cloud-Platform-Libraries-BOM -->
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -75,7 +72,6 @@
       <artifactId>google-api-services-healthcare</artifactId>
       <version>v1-rev20240130-2.0.0</version>
     </dependency>
-    <!-- [END dependencies] -->
     <!-- [END healthcare_java_dependencies] -->
     <dependency>
       <groupId>com.google.http-client</groupId>
@@ -113,8 +109,6 @@
       <version>4.5.14</version>
     </dependency>
     <!-- [START healthcare_java_dependencies] -->
-    <!-- [START dependencies] -->
   </dependencies>
-  <!-- [END dependencies] -->
   <!-- [END healthcare_java_dependencies] -->
 </project>
