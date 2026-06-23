@@ -69,6 +69,20 @@ public class EventThreatDetectionCustomModuleTest {
   public static void setUp() {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("SCC_PROJECT_ID");
+    try {
+      ListEventThreatDetectionCustomModulesPagedResponse response =
+          ListEventThreatDetectionCustomModules
+              .listEventThreatDetectionCustomModules(PROJECT_ID);
+      for (EventThreatDetectionCustomModule module : response.iterateAll()) {
+        if (module.getDisplayName() != null
+            && module.getDisplayName().startsWith("java_sample_etd_custom_module_test_")) {
+          deleteCustomModule(PROJECT_ID, extractCustomModuleId(module.getName()));
+        }
+      }
+    } catch (Exception e) {
+      System.err.println(
+          "Warning: Pre-test cleanup of custom modules failed: " + e.getMessage());
+    }
   }
 
   @AfterClass

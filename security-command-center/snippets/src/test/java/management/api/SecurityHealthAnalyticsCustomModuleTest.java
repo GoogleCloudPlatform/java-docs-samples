@@ -67,6 +67,19 @@ public class SecurityHealthAnalyticsCustomModuleTest {
   public static void setUp() throws InterruptedException {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("SCC_PROJECT_ID");
+    try {
+      ListSecurityHealthAnalyticsCustomModulesPagedResponse response =
+          ListSecurityHealthAnalyticsCustomModules
+              .listSecurityHealthAnalyticsCustomModules(PROJECT_ID);
+      for (SecurityHealthAnalyticsCustomModule module : response.iterateAll()) {
+        if (CUSTOM_MODULE_DISPLAY_NAME.equals(module.getDisplayName())) {
+          deleteCustomModule(PROJECT_ID, extractCustomModuleId(module.getName()));
+        }
+      }
+    } catch (Exception e) {
+      System.err.println(
+          "Warning: Pre-test cleanup of custom modules failed: " + e.getMessage());
+    }
   }
 
   @AfterClass
