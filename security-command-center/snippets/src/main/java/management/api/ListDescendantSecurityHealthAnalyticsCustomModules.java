@@ -19,7 +19,8 @@ package management.api;
 // [START securitycenter_list_descendant_security_health_analytics_custom_module]
 import com.google.cloud.securitycentermanagement.v1.ListDescendantSecurityHealthAnalyticsCustomModulesRequest;
 import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient;
-import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient.ListDescendantSecurityHealthAnalyticsCustomModulesPagedResponse;
+import com.google.cloud.securitycentermanagement.v1.SecurityHealthAnalyticsCustomModule;
+import com.google.common.collect.ImmutableList;
 import java.io.IOException;
 
 public class ListDescendantSecurityHealthAnalyticsCustomModules {
@@ -32,7 +33,7 @@ public class ListDescendantSecurityHealthAnalyticsCustomModules {
     listDescendantSecurityHealthAnalyticsCustomModules(projectId);
   }
 
-  public static ListDescendantSecurityHealthAnalyticsCustomModulesPagedResponse
+  public static ImmutableList<SecurityHealthAnalyticsCustomModule>
       listDescendantSecurityHealthAnalyticsCustomModules(String projectId) throws IOException {
 
     // Initialize client that will be used to send requests. This client only needs
@@ -45,10 +46,8 @@ public class ListDescendantSecurityHealthAnalyticsCustomModules {
               .setParent(String.format("projects/%s/locations/global", projectId))
               .build();
 
-      ListDescendantSecurityHealthAnalyticsCustomModulesPagedResponse response =
-          client.listDescendantSecurityHealthAnalyticsCustomModules(request);
-
-      return response;
+      return ImmutableList.copyOf(
+          client.listDescendantSecurityHealthAnalyticsCustomModules(request).iterateAll());
     }
   }
 }

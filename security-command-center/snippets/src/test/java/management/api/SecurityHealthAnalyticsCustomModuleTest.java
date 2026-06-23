@@ -22,14 +22,12 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import com.google.cloud.securitycentermanagement.v1.EffectiveSecurityHealthAnalyticsCustomModule;
-import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient.ListDescendantSecurityHealthAnalyticsCustomModulesPagedResponse;
-import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient.ListEffectiveSecurityHealthAnalyticsCustomModulesPagedResponse;
-import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient.ListSecurityHealthAnalyticsCustomModulesPagedResponse;
 import com.google.cloud.securitycentermanagement.v1.SecurityHealthAnalyticsCustomModule;
 import com.google.cloud.securitycentermanagement.v1.SecurityHealthAnalyticsCustomModule.EnablementState;
 import com.google.cloud.securitycentermanagement.v1.SimulateSecurityHealthAnalyticsCustomModuleResponse;
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -68,10 +66,10 @@ public class SecurityHealthAnalyticsCustomModuleTest {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("SCC_PROJECT_ID");
     try {
-      ListSecurityHealthAnalyticsCustomModulesPagedResponse response =
+      ImmutableList<SecurityHealthAnalyticsCustomModule> response =
           ListSecurityHealthAnalyticsCustomModules
               .listSecurityHealthAnalyticsCustomModules(PROJECT_ID);
-      for (SecurityHealthAnalyticsCustomModule module : response.iterateAll()) {
+      for (SecurityHealthAnalyticsCustomModule module : response) {
         if (CUSTOM_MODULE_DISPLAY_NAME.equals(module.getDisplayName())) {
           deleteCustomModule(PROJECT_ID, extractCustomModuleId(module.getName()));
         }
@@ -145,11 +143,11 @@ public class SecurityHealthAnalyticsCustomModuleTest {
         CreateSecurityHealthAnalyticsCustomModule.createSecurityHealthAnalyticsCustomModule(
             PROJECT_ID, CUSTOM_MODULE_DISPLAY_NAME);
     createdCustomModuleIds.add(extractCustomModuleId(createCustomModuleResponse.getName()));
-    ListSecurityHealthAnalyticsCustomModulesPagedResponse response =
+    ImmutableList<SecurityHealthAnalyticsCustomModule> response =
         ListSecurityHealthAnalyticsCustomModules.listSecurityHealthAnalyticsCustomModules(
             PROJECT_ID);
     assertTrue(
-        StreamSupport.stream(response.iterateAll().spliterator(), false)
+        response.stream()
             .anyMatch(module -> CUSTOM_MODULE_DISPLAY_NAME.equals(module.getDisplayName())));
   }
 
@@ -205,11 +203,11 @@ public class SecurityHealthAnalyticsCustomModuleTest {
         CreateSecurityHealthAnalyticsCustomModule.createSecurityHealthAnalyticsCustomModule(
             PROJECT_ID, CUSTOM_MODULE_DISPLAY_NAME);
     createdCustomModuleIds.add(extractCustomModuleId(createCustomModuleResponse.getName()));
-    ListEffectiveSecurityHealthAnalyticsCustomModulesPagedResponse response =
+    ImmutableList<EffectiveSecurityHealthAnalyticsCustomModule> response =
         ListEffectiveSecurityHealthAnalyticsCustomModules
             .listEffectiveSecurityHealthAnalyticsCustomModules(PROJECT_ID);
     assertTrue(
-        StreamSupport.stream(response.iterateAll().spliterator(), false)
+        response.stream()
             .anyMatch(module -> CUSTOM_MODULE_DISPLAY_NAME.equals(module.getDisplayName())));
   }
 
@@ -219,11 +217,11 @@ public class SecurityHealthAnalyticsCustomModuleTest {
         CreateSecurityHealthAnalyticsCustomModule.createSecurityHealthAnalyticsCustomModule(
             PROJECT_ID, CUSTOM_MODULE_DISPLAY_NAME);
     createdCustomModuleIds.add(extractCustomModuleId(createCustomModuleResponse.getName()));
-    ListDescendantSecurityHealthAnalyticsCustomModulesPagedResponse response =
+    ImmutableList<SecurityHealthAnalyticsCustomModule> response =
         ListDescendantSecurityHealthAnalyticsCustomModules
             .listDescendantSecurityHealthAnalyticsCustomModules(PROJECT_ID);
     assertTrue(
-        StreamSupport.stream(response.iterateAll().spliterator(), false)
+        response.stream()
             .anyMatch(module -> CUSTOM_MODULE_DISPLAY_NAME.equals(module.getDisplayName())));
   }
 
