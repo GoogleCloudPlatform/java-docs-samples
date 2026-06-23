@@ -289,7 +289,7 @@ public class FindingSnippets {
    *
    * @param sourceName The source to list findings at a specific time for.
    */
-  // [START securitycenter_list_findings_at_time]
+  // [START securitycenter_list_findings_within_time_range]
   static ImmutableList<ListFindingsResult> listFindingsAtTime(SourceName sourceName) {
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
       // parentId: must be one of the following:
@@ -321,7 +321,7 @@ public class FindingSnippets {
       throw new RuntimeException("Couldn't create client.", e);
     }
   }
-  // [END securitycenter_list_findings_at_time]
+  // [END securitycenter_list_findings_within_time_range]
 
   /**
    * Demonstrate calling testIamPermissions to determin if the service account has the correct
