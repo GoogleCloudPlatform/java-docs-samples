@@ -14,9 +14,5 @@ branchProtectionRules:
 permissionRules:
   - team: java-samples-reviewers
     permission: push
-  - team: yoshi-java
-    permission: push
-  - team: yoshi-approver-team
-    permission: push
   - team: devrel-java-admin
     permission: admin
