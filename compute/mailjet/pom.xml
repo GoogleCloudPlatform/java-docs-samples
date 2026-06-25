@@ -56,13 +56,11 @@
       <type>jar</type>
       <scope>provided</scope>
     </dependency>
-    <!-- [START dependencies] -->
     <dependency>
       <groupId>com.mailjet</groupId>
       <artifactId>mailjet-client</artifactId>
       <version>${mailjet.version}</version>
     </dependency>
-    <!-- [END dependencies] -->
   </dependencies>
   <build>
     <plugins>
