@@ -34,12 +34,12 @@
         <dependency>
             <groupId>com.google.cloud.opentelemetry</groupId>
             <artifactId>exporter-trace</artifactId>
-            <version>0.28.0-alpha</version>
+            <version>0.28.0</version>
         </dependency>
         <dependency>
             <groupId>com.google.cloud.opentelemetry</groupId>
             <artifactId>exporter-metrics</artifactId>
-            <version>0.28.0-alpha</version>
+            <version>0.28.0</version>
         </dependency>
     </dependencies>
     <!-- [END memorystore_redis_client_side_metrics_dependencies] -->
