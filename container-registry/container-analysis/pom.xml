@@ -27,7 +27,6 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
-  <!-- [START dependencies] -->
   <!--  Using libraries-bom to manage versions.
   See https://github.com/GoogleCloudPlatform/cloud-opensource-java/wiki/The-Google-Cloud-Platform-Libraries-BOM -->
   <dependencyManagement>
@@ -59,14 +58,11 @@
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-pubsub</artifactId>
     </dependency>
-    <!-- [END dependencies] -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.13.2</version>
       <scope>test</scope>
     </dependency>
-    <!-- [START dependencies] -->
   </dependencies>
-  <!-- [END dependencies] -->
 </project>
