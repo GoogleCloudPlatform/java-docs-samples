@@ -36,7 +36,7 @@ apply plugin: 'com.google.cloud.tools.endpoints-framework-server'
 apply plugin: 'com.google.cloud.tools.appengine'
 // [END plugin_applys]
 
-// [START dependencies]
+// [START appengine_endpoints_gradle_dependencies]
 dependencies {
     compile 'com.google.endpoints:endpoints-framework:2.2.2'
     compile 'com.google.appengine:appengine-api-1.0-sdk:2.0.23'
@@ -44,7 +44,7 @@ dependencies {
     compile 'javax.inject:javax.inject:1'
     compileOnly 'javax.servlet:javax.servlet-api:3.1.0'
 }
-// [END dependencies]
+// [END appengine_endpoints_gradle_dependencies]
 
 // [START endpoints_server_configuration]
 // You must replace YOUR_PROJECT_ID with your Google Cloud Project Id

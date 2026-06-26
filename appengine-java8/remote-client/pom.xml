@@ -36,7 +36,6 @@
   </properties>
 
   <dependencies>
-  <!-- [START dependencies] -->
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-remote-api</artifactId>
@@ -47,7 +46,6 @@
       <artifactId>appengine-api-1.0-sdk</artifactId>
       <version>2.0.23</version>
     </dependency>
-  <!-- [END dependencies] -->
   </dependencies>
   <build>
     <!-- for hot reload of the web application -->
