@@ -86,11 +86,9 @@ public class QueriesTest {
 
     // Act
     long minHeight = 160;
-    // [START gae_java8_datastore_property_filter]
     Filter propertyFilter =
         new FilterPredicate("height", FilterOperator.GREATER_THAN_OR_EQUAL, minHeight);
     Query q = new Query("Person").setFilter(propertyFilter);
-    // [END gae_java8_datastore_property_filter]
 
     // Assert
     List<Entity> results =
