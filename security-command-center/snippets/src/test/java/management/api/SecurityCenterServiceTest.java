@@ -21,11 +21,10 @@ import static com.google.common.truth.Truth.assertWithMessage;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient.ListSecurityCenterServicesPagedResponse;
 import com.google.cloud.securitycentermanagement.v1.SecurityCenterService;
 import com.google.cloud.securitycentermanagement.v1.SecurityCenterService.EnablementState;
+import com.google.common.collect.ImmutableList;
 import java.io.IOException;
-import java.util.stream.StreamSupport;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -63,12 +62,12 @@ public class SecurityCenterServiceTest {
 
   @Test
   public void testListSecurityCenterServices() throws IOException {
-    ListSecurityCenterServicesPagedResponse response =
+    ImmutableList<SecurityCenterService> response =
         ListSecurityCenterServices.listSecurityCenterServices(PROJECT_ID);
     assertNotNull(response);
     // check whether the response contains the specified service
     assertTrue(
-        StreamSupport.stream(response.iterateAll().spliterator(), false)
+        response.stream()
             .anyMatch(service -> service.getName().contains(SERVICE)));
   }
 

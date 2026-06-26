@@ -17,9 +17,10 @@
 package management.api;
 
 // [START securitycenter_list_effective_event_threat_detection_custom_module]
+import com.google.cloud.securitycentermanagement.v1.EffectiveEventThreatDetectionCustomModule;
 import com.google.cloud.securitycentermanagement.v1.ListEffectiveEventThreatDetectionCustomModulesRequest;
 import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient;
-import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient.ListEffectiveEventThreatDetectionCustomModulesPagedResponse;
+import com.google.common.collect.ImmutableList;
 import java.io.IOException;
 
 public class ListEffectiveEventThreatDetectionCustomModules {
@@ -31,7 +32,7 @@ public class ListEffectiveEventThreatDetectionCustomModules {
     listEffectiveEventThreatDetectionCustomModules(projectId);
   }
 
-  public static ListEffectiveEventThreatDetectionCustomModulesPagedResponse
+  public static ImmutableList<EffectiveEventThreatDetectionCustomModule>
       listEffectiveEventThreatDetectionCustomModules(String projectId) throws IOException {
 
     // Initialize client that will be used to send requests. This client only needs
@@ -46,10 +47,8 @@ public class ListEffectiveEventThreatDetectionCustomModules {
               .setParent(parent)
               .build();
 
-      ListEffectiveEventThreatDetectionCustomModulesPagedResponse response =
-          client.listEffectiveEventThreatDetectionCustomModules(request);
-
-      return response;
+      return ImmutableList.copyOf(
+          client.listEffectiveEventThreatDetectionCustomModules(request).iterateAll());
     }
   }
 }

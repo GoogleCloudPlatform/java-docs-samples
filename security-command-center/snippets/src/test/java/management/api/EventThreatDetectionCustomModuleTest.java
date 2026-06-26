@@ -24,12 +24,10 @@ import static org.junit.Assert.assertTrue;
 import com.google.cloud.securitycentermanagement.v1.EffectiveEventThreatDetectionCustomModule;
 import com.google.cloud.securitycentermanagement.v1.EventThreatDetectionCustomModule;
 import com.google.cloud.securitycentermanagement.v1.EventThreatDetectionCustomModule.EnablementState;
-import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient.ListDescendantEventThreatDetectionCustomModulesPagedResponse;
-import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient.ListEffectiveEventThreatDetectionCustomModulesPagedResponse;
-import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient.ListEventThreatDetectionCustomModulesPagedResponse;
 import com.google.cloud.securitycentermanagement.v1.ValidateEventThreatDetectionCustomModuleResponse;
 import com.google.cloud.testing.junit4.MultipleAttemptsRule;
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -69,6 +67,20 @@ public class EventThreatDetectionCustomModuleTest {
   public static void setUp() {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("SCC_PROJECT_ID");
+    try {
+      ImmutableList<EventThreatDetectionCustomModule> response =
+          ListEventThreatDetectionCustomModules
+              .listEventThreatDetectionCustomModules(PROJECT_ID);
+      for (EventThreatDetectionCustomModule module : response) {
+        if (module.getDisplayName() != null
+            && module.getDisplayName().startsWith("java_sample_etd_custom_module_test_")) {
+          deleteCustomModule(PROJECT_ID, extractCustomModuleId(module.getName()));
+        }
+      }
+    } catch (Exception e) {
+      System.err.println(
+          "Warning: Pre-test cleanup of custom modules failed: " + e.getMessage());
+    }
   }
 
   @AfterClass
@@ -134,10 +146,10 @@ public class EventThreatDetectionCustomModuleTest {
         CreateEventThreatDetectionCustomModule.createEventThreatDetectionCustomModule(
             PROJECT_ID, CUSTOM_MODULE_DISPLAY_NAME);
     createdCustomModuleIds.add(extractCustomModuleId(createCustomModuleResponse.getName()));
-    ListEventThreatDetectionCustomModulesPagedResponse response =
+    ImmutableList<EventThreatDetectionCustomModule> response =
         ListEventThreatDetectionCustomModules.listEventThreatDetectionCustomModules(PROJECT_ID);
     assertTrue(
-        StreamSupport.stream(response.iterateAll().spliterator(), false)
+        response.stream()
             .anyMatch(module -> CUSTOM_MODULE_DISPLAY_NAME.equals(module.getDisplayName())));
   }
 
@@ -193,11 +205,11 @@ public class EventThreatDetectionCustomModuleTest {
         CreateEventThreatDetectionCustomModule.createEventThreatDetectionCustomModule(
             PROJECT_ID, CUSTOM_MODULE_DISPLAY_NAME);
     createdCustomModuleIds.add(extractCustomModuleId(createCustomModuleResponse.getName()));
-    ListEffectiveEventThreatDetectionCustomModulesPagedResponse response =
+    ImmutableList<EffectiveEventThreatDetectionCustomModule> response =
         ListEffectiveEventThreatDetectionCustomModules
             .listEffectiveEventThreatDetectionCustomModules(PROJECT_ID);
     assertTrue(
-        StreamSupport.stream(response.iterateAll().spliterator(), false)
+        response.stream()
             .anyMatch(module -> CUSTOM_MODULE_DISPLAY_NAME.equals(module.getDisplayName())));
   }
 
@@ -207,11 +219,11 @@ public class EventThreatDetectionCustomModuleTest {
         CreateEventThreatDetectionCustomModule.createEventThreatDetectionCustomModule(
             PROJECT_ID, CUSTOM_MODULE_DISPLAY_NAME);
     createdCustomModuleIds.add(extractCustomModuleId(createCustomModuleResponse.getName()));
-    ListDescendantEventThreatDetectionCustomModulesPagedResponse response =
+    ImmutableList<EventThreatDetectionCustomModule> response =
         ListDescendantEventThreatDetectionCustomModules
             .listDescendantEventThreatDetectionCustomModules(PROJECT_ID);
     assertTrue(
-        StreamSupport.stream(response.iterateAll().spliterator(), false)
+        response.stream()
             .anyMatch(module -> CUSTOM_MODULE_DISPLAY_NAME.equals(module.getDisplayName())));
   }
 

@@ -19,7 +19,8 @@ package management.api;
 // [START securitycenter_list_security_center_service]
 import com.google.cloud.securitycentermanagement.v1.ListSecurityCenterServicesRequest;
 import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient;
-import com.google.cloud.securitycentermanagement.v1.SecurityCenterManagementClient.ListSecurityCenterServicesPagedResponse;
+import com.google.cloud.securitycentermanagement.v1.SecurityCenterService;
+import com.google.common.collect.ImmutableList;
 import java.io.IOException;
 
 public class ListSecurityCenterServices {
@@ -32,7 +33,7 @@ public class ListSecurityCenterServices {
     listSecurityCenterServices(projectId);
   }
 
-  public static ListSecurityCenterServicesPagedResponse listSecurityCenterServices(String projectId)
+  public static ImmutableList<SecurityCenterService> listSecurityCenterServices(String projectId)
       throws IOException {
     // Initialize client that will be used to send requests. This client only needs
     // to be created
@@ -42,8 +43,7 @@ public class ListSecurityCenterServices {
           ListSecurityCenterServicesRequest.newBuilder()
               .setParent(String.format("projects/%s/locations/global", projectId))
               .build();
-      ListSecurityCenterServicesPagedResponse response = client.listSecurityCenterServices(request);
-      return response;
+      return ImmutableList.copyOf(client.listSecurityCenterServices(request).iterateAll());
     }
   }
 }
