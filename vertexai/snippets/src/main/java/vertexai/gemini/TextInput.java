@@ -16,7 +16,6 @@
 
 package vertexai.gemini;
 
-// [START generativeaionvertexai_gemini_generate_from_text_input]
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
 import com.google.cloud.vertexai.generativeai.GenerativeModel;
@@ -53,4 +52,3 @@ public class TextInput {
     }
   }
 }
-// [END generativeaionvertexai_gemini_generate_from_text_input]
