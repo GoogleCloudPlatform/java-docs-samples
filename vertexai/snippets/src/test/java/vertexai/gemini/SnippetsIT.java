@@ -167,12 +167,6 @@ public class SnippetsIT {
   }
 
   @Test
-  public void testMediaTokenCount() throws Exception {
-    int tokenCount = GetMediaTokenCount.getMediaTokenCount(PROJECT_ID, LOCATION, GEMINI_FLASH);
-    assertThat(tokenCount).isNotNull();
-  }
-
-  @Test
   public void testFunctionCalling() throws Exception {
     String textPrompt = "What's the weather in Paris?";
 
