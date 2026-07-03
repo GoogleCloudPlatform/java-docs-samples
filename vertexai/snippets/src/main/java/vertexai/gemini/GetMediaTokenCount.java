@@ -16,7 +16,6 @@
 
 package vertexai.gemini;
 
-// [START generativeaionvertexai_gemini_token_count_advanced]
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.Content;
 import com.google.cloud.vertexai.api.CountTokensResponse;
@@ -58,4 +57,3 @@ public class GetMediaTokenCount {
     }
   }
 }
-// [END generativeaionvertexai_gemini_token_count_advanced]
