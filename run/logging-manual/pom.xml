@@ -58,7 +58,7 @@ limitations under the License.
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-core</artifactId>
-      <version>1.4.14</version>
+      <version>1.5.33</version>
     </dependency>
     <dependency>
       <groupId>ch.qos.logback</groupId>
