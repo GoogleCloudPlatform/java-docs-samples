@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-// [START mailjet_imports]
-
 package com.example.appengine.mailjet;
 
 import com.mailjet.client.ClientOptions;
@@ -31,8 +29,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-// [END mailjet_imports]
 
 // [START app]
 @SuppressWarnings("serial")
