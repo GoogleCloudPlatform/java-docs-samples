@@ -33,7 +33,6 @@ import java.util.Collections;
 public class JobServiceQuickstart {
 
   // [START job_search_quick_start]
-  // [START quickstart]
 
   private static final JsonFactory JSON_FACTORY = new GsonFactory();
   private static final NetHttpTransport NET_HTTP_TRANSPORT = new NetHttpTransport();
@@ -92,6 +91,5 @@ public class JobServiceQuickstart {
     }
   }
 
-  // [END quickstart]
   // [END job_search_quick_start]
 }
