@@ -52,6 +52,7 @@
 
   <dependencies>
     <!-- [START face_detection_dependencies] -->
+    <!-- [START vision_face_detection_dependencies] -->
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-vision</artifactId>
@@ -69,6 +70,7 @@
       <groupId>com.google.http-client</groupId>
       <artifactId>google-http-client-jackson2</artifactId>
     </dependency>
+    <!-- [END vision_face_detection_dependencies] -->
     <!-- [END face_detection_dependencies] -->
 
     <!-- Test Dependencies -->
