@@ -17,6 +17,7 @@
 package com.example.jobs;
 
 // [START job_search_histogram_search]
+// [START job_search_histogram_search_beta]
 
 import com.google.cloud.talent.v4beta1.HistogramQuery;
 import com.google.cloud.talent.v4beta1.Job;
@@ -76,3 +77,4 @@ public class HistogramSearchJobs {
   }
 }
 // [END job_search_histogram_search]
+// [END job_search_histogram_search_beta]
