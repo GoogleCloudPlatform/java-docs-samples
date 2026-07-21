@@ -16,7 +16,6 @@
 
 package vertexai.gemini;
 
-// [START generativeaionvertexai_non_stream_text_basic]
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
 import com.google.cloud.vertexai.generativeai.GenerativeModel;
@@ -50,4 +49,3 @@ public class QuestionAnswer {
     }
   }
 }
-// [END generativeaionvertexai_non_stream_text_basic]
