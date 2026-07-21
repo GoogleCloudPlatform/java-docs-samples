@@ -75,7 +75,9 @@ public class SynthesizeText {
       }
     }
   }
+
   // [END tts_synthesize_text]
+
   /**
    * Demonstrates using the Text to Speech client with audio profiles to synthesize text or ssml
    *
