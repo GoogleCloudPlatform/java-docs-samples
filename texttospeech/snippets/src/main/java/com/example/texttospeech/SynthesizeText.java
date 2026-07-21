@@ -76,8 +76,6 @@ public class SynthesizeText {
     }
   }
   // [END tts_synthesize_text]
-
-  // [START tts_synthesize_text_audio_profile]
   /**
    * Demonstrates using the Text to Speech client with audio profiles to synthesize text or ssml
    *
@@ -122,7 +120,6 @@ public class SynthesizeText {
       }
     }
   }
-  // [END tts_synthesize_text_audio_profile]
 
   // [START tts_synthesize_ssml]
   /**
