@@ -16,7 +16,6 @@
 
 package vertexai.gemini;
 
-// [START generativeaionvertexai_gemini_function_calling]
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.Content;
 import com.google.cloud.vertexai.api.FunctionDeclaration;
@@ -111,4 +110,3 @@ public class FunctionCalling {
     }
   }
 }
-// [END generativeaionvertexai_gemini_function_calling]
