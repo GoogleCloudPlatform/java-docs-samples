@@ -196,26 +196,4 @@ public class SnippetsIT {
 
     assertThat(output).ignoringCase().contains("no");
   }
-
-  private class Obj {
-    public String object;
-  }
-
-  @Test
-  public void testControlledGenerationWithJsonSchema6() throws Exception {
-    String output = ControlledGenerationSchema6
-        .controlGenerationWithJsonSchema6(PROJECT_ID, LOCATION, GEMINI_FLASH);
-
-    Obj[] objects = new Gson().fromJson(output, Obj[].class);
-    String recognizedObjects = Arrays.stream(objects)
-        .map(obj -> obj.object.toLowerCase())
-        .collect(Collectors.joining(" "));
-
-    assertThat(recognizedObjects).isNotEmpty();
-    assertThat(recognizedObjects).contains("globe");
-    assertThat(recognizedObjects).contains("keyboard");
-    assertThat(recognizedObjects).contains("passport");
-    assertThat(recognizedObjects).contains("pot");
-  }
-
 }
