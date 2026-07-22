@@ -30,7 +30,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-// [START app]
 @SuppressWarnings("serial")
 public class MailjetServlet extends HttpServlet {
 
@@ -72,4 +71,3 @@ public class MailjetServlet extends HttpServlet {
     }
   }
 }
-// [END app]
