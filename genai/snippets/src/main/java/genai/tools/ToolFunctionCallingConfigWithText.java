@@ -128,9 +128,11 @@ public class ToolFunctionCallingConfigWithText {
 
       return response.functionCalls().toString();
       // Example response:
-      // [FunctionCall{args=Optional[{albums=[{album_name=Echoes of the Night, copies_sold=350000},
-      // {album_name=Reckless Hearts, copies_sold=120000}, {album_name=Whispers of Dawn, copies_sold=75000},
-      // {album_name=Street Symphony, copies_sold=100000}]}], name=Optional[get_album_sales]}]
+      // [FunctionCall{args=Optional[{albums=[{album_name=Echoes of the Night,
+      // copies_sold=350000}, {album_name=Reckless Hearts, copies_sold=120000},
+      // {album_name=Whispers of Dawn, copies_sold=75000},
+      // {album_name=Street Symphony, copies_sold=100000}]}],
+      // name=Optional[get_album_sales]}]
     }
   }
 }
