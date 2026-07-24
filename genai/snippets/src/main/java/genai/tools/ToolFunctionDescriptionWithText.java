@@ -26,6 +26,7 @@ import com.google.genai.types.HttpOptions;
 import com.google.genai.types.Schema;
 import com.google.genai.types.Tool;
 import com.google.genai.types.Type;
+import java.util.List;
 import java.util.Map;
 
 public class ToolFunctionDescriptionWithText {
@@ -33,15 +34,7 @@ public class ToolFunctionDescriptionWithText {
   public static void main(String[] args) {
     // TODO(developer): Replace these variables before running the sample.
     String modelId = "gemini-2.5-flash";
-    String contents =
-        "At Stellar Sounds, a music label, 2024 was a rollercoaster. \"Echoes of the Night,\""
-            + " a debut synth-pop album, \n surprisingly sold 350,000 copies, while veteran"
-            + " rock band \"Crimson Tide's\" latest, \"Reckless Hearts,\" \n lagged at"
-            + " 120,000. Their up-and-coming indie artist, \"Luna Bloom's\" EP, \"Whispers "
-            + "of Dawn,\" \n secured 75,000 sales. The biggest disappointment was the "
-            + "highly-anticipated rap album \"Street Symphony\" \n only reaching 100,000"
-            + " units. Overall, Stellar Sounds moved over 645,000 units this year, revealing"
-            + " unexpected \n trends in music consumption.";
+    String contents = "What is the weather like in Boston?";
 
     generateContent(modelId, contents);
   }
@@ -58,59 +51,39 @@ public class ToolFunctionDescriptionWithText {
             .httpOptions(HttpOptions.builder().apiVersion("v1").build())
             .build()) {
 
-      FunctionDeclaration getAlbumSales =
+      FunctionDeclaration getCurrentWeather =
           FunctionDeclaration.builder()
-              .name("get_album_sales")
-              .description("Gets the number of albums sold")
+              .name("get_current_weather")
+              .description("Get the current weather in a given location")
               // Function parameters are specified in schema format
               .parameters(
                   Schema.builder()
                       .type(Type.Known.OBJECT)
                       .properties(
                           Map.of(
-                              "albums",
+                              "location",
                               Schema.builder()
-                                  .type(Type.Known.ARRAY)
-                                  .description("List of albums")
-                                  .items(
-                                      Schema.builder()
-                                          .description("Album and its sales")
-                                          .type(Type.Known.OBJECT)
-                                          .properties(
-                                              Map.of(
-                                                  "album_name",
-                                                      Schema.builder()
-                                                          .type(Type.Known.STRING)
-                                                          .description("Name of the music album")
-                                                          .build(),
-                                                  "copies_sold",
-                                                      Schema.builder()
-                                                          .type(Type.Known.INTEGER)
-                                                          .description("Number of copies sold")
-                                                          .build()))
-                                          .build()) // End items schema for albums
-                                  .build() // End "albums" property schema
-                              ))
+                                  .type(Type.Known.STRING)
+                                  .description(
+                                      "The city name of the location for which to get the weather.")
+                                  .build()))
+                      .required(List.of("location"))
                       .build()) // End parameters schema
               .build(); // End function declaration
 
-      Tool salesTool = Tool.builder().functionDeclarations(getAlbumSales).build();
+      Tool weatherTool = Tool.builder().functionDeclarations(getCurrentWeather).build();
 
       GenerateContentConfig config =
-          GenerateContentConfig.builder().tools(salesTool).temperature(0.0f).build();
+          GenerateContentConfig.builder().tools(weatherTool).temperature(0.0f).build();
 
       GenerateContentResponse response = client.models.generateContent(modelId, contents, config);
 
-      // response.functionCalls() returns an Immutable<FunctionCall>.
+      // response.functionCalls() returns an ImmutableList<FunctionCall>.
       System.out.println(response.functionCalls().get(0));
 
       return response.functionCalls().toString();
       // Example response:
-      // FunctionCall{id=Optional.empty, args=Optional[{albums=[{copies_sold=350000,
-      // album_name=Echoes of the Night},
-      // {copies_sold=120000, album_name=Reckless Hearts}, {copies_sold=75000, album_name=Whispers
-      // of Dawn},
-      // {album_name=Street Symphony, copies_sold=100000}]}], name=Optional[get_album_sales]}
+      // [FunctionCall{args=Optional[{location=Boston, MA}], name=Optional[get_current_weather]}]
     }
   }
 }
