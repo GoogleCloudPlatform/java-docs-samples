@@ -605,7 +605,6 @@ public class QueriesTest {
   @Test
   public void queryRestrictions_missingSortOnInequality_isInvalid() throws Exception {
     long minBirthYear = 1940;
-    // [START gae_java8_datastore_inequality_filters_sort_orders_invalid_1]
     Filter birthYearMinFilter =
         new FilterPredicate("birthYear", FilterOperator.GREATER_THAN_OR_EQUAL, minBirthYear);
 
@@ -614,7 +613,6 @@ public class QueriesTest {
         new Query("Person")
             .setFilter(birthYearMinFilter)
             .addSort("lastName", SortDirection.ASCENDING);
-    // [END gae_java8_datastore_inequality_filters_sort_orders_invalid_1]
 
     // Note: The local devserver behavior is different than the production
     // version of Cloud Datastore, so there aren't any assertions we can make
@@ -625,7 +623,6 @@ public class QueriesTest {
   @Test
   public void queryRestrictions_sortWrongOrderOnInequality_isInvalid() throws Exception {
     long minBirthYear = 1940;
-    // [START gae_java8_datastore_inequality_filters_sort_orders_invalid_2]
     Filter birthYearMinFilter =
         new FilterPredicate("birthYear", FilterOperator.GREATER_THAN_OR_EQUAL, minBirthYear);
 
@@ -635,7 +632,6 @@ public class QueriesTest {
             .setFilter(birthYearMinFilter)
             .addSort("lastName", SortDirection.ASCENDING)
             .addSort("birthYear", SortDirection.ASCENDING);
-    // [END gae_java8_datastore_inequality_filters_sort_orders_invalid_2]
 
     // Note: The local devserver behavior is different than the production
     // version of Cloud Datastore, so there aren't any assertions we can make
