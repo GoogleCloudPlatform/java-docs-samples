@@ -40,6 +40,7 @@ try (BigQueryStorageClient client = BigQueryStorageClient.create()) {
 
 ```java
 import com.google.cloud.bigquery.storage.v1.BigQueryReadClient;
+import java.io.IOException;
 
 try (BigQueryReadClient client = BigQueryReadClient.create()) {
   // use client
