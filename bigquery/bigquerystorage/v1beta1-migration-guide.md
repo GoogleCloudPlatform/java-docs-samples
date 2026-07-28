@@ -27,6 +27,7 @@ version `v1beta1` to `v1`.
 
 ```java
 import com.google.cloud.bigquery.storage.v1beta1.BigQueryStorageClient;
+import java.io.IOException;
 
 try (BigQueryStorageClient client = BigQueryStorageClient.create()) {
   // use client
