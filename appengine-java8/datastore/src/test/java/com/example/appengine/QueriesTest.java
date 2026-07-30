@@ -473,7 +473,6 @@ public class QueriesTest {
     // Act
     long minBirthYear = 1940;
     long maxBirthYear = 1980;
-    // [START gae_java8_datastore_inequality_filters_one_property_valid_1]
     Filter birthYearMinFilter =
         new FilterPredicate("birthYear", FilterOperator.GREATER_THAN_OR_EQUAL, minBirthYear);
 
@@ -484,7 +483,6 @@ public class QueriesTest {
         CompositeFilterOperator.and(birthYearMinFilter, birthYearMaxFilter);
 
     Query q = new Query("Person").setFilter(birthYearRangeFilter);
-    // [END gae_java8_datastore_inequality_filters_one_property_valid_1]
 
     // Assert
     List<Entity> results =
@@ -496,7 +494,6 @@ public class QueriesTest {
   public void queryRestrictions_compositeFilter_isInvalid() throws Exception {
     long minBirthYear = 1940;
     long maxHeight = 200;
-    // [START gae_java8_datastore_inequality_filters_one_property_invalid]
     Filter birthYearMinFilter =
         new FilterPredicate("birthYear", FilterOperator.GREATER_THAN_OR_EQUAL, minBirthYear);
 
@@ -506,7 +503,6 @@ public class QueriesTest {
     Filter invalidFilter = CompositeFilterOperator.and(birthYearMinFilter, heightMaxFilter);
 
     Query q = new Query("Person").setFilter(invalidFilter);
-    // [END gae_java8_datastore_inequality_filters_one_property_invalid]
 
     // Note: The local devserver behavior is different than the production
     // version of Cloud Datastore, so there aren't any assertions we can make
@@ -543,7 +539,6 @@ public class QueriesTest {
     String targetCity = "Somewhere";
     String targetLastName = "Someone";
 
-    // [START gae_java8_datastore_inequality_filters_one_property_valid_2]
     Filter lastNameFilter = new FilterPredicate("lastName", FilterOperator.EQUAL, targetLastName);
 
     Filter cityFilter = new FilterPredicate("city", FilterOperator.EQUAL, targetCity);
@@ -559,7 +554,6 @@ public class QueriesTest {
             lastNameFilter, cityFilter, birthYearMinFilter, birthYearMaxFilter);
 
     Query q = new Query("Person").setFilter(validFilter);
-    // [END gae_java8_datastore_inequality_filters_one_property_valid_2]
 
     // Assert
     List<Entity> results =
