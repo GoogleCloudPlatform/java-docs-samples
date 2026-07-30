@@ -78,18 +78,18 @@ public class ToolsIT {
 
   @Test
   public void testGenerateContentWithFunctionDescription() {
-
-    String prompt =
-        "At Stellar Sounds, a music label, 2024 was a rollercoaster. \"Echoes of the Night,\""
-            + " a debut synth-pop album, \n surprisingly sold 350,000 copies, while veteran"
-            + " rock band \"Crimson Tide's\" latest, \"Reckless Hearts,\" \n lagged at"
-            + " 120,000. Their up-and-coming indie artist, \"Luna Bloom's\" EP, \"Whispers "
-            + "of Dawn,\" \n secured 75,000 sales. The biggest disappointment was the "
-            + "highly-anticipated rap album \"Street Symphony\" \n only reaching 100,000"
-            + " units. Overall, Stellar Sounds moved over 645,000 units this year, revealing"
-            + " unexpected \n trends in music consumption.";
+    String prompt = "What is the weather like in Boston?";
 
     String response = ToolFunctionDescriptionWithText.generateContent(GEMINI_FLASH, prompt);
+
+    assertThat(response).isNotEmpty();
+    assertThat(response).contains("get_current_weather");
+    assertThat(response).contains("location=Boston");
+  }
+
+  @Test
+  public void testGenerateContentWithFunctionCallingConfig() {
+    String response = ToolFunctionCallingConfigWithText.generateContent(GEMINI_FLASH);
 
     assertThat(response).isNotEmpty();
     assertThat(response).contains("get_album_sales");
