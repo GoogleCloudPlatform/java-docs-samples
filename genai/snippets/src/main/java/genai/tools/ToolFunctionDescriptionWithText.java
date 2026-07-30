@@ -19,6 +19,7 @@ package genai.tools;
 // [START googlegenaisdk_tools_func_desc_with_txt]
 
 import com.google.genai.Client;
+import com.google.genai.types.FunctionCall;
 import com.google.genai.types.FunctionDeclaration;
 import com.google.genai.types.GenerateContentConfig;
 import com.google.genai.types.GenerateContentResponse;
@@ -79,9 +80,13 @@ public class ToolFunctionDescriptionWithText {
       GenerateContentResponse response = client.models.generateContent(modelId, contents, config);
 
       // response.functionCalls() returns an ImmutableList<FunctionCall>.
-      System.out.println(response.functionCalls().get(0));
-
-      return response.functionCalls().toString();
+      List<FunctionCall> functionCalls = response.functionCalls();
+      if (functionCalls != null && !functionCalls.isEmpty()) {
+        System.out.println(functionCalls.get(0));
+        return functionCalls.toString();
+      }
+      System.out.println("No function calls found in response.");
+      return "";
       // Example response:
       // [FunctionCall{args=Optional[{location=Boston, MA}], name=Optional[get_current_weather]}]
     }

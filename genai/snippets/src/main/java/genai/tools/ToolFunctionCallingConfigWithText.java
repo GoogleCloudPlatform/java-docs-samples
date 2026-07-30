@@ -19,6 +19,7 @@ package genai.tools;
 // [START googlegenaisdk_tools_func_call_config_with_txt]
 
 import com.google.genai.Client;
+import com.google.genai.types.FunctionCall;
 import com.google.genai.types.FunctionCallingConfig;
 import com.google.genai.types.FunctionCallingConfigMode;
 import com.google.genai.types.FunctionDeclaration;
@@ -124,9 +125,13 @@ public class ToolFunctionCallingConfigWithText {
       GenerateContentResponse response = client.models.generateContent(modelId, contents, config);
 
       // response.functionCalls() returns an ImmutableList<FunctionCall>.
-      System.out.println(response.functionCalls().get(0));
-
-      return response.functionCalls().toString();
+      List<FunctionCall> functionCalls = response.functionCalls();
+      if (functionCalls != null && !functionCalls.isEmpty()) {
+        System.out.println(functionCalls.get(0));
+        return functionCalls.toString();
+      }
+      System.out.println("No function calls found in response.");
+      return "";
       // Example response:
       // [FunctionCall{args=Optional[{albums=[{album_name=Echoes of the Night,
       // copies_sold=350000}, {album_name=Reckless Hearts, copies_sold=120000},
