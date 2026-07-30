@@ -183,7 +183,6 @@ public class QueriesTest {
 
   @Test
   public void ancestorQueryExample_returnsMatchingEntities() throws Exception {
-    // [START gae_java8_datastore_ancestor_query]
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
     Entity tom = new Entity("Person", "Tom");
@@ -211,7 +210,6 @@ public class QueriesTest {
     // but not campingPhoto, because tom is not an ancestor
     List<Entity> results =
         datastore.prepare(photoQuery).asList(FetchOptions.Builder.withDefaults());
-    // [END gae_java8_datastore_ancestor_query]
 
     assertWithMessage("query results")
         .that(results)
