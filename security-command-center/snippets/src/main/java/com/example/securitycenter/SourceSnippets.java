@@ -46,6 +46,7 @@ public class SourceSnippets {
    *
    * @param organizationName The organization for the source.
    */
+  // [START securitycenter_create_source]
   static Source createSource(OrganizationName organizationName) {
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
       // Start setting up a request to create a source in an organization.
@@ -68,12 +69,14 @@ public class SourceSnippets {
       throw new RuntimeException("Couldn't create client.", e);
     }
   }
+  // [END securitycenter_create_source]
 
   /**
    * List sources under an organization.
    *
    * @param organizationName The organization for the source.
    */
+  // [START securitycenter_list_sources]
   static ImmutableList<Source> listSources(OrganizationName organizationName) {
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
       // Start setting up a request to list sources in an organization, project, or folder.
@@ -98,12 +101,14 @@ public class SourceSnippets {
       throw new RuntimeException("Couldn't create client.", e);
     }
   }
+  // [END securitycenter_list_sources]
 
   /**
    * Update a source under an organization.
    *
    * @param sourceName The source to update.
    */
+  // [START securitycenter_update_source]
   static Source updateSource(SourceName sourceName) {
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
       // Start setting up a request to update a source.
@@ -128,12 +133,14 @@ public class SourceSnippets {
       throw new RuntimeException("Couldn't create client.", e);
     }
   }
+  // [END securitycenter_update_source]
 
   /**
    * Get a source under an organization.
    *
    * @param sourceName The source to get.
    */
+  // [START securitycenter_get_source]
   static Source getSource(SourceName sourceName) {
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
       // Start setting up a request to get a source.
@@ -151,12 +158,14 @@ public class SourceSnippets {
       throw new RuntimeException("Couldn't create client.", e);
     }
   }
+  // [END securitycenter_get_source]
 
   /**
    * Set IAM policy for a source.
    *
    * @param sourceName The source to set IAM Policy for.
    */
+  // [START securitycenter_set_source_iam]
   static Policy setIamPolicySource(SourceName sourceName, String userEmail) {
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
       // userEmail = "someuser@domain.com"
@@ -184,12 +193,14 @@ public class SourceSnippets {
       throw new RuntimeException("Couldn't create client.", e);
     }
   }
+  // [END securitycenter_set_source_iam]
 
   /**
    * Get IAM policy for a source.
    *
    * @param sourceName The source to set IAM Policy for.
    */
+  // [START securitycenter_get_source_iam]
   static Policy getIamPolicySource(SourceName sourceName) {
     try (SecurityCenterClient client = SecurityCenterClient.create()) {
       // Start setting up a request to get IAM policy for a source.
@@ -207,5 +218,6 @@ public class SourceSnippets {
       throw new RuntimeException("Couldn't create client.", e);
     }
   }
+  // [END securitycenter_get_source_iam]
 
 }
