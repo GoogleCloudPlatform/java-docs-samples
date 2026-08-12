@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.StreamSupport;
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -67,6 +67,10 @@ public class EventThreatDetectionCustomModuleTest {
   public static void setUp() {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("SCC_PROJECT_ID");
+    cleanUpExistingCustomModules();
+  }
+
+  private static void cleanUpExistingCustomModules() {
     try {
       ImmutableList<EventThreatDetectionCustomModule> response =
           ListEventThreatDetectionCustomModules
@@ -83,10 +87,9 @@ public class EventThreatDetectionCustomModuleTest {
     }
   }
 
-  @AfterClass
-  // Perform cleanup of all the custom modules created by the current execution of the test, after
-  // running tests
-  public static void cleanUp() throws IOException {
+  @After
+  // Perform cleanup of custom modules created by the current test method execution
+  public void tearDown() throws IOException {
     for (String customModuleId : createdCustomModuleIds) {
       try {
         deleteCustomModule(PROJECT_ID, customModuleId);
@@ -95,6 +98,13 @@ public class EventThreatDetectionCustomModuleTest {
         e.printStackTrace();
       }
     }
+    createdCustomModuleIds.clear();
+  }
+
+  @AfterClass
+  // Final cleanup sweep after all tests in class have run
+  public static void cleanUp() throws IOException {
+    cleanUpExistingCustomModules();
   }
 
   // extractCustomModuleID extracts the custom module Id from the full name and below regex will
@@ -135,6 +145,7 @@ public class EventThreatDetectionCustomModuleTest {
         CreateEventThreatDetectionCustomModule.createEventThreatDetectionCustomModule(
             PROJECT_ID, CUSTOM_MODULE_DISPLAY_NAME);
     String customModuleId = extractCustomModuleId(response.getName());
+    createdCustomModuleIds.add(customModuleId);
     assertTrue(
         DeleteEventThreatDetectionCustomModule.deleteEventThreatDetectionCustomModule(
             PROJECT_ID, customModuleId));

@@ -31,9 +31,10 @@ import com.google.common.collect.ImmutableList;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.StreamSupport;
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -45,7 +46,8 @@ import org.junit.runners.JUnit4;
 public class SecurityHealthAnalyticsCustomModuleTest {
   // TODO(Developer): Replace the below variable
   private static final String PROJECT_ID = System.getenv("SCC_PROJECT_ID");
-  private static final String CUSTOM_MODULE_DISPLAY_NAME = "java_sample_custom_module_test";
+  private static final String CUSTOM_MODULE_DISPLAY_NAME =
+      "java_sample_custom_module_test_" + UUID.randomUUID();
   private static final int MAX_ATTEMPT_COUNT = 3;
   private static final int INITIAL_BACKOFF_MILLIS = 120000; // 2 minutes
   private static List<String> createdCustomModuleIds = new ArrayList<>();
@@ -65,12 +67,17 @@ public class SecurityHealthAnalyticsCustomModuleTest {
   public static void setUp() throws InterruptedException {
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("SCC_PROJECT_ID");
+    cleanUpExistingCustomModules();
+  }
+
+  private static void cleanUpExistingCustomModules() {
     try {
       ImmutableList<SecurityHealthAnalyticsCustomModule> response =
           ListSecurityHealthAnalyticsCustomModules
               .listSecurityHealthAnalyticsCustomModules(PROJECT_ID);
       for (SecurityHealthAnalyticsCustomModule module : response) {
-        if (CUSTOM_MODULE_DISPLAY_NAME.equals(module.getDisplayName())) {
+        if (module.getDisplayName() != null
+            && module.getDisplayName().startsWith("java_sample_custom_module_test")) {
           deleteCustomModule(PROJECT_ID, extractCustomModuleId(module.getName()));
         }
       }
@@ -80,10 +87,9 @@ public class SecurityHealthAnalyticsCustomModuleTest {
     }
   }
 
-  @AfterClass
-  // Perform cleanup of all the custom modules created by the current execution of the test, after
-  // running tests
-  public static void cleanUp() throws IOException {
+  @After
+  // Perform cleanup of custom modules created by the current test method execution
+  public void tearDown() throws IOException {
     for (String customModuleId : createdCustomModuleIds) {
       try {
         deleteCustomModule(PROJECT_ID, customModuleId);
@@ -92,6 +98,13 @@ public class SecurityHealthAnalyticsCustomModuleTest {
         e.printStackTrace();
       }
     }
+    createdCustomModuleIds.clear();
+  }
+
+  @AfterClass
+  // Final cleanup sweep after all tests in class have run
+  public static void cleanUp() throws IOException {
+    cleanUpExistingCustomModules();
   }
 
   // extractCustomModuleID extracts the custom module Id from the full name and below regex will
@@ -132,6 +145,7 @@ public class SecurityHealthAnalyticsCustomModuleTest {
         CreateSecurityHealthAnalyticsCustomModule.createSecurityHealthAnalyticsCustomModule(
             PROJECT_ID, CUSTOM_MODULE_DISPLAY_NAME);
     String customModuleId = extractCustomModuleId(response.getName());
+    createdCustomModuleIds.add(customModuleId);
     assertTrue(
         DeleteSecurityHealthAnalyticsCustomModule.deleteSecurityHealthAnalyticsCustomModule(
             PROJECT_ID, customModuleId));
