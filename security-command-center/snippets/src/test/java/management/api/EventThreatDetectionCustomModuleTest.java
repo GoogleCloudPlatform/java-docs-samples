@@ -146,9 +146,13 @@ public class EventThreatDetectionCustomModuleTest {
             PROJECT_ID, CUSTOM_MODULE_DISPLAY_NAME);
     String customModuleId = extractCustomModuleId(response.getName());
     createdCustomModuleIds.add(customModuleId);
-    assertTrue(
+    boolean isDeleted =
         DeleteEventThreatDetectionCustomModule.deleteEventThreatDetectionCustomModule(
-            PROJECT_ID, customModuleId));
+            PROJECT_ID, customModuleId);
+    if (isDeleted) {
+      createdCustomModuleIds.remove(customModuleId);
+    }
+    assertTrue(isDeleted);
   }
 
   @Test
