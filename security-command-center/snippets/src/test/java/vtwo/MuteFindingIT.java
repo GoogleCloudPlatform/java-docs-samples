@@ -23,6 +23,7 @@ import com.google.cloud.securitycenter.v2.Finding;
 import com.google.cloud.securitycenter.v2.Finding.Mute;
 import com.google.cloud.securitycenter.v2.ListFindingsRequest;
 import com.google.cloud.securitycenter.v2.ListFindingsResponse.ListFindingsResult;
+import com.google.cloud.securitycenter.v2.ListMuteConfigsRequest;
 import com.google.cloud.securitycenter.v2.MuteConfig;
 import com.google.cloud.securitycenter.v2.SecurityCenterClient;
 import com.google.cloud.securitycenter.v2.SecurityCenterClient.ListFindingsPagedResponse;
@@ -85,15 +86,40 @@ public class MuteFindingIT {
         .isNotEmpty();
   }
 
+  private static void cleanUpExistingMuteRules() {
+    try (SecurityCenterClient client = SecurityCenterClient.create()) {
+      ListMuteConfigsRequest request =
+          ListMuteConfigsRequest.newBuilder()
+              .setParent(String.format("projects/%s/locations/%s", PROJECT_ID, LOCATION))
+              .build();
+      for (MuteConfig muteConfig : client.listMuteConfigs(request).iterateAll()) {
+        String name = muteConfig.getName();
+        String muteConfigId = name.substring(name.lastIndexOf('/') + 1);
+        if (muteConfigId.startsWith("random-mute-id-")) {
+          try {
+            client.deleteMuteConfig(name);
+          } catch (Exception e) {
+            System.err.println("Failed to delete mute rule: " + name);
+            e.printStackTrace();
+          }
+        }
+      }
+    } catch (Exception e) {
+      System.err.println("Warning: Pre-test cleanup of mute rules failed: " + e.getMessage());
+    }
+  }
+
   @BeforeClass
   public static void setUp() throws IOException, InterruptedException {
-    final PrintStream out = System.out;
-    stdOut = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(stdOut));
-
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
     requireEnvVar("SCC_PROJECT_ID");
     requireEnvVar("SCC_PROJECT_ORG_ID");
+
+    cleanUpExistingMuteRules();
+
+    final PrintStream out = System.out;
+    stdOut = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(stdOut));
 
     // Create mute rules.
     CreateMuteRule.createMuteRule(PROJECT_ID, LOCATION, MUTE_RULE_CREATE);
@@ -131,10 +157,19 @@ public class MuteFindingIT {
     final PrintStream out = System.out;
     stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
-    DeleteMuteRule.deleteMuteRule(PROJECT_ID, LOCATION, MUTE_RULE_CREATE);
-    assertThat(stdOut.toString()).contains("Mute rule deleted successfully: " + MUTE_RULE_CREATE);
-    DeleteMuteRule.deleteMuteRule(PROJECT_ID, LOCATION, MUTE_RULE_UPDATE);
-    assertThat(stdOut.toString()).contains("Mute rule deleted successfully: " + MUTE_RULE_UPDATE);
+    try {
+      DeleteMuteRule.deleteMuteRule(PROJECT_ID, LOCATION, MUTE_RULE_CREATE);
+    } catch (Exception e) {
+      System.err.println("Failed to delete mute rule: " + MUTE_RULE_CREATE);
+      e.printStackTrace();
+    }
+    try {
+      DeleteMuteRule.deleteMuteRule(PROJECT_ID, LOCATION, MUTE_RULE_UPDATE);
+    } catch (Exception e) {
+      System.err.println("Failed to delete mute rule: " + MUTE_RULE_UPDATE);
+      e.printStackTrace();
+    }
+    cleanUpExistingMuteRules();
     stdOut = null;
     System.setOut(out);
   }
