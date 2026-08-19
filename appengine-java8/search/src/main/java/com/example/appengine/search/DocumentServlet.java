@@ -16,8 +16,6 @@
 
 package com.example.appengine.search;
 
-// [START document_import]
-
 import com.google.appengine.api.search.Document;
 import com.google.appengine.api.search.Field;
 import com.google.appengine.api.users.User;
@@ -29,8 +27,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-// [END document_import]
 
 /**
  * A servlet for creating Search API Document.
