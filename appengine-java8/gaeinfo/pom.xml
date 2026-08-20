@@ -33,12 +33,11 @@ Copyright 2017 Google Inc.
     <version>1.2.0</version>
   </parent>
 
-  <!-- [START compiler] -->
-  <properties>    <!-- App Engine Standard currently requires Java 8 -->
+  <properties>
+    <!-- App Engine Standard currently requires Java 8 -->
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
   </properties>
-  <!-- [END compiler] -->
 
   <dependencyManagement>
     <dependencies>
