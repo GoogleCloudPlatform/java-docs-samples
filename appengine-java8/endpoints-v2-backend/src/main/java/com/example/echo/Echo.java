@@ -84,12 +84,10 @@ public class Echo {
    * <p>Note that httpMethod is not specified. This will default to a reasonable HTTP method
    * depending on the API method name. In this case, the HTTP method will default to POST.
    */
-  // [START echo_path]
   @ApiMethod(name = "echo_path_parameter", path = "echo/{n}")
   public Message echoPathParameter(Message message, @Named("n") int n) {
     return doEcho(message, n);
   }
-  // [END echo_path]
 
   /**
    * Echoes the received message back. If n is a non-negative integer, the message is copied that
