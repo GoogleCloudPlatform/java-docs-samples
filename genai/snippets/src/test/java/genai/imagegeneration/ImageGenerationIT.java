@@ -33,7 +33,6 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -90,7 +89,6 @@ public class ImageGenerationIT {
   }
 
   @Test
-  @Ignore("Deprecated Imagen model; migrated to Gemini in follow-up PR")
   public void testImageGenCannyCtrlTypeWithTextAndImage() {
     Optional<String> response =
             ImageGenCannyCtrlTypeWithTextAndImage.cannyEdgeCustomization(
@@ -100,7 +98,6 @@ public class ImageGenerationIT {
   }
 
   @Test
-  @Ignore("Deprecated Imagen model; migrated to Gemini in follow-up PR")
   public void testImageGenRawReferenceWithTextAndImage() {
     Optional<String> response =
             ImageGenRawReferenceWithTextAndImage.styleTransferCustomization(
@@ -110,7 +107,6 @@ public class ImageGenerationIT {
   }
 
   @Test
-  @Ignore("Deprecated Imagen model; migrated to Gemini in follow-up PR")
   public void testImageGenScribbleCtrlTypeWithTextAndImage() {
     Optional<String> response =
             ImageGenScribbleCtrlTypeWithTextAndImage.scribbleCustomization(
@@ -120,7 +116,6 @@ public class ImageGenerationIT {
   }
 
   @Test
-  @Ignore("Deprecated Imagen model; migrated to Gemini in follow-up PR")
   public void testImageGenStyleReferenceWithTextAndImage() {
     Optional<String> response =
             ImageGenStyleReferenceWithTextAndImage.styleCustomization(
@@ -130,7 +125,6 @@ public class ImageGenerationIT {
   }
 
   @Test
-  @Ignore("Deprecated Imagen model; migrated to Gemini in follow-up PR")
   public void testImageGenSubjectReferenceWithTextAndImage() {
     Optional<String> response =
             ImageGenSubjectReferenceWithTextAndImage.subjectCustomization(
