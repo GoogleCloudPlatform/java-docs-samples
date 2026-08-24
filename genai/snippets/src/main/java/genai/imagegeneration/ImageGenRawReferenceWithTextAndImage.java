@@ -56,7 +56,8 @@ public class ImageGenRawReferenceWithTextAndImage {
                   Part.fromUri(
                       "gs://cloud-samples-data/generative-ai/image/teacup-1.png", "image/png"),
                   Part.fromText(
-                      "transform the subject in the image so that the teacup is made entirely out of chocolate")),
+                      "transform the subject in the image so that "
+                          + "the teacup is made entirely out of chocolate")),
               config);
 
       byte[] imageBytes =
