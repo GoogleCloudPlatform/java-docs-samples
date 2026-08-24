@@ -90,8 +90,11 @@ public class BoundingBoxWithTxtImg {
             Color.ORANGE);
 
     for (int i = 0; i < boundingBoxes.size(); i++) {
-      BoundingBox boundingBox = boundingBoxes.get((i));
+      BoundingBox boundingBox = boundingBoxes.get(i);
       List<Integer> box2d = boundingBox.getBox2d();
+      if (box2d == null || box2d.size() < 4) {
+        continue;
+      }
 
       // Scale normalized coordinates (0-1000) to image dimensions.
       int topY = (int) (box2d.get(0) / 1000.0 * height);
