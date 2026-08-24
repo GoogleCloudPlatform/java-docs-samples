@@ -43,7 +43,8 @@ public class ImageGenerationIT {
 
   private static final String IMAGEN_3_MODEL = "imagen-3.0-capability-001";
   private static final String BUCKET_NAME =
-      System.getenv().getOrDefault("BUCKET_NAME", "java-docs-samples-testing");
+      System.getenv().getOrDefault("BUCKET_NAME", "java-docs-samples-testing")
+          .replaceFirst("^gs://", "");
   private static final String PREFIX = "genai-img-generation-" + UUID.randomUUID();
   private static final String OUTPUT_GCS_URI = String.format("gs://%s/%s", BUCKET_NAME, PREFIX);
   private static final String IMAGEN_4_MODEL = "imagen-4.0-generate-001";
