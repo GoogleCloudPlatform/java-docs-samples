@@ -69,7 +69,7 @@ public class ImageGenWithText {
       BufferedImage image = ImageIO.read(new ByteArrayInputStream(imageBytes));
       ImageIO.write(image, "png", new File(outputFile));
 
-      System.out.printf("Created output image using %s bytes\n", imageBytes.length);
+      System.out.printf("Created output image using %d bytes\n", imageBytes.length);
 
       return Image.builder().imageBytes(imageBytes).build();
     }
