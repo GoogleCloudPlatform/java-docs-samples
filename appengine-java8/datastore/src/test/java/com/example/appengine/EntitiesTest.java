@@ -293,7 +293,6 @@ public class EntitiesTest {
 
   @Test
   public void batchOperations_putsEntities() {
-    // [START gae_batch_operations]
     Entity employee1 = new Entity("Employee");
     Entity employee2 = new Entity("Employee");
     Entity employee3 = new Entity("Employee");
@@ -305,7 +304,6 @@ public class EntitiesTest {
 
     List<Entity> employees = Arrays.asList(employee1, employee2, employee3);
     datastore.put(employees);
-    // [END gae_batch_operations]
 
     Map<Key, Entity> got =
         datastore.get(Arrays.asList(employee1.getKey(), employee2.getKey(), employee3.getKey()));
