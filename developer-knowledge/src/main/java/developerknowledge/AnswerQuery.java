@@ -25,17 +25,16 @@ import java.io.IOException;
 public class AnswerQuery {
 
   public static void main(String[] args) throws IOException {
-    String query =
-        args.length > 0 ? args[0] : "How do I create a Google Cloud Storage bucket?";
+    // TODO(developer): Replace these variables before running the sample.
+    String query = "How do I create a Google Cloud Storage bucket?";
     answerQuery(query);
   }
 
-  /**
-   * Answers a developer question grounded in Google developer documentation.
-   *
-   * @param query The technical question to answer.
-   */
+  // Answers a developer question grounded in Google developer documentation.
   public static AnswerQueryResponse answerQuery(String query) throws IOException {
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (DeveloperKnowledgeClient client = DeveloperKnowledgeClient.create()) {
       AnswerQueryRequest request =
           AnswerQueryRequest.newBuilder().setQuery(query).build();

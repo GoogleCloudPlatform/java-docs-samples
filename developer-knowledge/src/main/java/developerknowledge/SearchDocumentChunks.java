@@ -26,19 +26,18 @@ import java.io.IOException;
 public class SearchDocumentChunks {
 
   public static void main(String[] args) throws IOException {
-    String query = args.length > 0 ? args[0] : "How to create a Cloud Storage bucket";
-    int pageSize = args.length > 1 ? Integer.parseInt(args[1]) : 5;
+    // TODO(developer): Replace these variables before running the sample.
+    String query = "How to create a Cloud Storage bucket";
+    int pageSize = 5;
     searchDocumentChunks(query, pageSize);
   }
 
-  /**
-   * Searches developer documentation chunks for a given query.
-   *
-   * @param query The search query string.
-   * @param pageSize The maximum number of chunks to return.
-   */
+  // Searches developer documentation chunks for a given query.
   public static SearchDocumentChunksPagedResponse searchDocumentChunks(
       String query, int pageSize) throws IOException {
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (DeveloperKnowledgeClient client = DeveloperKnowledgeClient.create()) {
       SearchDocumentChunksRequest request =
           SearchDocumentChunksRequest.newBuilder()

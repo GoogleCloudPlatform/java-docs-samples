@@ -28,6 +28,7 @@ import java.util.List;
 public class BatchGetDocuments {
 
   public static void main(String[] args) throws IOException {
+    // TODO(developer): Replace these variables before running the sample.
     List<String> names =
         Arrays.asList(
             "documents/docs.cloud.google.com/storage/docs/creating-buckets",
@@ -35,12 +36,11 @@ public class BatchGetDocuments {
     batchGetDocuments(names);
   }
 
-  /**
-   * Retrieves multiple developer documentation pages in a single request.
-   *
-   * @param names List of resource names in format 'documents/{uri_without_scheme}'.
-   */
+  // Retrieves multiple developer documentation pages in a single request.
   public static BatchGetDocumentsResponse batchGetDocuments(List<String> names) throws IOException {
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (DeveloperKnowledgeClient client = DeveloperKnowledgeClient.create()) {
       BatchGetDocumentsRequest request =
           BatchGetDocumentsRequest.newBuilder().addAllNames(names).build();

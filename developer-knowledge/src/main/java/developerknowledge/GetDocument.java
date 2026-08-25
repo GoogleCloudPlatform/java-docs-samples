@@ -25,19 +25,16 @@ import java.io.IOException;
 public class GetDocument {
 
   public static void main(String[] args) throws IOException {
-    String name =
-        args.length > 0
-            ? args[0]
-            : "documents/docs.cloud.google.com/storage/docs/creating-buckets";
+    // TODO(developer): Replace these variables before running the sample.
+    String name = "documents/docs.cloud.google.com/storage/docs/creating-buckets";
     getDocument(name);
   }
 
-  /**
-   * Retrieves a single developer documentation page by its resource name.
-   *
-   * @param name The resource name in format 'documents/{uri_without_scheme}'.
-   */
+  // Retrieves a single developer documentation page by its resource name.
   public static Document getDocument(String name) throws IOException {
+    // Initialize client that will be used to send requests. This client only needs to be created
+    // once, and can be reused for multiple requests. After completing all of your requests, call
+    // the "close" method on the client to safely clean up any remaining background resources.
     try (DeveloperKnowledgeClient client = DeveloperKnowledgeClient.create()) {
       GetDocumentRequest request = GetDocumentRequest.newBuilder().setName(name).build();
 
