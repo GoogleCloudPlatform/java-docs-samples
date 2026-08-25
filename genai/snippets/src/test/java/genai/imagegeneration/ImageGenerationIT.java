@@ -41,13 +41,12 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class ImageGenerationIT {
 
-  private static final String IMAGEN_3_MODEL = "imagen-3.0-capability-001";
   private static final String BUCKET_NAME =
       System.getenv().getOrDefault("BUCKET_NAME", "java-docs-samples-testing")
           .replaceFirst("^gs://", "");
   private static final String PREFIX = "genai-img-generation-" + UUID.randomUUID();
   private static final String OUTPUT_GCS_URI = String.format("gs://%s/%s", BUCKET_NAME, PREFIX);
-  private static final String IMAGEN_4_MODEL = "imagen-4.0-generate-001";
+  private static final String IMAGEN_MODEL = "gemini-2.5-flash-image";
   private static final String VIRTUAL_TRY_ON_MODEL = "virtual-try-on-001";
 
   private ByteArrayOutputStream bout;
@@ -96,7 +95,7 @@ public class ImageGenerationIT {
   public void testImageGenCannyCtrlTypeWithTextAndImage() {
     Optional<String> response =
             ImageGenCannyCtrlTypeWithTextAndImage.cannyEdgeCustomization(
-                    IMAGEN_3_MODEL, OUTPUT_GCS_URI);
+                    IMAGEN_MODEL, OUTPUT_GCS_URI);
     assertThat(response).isPresent();
     assertThat(response.get()).isNotEmpty();
   }
@@ -106,7 +105,7 @@ public class ImageGenerationIT {
   public void testImageGenRawReferenceWithTextAndImage() {
     Optional<String> response =
             ImageGenRawReferenceWithTextAndImage.styleTransferCustomization(
-                    IMAGEN_3_MODEL, OUTPUT_GCS_URI);
+                    IMAGEN_MODEL, OUTPUT_GCS_URI);
     assertThat(response).isPresent();
     assertThat(response.get()).isNotEmpty();
   }
@@ -116,7 +115,7 @@ public class ImageGenerationIT {
   public void testImageGenScribbleCtrlTypeWithTextAndImage() {
     Optional<String> response =
             ImageGenScribbleCtrlTypeWithTextAndImage.scribbleCustomization(
-                    IMAGEN_3_MODEL, OUTPUT_GCS_URI);
+                    IMAGEN_MODEL, OUTPUT_GCS_URI);
     assertThat(response).isPresent();
     assertThat(response.get()).isNotEmpty();
   }
@@ -126,7 +125,7 @@ public class ImageGenerationIT {
   public void testImageGenStyleReferenceWithTextAndImage() {
     Optional<String> response =
             ImageGenStyleReferenceWithTextAndImage.styleCustomization(
-                    IMAGEN_3_MODEL, OUTPUT_GCS_URI);
+                    IMAGEN_MODEL, OUTPUT_GCS_URI);
     assertThat(response).isPresent();
     assertThat(response.get()).isNotEmpty();
   }
@@ -136,7 +135,7 @@ public class ImageGenerationIT {
   public void testImageGenSubjectReferenceWithTextAndImage() {
     Optional<String> response =
             ImageGenSubjectReferenceWithTextAndImage.subjectCustomization(
-                    IMAGEN_3_MODEL, OUTPUT_GCS_URI);
+                    IMAGEN_MODEL, OUTPUT_GCS_URI);
     assertThat(response).isPresent();
     assertThat(response.get()).isNotEmpty();
   }
@@ -156,7 +155,7 @@ public class ImageGenerationIT {
   @Ignore("Imagen models are deprecated and unavailable; migrated to Gemini in follow-up PR")
   public void testImageGenWithText() throws IOException {
     Image image =
-            ImageGenWithText.generateImage(IMAGEN_4_MODEL, "resources/output/dog_newspaper.png");
+            ImageGenWithText.generateImage(IMAGEN_MODEL, "resources/output/dog_newspaper.png");
 
     assertThat(image).isNotNull();
     assertThat(image.imageBytes()).isPresent();
