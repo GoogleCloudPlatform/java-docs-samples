@@ -23,8 +23,6 @@ import com.google.appengine.api.users.User;
 import java.util.ArrayList;
 import javax.inject.Named;
 
-// [START api_def]
-
 /** Defines v1 of a helloworld API, which provides simple "greeting" methods. */
 @Api(
     name = "helloworld",
@@ -41,8 +39,7 @@ public class Greetings {
     greetings.add(new HelloGreeting("hello world!"));
     greetings.add(new HelloGreeting("goodbye world!"));
   }
-  // [END api_def]
-
+  
   // [START getgreetings]
 
   public HelloGreeting getGreeting(@Named("id") Integer id) throws NotFoundException {
