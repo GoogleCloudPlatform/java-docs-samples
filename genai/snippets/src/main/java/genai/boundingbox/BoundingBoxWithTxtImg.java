@@ -92,6 +92,7 @@ public class BoundingBoxWithTxtImg {
     for (int i = 0; i < boundingBoxes.size(); i++) {
       BoundingBox boundingBox = boundingBoxes.get(i);
       List<Integer> box2d = boundingBox.getBox2d();
+      // Prevents IndexOutOfBoundsException
       if (box2d == null || box2d.size() < 4) {
         continue;
       }
