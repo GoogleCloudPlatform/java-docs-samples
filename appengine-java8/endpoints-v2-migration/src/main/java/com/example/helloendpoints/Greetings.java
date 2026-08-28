@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-// [START begin]
-
 package com.example.helloendpoints;
 
 import com.google.api.server.spi.config.Api;
@@ -24,8 +22,6 @@ import com.google.api.server.spi.response.NotFoundException;
 import com.google.appengine.api.users.User;
 import java.util.ArrayList;
 import javax.inject.Named;
-
-// [END begin]
 
 /** Defines v1 of a helloworld API, which provides simple "greeting" methods. */
 @Api(
