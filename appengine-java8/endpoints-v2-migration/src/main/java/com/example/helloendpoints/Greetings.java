@@ -69,12 +69,9 @@ public class Greetings {
   }
   // [END multiplygreetings]
 
-  // [START auth]
-
   @ApiMethod(name = "greetings.authed", path = "hellogreeting/authed")
   public HelloGreeting authedGreeting(User user) {
     HelloGreeting response = new HelloGreeting("hello " + user.getEmail());
     return response;
   }
-  // [END auth]
 }
