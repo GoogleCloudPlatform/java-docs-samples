@@ -39,7 +39,6 @@ limitations under the License.
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
-  <!-- START dependencies -->
   <!--  Using libraries-bom to manage versions.
   See
   https://github.com/GoogleCloudPlatform/cloud-opensource-java/wiki/The-Google-Cloud-Platform-Libraries-BOM -->
@@ -97,7 +96,6 @@ limitations under the License.
       <groupId>software.amazon.awssdk</groupId>
       <artifactId>regions</artifactId>
     </dependency>
-    <!-- END dependencies -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -110,9 +108,7 @@ limitations under the License.
       <version>1.4.0</version>
       <scope>test</scope>
     </dependency>
-    <!-- START dependencies -->
   </dependencies>
-  <!-- END dependencies -->
 
   <build>
     <plugins>
