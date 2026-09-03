@@ -17,7 +17,6 @@
 package com.example.appengine.search;
 
 // @formatter:off
-// [START delete_import]
 import com.google.appengine.api.search.Document;
 import com.google.appengine.api.search.Field;
 import com.google.appengine.api.search.GetRequest;
@@ -36,7 +35,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-// [END delete_import]
 // CHECKSTYLE:OFF
 // @formatter:on
 // CHECKSTYLE:ON

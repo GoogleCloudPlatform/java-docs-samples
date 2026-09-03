@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-// [START begin]
-
 package com.example.helloendpoints;
 
 import com.google.api.server.spi.config.Api;
@@ -24,10 +22,6 @@ import com.google.api.server.spi.response.NotFoundException;
 import com.google.appengine.api.users.User;
 import java.util.ArrayList;
 import javax.inject.Named;
-
-// [END begin]
-
-// [START api_def]
 
 /** Defines v1 of a helloworld API, which provides simple "greeting" methods. */
 @Api(
@@ -45,8 +39,7 @@ public class Greetings {
     greetings.add(new HelloGreeting("hello world!"));
     greetings.add(new HelloGreeting("goodbye world!"));
   }
-  // [END api_def]
-
+  
   // [START getgreetings]
 
   public HelloGreeting getGreeting(@Named("id") Integer id) throws NotFoundException {
@@ -76,12 +69,9 @@ public class Greetings {
   }
   // [END multiplygreetings]
 
-  // [START auth]
-
   @ApiMethod(name = "greetings.authed", path = "hellogreeting/authed")
   public HelloGreeting authedGreeting(User user) {
     HelloGreeting response = new HelloGreeting("hello " + user.getEmail());
     return response;
   }
-  // [END auth]
 }

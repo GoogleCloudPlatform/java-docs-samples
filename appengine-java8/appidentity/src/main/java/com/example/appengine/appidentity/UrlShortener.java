@@ -31,7 +31,6 @@ import org.json.JSONTokener;
 
 @SuppressWarnings("serial")
 class UrlShortener {
-  // [START gae_java8_app_identity_google_apis]
 
   /**
    * Returns a shortened URL by calling the Google URL Shortener API.
@@ -74,5 +73,4 @@ class UrlShortener {
       }
     }
   }
-  // [END gae_java8_app_identity_google_apis]
 }

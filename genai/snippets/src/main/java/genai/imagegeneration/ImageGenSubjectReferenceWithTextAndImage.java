@@ -18,89 +18,79 @@ package genai.imagegeneration;
 
 // [START googlegenaisdk_imggen_subj_refer_ctrl_refer_with_txt_imgs]
 
+import com.google.cloud.storage.BlobId;
+import com.google.cloud.storage.BlobInfo;
+import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageOptions;
 import com.google.genai.Client;
-import com.google.genai.types.ControlReferenceConfig;
-import com.google.genai.types.ControlReferenceImage;
-import com.google.genai.types.EditImageConfig;
-import com.google.genai.types.EditImageResponse;
-import com.google.genai.types.GeneratedImage;
-import com.google.genai.types.Image;
-import com.google.genai.types.SubjectReferenceConfig;
-import com.google.genai.types.SubjectReferenceImage;
-import java.util.List;
+import com.google.genai.types.Blob;
+import com.google.genai.types.Candidate;
+import com.google.genai.types.Content;
+import com.google.genai.types.GenerateContentConfig;
+import com.google.genai.types.GenerateContentResponse;
+import com.google.genai.types.Part;
 import java.util.Optional;
 
 public class ImageGenSubjectReferenceWithTextAndImage {
 
   public static void main(String[] args) {
     // TODO(developer): Replace these variables before running the sample.
-    String modelId = "imagen-3.0-capability-001";
+    String modelId = "gemini-2.5-flash-image";
     String outputGcsUri = "gs://your-bucket/your-prefix";
     subjectCustomization(modelId, outputGcsUri);
   }
 
   // Generates an image using subject customization by adapting a subject reference image
-  // with a control reference image and a text prompt.
+  // with a text prompt.
   public static Optional<String> subjectCustomization(String modelId, String outputGcsUri) {
     // Client Initialization. Once created, it can be reused for multiple requests.
     try (Client client = Client.builder().location("global").vertexAI(true).build()) {
-      // Create subject and control reference images of a photograph stored in Google Cloud Storage
-      // using https://storage.googleapis.com/cloud-samples-data/generative-ai/image/person.png
-      SubjectReferenceImage subjectReferenceImage =
-          SubjectReferenceImage.builder()
-              .referenceId(1)
-              .referenceImage(
-                  Image.builder()
-                      .gcsUri("gs://cloud-samples-data/generative-ai/image/person.png")
-                      .build())
-              .config(
-                  SubjectReferenceConfig.builder()
-                      .subjectDescription("a headshot of a woman")
-                      .subjectType("SUBJECT_TYPE_PERSON")
-                      .build())
-              .build();
 
-      ControlReferenceImage controlReferenceImage =
-          ControlReferenceImage.builder()
-              .referenceId(2)
-              .referenceImage(
-                  Image.builder()
-                      .gcsUri("gs://cloud-samples-data/generative-ai/image/person.png")
-                      .build())
-              .config(
-                  ControlReferenceConfig.builder().controlType("CONTROL_TYPE_FACE_MESH").build())
-              .build();
+      GenerateContentConfig config =
+          GenerateContentConfig.builder().responseModalities("TEXT", "IMAGE").build();
 
-      // The `[1]` and `[2]` in the prompt refer to the `referenceId` assigned to
-      // the subject reference and control reference images.
-      EditImageResponse imageResponse =
-          client.models.editImage(
+      GenerateContentResponse response =
+          client.models.generateContent(
               modelId,
-              "a portrait of a woman[1] in the pose of the control image[2]in a watercolor style by"
-                  + " a professional artist, light and low-contrast stokes, bright pastel colors,"
-                  + " a warm atmosphere, clean background, grainy paper, bold visible brushstrokes,"
-                  + " patchy details",
-              List.of(subjectReferenceImage, controlReferenceImage),
-              EditImageConfig.builder()
-                  .editMode("EDIT_MODE_DEFAULT")
-                  .numberOfImages(1)
-                  .safetyFilterLevel("BLOCK_MEDIUM_AND_ABOVE")
-                  .personGeneration("ALLOW_ADULT")
-                  .outputGcsUri(outputGcsUri)
-                  .build());
+              Content.fromParts(
+                  Part.fromUri(
+                      "gs://cloud-samples-data/generative-ai/image/person.png", "image/png"),
+                  Part.fromText(
+                      "a portrait of the woman in a watercolor style by a professional artist,"
+                          + " light and low-contrast strokes, bright pastel colors, a warm"
+                          + " atmosphere, clean background, grainy paper, bold visible"
+                          + " brushstrokes, patchy details")),
+              config);
 
-      Image generatedImage =
-          imageResponse
-              .generatedImages()
-              .flatMap(generatedImages -> generatedImages.stream().findFirst())
-              .flatMap(GeneratedImage::image)
+      byte[] imageBytes =
+          response
+              .candidates()
+              .flatMap(candidates -> candidates.stream().findFirst())
+              .flatMap(Candidate::content)
+              .flatMap(Content::parts)
+              .flatMap(
+                  parts ->
+                      parts.stream()
+                          .filter(part -> part.inlineData().flatMap(Blob::data).isPresent())
+                          .findFirst())
+              .flatMap(part -> part.inlineData().flatMap(Blob::data))
               .orElseThrow(() -> new IllegalStateException("No image was generated by the model."));
 
-      generatedImage.gcsUri().ifPresent(System.out::println);
-      // Example response:
-      // gs://your-bucket/your-prefix
+      Storage storage = StorageOptions.getDefaultInstance().getService();
+      String gcsPath = outputGcsUri.replace("gs://", "");
+      int slashIdx = gcsPath.indexOf('/');
+      String bucket = slashIdx > 0 ? gcsPath.substring(0, slashIdx) : gcsPath;
+      String objectName =
+          slashIdx > 0
+              ? gcsPath.substring(slashIdx + 1) + "/subject_customization.png"
+              : "subject_customization.png";
+      BlobId blobId = BlobId.of(bucket, objectName);
+      BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("image/png").build();
+      storage.create(blobInfo, imageBytes);
 
-      return generatedImage.gcsUri();
+      String fullGcsUri = String.format("gs://%s/%s", bucket, objectName);
+      System.out.println("Generated image URI: " + fullGcsUri);
+      return Optional.of(fullGcsUri);
     }
   }
 }
