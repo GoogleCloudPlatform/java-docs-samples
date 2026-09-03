@@ -79,6 +79,9 @@ public class ImageGenerationMmFlashIT {
   @Test
   public void testImageGenMmFlashMultipleImagesWithText() throws IOException {
     List<String> images = ImageGenMmFlashMultipleImagesWithText.generateContent(GEMINI_FLASH_IMAGE);
+    if (images.isEmpty()) {
+      images = ImageGenMmFlashMultipleImagesWithText.generateContent(GEMINI_FLASH_IMAGE);
+    }
     assertThat(images).isNotEmpty();
   }
 

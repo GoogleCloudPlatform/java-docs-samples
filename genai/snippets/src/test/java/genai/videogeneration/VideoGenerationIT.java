@@ -38,7 +38,9 @@ import org.junit.runners.JUnit4;
 public class VideoGenerationIT {
 
   private static final String VIDEO_GEN_MODEL = "veo-3.1-generate-001";
-  private static final String BUCKET_NAME = "java-docs-samples-testing";
+  private static final String BUCKET_NAME =
+      System.getenv().getOrDefault("BUCKET_NAME", "java-docs-samples-testing")
+          .replaceFirst("^gs://", "");
   private static final String PREFIX = "genai-video-generation-" + UUID.randomUUID();
   private static final String OUTPUT_GCS_URI = String.format("gs://%s/%s", BUCKET_NAME, PREFIX);
   private ByteArrayOutputStream bout;
@@ -58,11 +60,15 @@ public class VideoGenerationIT {
 
   @AfterClass
   public static void cleanup() {
-    Storage storage = StorageOptions.getDefaultInstance().getService();
-    Page<Blob> blobs = storage.list(BUCKET_NAME, Storage.BlobListOption.prefix(PREFIX));
+    try {
+      Storage storage = StorageOptions.getDefaultInstance().getService();
+      Page<Blob> blobs = storage.list(BUCKET_NAME, Storage.BlobListOption.prefix(PREFIX));
 
-    for (Blob blob : blobs.iterateAll()) {
-      storage.delete(blob.getBlobId());
+      for (Blob blob : blobs.iterateAll()) {
+        storage.delete(blob.getBlobId());
+      }
+    } catch (Exception e) {
+      System.err.println("Failed to cleanup bucket " + BUCKET_NAME + ": " + e.getMessage());
     }
   }
 
