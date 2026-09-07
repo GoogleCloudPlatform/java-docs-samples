@@ -32,6 +32,7 @@ import java.util.UUID;
 import javax.sql.DataSource;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -74,7 +75,7 @@ public class QueryDecryptDataIT {
       EncryptAndInsertData
           .encryptAndInsertData(pool, envAead, tableName, "TABS", "hello@example.com");
     } catch (Exception e) {
-      org.junit.Assume.assumeNoException("Database connection or KMS unavailable, skipping test", e);
+      Assume.assumeNoException("Database connection or KMS unavailable, skipping test", e);
     }
   }
 
@@ -87,6 +88,7 @@ public class QueryDecryptDataIT {
           createTableStatement.execute();
         }
       } catch (Exception ignored) {
+        // Ignore table drop failure during cleanup
       }
     }
   }

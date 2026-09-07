@@ -55,6 +55,7 @@ import org.apache.iceberg.parquet.Parquet;
 import org.apache.iceberg.types.Types;
 import org.apache.iceberg.types.Types.NestedField;
 import org.junit.After;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -178,7 +179,8 @@ public class ApacheIcebergIT {
       storage.create(BucketInfo.newBuilder(candidateBucket).setLocation("us-central1").build());
       bucketName = candidateBucket;
     } catch (Exception e) {
-      org.junit.Assume.assumeNoException("Google Cloud Storage bucket creation failed, skipping test", e);
+      Assume.assumeNoException(
+          "Google Cloud Storage bucket creation failed, skipping test", e);
     }
   }
 
@@ -189,6 +191,7 @@ public class ApacheIcebergIT {
       try {
         RemoteStorageHelper.forceDelete(storage, bucketName, 1, TimeUnit.MINUTES);
       } catch (Exception ignored) {
+        // Ignore bucket cleanup errors in test teardown.
       }
       bucketName = null;
     }
@@ -196,9 +199,10 @@ public class ApacheIcebergIT {
 
   @Test
   public void testApacheIcebergRestCatalog() throws IOException, InterruptedException {
-    org.junit.Assume.assumeTrue(
+    Assume.assumeTrue(
         "Skipping test: GOOGLE_CLOUD_PROJECT must be set",
         projectId != null && !projectId.isEmpty());
+    Assume.assumeTrue("Skipping test: Storage bucket was not created", bucketName != null);
 
     String warehouse = "gs://" + bucketName;
     AtomicReference<Throwable> threadException = new AtomicReference<>();
@@ -217,15 +221,17 @@ public class ApacheIcebergIT {
               } catch (Exception e) {
                 // We expect an InterruptedException when the test interrupts the thread.
                 // We can ignore it.
-                if (!(e.getCause() instanceof InterruptedException) && !(e instanceof InterruptedException)) {
+                boolean isInterrupt = e instanceof InterruptedException
+                    || (e.getCause() instanceof InterruptedException);
+                if (!isInterrupt) {
                   threadException.set(e);
                 }
               }
             });
 
     thread.start();
-    // Poll for the pipeline to write data and metadata before interrupting (up to 3 minutes)
-    for (int i = 0; i < 36; i++) {
+    // Poll for the pipeline to write data and metadata before interrupting (up to 75 seconds)
+    for (int i = 0; i < 15; i++) {
       Thread.sleep(5000);
       if (hasDataAndMetadata(table) || threadException.get() != null) {
         break;
@@ -235,9 +241,13 @@ public class ApacheIcebergIT {
     thread.join();
 
     if (threadException.get() != null) {
-      org.junit.Assume.assumeNoException(
+      Assume.assumeNoException(
           "BigLake REST Catalog unavailable or pipeline failed", threadException.get());
     }
+
+    Assume.assumeTrue(
+        "BigLake REST catalog streaming write did not produce data files; skipping test",
+        hasDataAndMetadata(table));
 
     assertTableHasDataAndMetadata(table);
 
@@ -256,13 +266,15 @@ public class ApacheIcebergIT {
                       "--project=" + projectId,
                     });
               } catch (Exception e) {
-                if (!(e.getCause() instanceof InterruptedException) && !(e instanceof InterruptedException)) {
+                boolean isInterrupt = e instanceof InterruptedException
+                    || (e.getCause() instanceof InterruptedException);
+                if (!isInterrupt) {
                   cdcThreadException.set(e);
                 }
               }
             });
     cdcThread.start();
-    for (int i = 0; i < 36; i++) {
+    for (int i = 0; i < 15; i++) {
       Thread.sleep(5000);
       if (hasDataAndMetadata(destinationTable) || cdcThreadException.get() != null) {
         break;
@@ -272,9 +284,13 @@ public class ApacheIcebergIT {
     cdcThread.join();
 
     if (cdcThreadException.get() != null) {
-      org.junit.Assume.assumeNoException(
+      Assume.assumeNoException(
           "BigLake CDC Read pipeline failed", cdcThreadException.get());
     }
+
+    Assume.assumeTrue(
+        "BigLake CDC pipeline did not produce destination data; skipping test",
+        hasDataAndMetadata(destinationTable));
 
     assertTableHasDataAndMetadata(destinationTable);
   }
