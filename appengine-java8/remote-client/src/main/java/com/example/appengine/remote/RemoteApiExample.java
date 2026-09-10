@@ -23,7 +23,6 @@ import com.google.appengine.tools.remoteapi.RemoteApiInstaller;
 import com.google.appengine.tools.remoteapi.RemoteApiOptions;
 import java.io.IOException;
 
-// [START example]
 public class RemoteApiExample {
 
   /**
@@ -50,4 +49,3 @@ public class RemoteApiExample {
     }
   }
 }
-//[END example]

@@ -41,7 +41,6 @@ public class UrlFetchServlet extends HttpServlet {
   public void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws IOException, ServletException {
 
-    // [START example]
     URL url = new URL("http://api.icndb.com/jokes/random");
     BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
     StringBuffer json = new StringBuffer();
@@ -51,7 +50,6 @@ public class UrlFetchServlet extends HttpServlet {
       json.append(line);
     }
     reader.close();
-    // [END example]
     JSONObject jo = new JSONObject(json.toString());
 
     req.setAttribute("joke", jo.getJSONObject("value").getString("joke"));

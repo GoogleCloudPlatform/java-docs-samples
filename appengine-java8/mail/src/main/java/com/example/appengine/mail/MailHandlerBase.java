@@ -33,7 +33,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /** Base class for handling the filtering of incoming emails in App Engine. */
-// [START example]
 public abstract class MailHandlerBase implements Filter {
 
   private Pattern pattern = null;
@@ -112,4 +111,3 @@ public abstract class MailHandlerBase implements Filter {
     return message;
   }
 }
-// [END example]

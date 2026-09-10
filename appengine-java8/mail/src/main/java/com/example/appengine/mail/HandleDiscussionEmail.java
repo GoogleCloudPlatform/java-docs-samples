@@ -23,7 +23,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-// [START example]
 public class HandleDiscussionEmail extends MailHandlerBase {
 
   private static final Logger log = Logger.getLogger(HandleDiscussionEmail.class.getName());
@@ -42,4 +41,3 @@ public class HandleDiscussionEmail extends MailHandlerBase {
     return true;
   }
 }
-// [END example]

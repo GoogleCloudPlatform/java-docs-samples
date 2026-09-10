@@ -27,7 +27,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-// [START example]
 @SuppressWarnings("serial")
 // With @WebServlet annotation the webapp/WEB-INF/web.xml is no longer required.
 @WebServlet(name = "memcache", description = "Memcache: Best Practices", urlPatterns = "/memcache")
@@ -55,4 +54,3 @@ public class MemcacheBestPracticeServlet extends HttpServlet {
     resp.getWriter().print("Count incremented by Java = " + count + "\n");
   }
 }
-// [END example]

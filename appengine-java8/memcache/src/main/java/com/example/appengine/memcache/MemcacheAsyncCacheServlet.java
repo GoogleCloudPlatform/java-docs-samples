@@ -46,7 +46,6 @@ public class MemcacheAsyncCacheServlet extends HttpServlet {
       return; // ignore the request for favicon.ico
     }
 
-    // [START example]
     AsyncMemcacheService asyncCache = MemcacheServiceFactory.getAsyncMemcacheService();
     asyncCache.setErrorHandler(ErrorHandlers.getConsistentLogAndContinue(Level.INFO));
     String key = "count-async";
@@ -70,7 +69,6 @@ public class MemcacheAsyncCacheServlet extends HttpServlet {
     } catch (InterruptedException | ExecutionException e) {
       throw new ServletException("Error when waiting for future value", e);
     }
-    // [END example]
 
     // Output content
     resp.setContentType("text/plain");

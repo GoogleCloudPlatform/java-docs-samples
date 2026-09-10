@@ -40,7 +40,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-// [START example]
 @SuppressWarnings("serial")
 // With @WebServlet annotation the webapp/WEB-INF/web.xml is no longer required.
 @WebServlet(
@@ -138,4 +137,3 @@ public class ImagesServlet extends HttpServlet {
     out.println("</body></html>\n");
   }
 }
-// [END example]

@@ -30,7 +30,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.MediaType;
 
-// [START example]
 @SuppressWarnings("serial")
 public class MailgunServlet extends HttpServlet {
 
@@ -91,4 +90,3 @@ public class MailgunServlet extends HttpServlet {
   }
   // [END complex]
 }
-// [END example]

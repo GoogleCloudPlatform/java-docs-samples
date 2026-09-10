@@ -35,7 +35,6 @@ import org.thymeleaf.templateresolver.WebApplicationTemplateResolver;
 import org.thymeleaf.web.servlet.JavaxServletWebApplication;
 
 
-// [START example]
 @SuppressWarnings("serial")
 // With @WebServlet annotation the webapp/WEB-INF/web.xml is no longer required.
 @WebServlet(name = "Metadata", description = "Metadata: Write info about GAE Standard",
@@ -166,4 +165,3 @@ public class MetadataServlet extends HttpServlet {
 
   }
 }
-// [END example]
