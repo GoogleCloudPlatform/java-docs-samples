@@ -127,7 +127,7 @@ public class InstancesAdvancedIT {
   private static Image getActiveDebian()
       throws IOException {
     try (ImagesClient imagesClient = ImagesClient.create()) {
-      return imagesClient.getFromFamily("debian-cloud", "debian-11");
+      return imagesClient.getFromFamily("debian-cloud", "debian-13");
     }
   }
 

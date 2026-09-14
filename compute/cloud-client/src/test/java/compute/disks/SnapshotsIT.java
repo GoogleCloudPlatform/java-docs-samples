@@ -88,7 +88,7 @@ public class SnapshotsIT {
 
     Image debianImage = null;
     try (ImagesClient imagesClient = ImagesClient.create()) {
-      debianImage = imagesClient.getFromFamily("debian-cloud", "debian-11");
+      debianImage = imagesClient.getFromFamily("debian-cloud", "debian-13");
     }
 
     // Create zonal snapshot.

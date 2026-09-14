@@ -50,14 +50,14 @@ public class CreateSpotVm {
     createSpotInstance(projectId, instanceName, zone);
   }
 
-  // Create a new Spot VM instance with Debian 11 operating system.
+  // Create a new Spot VM instance with Debian 13 operating system.
   public static Instance createSpotInstance(String projectId, String instanceName, String zone)
           throws IOException, ExecutionException, InterruptedException, TimeoutException {
     String image;
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (ImagesClient imagesClient = ImagesClient.create()) {
-      image = imagesClient.getFromFamily("debian-cloud", "debian-11").getSelfLink();
+      image = imagesClient.getFromFamily("debian-cloud", "debian-13").getSelfLink();
     }
     AttachedDisk attachedDisk = buildAttachedDisk(image, zone);
     String machineTypes = String.format("zones/%s/machineTypes/%s", zone, "n1-standard-1");

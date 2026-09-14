@@ -31,7 +31,7 @@ public class GetImageFromFamily {
     // Name of the image family you want to retrieve the image from.
     // List of public operating system (OS) images:
     // https://cloud.google.com/compute/docs/images/os-details
-    String family = "debian-11";
+    String family = "debian-13";
 
     getImageFromFamily(projectId, family);
   }

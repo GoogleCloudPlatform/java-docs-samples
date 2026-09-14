@@ -50,7 +50,7 @@ public class ConsumeSpecificSharedReservation {
     String machineTypeName = "n1-standard-4";
     // sourceImage: path to the operating system image to mount.
     // *   For details about images you can mount, see https://cloud.google.com/compute/docs/images
-    String sourceImage = "projects/debian-cloud/global/images/family/debian-11";
+    String sourceImage = "projects/debian-cloud/global/images/family/debian-13";
     // diskSizeGb: storage size of the boot disk to attach to the instance.
     long diskSizeGb = 10L;
     // networkName: network interface to associate with the instance.

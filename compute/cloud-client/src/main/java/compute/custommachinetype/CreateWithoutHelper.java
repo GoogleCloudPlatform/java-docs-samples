@@ -75,7 +75,7 @@ public class CreateWithoutHelper {
                   .setSourceImage(
                       String.format("projects/%s/global/images/family/%s",
                           "debian-cloud",
-                          "debian-11"))
+                          "debian-13"))
                   .setDiskSizeGb(10)
                   .build()
           )

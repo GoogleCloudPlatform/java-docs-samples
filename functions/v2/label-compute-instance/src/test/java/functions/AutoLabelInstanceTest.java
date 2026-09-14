@@ -114,7 +114,7 @@ public class AutoLabelInstanceTest {
   public static void createInstance(String project, String zone, String instanceName)
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
     String machineType = String.format("zones/%s/machineTypes/n1-standard-1", zone);
-    String sourceImage = "projects/debian-cloud/global/images/family/debian-11";
+    String sourceImage = "projects/debian-cloud/global/images/family/debian-13";
     long diskSizeGb = 10L;
     String networkName = "default";
 
