@@ -72,7 +72,7 @@ public class ImagesIT {
     DISK_NAME = "test-disk-" + UUID.randomUUID().toString().substring(0, 8);
     SNAPSHOT_NAME = "test-snapshot-" + UUID.randomUUID().toString().substring(0, 8);
 
-    Image imageFromFamily = GetImageFromFamily.getImageFromFamily("debian-cloud", "debian-11");
+    Image imageFromFamily = GetImageFromFamily.getImageFromFamily("debian-cloud", "debian-13");
     CreateDiskFromImage.createDiskFromImage(PROJECT_ID, ZONE, DISK_NAME,
             String.format("zones/%s/diskTypes/pd-standard", ZONE), 20,
             imageFromFamily.getSelfLink());

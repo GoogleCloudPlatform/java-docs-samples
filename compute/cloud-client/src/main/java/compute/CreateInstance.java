@@ -57,7 +57,7 @@ public class CreateInstance {
     // networkName: network interface to associate with the instance.
     String machineType = String.format("zones/%s/machineTypes/n1-standard-1", zone);
     String sourceImage = String
-        .format("projects/debian-cloud/global/images/family/%s", "debian-11");
+        .format("projects/debian-cloud/global/images/family/%s", "debian-13");
     long diskSizeGb = 10L;
     String networkName = "default";
 

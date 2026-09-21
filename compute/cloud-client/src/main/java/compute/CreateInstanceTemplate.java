@@ -54,7 +54,7 @@ public class CreateInstanceTemplate {
     try (InstanceTemplatesClient instanceTemplatesClient = InstanceTemplatesClient.create()) {
 
       String machineType = "e2-standard-4";
-      String sourceImage = "projects/debian-cloud/global/images/family/debian-11";
+      String sourceImage = "projects/debian-cloud/global/images/family/debian-13";
 
       // The template describes the size and source image of the boot disk
       // to attach to the instance.
@@ -110,7 +110,7 @@ public class CreateInstanceTemplate {
           .setInitializeParams(AttachedDiskInitializeParams.newBuilder()
               .setDiskSizeGb(10)
               .setDiskType("pd-balanced")
-              .setSourceImage("projects/debian-cloud/global/images/family/debian-11").build())
+              .setSourceImage("projects/debian-cloud/global/images/family/debian-13").build())
           .setAutoDelete(true)
           .setBoot(true)
           .setType(AttachedDisk.Type.PERSISTENT.toString()).build();

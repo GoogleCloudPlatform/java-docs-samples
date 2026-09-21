@@ -54,7 +54,7 @@ public class CreateInstanceDeleteProtection {
 
     String machineType = String.format("zones/%s/machineTypes/e2-small", zone);
     String sourceImage = String
-        .format("projects/debian-cloud/global/images/family/%s", "debian-11");
+        .format("projects/debian-cloud/global/images/family/%s", "debian-13");
     long diskSizeGb = 10L;
     String networkName = "default";
 

@@ -63,7 +63,7 @@ public class CreateInstanceWithCustomHostname {
     //  *    For example: global/networks/default - if you want to use the default network.
     String machineType = "n1-standard-1";
     String sourceImage = String.format("projects/%s/global/images/family/%s", "debian-cloud",
-        "debian-11");
+        "debian-13");
     String networkName = "global/networks/default";
 
     try (InstancesClient instancesClient = InstancesClient.create()) {

@@ -47,7 +47,7 @@ public class WithoutConsumingReservationIT {
   private static final String TEMPLATE_NOT_CONSUME_RESERVATION_NAME =
       "test-template-not-consume-"  + templateUUID;
   private static final String MACHINE_TYPE_NAME = "n1-standard-1";
-  private static final String SOURCE_IMAGE = "projects/debian-cloud/global/images/family/debian-11";
+  private static final String SOURCE_IMAGE = "projects/debian-cloud/global/images/family/debian-13";
   private static final String NETWORK_NAME = "default";
   private static final long DISK_SIZE_GD = 10L;
 

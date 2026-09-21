@@ -57,7 +57,7 @@ public class CreateRegionalInstanceTemplate {
              RegionInstanceTemplatesClient.create()) {
 
       String machineType = "n1-standard-1"; // Example machine type
-      String sourceImage = "projects/debian-cloud/global/images/family/debian-11"; // Example image
+      String sourceImage = "projects/debian-cloud/global/images/family/debian-13"; // Example image
 
       // Define the boot disk for the instance template
       AttachedDisk attachedDisk = AttachedDisk.newBuilder()

@@ -52,7 +52,7 @@ public class CreatePreemptibleInstance {
       throws IOException, ExecutionException, InterruptedException, TimeoutException {
 
     String machineType = String.format("zones/%s/machineTypes/e2-small", zone);
-    String sourceImage = "projects/debian-cloud/global/images/family/debian-11";
+    String sourceImage = "projects/debian-cloud/global/images/family/debian-13";
     long diskSizeGb = 10L;
     String networkName = "default";
 

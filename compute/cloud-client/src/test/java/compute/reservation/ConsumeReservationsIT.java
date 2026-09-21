@@ -54,7 +54,7 @@ public class ConsumeReservationsIT {
   private static final String INSTANCE_FOR_ANY_MATCHING = "test-instance-" + templateUUID;
   private static final String SPECIFIC_SHARED_INSTANCE = "test-instance-shared-" + templateUUID;
   private static final String MACHINE_TYPE = "n1-standard-4";
-  private static final String SOURCE_IMAGE = "projects/debian-cloud/global/images/family/debian-11";
+  private static final String SOURCE_IMAGE = "projects/debian-cloud/global/images/family/debian-13";
   private static final String NETWORK_NAME = "default";
   private static final long DISK_SIZE_GB = 10L;
   private static final String MIN_CPU_PLATFORM = "Intel Skylake";

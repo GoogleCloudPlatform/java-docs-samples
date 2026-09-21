@@ -63,7 +63,7 @@ public class CreateTemplateWithSubnet {
       AttachedDisk disk = AttachedDisk.newBuilder()
           .setInitializeParams(AttachedDiskInitializeParams.newBuilder()
               .setSourceImage(
-                  String.format("projects/%s/global/images/family/%s", "debian-cloud", "debian-11"))
+                  String.format("projects/%s/global/images/family/%s", "debian-cloud", "debian-13"))
               .setDiskSizeGb(250).build())
           .setAutoDelete(true)
           .setBoot(true)

@@ -70,7 +70,7 @@ public class WindowsOsImageIT {
   private static boolean createInstance(String instanceName)
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
     final String MACHINE_TYPE = String.format("zones/%s/machineTypes/n1-standard-1", ZONE);
-    final String MACHINE_FAMILY = "projects/debian-cloud/global/images/family/debian-11";
+    final String MACHINE_FAMILY = "projects/debian-cloud/global/images/family/debian-13";
     final long DISK_SIZE = 10L;
     try (InstancesClient instancesClient = InstancesClient.create()) {
       AttachedDisk attachedDisk = AttachedDisk.newBuilder()

@@ -70,7 +70,7 @@ public class AssignStaticExternalNewVmAddress {
     // Initialize client that will be used to send requests. This client only needs to be created
     // once, and can be reused for multiple requests.
     try (ImagesClient imagesClient = ImagesClient.create()) {
-      sourceImage = imagesClient.getFromFamily("debian-cloud", "debian-11").getSelfLink();
+      sourceImage = imagesClient.getFromFamily("debian-cloud", "debian-13").getSelfLink();
     }
     AttachedDisk attachedDisk = buildAttachedDisk(sourceImage, zone);
 

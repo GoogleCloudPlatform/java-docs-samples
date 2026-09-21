@@ -43,7 +43,7 @@ public class CreateTemplateWithoutConsumingReservation {
     // Name of the template you want to query.
     String templateName = "YOUR_INSTANCE_TEMPLATE_NAME";
     String machineType = "e2-standard-4";
-    String sourceImage = "projects/debian-cloud/global/images/family/debian-11";
+    String sourceImage = "projects/debian-cloud/global/images/family/debian-13";
 
     createTemplateWithoutConsumingReservationAsync(
         projectId, templateName, machineType, sourceImage);

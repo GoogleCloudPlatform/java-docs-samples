@@ -133,7 +133,7 @@ public class DisksIT {
     // Create disk from image.
     Image debianImage = null;
     try (ImagesClient imagesClient = ImagesClient.create()) {
-      debianImage = imagesClient.getFromFamily("debian-cloud", "debian-11");
+      debianImage = imagesClient.getFromFamily("debian-cloud", "debian-13");
     }
     CreateDiskFromImage.createDiskFromImage(PROJECT_ID, ZONE, DISK_NAME, DISK_TYPE, DISK_SIZE,
         debianImage.getSelfLink());

@@ -109,7 +109,7 @@ public class DisksFromSourceIT {
     // Create disk from image.
     DEBIAN_IMAGE = null;
     try (ImagesClient imagesClient = ImagesClient.create()) {
-      DEBIAN_IMAGE = imagesClient.getFromFamily("debian-cloud", "debian-11");
+      DEBIAN_IMAGE = imagesClient.getFromFamily("debian-cloud", "debian-13");
     }
 
     // Create KMS Encrypted disk.
