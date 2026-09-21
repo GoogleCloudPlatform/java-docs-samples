@@ -16,18 +16,20 @@
 
 apply plugin: 'application'
 
-mainClassName = "com.google.endpoints.examples.hello.HelloWorldClient"
+application {
+  mainClass = "com.google.endpoints.examples.hello.HelloWorldClient"
+}
 
 jar {
   manifest {
-    attributes "Main-Class": "$mainClassName"
+    attributes "Main-Class": application.mainClass.get()
   }
   from {
-    configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
   }
 }
 
 dependencies {
-  compile project(':api')
-  compile 'commons-cli:commons-cli:1.6.0'
+  implementation project(':api')
+  implementation 'commons-cli:commons-cli:1.6.0'
 }
