@@ -17,6 +17,7 @@
 package secretmanager;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 import com.google.api.gax.longrunning.OperationFuture;
@@ -39,6 +40,7 @@ import com.google.cloud.secretmanager.v1.DisableSecretVersionRequest;
 import com.google.cloud.secretmanager.v1.ProjectName;
 import com.google.cloud.secretmanager.v1.Replication;
 import com.google.cloud.secretmanager.v1.Secret;
+import com.google.cloud.secretmanager.v1.Secret.SecretType;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.google.cloud.secretmanager.v1.SecretName;
 import com.google.cloud.secretmanager.v1.SecretPayload;
@@ -97,6 +99,7 @@ public class SnippetsIT {
   private static SecretName TEST_SECRET_WITH_TAGS_TO_CREATE_NAME;
   private static SecretName TEST_SECRET_WITH_ANNOTATION_TO_CREATE_NAME;
   private static SecretName TEST_UMMR_SECRET_TO_CREATE_NAME;
+  private static SecretName TEST_SECRET_WITH_TYPE_TO_CREATE_NAME;
   private static SecretVersion TEST_SECRET_VERSION;
   private static SecretVersion TEST_SECRET_VERSION_TO_DESTROY;
   private static SecretVersion TEST_SECRET_VERSION_TO_DESTROY_WITH_ETAG;
@@ -125,6 +128,7 @@ public class SnippetsIT {
     TEST_SECRET_WITH_TAGS_TO_CREATE_NAME = SecretName.of(PROJECT_ID, randomSecretId());
     TEST_SECRET_WITH_LABEL_TO_CREATE_NAME = SecretName.of(PROJECT_ID, randomSecretId());
     TEST_SECRET_WITH_ANNOTATION_TO_CREATE_NAME = SecretName.of(PROJECT_ID, randomSecretId());
+    TEST_SECRET_WITH_TYPE_TO_CREATE_NAME = SecretName.of(PROJECT_ID, randomSecretId());
 
     TEST_SECRET_VERSION = addSecretVersion(TEST_SECRET_WITH_VERSIONS);
     TEST_SECRET_VERSION_TO_DESTROY = addSecretVersion(TEST_SECRET_WITH_VERSIONS);
@@ -161,6 +165,7 @@ public class SnippetsIT {
     deleteSecret(TEST_SECRET_WITH_LABEL_TO_CREATE_NAME.toString());
     deleteSecret(TEST_SECRET_WITH_ANNOTATION_TO_CREATE_NAME.toString());
     deleteSecret(TEST_UMMR_SECRET_TO_CREATE_NAME.toString());
+    deleteSecret(TEST_SECRET_WITH_TYPE_TO_CREATE_NAME.toString());
     deleteSecret(TEST_SECRET_TO_DELETE.getName());
     deleteSecret(TEST_SECRET_TO_DELETE_WITH_ETAG.getName());
     deleteSecret(TEST_SECRET_WITH_VERSIONS.getName());
@@ -343,6 +348,25 @@ public class SnippetsIT {
         name.getProject(), name.getSecret(), LABEL_KEY, LABEL_VALUE);
 
     assertThat(secret.getLabelsMap()).containsEntry(LABEL_KEY, LABEL_VALUE);
+  }
+
+  @Test
+  public void testCreateSecretWithType() throws IOException {
+    SecretName name = TEST_SECRET_WITH_TYPE_TO_CREATE_NAME;
+    Secret secret = CreateSecretWithType.createSecretWithType(
+        name.getProject(), name.getSecret(), SecretType.ACCESS_KEY);
+
+    assertEquals(SecretType.ACCESS_KEY, secret.getSecretType());
+    assertThat(stdOut.toString()).contains("Created secret with secret type");
+  }
+
+  @Test
+  public void testGetSecretType() throws IOException {
+    SecretName name = SecretName.parse(TEST_SECRET.getName());
+    Secret secret = GetSecretType.getSecretType(name.getProject(), name.getSecret());
+
+    assertEquals(SecretType.SECRET_TYPE_UNSPECIFIED, secret.getSecretType());
+    assertThat(stdOut.toString()).contains("with secret type");
   }
 
   @Test
