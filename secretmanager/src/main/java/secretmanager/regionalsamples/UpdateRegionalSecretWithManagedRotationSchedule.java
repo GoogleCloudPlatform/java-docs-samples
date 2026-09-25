@@ -25,7 +25,9 @@ import com.google.cloud.secretmanager.v1.SecretName;
 import com.google.protobuf.Duration;
 import com.google.protobuf.FieldMask;
 import com.google.protobuf.Timestamp;
+import com.google.protobuf.util.Durations;
 import com.google.protobuf.util.FieldMaskUtil;
+import com.google.protobuf.util.Timestamps;
 import java.io.IOException;
 import java.time.Instant;
 
@@ -35,11 +37,11 @@ public class UpdateRegionalSecretWithManagedRotationSchedule {
     // TODO(developer): Replace these variables before running the sample.
 
     // Your GCP project ID.
-    String projectId = "your-project-id";
+    String projectId = "migrationsource-392805";
     // Location of the secret.
-    String locationId = "your-location-id";
+    String locationId = "us-east1";
     // Resource ID of the Cloud SQL DB credentials secret to reconfigure.
-    String secretId = "your-secret-id";
+    String secretId = "cloudsql-autorotation-test";
     // Interval between rotations, in seconds. The service requires at least 3600 (1 hour).
     long rotationPeriodSeconds = 86400; // 24 hours
     updateRegionalSecretWithManagedRotationSchedule(
@@ -74,12 +76,8 @@ public class UpdateRegionalSecretWithManagedRotationSchedule {
 
       // next_rotation_time and rotation_period must be set together.
       Instant nextRotationInstant = Instant.now().plusSeconds(rotationPeriodSeconds);
-      Timestamp nextRotationTime =
-          Timestamp.newBuilder()
-              .setSeconds(nextRotationInstant.getEpochSecond())
-              .setNanos(nextRotationInstant.getNano())
-              .build();
-      Duration rotationPeriod = Duration.newBuilder().setSeconds(rotationPeriodSeconds).build();
+      Timestamp nextRotationTime = Timestamps.fromMillis(nextRotationInstant.toEpochMilli());
+      Duration rotationPeriod = Durations.fromSeconds(rotationPeriodSeconds);
 
       // Build the updated secret.
       Secret secret =

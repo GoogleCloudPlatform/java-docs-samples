@@ -91,7 +91,7 @@ public class SnippetsIT {
   private static final String LABEL_VALUE = "examplelabelvalue";
   private static final String UPDATED_LABEL_KEY = "updatedlabelkey";
   private static final String UPDATED_LABEL_VALUE = "updatedlabelvalue";
-  private static final String LOCATION_ID = "us-central1";
+  private static final String LOCATION_ID = "us-east1";
   private static final String REGIONAL_ENDPOINT = 
       String.format("secretmanager.%s.rep.googleapis.com:443", LOCATION_ID);
   private static final String ANNOTATION_KEY = "exampleannotationkey";
@@ -301,6 +301,12 @@ public class SnippetsIT {
           if (attempt >= 5) {
             throw e;
           }
+          try {
+            Thread.sleep(100 * (attempt + 1));
+          } catch (InterruptedException ie) {
+            Thread.currentThread().interrupt();
+            throw new IOException("Interrupted during retry backoff", ie);
+          }
         }
       }
     }
@@ -340,6 +346,12 @@ public class SnippetsIT {
         } catch (AbortedException e) {
           if (attempt >= 5) {
             throw e;
+          }
+          try {
+            Thread.sleep(100 * (attempt + 1));
+          } catch (InterruptedException ie) {
+            Thread.currentThread().interrupt();
+            throw new IOException("Interrupted during retry backoff", ie);
           }
         }
       }
