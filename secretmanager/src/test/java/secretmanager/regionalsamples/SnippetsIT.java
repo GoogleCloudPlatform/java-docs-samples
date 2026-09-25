@@ -19,10 +19,12 @@ package secretmanager.regionalsamples;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
 import com.google.api.gax.longrunning.OperationFuture;
+import com.google.api.gax.rpc.AbortedException;
 import com.google.api.gax.rpc.NotFoundException;
 import com.google.cloud.resourcemanager.v3.CreateTagKeyMetadata;
 import com.google.cloud.resourcemanager.v3.CreateTagKeyRequest;
@@ -32,6 +34,7 @@ import com.google.cloud.resourcemanager.v3.DeleteTagKeyMetadata;
 import com.google.cloud.resourcemanager.v3.DeleteTagKeyRequest;
 import com.google.cloud.resourcemanager.v3.DeleteTagValueMetadata;
 import com.google.cloud.resourcemanager.v3.DeleteTagValueRequest;
+import com.google.cloud.resourcemanager.v3.ProjectsClient;
 import com.google.cloud.resourcemanager.v3.TagKey;
 import com.google.cloud.resourcemanager.v3.TagKeysClient;
 import com.google.cloud.resourcemanager.v3.TagValue;
@@ -43,6 +46,7 @@ import com.google.cloud.secretmanager.v1.DisableSecretVersionRequest;
 import com.google.cloud.secretmanager.v1.LocationName;
 import com.google.cloud.secretmanager.v1.ProjectName;
 import com.google.cloud.secretmanager.v1.Secret;
+import com.google.cloud.secretmanager.v1.Secret.SecretType;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient.ListSecretVersionsPage;
 import com.google.cloud.secretmanager.v1.SecretManagerServiceClient.ListSecretVersionsPagedResponse;
@@ -87,13 +91,21 @@ public class SnippetsIT {
   private static final String LABEL_VALUE = "examplelabelvalue";
   private static final String UPDATED_LABEL_KEY = "updatedlabelkey";
   private static final String UPDATED_LABEL_VALUE = "updatedlabelvalue";
-  private static final String LOCATION_ID = "us-central1";
+  private static final String LOCATION_ID = "us-east1";
   private static final String REGIONAL_ENDPOINT = 
       String.format("secretmanager.%s.rep.googleapis.com:443", LOCATION_ID);
   private static final String ANNOTATION_KEY = "exampleannotationkey";
   private static final String ANNOTATION_VALUE = "exampleannotationvalue";
   private static final String UPDATED_ANNOTATION_KEY = "updatedannotationkey";
   private static final String UPDATED_ANNOTATION_VALUE = "updatedannotationvalue";
+
+  // Role granted to a Cloud SQL DB credentials secret's built-in identity so that managed
+  // rotation can update the Cloud SQL user's password. This grant is per-secret (the member is
+  // the secret's own generated principal), so it has to be made fresh for every secret these
+  // tests create.
+  private static final String CLOUD_SQL_ROLE = "roles/cloudsql.admin";
+  private static final String CLOUD_SQL_INSTANCE_ID = System.getenv("CLOUD_SQL_INSTANCE");
+  private static final String CLOUD_SQL_USERNAME = System.getenv("CLOUD_SQL_USER");
 
   private static Secret TEST_REGIONAL_SECRET;
   private static Secret TEST_REGIONAL_SECRET_TO_DELETE;
@@ -113,6 +125,14 @@ public class SnippetsIT {
   private static SecretVersion TEST_REGIONAL_SECRET_VERSION_TO_ENABLE;
   private static SecretVersion TEST_REGIONAL_SECRET_VERSION_TO_ENABLE_WITH_ETAG;
 
+  private static SecretName TEST_REGIONAL_SECRET_WITH_CLOUD_SQL_CREDENTIALS_TO_CREATE_NAME;
+  private static String TEST_CLOUD_SQL_SECRET_FOR_ENABLE_ROTATION;
+  private static String TEST_CLOUD_SQL_SECRET_FOR_ROTATE;
+  private static String TEST_CLOUD_SQL_SECRET_FOR_SCHEDULE;
+  private static String TEST_CLOUD_SQL_SECRET_FOR_ENABLE_ROTATION_MEMBER;
+  private static String TEST_CLOUD_SQL_SECRET_FOR_ROTATE_MEMBER;
+  private static String TEST_CLOUD_SQL_SECRET_FOR_SCHEDULE_MEMBER;
+
   private static TagKey TAG_KEY;
   private static TagValue TAG_VALUE;
 
@@ -123,6 +143,8 @@ public class SnippetsIT {
     Assert.assertFalse("missing GOOGLE_CLOUD_PROJECT", Strings.isNullOrEmpty(PROJECT_ID));
     Assert.assertFalse("missing GOOGLE_CLOUD_PROJECT_LOCATION",
         Strings.isNullOrEmpty(LOCATION_ID));
+    Assert.assertFalse("missing CLOUD_SQL_INSTANCE", Strings.isNullOrEmpty(CLOUD_SQL_INSTANCE_ID));
+    Assert.assertFalse("missing CLOUD_SQL_USER", Strings.isNullOrEmpty(CLOUD_SQL_USERNAME));
 
     TEST_REGIONAL_SECRET = createRegionalSecret();
     TEST_REGIONAL_SECRET_TO_DELETE = createRegionalSecret();
@@ -157,6 +179,22 @@ public class SnippetsIT {
     TEST_REGIONAL_SECRET_VERSION_TO_ENABLE_WITH_ETAG = disableRegionalSecretVersion(
     TEST_REGIONAL_SECRET_VERSION_TO_ENABLE_WITH_ETAG);
     createTags();
+
+    TEST_REGIONAL_SECRET_WITH_CLOUD_SQL_CREDENTIALS_TO_CREATE_NAME =
+        SecretName.ofProjectLocationSecretName(PROJECT_ID, LOCATION_ID, randomSecretId());
+
+    TEST_CLOUD_SQL_SECRET_FOR_ENABLE_ROTATION = randomSecretId();
+    TEST_CLOUD_SQL_SECRET_FOR_ENABLE_ROTATION_MEMBER =
+        createRegionalSecretWithCloudSqlCredentialsAndGrant(
+            TEST_CLOUD_SQL_SECRET_FOR_ENABLE_ROTATION);
+
+    TEST_CLOUD_SQL_SECRET_FOR_ROTATE = randomSecretId();
+    TEST_CLOUD_SQL_SECRET_FOR_ROTATE_MEMBER =
+        createRegionalSecretWithCloudSqlCredentialsAndGrant(TEST_CLOUD_SQL_SECRET_FOR_ROTATE);
+
+    TEST_CLOUD_SQL_SECRET_FOR_SCHEDULE = randomSecretId();
+    TEST_CLOUD_SQL_SECRET_FOR_SCHEDULE_MEMBER =
+        createRegionalSecretWithCloudSqlCredentialsAndGrant(TEST_CLOUD_SQL_SECRET_FOR_SCHEDULE);
   }
 
   @Before
@@ -186,11 +224,138 @@ public class SnippetsIT {
     deleteRegionalSecret(TEST_REGIONAL_SECRET_WITH_DELAYED_DESTROY.toString());
     deleteRegionalSecret(TEST_REGIONAL_SECRET_TO_DELAYED_DESTROY.getName());
     deleteTags();
+
+    deleteRegionalSecret(TEST_REGIONAL_SECRET_WITH_CLOUD_SQL_CREDENTIALS_TO_CREATE_NAME
+        .toString());
+
+    revokeCloudSqlRole(TEST_CLOUD_SQL_SECRET_FOR_ENABLE_ROTATION_MEMBER);
+    deleteRegionalSecret(SecretName.ofProjectLocationSecretName(
+        PROJECT_ID, LOCATION_ID, TEST_CLOUD_SQL_SECRET_FOR_ENABLE_ROTATION).toString());
+
+    revokeCloudSqlRole(TEST_CLOUD_SQL_SECRET_FOR_ROTATE_MEMBER);
+    deleteRegionalSecret(SecretName.ofProjectLocationSecretName(
+        PROJECT_ID, LOCATION_ID, TEST_CLOUD_SQL_SECRET_FOR_ROTATE).toString());
+
+    revokeCloudSqlRole(TEST_CLOUD_SQL_SECRET_FOR_SCHEDULE_MEMBER);
+    deleteRegionalSecret(SecretName.ofProjectLocationSecretName(
+        PROJECT_ID, LOCATION_ID, TEST_CLOUD_SQL_SECRET_FOR_SCHEDULE).toString());
   }
 
   private static String randomSecretId() {
     Random random = new Random();
     return "test-drz-" + random.nextLong();
+  }
+
+  // Creates a Cloud SQL DB credentials secret and grants CLOUD_SQL_ROLE to its own built-in
+  // identity, since enableManagedRotation needs this secret's own principal granted Cloud SQL
+  // IAM permissions first -- there's no broader grant that covers a secret before it exists.
+  // Returns the granted member, so the caller can revoke it again in teardown.
+  private static String createRegionalSecretWithCloudSqlCredentialsAndGrant(String secretId)
+      throws IOException, InterruptedException {
+    Secret secret =
+        CreateRegionalSecretWithCloudSqlCredentials.createRegionalSecretWithCloudSqlCredentials(
+            PROJECT_ID, LOCATION_ID, secretId);
+
+    String member = secret.getPolicyMember().getIamPolicyUidPrincipal();
+    grantCloudSqlRole(member);
+    // IAM grants are eventually consistent; give it a moment before a caller tries to use it
+    // for managed rotation.
+    Thread.sleep(10000);
+
+    return member;
+  }
+
+  // Grants CLOUD_SQL_ROLE to member on the project. SetIamPolicy replaces the whole policy, so
+  // this reads the current policy, adds the member to the existing (or a new) binding for the
+  // role, and writes it back -- retrying the whole read-modify-write if another writer raced us
+  // (Aborted, from an etag mismatch).
+  private static void grantCloudSqlRole(String member) throws IOException {
+    String resource = String.format("projects/%s", PROJECT_ID);
+
+    try (ProjectsClient projectsClient = ProjectsClient.create()) {
+      for (int attempt = 0; ; attempt++) {
+        Policy policy = projectsClient.getIamPolicy(resource);
+
+        Policy.Builder policyBuilder = policy.toBuilder();
+        boolean found = false;
+        for (int i = 0; i < policyBuilder.getBindingsCount(); i++) {
+          Binding binding = policyBuilder.getBindings(i);
+          if (!binding.getRole().equals(CLOUD_SQL_ROLE)) {
+            continue;
+          }
+          found = true;
+          if (!binding.getMembersList().contains(member)) {
+            policyBuilder.setBindings(i, binding.toBuilder().addMembers(member).build());
+          }
+          break;
+        }
+        if (!found) {
+          policyBuilder.addBindings(
+              Binding.newBuilder().setRole(CLOUD_SQL_ROLE).addMembers(member).build());
+        }
+
+        try {
+          projectsClient.setIamPolicy(resource, policyBuilder.build());
+          return;
+        } catch (AbortedException e) {
+          if (attempt >= 5) {
+            throw e;
+          }
+          try {
+            Thread.sleep(100 * (attempt + 1));
+          } catch (InterruptedException ie) {
+            Thread.currentThread().interrupt();
+            throw new IOException("Interrupted during retry backoff", ie);
+          }
+        }
+      }
+    }
+  }
+
+  // Removes member from CLOUD_SQL_ROLE on the project, added by grantCloudSqlRole.
+  private static void revokeCloudSqlRole(String member) throws IOException {
+    String resource = String.format("projects/%s", PROJECT_ID);
+
+    try (ProjectsClient projectsClient = ProjectsClient.create()) {
+      for (int attempt = 0; ; attempt++) {
+        Policy policy = projectsClient.getIamPolicy(resource);
+
+        Policy.Builder policyBuilder = policy.toBuilder();
+        boolean changed = false;
+        for (int i = 0; i < policyBuilder.getBindingsCount(); i++) {
+          Binding binding = policyBuilder.getBindings(i);
+          if (!binding.getRole().equals(CLOUD_SQL_ROLE) || !binding.getMembersList()
+              .contains(member)) {
+            continue;
+          }
+          changed = true;
+          Binding.Builder bindingBuilder = binding.toBuilder();
+          bindingBuilder.clearMembers();
+          binding.getMembersList().stream()
+              .filter(m -> !m.equals(member))
+              .forEach(bindingBuilder::addMembers);
+          policyBuilder.setBindings(i, bindingBuilder.build());
+        }
+        if (!changed) {
+          return;
+        }
+
+        try {
+          projectsClient.setIamPolicy(resource, policyBuilder.build());
+          return;
+        } catch (AbortedException e) {
+          if (attempt >= 5) {
+            throw e;
+          }
+          try {
+            Thread.sleep(100 * (attempt + 1));
+          } catch (InterruptedException ie) {
+            Thread.currentThread().interrupt();
+            throw new IOException("Interrupted during retry backoff", ie);
+          }
+        }
+      }
+    }
   }
 
   private static void createTags() throws Exception {
@@ -378,6 +543,78 @@ public class SnippetsIT {
         name.getProject(), name.getLocation(), name.getSecret());
     SecretName createdSecretName = SecretName.parse(secret.getName());
     assertEquals(name.getSecret(), createdSecretName.getSecret());
+  }
+
+  @Test
+  public void testCreateRegionalSecretWithCloudSqlCredentials() throws IOException {
+    SecretName name = TEST_REGIONAL_SECRET_WITH_CLOUD_SQL_CREDENTIALS_TO_CREATE_NAME;
+    Secret secret =
+        CreateRegionalSecretWithCloudSqlCredentials.createRegionalSecretWithCloudSqlCredentials(
+            name.getProject(), name.getLocation(), name.getSecret());
+
+    assertEquals(name.getSecret(), SecretName.parse(secret.getName()).getSecret());
+    assertEquals(SecretType.CLOUD_SQL_DB_CREDENTIALS, secret.getSecretType());
+  }
+
+  @Test
+  public void testEnableRegionalSecretManagedRotation() throws IOException {
+    SecretVersion version =
+        EnableRegionalSecretManagedRotation.enableRegionalSecretManagedRotation(
+            PROJECT_ID,
+            LOCATION_ID,
+            TEST_CLOUD_SQL_SECRET_FOR_ENABLE_ROTATION,
+            CLOUD_SQL_INSTANCE_ID,
+            CLOUD_SQL_USERNAME);
+
+    assertThat(version.getName()).contains(TEST_CLOUD_SQL_SECRET_FOR_ENABLE_ROTATION);
+    assertEquals(State.ENABLED, version.getState());
+  }
+
+  @Test
+  public void testRotateRegionalSecret() throws IOException {
+    SecretVersion firstVersion =
+        EnableRegionalSecretManagedRotation.enableRegionalSecretManagedRotation(
+            PROJECT_ID,
+            LOCATION_ID,
+            TEST_CLOUD_SQL_SECRET_FOR_ROTATE,
+            CLOUD_SQL_INSTANCE_ID,
+            CLOUD_SQL_USERNAME);
+
+    SecretVersion rotatedVersion = RotateRegionalSecret.rotateRegionalSecret(
+        PROJECT_ID, LOCATION_ID, TEST_CLOUD_SQL_SECRET_FOR_ROTATE);
+
+    assertThat(rotatedVersion.getName()).contains(TEST_CLOUD_SQL_SECRET_FOR_ROTATE);
+    assertNotEquals(firstVersion.getName(), rotatedVersion.getName());
+    assertEquals(State.ENABLED, rotatedVersion.getState());
+  }
+
+  @Test
+  public void testUpdateRegionalSecretWithManagedRotationSchedule() throws IOException {
+    EnableRegionalSecretManagedRotation.enableRegionalSecretManagedRotation(
+        PROJECT_ID,
+        LOCATION_ID,
+        TEST_CLOUD_SQL_SECRET_FOR_SCHEDULE,
+        CLOUD_SQL_INSTANCE_ID,
+        CLOUD_SQL_USERNAME);
+
+    Secret updatedSecret =
+        UpdateRegionalSecretWithManagedRotationSchedule
+            .updateRegionalSecretWithManagedRotationSchedule(
+                PROJECT_ID, LOCATION_ID, TEST_CLOUD_SQL_SECRET_FOR_SCHEDULE, 86400);
+
+    assertThat(updatedSecret.getName()).contains(TEST_CLOUD_SQL_SECRET_FOR_SCHEDULE);
+    assertTrue(updatedSecret.getRotation().hasNextRotationTime());
+    assertEquals(86400, updatedSecret.getRotation().getRotationPeriod().getSeconds());
+  }
+
+  @Test
+  public void testGetRegionalSecretType() throws IOException {
+    SecretName name = SecretName.parse(TEST_REGIONAL_SECRET.getName());
+    Secret secret = GetRegionalSecretType.getRegionalSecretType(
+        name.getProject(), name.getLocation(), name.getSecret());
+
+    assertEquals(SecretType.SECRET_TYPE_UNSPECIFIED, secret.getSecretType());
+    assertThat(stdOut.toString()).contains("with secret type");
   }
 
   @Test
