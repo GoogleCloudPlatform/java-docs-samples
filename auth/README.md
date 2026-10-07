@@ -15,11 +15,10 @@ Build your project with:
 
 	mvn clean package -DskipTests
 
-You can then run a given `ClassName` via:
+You can then run a given class via:
 
-	mvn exec:java -Dexec.mainClass=com.example.storage.ClassName \
-	    -DpropertyName=propertyValue \
-		-Dexec.args="any arguments to the app"
+	mvn exec:java -Dexec.mainClass=com.google.cloud.auth.samples.ClassName \
+	    -Dexec.args="any arguments to the app"
 
 ### Listing buckets with default credentials
 
