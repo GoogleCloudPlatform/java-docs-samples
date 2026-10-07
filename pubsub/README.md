@@ -1,7 +1,7 @@
 # Google Cloud Pub/Sub
 
 <a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=pubsub/README.md">
-<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+<img alt="Open in Cloud Shell" src="https://gstatic.com/cloudssh/images/open-btn.png"></a>
 
 Google [Cloud Pub/Sub](https://cloud.google.com/pubsub/) is a messaging and
 event-streaming service for asynchronous communication between independent
@@ -38,4 +38,4 @@ mvn clean verify
 
 ## Contributing
 
-See the [contributor guide](../../CONTRIBUTING.md) for this repository.
+See the [contributor guide](../CONTRIBUTING.md) for this repository.

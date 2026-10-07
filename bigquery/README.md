@@ -1,7 +1,7 @@
 # Google BigQuery
 
 <a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=bigquery/README.md">
-<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+<img alt="Open in Cloud Shell" src="https://gstatic.com/cloudssh/images/open-btn.png"></a>
 
 Google [BigQuery](https://cloud.google.com/bigquery/) is a serverless data warehouse
 for analytics over massive datasets. These sample Java applications demonstrate how to
@@ -47,4 +47,4 @@ mvn clean verify
 
 ## Contributing
 
-See the [contributor guide](../../CONTRIBUTING.md) for this repository.
+See the [contributor guide](../CONTRIBUTING.md) for this repository.

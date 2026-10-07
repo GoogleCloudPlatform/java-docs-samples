@@ -1,7 +1,7 @@
 # Dialogflow
 
 <a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=dialogflow/README.md">
-<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+<img alt="Open in Cloud Shell" src="https://gstatic.com/cloudssh/images/open-btn.png"></a>
 
 [Dialogflow](https://cloud.google.com/dialogflow/) helps you build conversational
 interfaces for websites, mobile applications, and other platforms. These sample
@@ -37,4 +37,4 @@ mvn clean verify
 
 ## Contributing
 
-See the [contributor guide](../../CONTRIBUTING.md) for this repository.
+See the [contributor guide](../CONTRIBUTING.md) for this repository.

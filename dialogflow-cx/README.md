@@ -1,7 +1,7 @@
 # Dialogflow CX
 
 <a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=dialogflow-cx/README.md">
-<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+<img alt="Open in Cloud Shell" src="https://gstatic.com/cloudssh/images/open-btn.png"></a>
 
 [Dialogflow CX](https://cloud.google.com/dialogflow/cx/docs) is a conversational
 AI platform for building advanced virtual agents with flows and pages. These sample
@@ -42,4 +42,4 @@ mvn clean verify
 
 ## Contributing
 
-See the [contributor guide](../../CONTRIBUTING.md) for this repository.
+See the [contributor guide](../CONTRIBUTING.md) for this repository.

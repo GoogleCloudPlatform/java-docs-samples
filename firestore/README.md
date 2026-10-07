@@ -1,7 +1,7 @@
 # Cloud Firestore
 
 <a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=firestore/README.md">
-<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+<img alt="Open in Cloud Shell" src="https://gstatic.com/cloudssh/images/open-btn.png"></a>
 
 [Cloud Firestore](https://cloud.google.com/firestore/) is a flexible, scalable
 NoSQL document database for mobile, web, and server development. These sample
@@ -42,4 +42,4 @@ mvn clean verify
 
 ## Contributing
 
-See the [contributor guide](../../CONTRIBUTING.md) for this repository.
+See the [contributor guide](../CONTRIBUTING.md) for this repository.
