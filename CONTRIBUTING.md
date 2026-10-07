@@ -36,7 +36,7 @@ For missing product-level READMEs:
 - Do not invent sample entrypoints, class names, or product descriptions that
   are not supported by the actual folder contents.
 - Prefer to add one product README at a time, or a small set of related ones,
-  rather than 대량 creating READMEs for every missing directory.
+  rather than creating READMEs for every missing directory at once.
 - When a product folder already has good subdirectory READMEs, decide whether
   a top-level README adds value before creating one.
 
