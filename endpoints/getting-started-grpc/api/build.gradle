@@ -14,7 +14,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-apply plugin: 'java'
+apply plugin: 'java-library'
 apply plugin: 'com.google.protobuf'
 
 buildscript {
@@ -33,9 +33,9 @@ dependencies {
   repositories {
     mavenCentral()
   }
-  compile "io.grpc:grpc-netty:${grpcVersion}"
-  compile "io.grpc:grpc-protobuf:${grpcVersion}"
-  compile "io.grpc:grpc-stub:${grpcVersion}"
+  api "io.grpc:grpc-netty:${grpcVersion}"
+  api "io.grpc:grpc-protobuf:${grpcVersion}"
+  api "io.grpc:grpc-stub:${grpcVersion}"
 }
 
 protobuf {
