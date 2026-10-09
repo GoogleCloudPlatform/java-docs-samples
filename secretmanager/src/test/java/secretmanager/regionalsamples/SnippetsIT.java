@@ -99,10 +99,7 @@ public class SnippetsIT {
   private static final String UPDATED_ANNOTATION_KEY = "updatedannotationkey";
   private static final String UPDATED_ANNOTATION_VALUE = "updatedannotationvalue";
 
-  // Role granted to a Cloud SQL DB credentials secret's built-in identity so that managed
-  // rotation can update the Cloud SQL user's password. This grant is per-secret (the member is
-  // the secret's own generated principal), so it has to be made fresh for every secret these
-  // tests create.
+  // Role granted to the secret's identity to enable managed rotation.
   private static final String CLOUD_SQL_ROLE = "roles/cloudsql.admin";
   private static final String CLOUD_SQL_INSTANCE_ID = System.getenv("CLOUD_SQL_INSTANCE");
   private static final String CLOUD_SQL_USERNAME = System.getenv("CLOUD_SQL_USER");
@@ -246,10 +243,7 @@ public class SnippetsIT {
     return "test-drz-" + random.nextLong();
   }
 
-  // Creates a Cloud SQL DB credentials secret and grants CLOUD_SQL_ROLE to its own built-in
-  // identity, since enableManagedRotation needs this secret's own principal granted Cloud SQL
-  // IAM permissions first -- there's no broader grant that covers a secret before it exists.
-  // Returns the granted member, so the caller can revoke it again in teardown.
+  // Creates a Cloud SQL DB credentials secret and grants CLOUD_SQL_ROLE to its identity.
   private static String createRegionalSecretWithCloudSqlCredentialsAndGrant(String secretId)
       throws IOException, InterruptedException {
     Secret secret =
@@ -258,17 +252,13 @@ public class SnippetsIT {
 
     String member = secret.getPolicyMember().getIamPolicyUidPrincipal();
     grantCloudSqlRole(member);
-    // IAM grants are eventually consistent; give it a moment before a caller tries to use it
-    // for managed rotation.
+    // Wait for the IAM grant to propagate.
     Thread.sleep(10000);
 
     return member;
   }
 
-  // Grants CLOUD_SQL_ROLE to member on the project. SetIamPolicy replaces the whole policy, so
-  // this reads the current policy, adds the member to the existing (or a new) binding for the
-  // role, and writes it back -- retrying the whole read-modify-write if another writer raced us
-  // (Aborted, from an etag mismatch).
+  // Grants CLOUD_SQL_ROLE to the member on the project.
   private static void grantCloudSqlRole(String member) throws IOException {
     String resource = String.format("projects/%s", PROJECT_ID);
 
@@ -312,7 +302,7 @@ public class SnippetsIT {
     }
   }
 
-  // Removes member from CLOUD_SQL_ROLE on the project, added by grantCloudSqlRole.
+  // Removes the member from CLOUD_SQL_ROLE on the project.
   private static void revokeCloudSqlRole(String member) throws IOException {
     String resource = String.format("projects/%s", PROJECT_ID);
 

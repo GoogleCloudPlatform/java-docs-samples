@@ -34,9 +34,7 @@ public class GetSecretType {
     getSecretType(projectId, secretId);
   }
 
-  // Get and print the secret type (e.g. CLOUD_SQL_DB_CREDENTIALS, ACCESS_KEY, CERTIFICATE,
-  // OTHER_DB_CREDENTIALS, OTHER, or SECRET_TYPE_UNSPECIFIED for a secret with no type
-  // restriction) of the given secret.
+  // Gets the secret type of the given secret.
   public static Secret getSecretType(String projectId, String secretId) throws IOException {
     // Initialize the client that will be used to send requests. This client only needs to be
     // created once, and can be reused for multiple requests.

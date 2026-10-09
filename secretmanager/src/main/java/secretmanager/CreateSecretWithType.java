@@ -33,17 +33,13 @@ public class CreateSecretWithType {
     String projectId = "your-project-id";
     // Resource ID of the secret to create.
     String secretId = "your-secret-id";
-    // Secret type restriction, e.g. ACCESS_KEY, CERTIFICATE, OTHER_DB_CREDENTIALS, or OTHER.
-    // Use CLOUD_SQL_DB_CREDENTIALS only for a secret that will go through
-    // enableManagedRotation, which additionally requires a regional secret; see
-    // CreateRegionalSecretWithCloudSqlCredentials in the regionalsamples package.
+    // Secret type of the secret.
     SecretType secretType = SecretType.ACCESS_KEY;
     createSecretWithType(projectId, secretId, secretType);
   }
 
-  // Create a new secret with the given secret type restriction. Unlike
-  // CLOUD_SQL_DB_CREDENTIALS, these other secret types are plain metadata tags: they don't
-  // require any additional credentials payload at creation time.
+  // Creates a new secret with the given secret type.
+  // Note: CLOUD_SQL_DB_CREDENTIALS is only supported in the regional secret.
   public static Secret createSecretWithType(
       String projectId, String secretId, SecretType secretType) throws IOException {
     // Initialize the client that will be used to send requests. This client only needs to be

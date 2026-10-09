@@ -37,9 +37,7 @@ public class GetRegionalSecretType {
     getRegionalSecretType(projectId, locationId, secretId);
   }
 
-  // Get and print the secret type (e.g. CLOUD_SQL_DB_CREDENTIALS, ACCESS_KEY, CERTIFICATE,
-  // OTHER_DB_CREDENTIALS, OTHER, or SECRET_TYPE_UNSPECIFIED for a secret with no type
-  // restriction) of the given secret.
+  // Gets the secret type of the given regional secret.
   public static Secret getRegionalSecretType(String projectId, String locationId, String secretId)
       throws IOException {
 

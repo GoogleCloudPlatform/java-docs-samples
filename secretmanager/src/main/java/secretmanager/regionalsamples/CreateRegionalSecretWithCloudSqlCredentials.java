@@ -38,10 +38,7 @@ public class CreateRegionalSecretWithCloudSqlCredentials {
     createRegionalSecretWithCloudSqlCredentials(projectId, locationId, secretId);
   }
 
-  // Create a new secret with the Cloud SQL DB credentials secret type. This type is required
-  // to enable Secret Manager's automatic rotation of Cloud SQL passwords. It can only be set
-  // when the secret is created, and the secret's location must match the region of the target
-  // Cloud SQL instance.
+  // Creates a new regional secret with type CLOUD_SQL_DB_CREDENTIALS.
   public static Secret createRegionalSecretWithCloudSqlCredentials(
       String projectId, String locationId, String secretId) throws IOException {
 
@@ -57,7 +54,7 @@ public class CreateRegionalSecretWithCloudSqlCredentials {
       // Build the parent name from the project.
       LocationName location = LocationName.of(projectId, locationId);
 
-      // Build the secret to create, with the Cloud SQL DB credentials secret type.
+      // Build the secret to create.
       Secret secret =
           Secret.newBuilder().setSecretType(SecretType.CLOUD_SQL_DB_CREDENTIALS).build();
 
@@ -65,10 +62,8 @@ public class CreateRegionalSecretWithCloudSqlCredentials {
       Secret createdSecret = client.createSecret(location.toString(), secretId, secret);
       System.out.printf("Created secret: %s\n", createdSecret.getName());
 
-      // This built-in identity is what you grant Cloud SQL IAM permissions to, so that Secret
-      // Manager can rotate the database password on its behalf.
       System.out.printf(
-          "Grant this identity Cloud SQL IAM permissions to enable rotation: %s\n",
+          "Grant the Cloud SQL User rotate IAM permissions to enable managed rotation: %s\n",
           createdSecret.getPolicyMember().getIamPolicyUidPrincipal());
 
       return createdSecret;

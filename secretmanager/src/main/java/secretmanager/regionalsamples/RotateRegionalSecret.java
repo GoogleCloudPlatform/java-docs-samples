@@ -32,15 +32,12 @@ public class RotateRegionalSecret {
     String projectId = "your-project-id";
     // Location of the secret.
     String locationId = "your-location-id";
-    // Resource ID of the Cloud SQL DB credentials secret to rotate.
+    // Resource ID of the secret.
     String secretId = "your-secret-id";
     rotateRegionalSecret(projectId, locationId, secretId);
   }
 
-  // Trigger a managed rotation for a Cloud SQL DB credentials secret. Managed rotation must
-  // already be enabled on the secret (see enableRegionalSecretManagedRotation). Each call
-  // generates a new password, updates the Cloud SQL user, and adds the result as a new secret
-  // version.
+  // Triggers an adhoc rotation for the managed CLOUD_SQL_DB_CREDENTIALS typed secret.
   public static SecretVersion rotateRegionalSecret(
       String projectId, String locationId, String secretId) throws IOException {
 
@@ -53,8 +50,7 @@ public class RotateRegionalSecret {
     // created once, and can be reused for multiple requests.
     try (SecretManagerServiceClient client =
         SecretManagerServiceClient.create(secretManagerServiceSettings)) {
-      // Despite the field name, the request's "parent" holds the full secret resource name, not
-      // a collection parent.
+      // Build the name.
       SecretName secretName =
           SecretName.ofProjectLocationSecretName(projectId, locationId, secretId);
 

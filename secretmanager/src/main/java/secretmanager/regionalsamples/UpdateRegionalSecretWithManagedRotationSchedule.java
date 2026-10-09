@@ -37,26 +37,18 @@ public class UpdateRegionalSecretWithManagedRotationSchedule {
     // TODO(developer): Replace these variables before running the sample.
 
     // Your GCP project ID.
-    String projectId = "migrationsource-392805";
+    String projectId = "your-project-id";
     // Location of the secret.
-    String locationId = "us-east1";
-    // Resource ID of the Cloud SQL DB credentials secret to reconfigure.
-    String secretId = "cloudsql-autorotation-test";
-    // Interval between rotations, in seconds. The service requires at least 3600 (1 hour).
+    String locationId = "your-location-id";
+    // Resource ID of the secret.
+    String secretId = "your-secret-id";
+    // Interval between rotations, in seconds.
     long rotationPeriodSeconds = 86400; // 24 hours
     updateRegionalSecretWithManagedRotationSchedule(
         projectId, locationId, secretId, rotationPeriodSeconds);
   }
 
-  // Reconfigure the recurring rotation schedule on a secret that already has Cloud SQL managed
-  // rotation enabled (see enableRegionalSecretManagedRotation). This only applies to regional
-  // secrets of the CLOUD_SQL_DB_CREDENTIALS type -- calling it on any other secret type, or
-  // before managed rotation has been enabled, fails.
-  //
-  // rotationPeriodSeconds is the interval between rotations. The service requires it to be at
-  // least 3600s (1 hour), and the derived next rotation time (now + rotationPeriodSeconds) must
-  // be at least 300s (5 minutes) in the future -- both are enforced by the API, not checked
-  // client-side here.
+  // Updates the rotation schedule of a CLOUD_SQL_DB_CREDENTIALS typed secret.
   public static Secret updateRegionalSecretWithManagedRotationSchedule(
       String projectId, String locationId, String secretId, long rotationPeriodSeconds)
       throws IOException {
@@ -74,6 +66,10 @@ public class UpdateRegionalSecretWithManagedRotationSchedule {
       SecretName secretName =
           SecretName.ofProjectLocationSecretName(projectId, locationId, secretId);
 
+      // The rotation schedule of a CLOUD_SQL_DB_CREDENTIALS secret can be set before or after
+      // enabling managed rotation; EnableManagedRotation does not need to be called first. Other
+      // secret types also support a rotation schedule, but only when Pub/Sub topics are configured.
+      // Pub/Sub topics are not required for CLOUD_SQL_DB_CREDENTIALS.
       // next_rotation_time and rotation_period must be set together.
       Instant nextRotationInstant = Instant.now().plusSeconds(rotationPeriodSeconds);
       Timestamp nextRotationTime = Timestamps.fromMillis(nextRotationInstant.toEpochMilli());
@@ -90,10 +86,7 @@ public class UpdateRegionalSecretWithManagedRotationSchedule {
                       .build())
               .build();
 
-      // Mask only the two subfields being set here, not the whole "rotation" submessage --
-      // that would also include managed_rotation_status, which is output-only and rejects a
-      // whole-submessage replace with "immutable and cannot be updated" (confirmed empirically
-      // against a live project).
+      // Mask only the rotation subfields being set, not the whole "rotation" submessage.
       FieldMask fieldMask =
           FieldMaskUtil.fromString("rotation.next_rotation_time,rotation.rotation_period");
 
