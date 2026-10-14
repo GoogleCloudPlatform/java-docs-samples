@@ -33,6 +33,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+/* Test for creating BigQuery connection */
 public class CreateConnectionIT {
 
   private static final Logger LOG = Logger.getLogger(CreateConnectionIT.class.getName());
@@ -88,6 +89,7 @@ public class CreateConnectionIT {
   @Test
   public void testCreateConnection() throws IOException {
     String instanceId = String.format("%s:%s:%s", PROJECT_ID, REGION, MY_SQL_INSTANCE);
+    System.out.println("CreateConnectionIT instanceId: " + instanceId);
     CloudSqlCredential cloudSqlCredential =
         CloudSqlCredential.newBuilder().setUsername(DB_USER).setPassword(DB_PWD).build();
     CloudSqlProperties cloudSqlProperties =
