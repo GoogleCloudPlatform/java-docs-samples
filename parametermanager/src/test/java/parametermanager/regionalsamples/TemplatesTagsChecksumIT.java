@@ -52,6 +52,7 @@ import java.util.UUID;
 import java.util.zip.CRC32C;
 import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -123,6 +124,12 @@ public class TemplatesTagsChecksumIT {
   private static TagBindingsClient tagBindingsClient() throws IOException {
     String endpoint = String.format("%s-cloudresourcemanager.googleapis.com:443", LOCATION_ID);
     return TagBindingsClient.create(TagBindingsSettings.newBuilder().setEndpoint(endpoint).build());
+  }
+
+  private static void assumeTagsConfigured() {
+    Assume.assumeFalse(
+        "missing PARAMETER_MANAGER_TAG_KEY or PARAMETER_MANAGER_TAG_VALUE",
+        Strings.isNullOrEmpty(TAG_KEY) || Strings.isNullOrEmpty(TAG_VALUE));
   }
 
   private static String randomId(String prefix) {
@@ -371,6 +378,7 @@ public class TemplatesTagsChecksumIT {
 
   @Test
   public void createParamWithTags() throws IOException {
+    assumeTagsConfigured();
     String parameterId = randomId("java-param");
     Parameter parameter =
         CreateRegionalParamWithTags.createRegionalParamWithTags(
@@ -381,6 +389,7 @@ public class TemplatesTagsChecksumIT {
 
   @Test
   public void bindTagsToParam() throws Exception {
+    assumeTagsConfigured();
     String parameterId = randomId("java-param");
     PARAMETERS.add(ParameterName.of(PROJECT_ID, LOCATION_ID, parameterId).toString());
     TagBinding binding =
@@ -392,6 +401,7 @@ public class TemplatesTagsChecksumIT {
 
   @Test
   public void getParamTags() throws Exception {
+    assumeTagsConfigured();
     String parameterId = randomId("java-param");
     PARAMETERS.add(ParameterName.of(PROJECT_ID, LOCATION_ID, parameterId).toString());
     BindTagsToRegionalParam.bindTagsToRegionalParam(
