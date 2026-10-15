@@ -18,6 +18,7 @@ package secretmanager;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.resourcemanager.v3.CreateTagKeyMetadata;
@@ -57,6 +58,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.ExecutionException;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -77,11 +79,13 @@ public class SnippetsIT {
   private static final String IAM_USER =
       "serviceAccount:iam-samples@java-docs-samples-testing.iam.gserviceaccount.com";
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
+  private static final String KMS_KEY_NAME = System.getenv("GOOGLE_CLOUD_KMS_KEY");
   private static final String LABEL_KEY = "examplelabelkey";
   private static final String LABEL_VALUE = "examplelabelvalue";
   private static final String UPDATED_LABEL_KEY = "updatedlabelkey";
   private static final String UPDATED_LABEL_VALUE = "updatedlabelvalue";
-  private static final String ANNOTATION_KEY = "exampleannotationkey";
+  private static final String ANNOTATION_KEY = 
+      "exampleannotationkey";
   private static final String ANNOTATION_VALUE = "exampleannotationvalue";
   private static final String UPDATED_ANNOTATION_KEY = "updatedannotationkey";
   private static final String UPDATED_ANNOTATION_VALUE = "updatedannotationvalue";
@@ -89,6 +93,7 @@ public class SnippetsIT {
   private static Secret TEST_SECRET;
   private static Secret TEST_SECRET_TO_DELETE;
   private static Secret TEST_SECRET_TO_DELETE_WITH_ETAG;
+  private static Secret TEST_SECRET_TO_DELETE_ANNOTATIONS;
   private static Secret TEST_SECRET_TO_DELAYED_DESTROY;
   private static Secret TEST_SECRET_WITH_VERSIONS;
   private static SecretName TEST_SECRET_WITH_DELAYED_DESTROY;
@@ -96,6 +101,7 @@ public class SnippetsIT {
   private static SecretName TEST_SECRET_WITH_LABEL_TO_CREATE_NAME;
   private static SecretName TEST_SECRET_WITH_TAGS_TO_CREATE_NAME;
   private static SecretName TEST_SECRET_WITH_ANNOTATION_TO_CREATE_NAME;
+  private static SecretName TEST_SECRET_WITH_CMEK_TO_CREATE_NAME;
   private static SecretName TEST_UMMR_SECRET_TO_CREATE_NAME;
   private static SecretVersion TEST_SECRET_VERSION;
   private static SecretVersion TEST_SECRET_VERSION_TO_DESTROY;
@@ -113,10 +119,12 @@ public class SnippetsIT {
   @BeforeClass
   public static void beforeAll() throws Exception {
     Assert.assertFalse("missing GOOGLE_CLOUD_PROJECT", Strings.isNullOrEmpty(PROJECT_ID));
+    Assert.assertFalse("missing GOOGLE_CLOUD_KMS_KEY", Strings.isNullOrEmpty(KMS_KEY_NAME));
 
     TEST_SECRET = createSecret(true);
     TEST_SECRET_TO_DELETE = createSecret(false);
     TEST_SECRET_TO_DELETE_WITH_ETAG = createSecret(false);
+    TEST_SECRET_TO_DELETE_ANNOTATIONS = createSecret(true);
     TEST_SECRET_WITH_VERSIONS = createSecret(false);
     TEST_SECRET_TO_DELAYED_DESTROY = createSecret(false);
     TEST_SECRET_WITH_DELAYED_DESTROY = SecretName.of(PROJECT_ID, randomSecretId());
@@ -125,6 +133,7 @@ public class SnippetsIT {
     TEST_SECRET_WITH_TAGS_TO_CREATE_NAME = SecretName.of(PROJECT_ID, randomSecretId());
     TEST_SECRET_WITH_LABEL_TO_CREATE_NAME = SecretName.of(PROJECT_ID, randomSecretId());
     TEST_SECRET_WITH_ANNOTATION_TO_CREATE_NAME = SecretName.of(PROJECT_ID, randomSecretId());
+    TEST_SECRET_WITH_CMEK_TO_CREATE_NAME = SecretName.of(PROJECT_ID, randomSecretId());
 
     TEST_SECRET_VERSION = addSecretVersion(TEST_SECRET_WITH_VERSIONS);
     TEST_SECRET_VERSION_TO_DESTROY = addSecretVersion(TEST_SECRET_WITH_VERSIONS);
@@ -153,16 +162,17 @@ public class SnippetsIT {
 
   @AfterClass
   public static void afterAll() throws Exception {
-    Assert.assertFalse("missing GOOGLE_CLOUD_PROJECT", Strings.isNullOrEmpty(PROJECT_ID));
 
     deleteSecret(TEST_SECRET.getName());
     deleteSecret(TEST_SECRET_TO_CREATE_NAME.toString());
     deleteSecret(TEST_SECRET_WITH_TAGS_TO_CREATE_NAME.toString());
     deleteSecret(TEST_SECRET_WITH_LABEL_TO_CREATE_NAME.toString());
     deleteSecret(TEST_SECRET_WITH_ANNOTATION_TO_CREATE_NAME.toString());
+    deleteSecret(TEST_SECRET_WITH_CMEK_TO_CREATE_NAME.toString());
     deleteSecret(TEST_UMMR_SECRET_TO_CREATE_NAME.toString());
     deleteSecret(TEST_SECRET_TO_DELETE.getName());
     deleteSecret(TEST_SECRET_TO_DELETE_WITH_ETAG.getName());
+    deleteSecret(TEST_SECRET_TO_DELETE_ANNOTATIONS.getName());
     deleteSecret(TEST_SECRET_WITH_VERSIONS.getName());
     deleteSecret(TEST_SECRET_WITH_DELAYED_DESTROY.toString());
     deleteSecret(TEST_SECRET_TO_DELAYED_DESTROY.getName());
@@ -368,6 +378,16 @@ public class SnippetsIT {
   }
 
   @Test
+  public void testCreateSecretWithCmek() throws IOException {
+    SecretName name = TEST_SECRET_WITH_CMEK_TO_CREATE_NAME;
+    Secret secret = CreateSecretWithCmek.createSecretWithCmek(
+        name.getProject(), name.getSecret(), KMS_KEY_NAME);
+
+    assertThat(secret.getReplication().getAutomatic().getCustomerManagedEncryption()
+        .getKmsKeyName()).isEqualTo(KMS_KEY_NAME);
+  }
+
+  @Test
   public void testCreateSecretWithUserManagedReplication() throws IOException {
     SecretName name = TEST_UMMR_SECRET_TO_CREATE_NAME;
     List<String> locations = Arrays.asList("us-east1", "us-east4", "us-west1");
@@ -554,6 +574,38 @@ public class SnippetsIT {
   }
 
   @Test
+  public void testListSecretTagBindings() throws IOException {
+    SecretName name = TEST_SECRET_WITH_TAGS_TO_CREATE_NAME;
+    ListSecretTagBindings.listSecretTagBindings(name.getProject(), name.getSecret());
+
+    assertThat(stdOut.toString()).contains("Found TagBinding");
+  }
+
+  @Test
+  public void testBindSecretTag() throws IOException, InterruptedException, ExecutionException {
+    SecretName name = SecretName.parse(TEST_SECRET.getName());
+    BindSecretTag.bindSecretTag(
+        name.getProject(),
+        name.getSecret(),
+        TAG_VALUE.getName());
+
+    assertThat(stdOut.toString()).contains("Created TagBinding");
+  }
+
+  @Test
+  public void testRemoveTagFromSecret() 
+      throws IOException, InterruptedException, ExecutionException {
+    
+    SecretName name = SecretName.parse(TEST_SECRET.getName());
+    DeleteSecretTag.deleteSecretTag(
+        name.getProject(),
+        name.getSecret(),
+        TAG_VALUE.getName());
+
+    assertThat(stdOut.toString()).contains("Deleted TagBinding");
+  }
+
+  @Test
   public void testUpdateSecret() throws IOException {
     SecretName name = SecretName.parse(TEST_SECRET.getName());
     UpdateSecret.updateSecret(name.getProject(), name.getSecret());
@@ -579,6 +631,15 @@ public class SnippetsIT {
 
     assertThat(updatedSecret.getAnnotationsMap()).containsEntry(
         UPDATED_ANNOTATION_KEY, UPDATED_ANNOTATION_VALUE);
+  }
+
+  @Test
+  public void testDeleteSecretAnnotations() throws IOException {
+    SecretName name = SecretName.parse(TEST_SECRET_TO_DELETE_ANNOTATIONS.getName());
+    Secret updatedSecret = 
+        DeleteSecretAnnotations.deleteSecretAnnotations(name.getProject(), name.getSecret());
+
+    assertTrue(updatedSecret.getAnnotationsMap().isEmpty());
   }
 
   @Test
