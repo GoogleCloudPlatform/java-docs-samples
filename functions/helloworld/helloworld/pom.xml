@@ -50,8 +50,8 @@
   <!-- [START functions_example_pom] -->
   <!-- [START functions_example_pom_dependencies] -->
   <properties>
-    <maven.compiler.target>11</maven.compiler.target>
-    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>21</maven.compiler.target>
+    <maven.compiler.source>21</maven.compiler.source>
   </properties>
 
   <dependencies>
