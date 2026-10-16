@@ -1,7 +1,7 @@
 # Getting Started with Google Cloud Authentication
 
 <a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=auth/README.md">
-<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+<img alt="Open in Cloud Shell" src="https://gstatic.com/cloudssh/images/open-btn.png"></a>
 
 See the [documentation][auth-docs] for more information about authenticating for Google Cloud APIs.
 
