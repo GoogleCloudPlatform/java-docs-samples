@@ -27,6 +27,7 @@ import com.google.cloud.bigquery.DatasetId;
 import com.google.cloud.bigquery.DatasetInfo;
 import com.google.cloud.bigquery.testing.RemoteBigQueryHelper;
 import com.google.cloud.storage.BlobInfo;
+import com.google.cloud.storage.BucketInfo;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.Storage.BlobListOption;
 import com.google.cloud.storage.StorageOptions;
@@ -36,7 +37,9 @@ import java.io.PrintStream;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Timeout;
@@ -52,6 +55,8 @@ public class QuickStartIT {
   
   private static final String bucketName = "java-docs-samples-testing";
   private static final String[] assetTypes = { "compute.googleapis.com/Network" };
+
+  private static final String testBucket = "java-docs-test-bucket-" + UUID.randomUUID().toString();
 
   private ByteArrayOutputStream bout;
   private PrintStream out;
@@ -134,12 +139,24 @@ public class QuickStartIT {
 
   @Test
   public void testBatchGetAssetsHistory() throws Exception {
-    String bucketAssetName = String.format("//storage.googleapis.com/%s", bucketName);
+    String bucketAssetName = String.format("//storage.googleapis.com/%s", testBucket);
     BatchGetAssetsHistoryExample.main(bucketAssetName);
     String got = bout.toString();
     if (!got.isEmpty()) {
       assertThat(got).contains(bucketAssetName);
     }
+  }
+
+  @BeforeClass
+  public static void createTestBucket() {
+    Storage storage = StorageOptions.getDefaultInstance().getService();
+    storage.create(BucketInfo.of(testBucket));
+  }
+
+  @AfterClass
+  public static void deleteTestBucket() {
+    Storage storage = StorageOptions.getDefaultInstance().getService();
+    storage.delete(testBucket);
   }
 
   protected String getDataset(String datasetName) throws BigQueryException {

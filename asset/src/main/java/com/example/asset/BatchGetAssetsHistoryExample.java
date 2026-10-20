@@ -40,7 +40,7 @@ public class BatchGetAssetsHistoryExample {
     String[] assetNames = args[0].split(",");
     try (AssetServiceClient client = AssetServiceClient.create()) {
       ProjectName parent = ProjectName.of(projectId);
-      ContentType contentType = ContentType.CONTENT_TYPE_UNSPECIFIED;
+      ContentType contentType = ContentType.RESOURCE;
       TimeWindow readTimeWindow = TimeWindow.newBuilder().build();
       BatchGetAssetsHistoryRequest request =
           BatchGetAssetsHistoryRequest.newBuilder()
