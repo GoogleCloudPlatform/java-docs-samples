@@ -142,9 +142,7 @@ public class QuickStartIT {
     String bucketAssetName = String.format("//storage.googleapis.com/%s", testBucket);
     BatchGetAssetsHistoryExample.main(bucketAssetName);
     String got = bout.toString();
-    if (!got.isEmpty()) {
-      assertThat(got).contains(bucketAssetName);
-    }
+    assertThat(got).contains(bucketAssetName);
   }
 
   @BeforeClass

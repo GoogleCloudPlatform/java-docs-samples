@@ -33,8 +33,6 @@ public class BatchGetAssetsHistoryExample {
   // Use the default project Id.
   private static final String projectId = ServiceOptions.getDefaultProjectId();
 
-  // Export assets for a project.
-  // @param args path where the results will be exported to.
   public static void main(String... args) throws Exception {
     // Asset names, e.g.: "//storage.googleapis.com/[BUCKET_NAME]"
     String[] assetNames = args[0].split(",");
