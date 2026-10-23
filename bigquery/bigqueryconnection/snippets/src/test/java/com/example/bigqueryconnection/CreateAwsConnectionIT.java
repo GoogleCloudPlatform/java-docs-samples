@@ -22,6 +22,9 @@ import static junit.framework.TestCase.assertNotNull;
 import com.google.cloud.bigquery.connection.v1.AwsAccessRole;
 import com.google.cloud.bigquery.connection.v1.AwsProperties;
 import com.google.cloud.bigquery.connection.v1.Connection;
+import com.google.cloud.bigquery.connection.v1.ConnectionName;
+import com.google.cloud.bigquery.connection.v1.DeleteConnectionRequest;
+import com.google.cloud.bigqueryconnection.v1.ConnectionServiceClient;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -73,7 +76,13 @@ public class CreateAwsConnectionIT {
   @After
   public void tearDown() throws IOException {
     // Clean up
-    DeleteConnection.deleteConnection(PROJECT_ID, LOCATION, connectionId);
+    try (ConnectionServiceClient client = ConnectionServiceClient.create()) {
+      ConnectionName name = ConnectionName.of(PROJECT_ID, LOCATION, connectionId);
+      DeleteConnectionRequest request =
+          DeleteConnectionRequest.newBuilder().setName(name.toString()).build();
+      client.deleteConnection(request);
+      System.out.println("Connection deleted successfully");
+    }
     // restores print statements in the original method
     System.out.flush();
     System.setOut(originalPrintStream);
