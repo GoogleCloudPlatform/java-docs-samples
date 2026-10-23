@@ -83,10 +83,12 @@ public class CreateAwsConnectionIT {
       client.deleteConnection(request);
       System.out.println("Connection deleted successfully");
     }
-    // restores print statements in the original method
-    System.out.flush();
-    System.setOut(originalPrintStream);
-    LOG.log(Level.INFO, bout.toString());
+    finally{
+      // restores print statements in the original method
+      System.out.flush();
+      System.setOut(originalPrintStream);
+      LOG.log(Level.INFO, bout.toString());
+    }
   }
 
   @Test
