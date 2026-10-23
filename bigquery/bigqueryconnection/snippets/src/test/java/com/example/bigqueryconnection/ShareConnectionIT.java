@@ -100,8 +100,7 @@ public class ShareConnectionIT {
           DeleteConnectionRequest.newBuilder().setName(name.toString()).build();
       client.deleteConnection(request);
       System.out.println("Connection deleted successfully");
-    }
-    finally{
+    } finally {
       // restores print statements in the original method
       System.out.flush();
       System.setOut(originalPrintStream);
