@@ -17,7 +17,6 @@
 package aiplatform;
 
 // [START aiplatform_sdk_ideation]
-// [START generativeaionvertexai_sdk_ideation]
 
 import com.google.cloud.aiplatform.v1.EndpointName;
 import com.google.cloud.aiplatform.v1.PredictResponse;
@@ -93,4 +92,3 @@ public class PredictTextPromptSample {
   }
 }
 // [END aiplatform_sdk_ideation]
-// [END generativeaionvertexai_sdk_ideation]
