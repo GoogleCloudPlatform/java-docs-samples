@@ -17,6 +17,7 @@
 package aiplatform;
 
 // [START aiplatform_sdk_code_chat]
+
 import com.google.cloud.aiplatform.v1.EndpointName;
 import com.google.cloud.aiplatform.v1.PredictResponse;
 import com.google.cloud.aiplatform.v1.PredictionServiceClient;
