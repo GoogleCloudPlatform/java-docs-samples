@@ -68,7 +68,7 @@ public class ProcessFormDocumentTest {
 
     assertThat(got).contains("There are 1 page(s) in this document.");
     assertThat(got).contains("Table with 4 columns and 3 rows");
-    assertThat(got).contains("Found 10 form fields");
+    assertThat(got).contains("Found 13 form fields");
     assertThat(got).contains("BALANCE DUE");
   }
 

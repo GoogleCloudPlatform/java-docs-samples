@@ -60,6 +60,7 @@ public class ProcessSplitterDocumentTest {
   }
 
   @Test
+  @Ignore("ProcessorType DOCUMENT_SPLIT_PROCESSOR is deprecated by Google Cloud.")
   public void testProcessSplitterDocument()
       throws InterruptedException, ExecutionException, IOException, TimeoutException {
     // parse the multi-document with splitter processor.
