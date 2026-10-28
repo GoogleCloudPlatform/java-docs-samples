@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package documentai.v1beta3;
+package documentai.v1;
 
 // [START documentai_process_splitter_document]
 
-import com.google.cloud.documentai.v1beta3.Document;
-import com.google.cloud.documentai.v1beta3.DocumentProcessorServiceClient;
-import com.google.cloud.documentai.v1beta3.DocumentProcessorServiceSettings;
-import com.google.cloud.documentai.v1beta3.ProcessRequest;
-import com.google.cloud.documentai.v1beta3.ProcessResponse;
-import com.google.cloud.documentai.v1beta3.RawDocument;
+import com.google.cloud.documentai.v1.Document;
+import com.google.cloud.documentai.v1.DocumentProcessorServiceClient;
+import com.google.cloud.documentai.v1.DocumentProcessorServiceSettings;
+import com.google.cloud.documentai.v1.ProcessRequest;
+import com.google.cloud.documentai.v1.ProcessResponse;
+import com.google.cloud.documentai.v1.RawDocument;
 import com.google.protobuf.ByteString;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -86,7 +86,7 @@ public class ProcessSplitterDocument {
       // This processor only provides text for the document and information on how
       // to split the document on logical boundaries. To identify and extract text,
       // form elements, and entities please see other processors like the OCR, form,
-      // and specalized processors.
+      // and specialized processors.
       List<Document.Entity> entities = documentResponse.getEntitiesList();
       System.out.printf("Found %d subdocuments:\n", entities.size());
       for (Document.Entity entity : entities) {

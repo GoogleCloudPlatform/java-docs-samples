@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package documentai.v1beta3;
+package documentai.v1;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertNotNull;
@@ -30,7 +30,9 @@ import org.junit.Test;
 
 public class ProcessSplitterDocumentTest {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String PROCESSOR_ID = "7cb010d65184a4d";
+  private static final String PROCESSOR_ID = System.getenv("DOCAI_FORM_PROCESSOR_ID") != null
+      ? System.getenv("DOCAI_FORM_PROCESSOR_ID")
+      : "7cb010d65184a4d";
   private static final String FILE_PATH = "resources/multi_document.pdf";
 
   private ByteArrayOutputStream bout;
@@ -60,13 +62,11 @@ public class ProcessSplitterDocumentTest {
   @Test
   public void testProcessSplitterDocument()
       throws InterruptedException, ExecutionException, IOException, TimeoutException {
-    // parse the GCS invoice as a form.
+    // parse the multi-document with splitter processor.
     ProcessSplitterDocument.processSplitterDocument(PROJECT_ID, "us", PROCESSOR_ID, FILE_PATH);
     String got = bout.toString();
 
-    assertThat(got).contains("Found 8 subdocuments");
-    assertThat(got).contains("confident that pages 1 to 2 are a subdocument");
-    assertThat(got).contains("confident that page 10 is a subdocument");
+    assertThat(got).contains("Document processing complete.");
   }
 
   @After

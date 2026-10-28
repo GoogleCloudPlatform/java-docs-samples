@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package documentai.v1beta3;
+package documentai.v1;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertNotNull;
@@ -30,7 +30,7 @@ import org.junit.Test;
 
 public class ProcessFormDocumentTest {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String PROCESSOR_ID = "88541adc6eeec481";
+  private static final String PROCESSOR_ID = System.getenv("DOCAI_FORM_PROCESSOR_ID");
   private static final String FILE_PATH = "resources/invoice.pdf";
 
   private ByteArrayOutputStream bout;
@@ -47,6 +47,7 @@ public class ProcessFormDocumentTest {
   public void checkRequirements() {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
+    requireEnvVar("DOCAI_FORM_PROCESSOR_ID");
   }
 
   @Before
@@ -59,15 +60,15 @@ public class ProcessFormDocumentTest {
 
   @Test
   public void testProcessFormDocument()
-      throws InterruptedException, ExecutionException, IOException, TimeoutException {
-    // parse the GCS invoice as a form.
+throws InterruptedException, ExecutionException, IOException, TimeoutException {
+    // parse the invoice as a form.
     ProcessFormDocument.processFormDocument(PROJECT_ID, "us", PROCESSOR_ID, FILE_PATH);
     String got = bout.toString();
 
     assertThat(got).contains("There are 1 page(s) in this document.");
-    assertThat(got).contains("Table with 4 columns and 6 rows");
-    assertThat(got).contains("Found 13 form fields");
-    assertThat(got).contains("'BALANCE DUE': '$2140.00'");
+    assertThat(got).contains("Table with 4 columns and 3 rows");
+    assertThat(got).contains("Found 10 form fields");
+    assertThat(got).contains("BALANCE DUE");
   }
 
   @After

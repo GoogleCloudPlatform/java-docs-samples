@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package documentai.v1beta3;
+package documentai.v1;
 
 // [START documentai_process_specialized_document]
 
-import com.google.cloud.documentai.v1beta3.Document;
-import com.google.cloud.documentai.v1beta3.DocumentProcessorServiceClient;
-import com.google.cloud.documentai.v1beta3.DocumentProcessorServiceSettings;
-import com.google.cloud.documentai.v1beta3.ProcessRequest;
-import com.google.cloud.documentai.v1beta3.ProcessResponse;
-import com.google.cloud.documentai.v1beta3.RawDocument;
+import com.google.cloud.documentai.v1.Document;
+import com.google.cloud.documentai.v1.DocumentProcessorServiceClient;
+import com.google.cloud.documentai.v1.DocumentProcessorServiceSettings;
+import com.google.cloud.documentai.v1.ProcessRequest;
+import com.google.cloud.documentai.v1.ProcessResponse;
+import com.google.cloud.documentai.v1.RawDocument;
 import com.google.protobuf.ByteString;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -80,9 +80,9 @@ public class ProcessSpecializedDocument {
 
       System.out.println("Document processing complete.");
 
-      // Read fields specificly from the specalized US drivers license processor:
+      // Read fields specifically from the specialized US drivers license processor:
       // https://cloud.google.com/document-ai/docs/processors-list#processor_us-driver-license-parser
-      // retriving data from other specalized processors follow a similar pattern.
+      // retrieving data from other specialized processors follow a similar pattern.
       // For a complete list of processors see:
       // https://cloud.google.com/document-ai/docs/processors-list
       //
@@ -94,9 +94,9 @@ public class ProcessSpecializedDocument {
         // the processor documentation:
         // https://cloud.google.com/document-ai/docs/processors-list
         String entityType = entity.getType();
-        // some other value formats in addition to text are availible
+        // some other value formats in addition to text are available
         // e.g. dates: `entity.getNormalizedValue().getDateValue().getYear()`
-        // check for normilized value with `entity.hasNormalizedValue()`
+        // check for normalized value with `entity.hasNormalizedValue()`
         String entityTextValue = escapeNewlines(entity.getTextAnchor().getContent());
         float entityConfidence = entity.getConfidence();
         System.out.printf(
