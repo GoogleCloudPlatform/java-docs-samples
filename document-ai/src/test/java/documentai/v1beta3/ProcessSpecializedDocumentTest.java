@@ -30,8 +30,8 @@ import org.junit.Test;
 
 public class ProcessSpecializedDocumentTest {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String PROCESSOR_ID = System.getenv("DOCAI_FORM_PROCESSOR_ID") != null
-      ? System.getenv("DOCAI_FORM_PROCESSOR_ID")
+  private static final String PROCESSOR_ID = System.getenv("DOCAI_SPECIALIZED_PROCESSOR_ID") != null
+      ? System.getenv("DOCAI_SPECIALIZED_PROCESSOR_ID")
       : "ae8bc99f01b36b5e";
   private static final String FILE_PATH = "resources/us_driver_license.pdf";
 
@@ -67,7 +67,8 @@ public class ProcessSpecializedDocumentTest {
         PROJECT_ID, "us", PROCESSOR_ID, FILE_PATH);
     String got = bout.toString();
 
-    assertThat(got).contains("Document processing complete.");
+    assertThat(got).contains("Document Id");
+    assertThat(got).contains("97551579");
   }
 
   @After

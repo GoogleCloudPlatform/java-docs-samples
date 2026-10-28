@@ -30,8 +30,8 @@ import org.junit.Test;
 
 public class ProcessSplitterDocumentTest {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String PROCESSOR_ID = System.getenv("DOCAI_FORM_PROCESSOR_ID") != null
-      ? System.getenv("DOCAI_FORM_PROCESSOR_ID")
+  private static final String PROCESSOR_ID = System.getenv("DOCAI_SPLITTER_PROCESSOR_ID") != null
+      ? System.getenv("DOCAI_SPLITTER_PROCESSOR_ID")
       : "7cb010d65184a4d";
   private static final String FILE_PATH = "resources/multi_document.pdf";
 
@@ -48,7 +48,7 @@ public class ProcessSplitterDocumentTest {
   @Before
   public void checkRequirements() {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
-    requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
+    // requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
   }
 
   @Before
@@ -66,7 +66,9 @@ public class ProcessSplitterDocumentTest {
     ProcessSplitterDocument.processSplitterDocument(PROJECT_ID, "us", PROCESSOR_ID, FILE_PATH);
     String got = bout.toString();
 
-    assertThat(got).contains("Document processing complete.");
+    assertThat(got).contains("Found 8 subdocuments");
+    assertThat(got).contains("confident that pages 1 to 2 are a subdocument");
+    assertThat(got).contains("confident that page 10 is a subdocument");
   }
 
   @After

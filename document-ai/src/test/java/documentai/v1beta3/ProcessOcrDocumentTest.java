@@ -30,9 +30,9 @@ import org.junit.Test;
 
 public class ProcessOcrDocumentTest {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String PROCESSOR_ID = System.getenv("DOCAI_FORM_PROCESSOR_ID") != null
-      ? System.getenv("DOCAI_FORM_PROCESSOR_ID")
-      : "1f7c952802455ca8";
+  private static final String PROCESSOR_ID = System.getenv("DOCAI_OCR_PROCESSOR_ID") != null
+      ? System.getenv("DOCAI_OCR_PROCESSOR_ID")
+      : "f9018d35bc5edc1e";
   private static final String FILE_PATH = "resources/handwritten_form.pdf";
 
   private ByteArrayOutputStream bout;

@@ -30,7 +30,9 @@ import org.junit.Test;
 
 public class ProcessFormDocumentTest {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String PROCESSOR_ID = System.getenv("DOCAI_FORM_PROCESSOR_ID");
+  private static final String PROCESSOR_ID = System.getenv("DOCAI_FORM_PROCESSOR_ID") != null
+      ? System.getenv("DOCAI_FORM_PROCESSOR_ID")
+      : "88541adc6eeec481";
   private static final String FILE_PATH = "resources/invoice.pdf";
 
   private ByteArrayOutputStream bout;
@@ -47,7 +49,6 @@ public class ProcessFormDocumentTest {
   public void checkRequirements() {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
     requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
-    requireEnvVar("DOCAI_FORM_PROCESSOR_ID");
   }
 
   @Before
@@ -60,7 +61,7 @@ public class ProcessFormDocumentTest {
 
   @Test
   public void testProcessFormDocument()
-throws InterruptedException, ExecutionException, IOException, TimeoutException {
+      throws InterruptedException, ExecutionException, IOException, TimeoutException {
     // parse the invoice as a form.
     ProcessFormDocument.processFormDocument(PROJECT_ID, "us", PROCESSOR_ID, FILE_PATH);
     String got = bout.toString();
