@@ -17,8 +17,7 @@
 package com.example.memorystore.redis;
 
 // [START memorystore_redis_client_side_metrics]
-import com.google.cloud.opentelemetry.metric.GoogleCloudMetricExporter;
-import com.google.cloud.opentelemetry.trace.TraceExporter;
+import com.google.auth.oauth2.GoogleCredentials;
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.common.Attributes;
@@ -27,10 +26,13 @@ import io.opentelemetry.api.metrics.LongCounter;
 import io.opentelemetry.api.metrics.Meter;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
+import io.opentelemetry.exporter.otlp.metrics.OtlpGrpcMetricExporter;
+import io.opentelemetry.exporter.otlp.trace.OtlpGrpcSpanExporter;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
-import io.opentelemetry.sdk.metrics.export.MetricExporter;
 import io.opentelemetry.sdk.metrics.SdkMeterProvider;
+import io.opentelemetry.sdk.metrics.export.MetricExporter;
 import io.opentelemetry.sdk.metrics.export.PeriodicMetricReader;
+import io.opentelemetry.sdk.resources.Resource;
 import io.opentelemetry.sdk.trace.SdkTracerProvider;
 import io.opentelemetry.sdk.trace.export.BatchSpanProcessor;
 import io.opentelemetry.sdk.trace.export.SpanExporter;
@@ -39,17 +41,43 @@ import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 
+import java.io.IOException;
 import java.time.Duration;
+import java.util.Collections;
+import java.util.Map;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * Sample application demonstrating client-side metrics and tracing for
- * Google Cloud Memorystore for Redis.
+ * Google Cloud Memorystore for Redis using OpenTelemetry OTLP exporters.
  */
 public final class RedisTelemetryApp {
     /** Attribute key for Redis operation names. */
     private static final AttributeKey<String> ATTR_OPERATION =
             AttributeKey.stringKey("operation");
+
+    /** Attribute key for the detected cloud account/project ID. */
+    private static final AttributeKey<String> ATTR_CLOUD_ACCOUNT_ID =
+            AttributeKey.stringKey("cloud.account.id");
+
+    /** Attribute key required by the Google Cloud Telemetry API. */
+    private static final AttributeKey<String> ATTR_GCP_PROJECT_ID =
+            AttributeKey.stringKey("gcp.project_id");
+
+    /** Google Cloud Telemetry API OTLP endpoint. */
+    private static final String TELEMETRY_ENDPOINT =
+            "https://telemetry.googleapis.com:443";
+
+    /** OAuth2 scope for Google Cloud APIs. */
+    private static final String CLOUD_PLATFORM_SCOPE =
+            "https://www.googleapis.com/auth/cloud-platform";
+
+    /** HTTP/gRPC Authorization header name. */
+    private static final String AUTHORIZATION_HEADER = "Authorization";
+
+    /** Prefix for OAuth2 Bearer tokens. */
+    private static final String BEARER_PREFIX = "Bearer ";
 
     /** Maximum number of Redis reconnection attempts. */
     private static final int MAX_RETRIES = 3;
@@ -68,6 +96,9 @@ public final class RedisTelemetryApp {
 
     /** Default Redis port. */
     private static final int DEFAULT_REDIS_PORT = 6379;
+
+    /** OpenTelemetry SDK instance used for flushing telemetry on shutdown. */
+    private static OpenTelemetrySdk openTelemetrySdk;
 
     /** OpenTelemetry Tracer instance for recording trace spans. */
     private static Tracer tracer;
@@ -100,8 +131,9 @@ public final class RedisTelemetryApp {
      * Main entry point for running the sample application.
      *
      * @param args Command line arguments (not used).
+     * @throws IOException If Google Cloud credentials cannot be loaded.
      */
-    public static void main(final String[] args) {
+    public static void main(final String[] args) throws IOException {
         setupTelemetry();
 
         final String host = System.getenv()
@@ -120,6 +152,9 @@ public final class RedisTelemetryApp {
         } finally {
             if (jedisPool != null) {
                 jedisPool.close();
+            }
+            if (openTelemetrySdk != null) {
+                openTelemetrySdk.close();
             }
         }
     }
@@ -151,7 +186,7 @@ public final class RedisTelemetryApp {
     /**
      * Injects mocked or no-op telemetry and pool instances for unit testing.
      *
-     * @param pool                The mocked or test JedisPool instance.
+     * @param pool              The mocked or test JedisPool instance.
      * @param testOpenTelemetry The OpenTelemetry instance to use for testing.
      */
     static void initForTest(
@@ -180,36 +215,73 @@ public final class RedisTelemetryApp {
 
     /**
      * Configures the production OpenTelemetry SDK to export Traces and Metrics
-     * to Google Cloud Operations.
+     * via OTLP to Google Cloud.
+     *
+     * @throws IOException If Google Application Default Credentials fail.
      */
-    private static void setupTelemetry() {
-        final SpanExporter traceExporter =
-                TraceExporter.createWithDefaultConfiguration();
-        final SdkTracerProvider tracerProvider =
-                SdkTracerProvider.builder()
-                        .addSpanProcessor(
-                                BatchSpanProcessor.builder(traceExporter)
-                                        .build())
-                        .build();
+    private static void setupTelemetry() throws IOException {
+        final GoogleCredentials credentials = GoogleCredentials
+                .getApplicationDefault()
+                .createScoped(Collections.singletonList(CLOUD_PLATFORM_SCOPE));
+        credentials.refreshIfExpired();
 
-        final MetricExporter metricExporter =
-                GoogleCloudMetricExporter.createWithDefaultConfiguration();
-        final SdkMeterProvider meterProvider =
-                SdkMeterProvider.builder()
-                        .registerMetricReader(
-                                PeriodicMetricReader.builder(metricExporter)
-                                        .setInterval(Duration.ofSeconds(
-                                                METRIC_INTERVAL_SECONDS))
-                                        .build())
-                        .build();
+        final Supplier<Map<String, String>> headerSupplier = () -> {
+            try {
+                synchronized (credentials) {
+                    credentials.refreshIfExpired();
+                    return Collections.singletonMap(
+                            AUTHORIZATION_HEADER,
+                            BEARER_PREFIX
+                                    + credentials.getAccessToken()
+                                            .getTokenValue());
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(
+                        "Failed to refresh Google credentials", e);
+            }
+        };
 
-        final OpenTelemetry openTelemetry = OpenTelemetrySdk.builder()
+        final Resource defaultResource = Resource.getDefault();
+        String projectId =
+                defaultResource.getAttributes().get(ATTR_CLOUD_ACCOUNT_ID);
+        if (projectId == null || projectId.isEmpty()) {
+            projectId = System.getenv("GOOGLE_CLOUD_PROJECT");
+        }
+        final Resource resource = projectId != null && !projectId.isEmpty()
+                ? defaultResource.merge(Resource.create(
+                        Attributes.of(ATTR_GCP_PROJECT_ID, projectId)))
+                : defaultResource;
+
+        final SpanExporter traceExporter = OtlpGrpcSpanExporter.builder()
+                .setEndpoint(TELEMETRY_ENDPOINT)
+                .setHeaders(headerSupplier)
+                .build();
+        final SdkTracerProvider tracerProvider = SdkTracerProvider.builder()
+                .setResource(resource)
+                .addSpanProcessor(
+                        BatchSpanProcessor.builder(traceExporter).build())
+                .build();
+
+        final MetricExporter metricExporter = OtlpGrpcMetricExporter.builder()
+                .setEndpoint(TELEMETRY_ENDPOINT)
+                .setHeaders(headerSupplier)
+                .build();
+        final SdkMeterProvider meterProvider = SdkMeterProvider.builder()
+                .setResource(resource)
+                .registerMetricReader(
+                        PeriodicMetricReader.builder(metricExporter)
+                                .setInterval(Duration.ofSeconds(
+                                        METRIC_INTERVAL_SECONDS))
+                                .build())
+                .build();
+
+        openTelemetrySdk = OpenTelemetrySdk.builder()
                 .setTracerProvider(tracerProvider)
                 .setMeterProvider(meterProvider)
                 .buildAndRegisterGlobal();
 
-        tracer = openTelemetry.getTracer("jedis.client");
-        final Meter meter = openTelemetry.getMeter("jedis.metrics");
+        tracer = openTelemetrySdk.getTracer("jedis.client");
+        final Meter meter = openTelemetrySdk.getMeter("jedis.metrics");
 
         rttHist = meter.histogramBuilder("redis_client_rtt")
                 .setUnit("ms").build();
