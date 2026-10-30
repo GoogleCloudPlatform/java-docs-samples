@@ -19,14 +19,41 @@ package com.example.cloudrun;
 import com.google.gson.JsonObject;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import java.sql.Timestamp;
-import lombok.Data;
 
-/** Lombok notation to generate methods: toString, equals, hashCode, getters, and setters */
-@Data
 public class Vote {
   @NonNull private String uid;
   @NonNull private String candidate;
   @NonNull private Timestamp timeCast;
+
+  public Vote(String uid, String candidate, Timestamp timeCast) {
+    this.uid = uid;
+    this.candidate = candidate;
+    this.timeCast = timeCast;
+  }
+
+  public String getUid() {
+    return uid;
+  }
+
+  public void setUid(String uid) {
+    this.uid = uid;
+  }
+
+  public String getCandidate() {
+    return candidate;
+  }
+
+  public void setCandidate(String candidate) {
+    this.candidate = candidate;
+  }
+
+  public Timestamp getTimeCast() {
+    return timeCast;
+  }
+
+  public void setTimeCast(Timestamp timeCast) {
+    this.timeCast = timeCast;
+  }
 
   @Override
   public String toString() {
