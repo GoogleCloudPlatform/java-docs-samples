@@ -14,35 +14,36 @@
  * limitations under the License.
  */
 
-package documentai.v1beta3;
+package documentai.v1;
 
-// [START documentai_process_specialized_document]
+// [START documentai_process_splitter_document]
 
-import com.google.cloud.documentai.v1beta3.Document;
-import com.google.cloud.documentai.v1beta3.DocumentProcessorServiceClient;
-import com.google.cloud.documentai.v1beta3.DocumentProcessorServiceSettings;
-import com.google.cloud.documentai.v1beta3.ProcessRequest;
-import com.google.cloud.documentai.v1beta3.ProcessResponse;
-import com.google.cloud.documentai.v1beta3.RawDocument;
+import com.google.cloud.documentai.v1.Document;
+import com.google.cloud.documentai.v1.DocumentProcessorServiceClient;
+import com.google.cloud.documentai.v1.DocumentProcessorServiceSettings;
+import com.google.cloud.documentai.v1.ProcessRequest;
+import com.google.cloud.documentai.v1.ProcessResponse;
+import com.google.cloud.documentai.v1.RawDocument;
 import com.google.protobuf.ByteString;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
-public class ProcessSpecializedDocument {
-  public static void processSpecializedDocument()
+public class ProcessSplitterDocument {
+  public static void processSplitterDocument()
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
     // TODO(developer): Replace these variables before running the sample.
     String projectId = "your-project-id";
     String location = "your-project-location"; // Format is "us" or "eu".
     String processerId = "your-processor-id";
     String filePath = "path/to/input/file.pdf";
-    processSpecializedDocument(projectId, location, processerId, filePath);
+    processSplitterDocument(projectId, location, processerId, filePath);
   }
 
-  public static void processSpecializedDocument(
+  public static void processSplitterDocument(
       String projectId, String location, String processorId, String filePath)
       throws IOException, InterruptedException, ExecutionException, TimeoutException {
     // Initialize client that will be used to send requests. This client only needs
@@ -80,34 +81,39 @@ public class ProcessSpecializedDocument {
 
       System.out.println("Document processing complete.");
 
-      // Read fields specificly from the specalized US drivers license processor:
-      // https://cloud.google.com/document-ai/docs/processors-list#processor_us-driver-license-parser
-      // retriving data from other specalized processors follow a similar pattern.
-      // For a complete list of processors see:
-      // https://cloud.google.com/document-ai/docs/processors-list
-      //
-      // OCR and other data is also present in the quality processor's response.
-      // Please see the OCR and other samples for how to parse other data in the
-      // response.
-      for (Document.Entity entity : documentResponse.getEntitiesList()) {
-        // Fields detected. For a full list of fields for each processor see
-        // the processor documentation:
-        // https://cloud.google.com/document-ai/docs/processors-list
-        String entityType = entity.getType();
-        // some other value formats in addition to text are availible
-        // e.g. dates: `entity.getNormalizedValue().getDateValue().getYear()`
-        // check for normilized value with `entity.hasNormalizedValue()`
-        String entityTextValue = escapeNewlines(entity.getTextAnchor().getContent());
+      // Read the splitter output from the document splitter processor:
+      // https://cloud.google.com/document-ai/docs/processors-list#processor_doc-splitter
+      // This processor only provides text for the document and information on how
+      // to split the document on logical boundaries. To identify and extract text,
+      // form elements, and entities please see other processors like the OCR, form,
+      // and specialized processors.
+      List<Document.Entity> entities = documentResponse.getEntitiesList();
+      System.out.printf("Found %d subdocuments:\n", entities.size());
+      for (Document.Entity entity : entities) {
         float entityConfidence = entity.getConfidence();
-        System.out.printf(
-            "    * %s: %s (%.2f%% confident)\n",
-            entityType, entityTextValue, entityConfidence * 100.0);
+        String pagesRangeText = pageRefsToString(entity.getPageAnchor().getPageRefsList());
+        String subdocumentType = entity.getType();
+        if (subdocumentType.isEmpty()) {
+          System.out.printf(
+              "%.2f%% confident that %s a subdocument.\n", entityConfidence * 100, pagesRangeText);
+        } else {
+          System.out.printf(
+              "%.2f%% confident that %s a '%s' subdocument.\n",
+              entityConfidence * 100, pagesRangeText, subdocumentType);
+        }
       }
     }
   }
 
-  private static String escapeNewlines(String s) {
-    return s.replace("\n", "\\n").replace("\r", "\\r");
+  // Converts page reference(s) to a string describing the page or page range.
+  private static String pageRefsToString(List<Document.PageAnchor.PageRef> pageRefs) {
+    if (pageRefs.size() == 1) {
+      return String.format("page %d is", pageRefs.get(0).getPage() + 1);
+    } else {
+      long start = pageRefs.get(0).getPage() + 1;
+      long end = pageRefs.get(1).getPage() + 1;
+      return String.format("pages %d to %d are", start, end);
+    }
   }
 }
-// [END documentai_process_specialized_document]
+// [END documentai_process_splitter_document]
