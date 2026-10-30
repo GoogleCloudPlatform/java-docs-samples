@@ -47,7 +47,7 @@ limitations under the License.
       <dependency>
         <groupId>com.google.cloud</groupId>
         <artifactId>spring-cloud-gcp-dependencies</artifactId>
-        <version>3.7.7</version>
+        <version>3.9.18</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -108,12 +108,8 @@ limitations under the License.
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.projectlombok</groupId>
-      <artifactId>lombok</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.squareup.okhttp3</groupId>
-      <artifactId>okhttp</artifactId>
+        <groupId>com.squareup.okhttp3</groupId>
+        <artifactId>okhttp</artifactId>
     </dependency>
     <dependency>
       <groupId>com.google.gms</groupId>
