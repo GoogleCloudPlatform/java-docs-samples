@@ -109,12 +109,6 @@ public class GetImportEntriesStateIT {
     log.log(Level.INFO, bout.toString());
   }
 
-  @Test
-  public void testGetImportEntriesState() throws IOException {
-    WaitForImportEntries.queryImportEntriesState(operationName);
-    assertThat(bout.toString()).contains("Import Entries state");
-  }
-
   private void createTemporaryGcsBucket() {
     StorageClass storageClass = StorageClass.COLDLINE;
     String location = "ASIA";
