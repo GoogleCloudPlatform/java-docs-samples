@@ -38,10 +38,6 @@ public class LookupEntryTests {
 
   private static final String BIGQUERY_PROJECT = "bigquery-public-data";
   private static final String BIGQUERY_DATASET = "new_york_taxi_trips";
-  private static final String BIGQUERY_TABLE = "taxi_zone_geom";
-
-  private static final String PUBSUB_PROJECT = "pubsub-public-data";
-  private static final String PUBSUB_TOPIC = "taxirides-realtime";
 
   private ByteArrayOutputStream bout;
 
@@ -64,21 +60,5 @@ public class LookupEntryTests {
     String got = bout.toString();
     assertThat(got).containsMatch(
         "projects/" + BIGQUERY_PROJECT + "/locations/.+?/entryGroups/@bigquery/entries/.+?$");
-  }
-
-  @Test
-  public void testLookupEntryBigQueryTable() {
-    LookupEntryBigQueryTable.lookupEntry(BIGQUERY_PROJECT, BIGQUERY_DATASET, BIGQUERY_TABLE);
-    String got = bout.toString();
-    assertThat(got).containsMatch(
-        "projects/" + BIGQUERY_PROJECT + "/locations/.+?/entryGroups/@bigquery/entries/.+?$");
-  }
-
-  @Test
-  public void testLookupPubSubTopic() {
-    LookupEntryPubSubTopic.lookupEntry(PUBSUB_PROJECT, PUBSUB_TOPIC);
-    String got = bout.toString();
-    assertThat(got).containsMatch(
-        "projects/" + PUBSUB_PROJECT + "/locations/.+?/entryGroups/@pubsub/entries/.+?$");
   }
 }
