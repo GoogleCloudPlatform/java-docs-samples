@@ -96,7 +96,10 @@ public class FaceDetectApp {
         .setType(Feature.Type.FACE_DETECTION)
         .setMaxResults(maxResults)
         .build();
-    AnnotateImageRequest request = AnnotateImageRequest.newBuilder().setImage(img).addFeatures(feat).build();
+    AnnotateImageRequest request = AnnotateImageRequest.newBuilder()
+        .setImage(img)
+        .addFeatures(feat)
+        .build();
 
     BatchAnnotateImagesResponse response = vision.batchAnnotateImages(ImmutableList.of(request));
     List<AnnotateImageResponse> responses = response.getResponsesList();
