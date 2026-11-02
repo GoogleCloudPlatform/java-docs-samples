@@ -77,8 +77,6 @@ public class FaceDetectApp {
 
   // [START vision_face_detection_tutorial_client]
   /** Connects to the Vision API using Application Default Credentials. */
-  // (Nota: ImageAnnotatorClient maneja las credenciales automáticamente por
-  // defecto con try-with-resources)
   // [END vision_face_detection_tutorial_client]
 
   private final ImageAnnotatorClient vision;
@@ -91,7 +89,7 @@ public class FaceDetectApp {
   // [START vision_face_detection_tutorial_send_request]
   /** Gets up to {@code maxResults} faces for an image stored at {@code path}. */
   public List<FaceAnnotation> detectFaces(Path path, int maxResults) throws IOException {
-    ByteString imgBytes = ByteString.readFrom(Files.newInputStream(path));
+    ByteString imgBytes = ByteString.copyFrom(Files.readAllBytes(path));
 
     Image img = Image.newBuilder().setContent(imgBytes).build();
     Feature feat = Feature.newBuilder()
