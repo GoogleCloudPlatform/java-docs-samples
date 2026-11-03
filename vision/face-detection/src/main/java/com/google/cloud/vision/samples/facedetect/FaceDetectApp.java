@@ -32,6 +32,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.image.BufferedImage;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -64,8 +65,10 @@ public class FaceDetectApp {
       System.err.println("outputImagePath must have the file extension 'jpg'.");
       System.exit(1);
     }
-
+    // [START vision_face_detection_tutorial_client]
     try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
+      // [END vision_face_detection_tutorial_client]
+
       FaceDetectApp app = new FaceDetectApp(client);
       List<FaceAnnotation> faces = app.detectFaces(inputPath, MAX_RESULTS);
       System.out.printf("Found %d face%s\n", faces.size(), faces.size() == 1 ? "" : "s");
@@ -74,10 +77,6 @@ public class FaceDetectApp {
     }
   }
   // [END vision_face_detection_tutorial_run_application]
-
-  // [START vision_face_detection_tutorial_client]
-  /** Connects to the Vision API using Application Default Credentials. */
-  // [END vision_face_detection_tutorial_client]
 
   private final ImageAnnotatorClient vision;
 
@@ -89,8 +88,11 @@ public class FaceDetectApp {
   // [START vision_face_detection_tutorial_send_request]
   /** Gets up to {@code maxResults} faces for an image stored at {@code path}. */
   public List<FaceAnnotation> detectFaces(Path path, int maxResults) throws IOException {
-    ByteString imgBytes = ByteString.copyFrom(Files.readAllBytes(path));
-
+    ByteString imgBytes;
+    try (FileInputStream in = new FileInputStream(path.toFile())) {
+      imgBytes = ByteString.readFrom(in);
+    }
+    
     Image img = Image.newBuilder().setContent(imgBytes).build();
     Feature feat = Feature.newBuilder()
         .setType(Feature.Type.FACE_DETECTION)
@@ -149,6 +151,7 @@ public class FaceDetectApp {
     gfx.setStroke(new BasicStroke(5));
     gfx.setColor(new Color(0x00ff00));
     gfx.draw(poly);
+    gfx.dispose();
   }
   // [END vision_face_detection_tutorial_process_response]
 }
