@@ -53,21 +53,12 @@
   <dependencies>
     <!-- [START vision_face_detection_dependencies] -->
     <dependency>
-      <groupId>com.google.apis</groupId>
-      <artifactId>google-api-services-vision</artifactId>
-      <version>v1-rev20231219-2.0.0</version>
-    </dependency>
-    <dependency>
-      <groupId>com.google.auth</groupId>
-      <artifactId>google-auth-library-oauth2-http</artifactId>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-vision</artifactId>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.google.http-client</groupId>
-      <artifactId>google-http-client-jackson2</artifactId>
     </dependency>
     <!-- [END vision_face_detection_dependencies] -->
 
