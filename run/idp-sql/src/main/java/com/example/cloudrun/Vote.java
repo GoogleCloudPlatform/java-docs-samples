@@ -17,16 +17,62 @@
 package com.example.cloudrun;
 
 import com.google.gson.JsonObject;
-import edu.umd.cs.findbugs.annotations.NonNull;
 import java.sql.Timestamp;
-import lombok.Data;
+import java.util.Objects;
 
-/** Lombok notation to generate methods: toString, equals, hashCode, getters, and setters */
-@Data
 public class Vote {
-  @NonNull private String uid;
-  @NonNull private String candidate;
-  @NonNull private Timestamp timeCast;
+  private String uid;
+  private String candidate;
+  private Timestamp timeCast;
+
+  public Vote(String uid, String candidate, Timestamp timeCast) {
+    this.uid = Objects.requireNonNull(uid);
+    this.candidate = Objects.requireNonNull(candidate);
+    this.timeCast = Objects.requireNonNull(timeCast);
+  }
+
+  public String getUid() {
+    return uid;
+  }
+
+  public void setUid(String uid) {
+    this.uid = Objects.requireNonNull(uid);
+  }
+
+  public String getCandidate() {
+    return candidate;
+  }
+
+  public void setCandidate(String candidate) {
+    this.candidate = Objects.requireNonNull(candidate);
+  }
+
+  public Timestamp getTimeCast() {
+    return timeCast;
+  }
+
+  public void setTimeCast(Timestamp timeCast) {
+    this.timeCast = Objects.requireNonNull(timeCast);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    Vote vote = (Vote) o;
+    return Objects.equals(uid, vote.uid)
+        && Objects.equals(candidate, vote.candidate)
+        && Objects.equals(timeCast, vote.timeCast);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(uid, candidate, timeCast);
+  }
 
   @Override
   public String toString() {
