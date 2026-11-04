@@ -32,7 +32,7 @@ import org.junit.runners.JUnit4;
  * has been indexed.
  */
 @RunWith(JUnit4.class)
-@Ignore("Flaky: relies on pre-indexed test dataset (indexed_product_set_id_for_testing) missing or unindexed in CI environment")
+@Ignore("Flaky: pre-indexed dataset (indexed_product_set_id_for_testing) missing in CI")
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class ProductSearchIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
