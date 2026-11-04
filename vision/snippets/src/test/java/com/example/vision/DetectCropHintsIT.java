@@ -18,18 +18,20 @@ package com.example.vision;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.example.vision.snippets.DetectProperties;
+import com.example.vision.snippets.DetectCropHints;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.regex.Pattern;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class DetectPropertiesTest {
+public class DetectCropHintsIT {
   private ByteArrayOutputStream bout;
   private PrintStream out;
   private PrintStream originalPrintStream;
@@ -49,15 +51,15 @@ public class DetectPropertiesTest {
   }
 
   @Test
-  public void testProperties() throws Exception {
+  @Ignore("TODO: Remove after fixing https://github.com/GoogleCloudPlatform/java-docs-samples/issues/8977")
+  public void testCropHints() throws Exception {
     // Act
-    DetectProperties.detectProperties("./resources/landmark.jpg");
+    DetectCropHints.detectCropHints("./resources/wakeupcat.jpg");
 
     // Assert
     String got = bout.toString();
-    assertThat(got).contains("fraction:");
-    assertThat(got).contains("r:");
-    assertThat(got).contains("g:");
-    assertThat(got).contains("b:");
+    assertThat(got).contains("vertices {");
+    assertThat(got).containsMatch(Pattern.compile("x: 2\\d{2}"));
+    assertThat(got).containsMatch(Pattern.compile("y: 4\\d{2}"));
   }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Google LLC
+ * Copyright 2017 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,8 @@ package com.example.vision;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.example.vision.snippets.BatchAnnotateFilesGcs;
+import com.example.vision.snippets.DetectLandmarks;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.PrintStream;
 import org.junit.After;
 import org.junit.Before;
@@ -30,7 +29,7 @@ import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class BatchAnnotateFilesGcsTest {
+public class DetectLandmarksIT {
   private ByteArrayOutputStream bout;
   private PrintStream out;
   private PrintStream originalPrintStream;
@@ -50,11 +49,12 @@ public class BatchAnnotateFilesGcsTest {
   }
 
   @Test
-  public void testSetEndpoint() throws IOException {
-    BatchAnnotateFilesGcs.batchAnnotateFilesGcs(
-        "gs://cloud-samples-data/vision/document_understanding/kafka.pdf");
+  public void testLandmarks() throws Exception {
+    // Act
+    DetectLandmarks.detectLandmarks("./resources/landmark.jpg");
 
-    String got = bout.toString();
-    assertThat(got).contains("Word confidence");
+    // Assert
+    String got = bout.toString().toLowerCase();
+    assertThat(got).contains("palace of fine arts");
   }
 }

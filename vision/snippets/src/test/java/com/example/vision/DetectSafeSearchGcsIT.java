@@ -18,7 +18,7 @@ package com.example.vision;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.example.vision.snippets.DetectWebEntitiesGcs;
+import com.example.vision.snippets.DetectSafeSearchGcs;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import org.junit.After;
@@ -29,7 +29,7 @@ import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class DetectWebEntitiesGcsTest {
+public class DetectSafeSearchGcsIT {
 
   private static final String ASSET_BUCKET = "cloud-samples-data";
 
@@ -52,11 +52,13 @@ public class DetectWebEntitiesGcsTest {
   }
 
   @Test
-  public void testDetectWebEntitiesGcs() throws Exception {
+  public void testSafeSearchGcs() throws Exception {
     // Act
-    DetectWebEntitiesGcs.detectWebEntitiesGcs("gs://" + ASSET_BUCKET + "/vision/landmark/pofa.jpg");
+    DetectSafeSearchGcs.detectSafeSearchGcs("gs://" + ASSET_BUCKET + "/vision/label/wakeupcat.jpg");
 
-    String got = bout.toString().toLowerCase();
-    assertThat(got).contains("description");
+    // Assert
+    String got = bout.toString();
+    assertThat(got).contains("adult:");
+    assertThat(got).contains("racy:");
   }
 }

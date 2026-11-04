@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Google Inc.
+ * Copyright 2020 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,9 @@ package com.example.vision;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.example.vision.snippets.DetectLogos;
+import com.example.vision.snippets.BatchAnnotateFiles;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import org.junit.After;
 import org.junit.Before;
@@ -29,7 +30,7 @@ import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class DetectLogosTest {
+public class BatchAnnotateFilesIT {
   private ByteArrayOutputStream bout;
   private PrintStream out;
   private PrintStream originalPrintStream;
@@ -49,12 +50,10 @@ public class DetectLogosTest {
   }
 
   @Test
-  public void testLogos() throws Exception {
-    // Act
-    DetectLogos.detectLogos("./resources/logos.png");
+  public void testSetEndpoint() throws IOException {
+    BatchAnnotateFiles.batchAnnotateFiles("resources/kafka.pdf");
 
-    // Assert
-    String got = bout.toString().toLowerCase();
-    assertThat(got).contains("google");
+    String got = bout.toString();
+    assertThat(got).contains("Word confidence");
   }
 }

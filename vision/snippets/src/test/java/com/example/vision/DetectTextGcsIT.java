@@ -18,7 +18,7 @@ package com.example.vision;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.example.vision.snippets.DetectLogosGcs;
+import com.example.vision.snippets.DetectTextGcs;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import org.junit.After;
@@ -29,7 +29,7 @@ import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class DetectLogosGcsTest {
+public class DetectTextGcsIT {
 
   private static final String ASSET_BUCKET = "cloud-samples-data";
 
@@ -52,12 +52,12 @@ public class DetectLogosGcsTest {
   }
 
   @Test
-  public void testLogosGcs() throws Exception {
+  public void testTextGcs() throws Exception {
     // Act
-    DetectLogosGcs.detectLogosGcs("gs://" + ASSET_BUCKET + "/vision/logo/logo_google.png");
+    DetectTextGcs.detectTextGcs("gs://" + ASSET_BUCKET + "/vision/text/screen.jpg");
 
     // Assert
-    String got = bout.toString().toLowerCase();
-    assertThat(got).contains("google");
+    String got = bout.toString();
+    assertThat(got).contains("37%");
   }
 }

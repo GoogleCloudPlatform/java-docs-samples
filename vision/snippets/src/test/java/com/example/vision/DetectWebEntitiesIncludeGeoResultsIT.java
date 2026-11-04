@@ -18,7 +18,7 @@ package com.example.vision;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.example.vision.snippets.DetectPropertiesGcs;
+import com.example.vision.snippets.DetectWebEntitiesIncludeGeoResults;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import org.junit.After;
@@ -29,10 +29,7 @@ import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class DetectPropertiesGcsTest {
-
-  private static final String ASSET_BUCKET = "cloud-samples-data";
-
+public class DetectWebEntitiesIncludeGeoResultsIT {
   private ByteArrayOutputStream bout;
   private PrintStream out;
   private PrintStream originalPrintStream;
@@ -52,15 +49,13 @@ public class DetectPropertiesGcsTest {
   }
 
   @Test
-  public void testPropertiesGcs() throws Exception {
+  public void testDetectWebEntitiesIncludeGeoResults() throws Exception {
     // Act
-    DetectPropertiesGcs.detectPropertiesGcs("gs://" + ASSET_BUCKET + "/vision/landmark/pofa.jpg");
+    DetectWebEntitiesIncludeGeoResults.detectWebEntitiesIncludeGeoResults("./resources/city.jpg");
 
     // Assert
-    String got = bout.toString();
-    assertThat(got).contains("fraction:");
-    assertThat(got).contains("r:");
-    assertThat(got).contains("g:");
-    assertThat(got).contains("b:");
+    String got = bout.toString().toLowerCase();
+    // Note: entities and labels can change over time.
+    assertThat(got).doesNotContain("error");
   }
 }

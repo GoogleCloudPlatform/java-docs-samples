@@ -18,18 +18,20 @@ package com.example.vision;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.example.vision.snippets.DetectSafeSearchGcs;
+import com.example.vision.snippets.DetectCropHintsGcs;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.regex.Pattern;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class DetectSafeSearchGcsTest {
+public class DetectCropHintsGcsIT {
 
   private static final String ASSET_BUCKET = "cloud-samples-data";
 
@@ -52,13 +54,15 @@ public class DetectSafeSearchGcsTest {
   }
 
   @Test
-  public void testSafeSearchGcs() throws Exception {
+  @Ignore("TODO: Remove after fixing https://github.com/GoogleCloudPlatform/java-docs-samples/issues/8977")
+  public void testCropHintsGcs() throws Exception {
     // Act
-    DetectSafeSearchGcs.detectSafeSearchGcs("gs://" + ASSET_BUCKET + "/vision/label/wakeupcat.jpg");
+    DetectCropHintsGcs.detectCropHintsGcs("gs://" + ASSET_BUCKET + "/vision/label/wakeupcat.jpg");
 
     // Assert
     String got = bout.toString();
-    assertThat(got).contains("adult:");
-    assertThat(got).contains("racy:");
+    assertThat(got).contains("vertices {");
+    assertThat(got).containsMatch(Pattern.compile("x: 2\\d{2}"));
+    assertThat(got).containsMatch(Pattern.compile("y: 4\\d{2}"));
   }
 }

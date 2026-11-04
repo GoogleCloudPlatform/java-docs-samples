@@ -18,7 +18,7 @@ package com.example.vision;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.example.vision.snippets.DetectWebEntitiesIncludeGeoResults;
+import com.example.vision.snippets.DetectLogos;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import org.junit.After;
@@ -29,7 +29,7 @@ import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class DetectWebEntitiesIncludeGeoResultsTest {
+public class DetectLogosIT {
   private ByteArrayOutputStream bout;
   private PrintStream out;
   private PrintStream originalPrintStream;
@@ -49,13 +49,12 @@ public class DetectWebEntitiesIncludeGeoResultsTest {
   }
 
   @Test
-  public void testDetectWebEntitiesIncludeGeoResults() throws Exception {
+  public void testLogos() throws Exception {
     // Act
-    DetectWebEntitiesIncludeGeoResults.detectWebEntitiesIncludeGeoResults("./resources/city.jpg");
+    DetectLogos.detectLogos("./resources/logos.png");
 
     // Assert
     String got = bout.toString().toLowerCase();
-    // Note: entities and labels can change over time.
-    assertThat(got).doesNotContain("error");
+    assertThat(got).contains("google");
   }
 }

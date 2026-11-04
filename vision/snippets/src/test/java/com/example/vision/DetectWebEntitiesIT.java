@@ -18,7 +18,7 @@ package com.example.vision;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.example.vision.snippets.DetectLandmarks;
+import com.example.vision.snippets.DetectWebEntities;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import org.junit.After;
@@ -29,7 +29,7 @@ import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class DetectLandmarksTest {
+public class DetectWebEntitiesIT {
   private ByteArrayOutputStream bout;
   private PrintStream out;
   private PrintStream originalPrintStream;
@@ -49,12 +49,12 @@ public class DetectLandmarksTest {
   }
 
   @Test
-  public void testLandmarks() throws Exception {
+  public void testDetectWebEntities() throws Exception {
     // Act
-    DetectLandmarks.detectLandmarks("./resources/landmark.jpg");
+    DetectWebEntities.detectWebEntities("./resources/city.jpg");
 
     // Assert
     String got = bout.toString().toLowerCase();
-    assertThat(got).contains("palace of fine arts");
+    assertThat(got).doesNotContain("zepra");
   }
 }
