@@ -22,15 +22,17 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 /**
- * Integration (system) tests for {@link ProductSearch}.Tests rely on pre-created product set that
+ * Integration (system) tests for {@link ProductSearch}. Tests rely on pre-created product set that
  * has been indexed.
  */
 @RunWith(JUnit4.class)
+@Ignore("Flaky: relies on pre-indexed test dataset (indexed_product_set_id_for_testing) missing or unindexed in CI environment")
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class ProductSearchIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
@@ -49,7 +51,6 @@ public class ProductSearchIT {
 
   @Before
   public void setUp() throws Exception {
-
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
     originalPrintStream = System.out;
