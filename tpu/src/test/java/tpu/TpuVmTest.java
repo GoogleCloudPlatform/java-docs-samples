@@ -50,7 +50,7 @@ import org.mockito.MockedStatic;
 
 @RunWith(JUnit4.class)
 @Timeout(value = 10)
-public class TpuVmIT {
+public class TpuVmTest {
   private static final String PROJECT_ID = "project-id";
   private static final String ZONE = "asia-east1-c";
   private static final String NODE_NAME = "test-tpu";
@@ -62,7 +62,7 @@ public class TpuVmIT {
   @Test
   public void testCreateTpuVm() throws Exception {
     try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
-      Node mockNode = mock(Node.class);
+      Node mockNode = Node.newBuilder().setName("nodeName").build();
       TpuClient mockTpuClient = mock(TpuClient.class);
       OperationFuture mockFuture = mock(OperationFuture.class);
 
@@ -79,14 +79,14 @@ public class TpuVmIT {
       verify(mockTpuClient, times(1))
           .createNodeAsync(any(CreateNodeRequest.class));
       verify(mockFuture, times(1)).get();
-      assertEquals(returnedNode, mockNode);
+      assertEquals(returnedNode.getName(), mockNode.getName());
     }
   }
 
   @Test
   public void testGetTpuVm() throws IOException {
     try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
-      Node mockNode = mock(Node.class);
+      Node mockNode = Node.newBuilder().setName("nodeName").build();
       TpuClient mockClient = mock(TpuClient.class);
 
       mockedTpuClient.when(TpuClient::create).thenReturn(mockClient);
@@ -96,7 +96,7 @@ public class TpuVmIT {
 
       verify(mockClient, times(1))
           .getNode(any(GetNodeRequest.class));
-      assertThat(returnedNode).isEqualTo(mockNode);
+      assertThat(returnedNode.getName()).isEqualTo(mockNode.getName());
     }
   }
 
@@ -127,7 +127,7 @@ public class TpuVmIT {
   public void testCreateTpuVmWithTopologyFlag()
       throws IOException, ExecutionException, InterruptedException {
     try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
-      Node mockNode = mock(Node.class);
+      Node mockNode = Node.newBuilder().setName("nodeName").build();
       TpuClient mockTpuClient = mock(TpuClient.class);
       OperationFuture mockFuture = mock(OperationFuture.class);
 
@@ -142,15 +142,15 @@ public class TpuVmIT {
       verify(mockTpuClient, times(1))
           .createNodeAsync(any(CreateNodeRequest.class));
       verify(mockFuture, times(1)).get();
-      assertEquals(returnedNode, mockNode);
+      assertEquals(returnedNode.getName(), mockNode.getName());
     }
   }
 
   @Test
   public void testListTpuVm() throws IOException {
     try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
-      Node mockNode1 = mock(Node.class);
-      Node mockNode2 = mock(Node.class);
+      Node mockNode1 = Node.newBuilder().setName("nodeName1").build();
+      Node mockNode2 = Node.newBuilder().setName("nodeName2").build();
       List<Node> mockListNodes = Arrays.asList(mockNode1, mockNode2);
       TpuClient mockTpuClient = mock(TpuClient.class);
       TpuClient.ListNodesPagedResponse mockListNodesResponse =
@@ -173,7 +173,7 @@ public class TpuVmIT {
   public void testStartTpuVm() throws IOException, ExecutionException, InterruptedException {
     try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
       TpuClient mockClient = mock(TpuClient.class);
-      Node mockNode = mock(Node.class);
+      Node mockNode = Node.newBuilder().setName("nodeName").build();
       OperationFuture mockFuture = mock(OperationFuture.class);
 
       mockedTpuClient.when(TpuClient::create).thenReturn(mockClient);
@@ -186,7 +186,7 @@ public class TpuVmIT {
       verify(mockClient, times(1))
           .startNodeAsync(any(StartNodeRequest.class));
       verify(mockFuture, times(1)).get();
-      assertEquals(returnedNode, mockNode);
+      assertEquals(returnedNode.getName(), mockNode.getName());
     }
   }
 
@@ -194,7 +194,7 @@ public class TpuVmIT {
   public void testStopTpuVm() throws IOException, ExecutionException, InterruptedException {
     try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
       TpuClient mockClient = mock(TpuClient.class);
-      Node mockNode = mock(Node.class);
+      Node mockNode = Node.newBuilder().setName("nodeName").build();
       OperationFuture mockFuture = mock(OperationFuture.class);
 
       mockedTpuClient.when(TpuClient::create).thenReturn(mockClient);
@@ -207,14 +207,14 @@ public class TpuVmIT {
       verify(mockClient, times(1))
           .stopNodeAsync(any(StopNodeRequest.class));
       verify(mockFuture, times(1)).get();
-      assertEquals(returnedNode, mockNode);
+      assertEquals(returnedNode.getName(), mockNode.getName());
     }
   }
 
   @Test
   public void testCreateSpotTpuVm() throws Exception {
     try (MockedStatic<TpuClient> mockedTpuClient = mockStatic(TpuClient.class)) {
-      Node mockNode = mock(Node.class);
+      Node mockNode = Node.newBuilder().setName("nodeName").build();
       TpuClient mockTpuClient = mock(TpuClient.class);
       OperationFuture mockFuture = mock(OperationFuture.class);
 
@@ -230,7 +230,7 @@ public class TpuVmIT {
       verify(mockTpuClient, times(1))
               .createNodeAsync(any(CreateNodeRequest.class));
       verify(mockFuture, times(1)).get();
-      assertEquals(returnedNode, mockNode);
+      assertEquals(returnedNode.getName(), mockNode.getName());
     }
   }
 
