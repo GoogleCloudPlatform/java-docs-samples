@@ -17,10 +17,10 @@
 package tpu;
 
 //[START tpu_queued_resources_list]
-import com.google.cloud.tpu.v2alpha1.ListQueuedResourcesRequest;
-import com.google.cloud.tpu.v2alpha1.QueuedResource;
-import com.google.cloud.tpu.v2alpha1.TpuClient;
-import com.google.cloud.tpu.v2alpha1.TpuClient.ListQueuedResourcesPage;
+import com.google.cloud.tpu.v2.ListQueuedResourcesRequest;
+import com.google.cloud.tpu.v2.QueuedResource;
+import com.google.cloud.tpu.v2.TpuClient;
+import com.google.cloud.tpu.v2.TpuClient.ListQueuedResourcesPage;
 import java.io.IOException;
 
 public class ListQueuedResources {

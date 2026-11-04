@@ -17,11 +17,11 @@
 package tpu;
 
 // [START tpu_queued_resources_create_spot]
-import com.google.cloud.tpu.v2alpha1.CreateQueuedResourceRequest;
-import com.google.cloud.tpu.v2alpha1.Node;
-import com.google.cloud.tpu.v2alpha1.QueuedResource;
-import com.google.cloud.tpu.v2alpha1.SchedulingConfig;
-import com.google.cloud.tpu.v2alpha1.TpuClient;
+import com.google.cloud.tpu.v2.CreateQueuedResourceRequest;
+import com.google.cloud.tpu.v2.Node;
+import com.google.cloud.tpu.v2.QueuedResource;
+import com.google.cloud.tpu.v2.SchedulingConfig;
+import com.google.cloud.tpu.v2.TpuClient;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 

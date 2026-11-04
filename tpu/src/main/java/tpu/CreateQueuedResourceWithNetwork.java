@@ -18,12 +18,12 @@ package tpu;
 
 //[START tpu_queued_resources_network]
 import com.google.api.gax.retrying.RetrySettings;
-import com.google.cloud.tpu.v2alpha1.CreateQueuedResourceRequest;
-import com.google.cloud.tpu.v2alpha1.NetworkConfig;
-import com.google.cloud.tpu.v2alpha1.Node;
-import com.google.cloud.tpu.v2alpha1.QueuedResource;
-import com.google.cloud.tpu.v2alpha1.TpuClient;
-import com.google.cloud.tpu.v2alpha1.TpuSettings;
+import com.google.cloud.tpu.v2.CreateQueuedResourceRequest;
+import com.google.cloud.tpu.v2.NetworkConfig;
+import com.google.cloud.tpu.v2.Node;
+import com.google.cloud.tpu.v2.QueuedResource;
+import com.google.cloud.tpu.v2.TpuClient;
+import com.google.cloud.tpu.v2.TpuSettings;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import org.threeten.bp.Duration;
