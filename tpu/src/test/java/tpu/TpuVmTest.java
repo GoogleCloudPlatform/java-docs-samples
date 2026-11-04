@@ -17,7 +17,6 @@
 package tpu;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
@@ -79,7 +78,7 @@ public class TpuVmTest {
       verify(mockTpuClient, times(1))
           .createNodeAsync(any(CreateNodeRequest.class));
       verify(mockFuture, times(1)).get();
-      assertEquals(returnedNode.getName(), mockNode.getName());
+      assertThat(returnedNode).isEqualTo(mockNode);
     }
   }
 
@@ -96,7 +95,7 @@ public class TpuVmTest {
 
       verify(mockClient, times(1))
           .getNode(any(GetNodeRequest.class));
-      assertThat(returnedNode.getName()).isEqualTo(mockNode.getName());
+      assertThat(returnedNode).isEqualTo(mockNode);
     }
   }
 
@@ -142,7 +141,7 @@ public class TpuVmTest {
       verify(mockTpuClient, times(1))
           .createNodeAsync(any(CreateNodeRequest.class));
       verify(mockFuture, times(1)).get();
-      assertEquals(returnedNode.getName(), mockNode.getName());
+      assertThat(returnedNode).isEqualTo(mockNode);
     }
   }
 
@@ -186,7 +185,7 @@ public class TpuVmTest {
       verify(mockClient, times(1))
           .startNodeAsync(any(StartNodeRequest.class));
       verify(mockFuture, times(1)).get();
-      assertEquals(returnedNode.getName(), mockNode.getName());
+      assertThat(returnedNode).isEqualTo(mockNode);
     }
   }
 
@@ -207,7 +206,7 @@ public class TpuVmTest {
       verify(mockClient, times(1))
           .stopNodeAsync(any(StopNodeRequest.class));
       verify(mockFuture, times(1)).get();
-      assertEquals(returnedNode.getName(), mockNode.getName());
+      assertThat(returnedNode).isEqualTo(mockNode);
     }
   }
 
@@ -230,7 +229,7 @@ public class TpuVmTest {
       verify(mockTpuClient, times(1))
               .createNodeAsync(any(CreateNodeRequest.class));
       verify(mockFuture, times(1)).get();
-      assertEquals(returnedNode.getName(), mockNode.getName());
+      assertThat(returnedNode).isEqualTo(mockNode);
     }
   }
 
@@ -258,9 +257,7 @@ public class TpuVmTest {
       verify(mockTpuClient, times(1))
               .createNodeAsync(any(CreateNodeRequest.class));
       verify(mockFuture, times(1)).get();
-      assertEquals(returnedNode.getName(), mockNode.getName());
-      assertEquals(returnedNode.getAcceleratorType(), mockNode.getAcceleratorType());
-      assertEquals(returnedNode.getRuntimeVersion(), mockNode.getRuntimeVersion());
+      assertThat(returnedNode).isEqualTo(mockNode);
     }
   }
 }

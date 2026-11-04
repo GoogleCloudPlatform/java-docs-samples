@@ -17,7 +17,6 @@
 package tpu;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
@@ -80,7 +79,7 @@ public class QueuedResourceTest {
       verify(mockTpuClient, times(1))
               .createQueuedResourceAsync(any(CreateQueuedResourceRequest.class));
       verify(mockFuture, times(1)).get(anyLong(), any(TimeUnit.class));
-      assertEquals(returnedQueuedResource.getName(), mockQueuedResource.getName());
+      assertThat(returnedQueuedResource).isEqualTo(mockQueuedResource);
     }
   }
 
@@ -107,7 +106,7 @@ public class QueuedResourceTest {
       verify(mockTpuClient, times(1))
           .createQueuedResourceAsync(any(CreateQueuedResourceRequest.class));
       verify(mockFuture, times(1)).get();
-      assertEquals(returnedQueuedResource.getName(), mockQueuedResource.getName());
+      assertThat(returnedQueuedResource).isEqualTo(mockQueuedResource);
     }
   }
 
@@ -128,7 +127,7 @@ public class QueuedResourceTest {
 
       verify(mockClient, times(1))
           .getQueuedResource(any(GetQueuedResourceRequest.class));
-      assertEquals(returnedQueuedResource.getName(), mockQueuedResource.getName());
+      assertThat(returnedQueuedResource).isEqualTo(mockQueuedResource);
     }
   }
 
@@ -219,7 +218,7 @@ public class QueuedResourceTest {
       verify(mockTpuClient, times(1))
           .createQueuedResourceAsync(any(CreateQueuedResourceRequest.class));
       verify(mockFuture, times(1)).get();
-      assertEquals(returnedQueuedResource.getName(), mockQueuedResource.getName());
+      assertThat(returnedQueuedResource).isEqualTo(mockQueuedResource);
     }
   }
 
@@ -245,7 +244,7 @@ public class QueuedResourceTest {
       verify(mockedClientInstance, times(1))
           .createQueuedResourceAsync(any(CreateQueuedResourceRequest.class));
       verify(mockFuture, times(1)).get();
-      assertEquals(returnedQueuedResource.getName(), mockQueuedResource.getName());
+      assertThat(returnedQueuedResource).isEqualTo(mockQueuedResource);
     }
   }
 
@@ -271,7 +270,7 @@ public class QueuedResourceTest {
       verify(mockTpuClient, times(1))
           .createQueuedResourceAsync(any(CreateQueuedResourceRequest.class));
       verify(mockFuture, times(1)).get();
-      assertEquals(returnedQueuedResource.getName(), mockQueuedResource.getName());
+      assertThat(returnedQueuedResource).isEqualTo(mockQueuedResource);
     }
   }
 }
