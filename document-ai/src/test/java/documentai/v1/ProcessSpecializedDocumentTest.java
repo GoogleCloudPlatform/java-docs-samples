@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package documentai.v1beta3;
+package documentai.v1;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertNotNull;
@@ -30,7 +30,9 @@ import org.junit.Test;
 
 public class ProcessSpecializedDocumentTest {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String PROCESSOR_ID = "ae8bc99f01b36b5e";
+  private static final String PROCESSOR_ID = System.getenv("DOCAI_SPECIALIZED_PROCESSOR_ID") != null
+      ? System.getenv("DOCAI_SPECIALIZED_PROCESSOR_ID")
+      : "ae8bc99f01b36b5e";
   private static final String FILE_PATH = "resources/us_driver_license.pdf";
 
   private ByteArrayOutputStream bout;
@@ -60,7 +62,7 @@ public class ProcessSpecializedDocumentTest {
   @Test
   public void testProcessSpecializedDocument()
       throws InterruptedException, ExecutionException, IOException, TimeoutException {
-    // parse the GCS invoice as a form.
+    // parse the specialized document.
     ProcessSpecializedDocument.processSpecializedDocument(
         PROJECT_ID, "us", PROCESSOR_ID, FILE_PATH);
     String got = bout.toString();
