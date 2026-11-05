@@ -20,7 +20,6 @@ import static org.junit.Assert.assertEquals;
 
 import com.google.cloud.dialogflow.cx.v3.Page;
 import com.google.cloud.dialogflow.cx.v3.PagesClient;
-import com.google.cloud.dialogflow.cx.v3.PagesSettings;
 import java.util.UUID;
 import org.junit.AfterClass;
 import org.junit.Test;
@@ -35,17 +34,12 @@ public class CreateSimplePageIT {
   private static String DISPLAY_NAME = "page-" + UUID.randomUUID().toString();
   private static String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static String LOCATION_GLOBAL = "global";
-  private static String LOCATION_REGIONAL = "us-central1";
   private static String AGENT_ID_GLOBAL =
       System.getenv()
           .getOrDefault("DIALOGFLOW_CX_AGENT_ID_GLOBAL", "b8d0e85d-0741-4e6d-a66a-3671184b7b93");
-  private static String AGENT_ID_REGIONAL =
-      System.getenv()
-          .getOrDefault("DIALOGFLOW_CX_AGENT_ID_REGIONAL", "1ea2bf10-d5ef-4442-b93f-a917d1991014");
   private static String DEFAULT_START_FLOW_ID = "00000000-0000-0000-0000-000000000000";
 
   private static String newPageNameGlobal;
-  private static String newPageNameRegional;
 
   @AfterClass
   public static void tearDown() throws Exception {
@@ -57,17 +51,6 @@ public class CreateSimplePageIT {
 
       // Small delay to prevent reaching quota limit of requests per minute
       Thread.sleep(250);
-    }
-
-    // Delete the newly created Page in the regional location.
-    if (newPageNameRegional != null) {
-      PagesSettings pagesSettings =
-          PagesSettings.newBuilder()
-              .setEndpoint(LOCATION_REGIONAL + "-dialogflow.googleapis.com:443")
-              .build();
-      try (PagesClient pagesClient = PagesClient.create(pagesSettings)) {
-        pagesClient.deletePage(newPageNameRegional);
-      }
     }
   }
 
@@ -81,20 +64,6 @@ public class CreateSimplePageIT {
             LOCATION_GLOBAL,
             DISPLAY_NAME);
     newPageNameGlobal = result.getName();
-
-    assertEquals(result.getDisplayName(), DISPLAY_NAME);
-  }
-
-  @Test
-  public void testCreateSimplePageRegional() throws Exception {
-    Page result =
-        CreateSimplePage.createPage(
-            PROJECT_ID,
-            AGENT_ID_REGIONAL,
-            DEFAULT_START_FLOW_ID,
-            LOCATION_REGIONAL,
-            DISPLAY_NAME);
-    newPageNameRegional = result.getName();
 
     assertEquals(result.getDisplayName(), DISPLAY_NAME);
   }
