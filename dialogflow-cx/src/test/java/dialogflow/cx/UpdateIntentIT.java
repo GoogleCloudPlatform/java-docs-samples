@@ -64,15 +64,15 @@ public class UpdateIntentIT {
 
       parent = agentsClient.createAgent(parentPath, agent).getName();
 
-      UpdateIntentTest.agentID = parent.split("/")[5];
+      agentID = parent.split("/")[5];
     }
 
     try (IntentsClient intentsClient = IntentsClient.create()) {
       com.google.cloud.dialogflow.cx.v3.Intent.Builder intent = Intent.newBuilder();
       intent.setDisplayName("temp_intent_" + UUID.randomUUID().toString());
 
-      UpdateIntentTest.intentPath = intentsClient.createIntent(parent, intent.build()).getName();
-      UpdateIntentTest.intentID = UpdateIntentTest.intentPath.split("/")[7];
+      intentPath = intentsClient.createIntent(parent, intent.build()).getName();
+      intentID = intentPath.split("/")[7];
     }
   }
 
@@ -98,8 +98,7 @@ public class UpdateIntentIT {
 
     String fakeIntent = "fake_intent_" + UUID.randomUUID().toString();
 
-    UpdateIntent.updateIntent(
-        PROJECT_ID, UpdateIntentTest.agentID, UpdateIntentTest.intentID, "global", fakeIntent);
+    UpdateIntent.updateIntent(PROJECT_ID, agentID, intentID, "global", fakeIntent);
 
     assertThat(stdOut.toString()).contains(fakeIntent);
   }

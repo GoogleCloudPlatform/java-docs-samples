@@ -74,7 +74,7 @@ public class CreateSimplePageIT {
   @Test
   public void testCreateSimplePageGlobal() throws Exception {
     Page result =
-        CreateSimplePage.createSimplePage(
+        CreateSimplePage.createPage(
             PROJECT_ID,
             AGENT_ID_GLOBAL,
             DEFAULT_START_FLOW_ID,
@@ -88,7 +88,7 @@ public class CreateSimplePageIT {
   @Test
   public void testCreateSimplePageRegional() throws Exception {
     Page result =
-        CreateSimplePage.createSimplePage(
+        CreateSimplePage.createPage(
             PROJECT_ID,
             AGENT_ID_REGIONAL,
             DEFAULT_START_FLOW_ID,
