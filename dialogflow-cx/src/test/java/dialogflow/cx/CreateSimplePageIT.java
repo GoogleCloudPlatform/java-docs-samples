@@ -18,21 +18,19 @@ package dialogflow.cx;
 
 import static org.junit.Assert.assertEquals;
 
-import com.google.cloud.dialogflow.cx.v3beta1.Page;
-import com.google.cloud.dialogflow.cx.v3beta1.PagesClient;
-import com.google.cloud.dialogflow.cx.v3beta1.PagesSettings;
-import java.util.Arrays;
-import java.util.List;
+import com.google.cloud.dialogflow.cx.v3.Page;
+import com.google.cloud.dialogflow.cx.v3.PagesClient;
+import com.google.cloud.dialogflow.cx.v3.PagesSettings;
 import java.util.UUID;
 import org.junit.AfterClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/** Integration (system) tests for {@link CreatePage}. */
+/** Integration (system) tests for {@link CreateSimplePage}. */
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class CreatePageIT {
+public class CreateSimplePageIT {
 
   private static String DISPLAY_NAME = "page-" + UUID.randomUUID().toString();
   private static String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
@@ -45,7 +43,6 @@ public class CreatePageIT {
       System.getenv()
           .getOrDefault("DIALOGFLOW_CX_AGENT_ID_REGIONAL", "1ea2bf10-d5ef-4442-b93f-a917d1991014");
   private static String DEFAULT_START_FLOW_ID = "00000000-0000-0000-0000-000000000000";
-  private static List<String> ENTRY_TEXTS = Arrays.asList("Hi", "Hello", "How can I help you?");
 
   private static String newPageNameGlobal;
   private static String newPageNameRegional;
@@ -75,34 +72,30 @@ public class CreatePageIT {
   }
 
   @Test
-  public void testCreatePageGlobal() throws Exception {
+  public void testCreateSimplePageGlobal() throws Exception {
     Page result =
-        CreatePage.createPage(
-            DISPLAY_NAME,
+        CreateSimplePage.createSimplePage(
             PROJECT_ID,
-            LOCATION_GLOBAL,
             AGENT_ID_GLOBAL,
             DEFAULT_START_FLOW_ID,
-            ENTRY_TEXTS);
+            LOCATION_GLOBAL,
+            DISPLAY_NAME);
     newPageNameGlobal = result.getName();
 
     assertEquals(result.getDisplayName(), DISPLAY_NAME);
-    assertEquals(result.getEntryFulfillment().getMessagesCount(), ENTRY_TEXTS.size());
   }
 
   @Test
-  public void testCreatePageRegional() throws Exception {
+  public void testCreateSimplePageRegional() throws Exception {
     Page result =
-        CreatePage.createPage(
-            DISPLAY_NAME,
+        CreateSimplePage.createSimplePage(
             PROJECT_ID,
-            LOCATION_REGIONAL,
             AGENT_ID_REGIONAL,
             DEFAULT_START_FLOW_ID,
-            ENTRY_TEXTS);
+            LOCATION_REGIONAL,
+            DISPLAY_NAME);
     newPageNameRegional = result.getName();
 
     assertEquals(result.getDisplayName(), DISPLAY_NAME);
-    assertEquals(result.getEntryFulfillment().getMessagesCount(), ENTRY_TEXTS.size());
   }
 }

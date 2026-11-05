@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Google LLC
+ * Copyright 2022 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,44 +25,51 @@ import java.util.UUID;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
-/** Integration (system) tests for {@link DetectIntentStream}. */
-@RunWith(JUnit4.class)
+/** Unit test for {@link DetectIntentIntentInput}. */
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class DetectIntentStreamingPartialResponseTest {
+public class DetectIntentIntentInputIT {
 
-  private static String AUDIO_FILE_PATH = "resources/book_a_room.wav";
   private static String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static String LOCATION = "global";
   private static String AGENT_ID =
       System.getenv()
           .getOrDefault("DIALOGFLOW_CX_AGENT_ID_GLOBAL", "b8d0e85d-0741-4e6d-a66a-3671184b7b93");
+  private static String INTENT_ID = "00000000-0000-0000-0000-000000000000";
   private static String SESSION_ID = UUID.randomUUID().toString();
-  private ByteArrayOutputStream bout;
-  private PrintStream original;
+  private static String LANGUAGE_CODE = "en-US";
+  private static String INTENT =
+      "projects/"
+          + PROJECT_ID
+          + "/locations/"
+          + LOCATION
+          + "/agents/"
+          + AGENT_ID
+          + "/intents/"
+          + INTENT_ID;
+
+  private ByteArrayOutputStream stdOut;
 
   @Before
-  public void setUp() {
-    original = System.out;
-    bout = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(bout));
+  public void setUp() throws IOException {
+
+    stdOut = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(stdOut));
   }
 
   @After
-  public void tearDown() {
-    System.setOut(original);
-    bout.reset();
+  public void tearDown() throws IOException {
+    stdOut = null;
+    System.setOut(null);
   }
 
   @Test
-  public void testDetectIntentStreamingPartialResponse() throws IOException {
-    DetectIntentStreamingPartialResponse.detectIntentStreamingPartialResponse(
-        PROJECT_ID, LOCATION, AGENT_ID, SESSION_ID, AUDIO_FILE_PATH);
+  public void testDetectIntentIntentInput() throws Exception {
+    String intentName = "Default Welcome Intent";
 
-    String output = bout.toString();
-
-    assertThat(output).contains("enable_partial_response");
+    DetectIntentIntentInput.detectIntent(
+        PROJECT_ID, LOCATION, AGENT_ID, SESSION_ID, INTENT, LANGUAGE_CODE);
+    System.out.println(stdOut.toString());
+    assertThat(stdOut.toString()).contains(intentName);
   }
 }

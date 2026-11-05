@@ -28,7 +28,7 @@ import org.junit.Test;
 
 /** Unit test for {@link DetectIntentEventInput}. */
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class DetectIntentEventInputTest {
+public class DetectIntentEventInputIT {
 
   private static String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static String LOCATION = "global";
