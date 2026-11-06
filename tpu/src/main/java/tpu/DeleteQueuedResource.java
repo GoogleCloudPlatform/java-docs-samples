@@ -17,8 +17,8 @@
 package tpu;
 
 //[START tpu_queued_resources_delete]
-import com.google.cloud.tpu.v2alpha1.DeleteQueuedResourceRequest;
-import com.google.cloud.tpu.v2alpha1.TpuClient;
+import com.google.cloud.tpu.v2.DeleteQueuedResourceRequest;
+import com.google.cloud.tpu.v2.TpuClient;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
