@@ -19,7 +19,6 @@ package dialogflow.cx;
 import static com.google.common.truth.Truth.assertThat;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.PrintStream;
 import java.util.UUID;
 import org.junit.After;
@@ -57,14 +56,14 @@ public class DetectIntentStreamIT {
   @After
   public void tearDown() throws InterruptedException {
     System.setOut(original);
-    bout.reset();
+    bout = null;
 
     // Small delay to prevent reaching quota limit of requests per minute
     Thread.sleep(250);
   }
 
   @Test
-  public void testDetectIntentStreamGlobal() throws IOException {
+  public void testDetectIntentStreamGlobal() throws Exception {
     DetectIntentStream.detectIntentStream(
         PROJECT_ID, LOCATION_GLOBAL, AGENT_ID_GLOBAL, SESSION_ID, AUDIO_FILE_PATH);
 
@@ -75,7 +74,7 @@ public class DetectIntentStreamIT {
   }
 
   @Test
-  public void testDetectIntentStreamRegional() throws IOException {
+  public void testDetectIntentStreamRegional() throws Exception {
     DetectIntentStream.detectIntentStream(
         PROJECT_ID, LOCATION_REGIONAL, AGENT_ID_REGIONAL, SESSION_ID, AUDIO_FILE_PATH);
 
