@@ -18,7 +18,7 @@ package com.example.vision;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.example.vision.snippets.DetectWebEntitiesIncludeGeoResultsGcs;
+import com.example.vision.snippets.DetectLabels;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import org.junit.After;
@@ -29,10 +29,7 @@ import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class DetectWebEntitiesIncludeGeoResultsGcsTest {
-
-  private static final String ASSET_BUCKET = "cloud-samples-data";
-
+public class DetectLabelsIT {
   private ByteArrayOutputStream bout;
   private PrintStream out;
   private PrintStream originalPrintStream;
@@ -52,12 +49,12 @@ public class DetectWebEntitiesIncludeGeoResultsGcsTest {
   }
 
   @Test
-  public void testDetectWebEntitiesIncludeGeoResultsGcs() throws Exception {
+  public void testLabels() throws Exception {
     // Act
-    DetectWebEntitiesIncludeGeoResultsGcs.detectWebEntitiesIncludeGeoResultsGcs(
-        "gs://" + ASSET_BUCKET + "/vision/landmark/pofa.jpg");
+    DetectLabels.detectLabels("./resources/wakeupcat.jpg");
 
+    // Assert
     String got = bout.toString().toLowerCase();
-    assertThat(got).contains("description");
+    assertThat(got).contains("whiskers");
   }
 }

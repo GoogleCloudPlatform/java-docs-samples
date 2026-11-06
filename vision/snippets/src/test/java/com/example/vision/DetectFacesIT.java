@@ -18,24 +18,18 @@ package com.example.vision;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.example.vision.snippets.DetectLandmarksGcs;
-import com.example.vision.snippets.DetectLandmarksUrl;
-import com.google.cloud.testing.junit4.MultipleAttemptsRule;
+import com.example.vision.snippets.DetectFaces;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class DetectLandmarksGcsTest {
-
-  private static final String ASSET_BUCKET = "cloud-samples-data";
-
+public class DetectFacesIT {
   private ByteArrayOutputStream bout;
   private PrintStream out;
   private PrintStream originalPrintStream;
@@ -54,27 +48,15 @@ public class DetectLandmarksGcsTest {
     System.setOut(originalPrintStream);
   }
 
-  @Rule public MultipleAttemptsRule multipleAttemptsRule = new MultipleAttemptsRule(3);
-
   @Test
-  public void testLandmarksUrl() throws Exception {
+  public void testFaces() throws Exception {
     // Act
-    String uri =
-        "https://storage-download.googleapis.com/" + ASSET_BUCKET + "/vision/landmark/pofa.jpg";
-    DetectLandmarksUrl.detectLandmarksUrl(uri);
+    DetectFaces.detectFaces("./resources/face_no_surprise.jpg");
 
     // Assert
-    String got = bout.toString().toLowerCase();
-    assertThat(got).contains("palace of fine arts");
-  }
-
-  @Test
-  public void testLandmarksGcs() throws Exception {
-    // Act
-    DetectLandmarksGcs.detectLandmarksGcs("gs://" + ASSET_BUCKET + "/vision/landmark/pofa.jpg");
-
-    // Assert
-    String got = bout.toString().toLowerCase();
-    assertThat(got).contains("palace of fine arts");
+    String got = bout.toString();
+    assertThat(got).contains("anger:");
+    assertThat(got).contains("joy:");
+    assertThat(got).contains("surprise:");
   }
 }

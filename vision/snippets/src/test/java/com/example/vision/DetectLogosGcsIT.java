@@ -18,7 +18,7 @@ package com.example.vision;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.example.vision.snippets.DetectSafeSearch;
+import com.example.vision.snippets.DetectLogosGcs;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import org.junit.After;
@@ -29,7 +29,10 @@ import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class DetectSafeSearchTest {
+public class DetectLogosGcsIT {
+
+  private static final String ASSET_BUCKET = "cloud-samples-data";
+
   private ByteArrayOutputStream bout;
   private PrintStream out;
   private PrintStream originalPrintStream;
@@ -49,13 +52,12 @@ public class DetectSafeSearchTest {
   }
 
   @Test
-  public void testSafeSearch() throws Exception {
+  public void testLogosGcs() throws Exception {
     // Act
-    DetectSafeSearch.detectSafeSearch("./resources/wakeupcat.jpg");
+    DetectLogosGcs.detectLogosGcs("gs://" + ASSET_BUCKET + "/vision/logo/logo_google.png");
 
     // Assert
-    String got = bout.toString();
-    assertThat(got).contains("adult:");
-    assertThat(got).contains("racy:");
+    String got = bout.toString().toLowerCase();
+    assertThat(got).contains("google");
   }
 }

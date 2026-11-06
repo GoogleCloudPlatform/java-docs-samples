@@ -18,7 +18,7 @@ package com.example.vision;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.example.vision.snippets.DetectWebEntities;
+import com.example.vision.snippets.DetectText;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import org.junit.After;
@@ -29,7 +29,7 @@ import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class DetectWebEntitiesTest {
+public class DetectTextIT {
   private ByteArrayOutputStream bout;
   private PrintStream out;
   private PrintStream originalPrintStream;
@@ -49,12 +49,12 @@ public class DetectWebEntitiesTest {
   }
 
   @Test
-  public void testDetectWebEntities() throws Exception {
+  public void testText() throws Exception {
     // Act
-    DetectWebEntities.detectWebEntities("./resources/city.jpg");
+    DetectText.detectText("./resources/text.jpg");
 
     // Assert
-    String got = bout.toString().toLowerCase();
-    assertThat(got).doesNotContain("zepra");
+    String got = bout.toString();
+    assertThat(got).contains("37%");
   }
 }

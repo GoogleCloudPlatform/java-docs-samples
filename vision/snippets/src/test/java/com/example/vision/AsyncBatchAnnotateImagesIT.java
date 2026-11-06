@@ -38,7 +38,7 @@ import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class AsyncBatchAnnotateImagesTest {
+public class AsyncBatchAnnotateImagesIT {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static final String INPUT_URI = "gs://cloud-samples-data/vision/label/wakeupcat.jpg";
   private static final String PREFIX = String.format("vision/%s/", UUID.randomUUID().toString());

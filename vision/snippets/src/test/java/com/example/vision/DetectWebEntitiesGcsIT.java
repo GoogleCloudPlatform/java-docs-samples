@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Google LLC
+ * Copyright 2017 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,8 @@ package com.example.vision;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.example.vision.snippets.BatchAnnotateFiles;
+import com.example.vision.snippets.DetectWebEntitiesGcs;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.PrintStream;
 import org.junit.After;
 import org.junit.Before;
@@ -30,7 +29,10 @@ import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class BatchAnnotateFilesTest {
+public class DetectWebEntitiesGcsIT {
+
+  private static final String ASSET_BUCKET = "cloud-samples-data";
+
   private ByteArrayOutputStream bout;
   private PrintStream out;
   private PrintStream originalPrintStream;
@@ -50,10 +52,11 @@ public class BatchAnnotateFilesTest {
   }
 
   @Test
-  public void testSetEndpoint() throws IOException {
-    BatchAnnotateFiles.batchAnnotateFiles("resources/kafka.pdf");
+  public void testDetectWebEntitiesGcs() throws Exception {
+    // Act
+    DetectWebEntitiesGcs.detectWebEntitiesGcs("gs://" + ASSET_BUCKET + "/vision/landmark/pofa.jpg");
 
-    String got = bout.toString();
-    assertThat(got).contains("Word confidence");
+    String got = bout.toString().toLowerCase();
+    assertThat(got).contains("description");
   }
 }
