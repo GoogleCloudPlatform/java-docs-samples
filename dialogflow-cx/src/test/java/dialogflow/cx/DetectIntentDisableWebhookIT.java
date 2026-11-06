@@ -18,55 +18,58 @@ package dialogflow.cx;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import com.google.cloud.dialogflow.cx.v3.QueryResult;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-/** Unit test for {@link DetectIntentIntentAudioInput}. */
+/** Unit test for {@link DetectIntentDisableWebhook}. */
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class DetectIntentAudioInputTest {
+public class DetectIntentDisableWebhookIT {
 
   private static String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static String LOCATION = "global";
   private static String AGENT_ID =
       System.getenv()
           .getOrDefault("DIALOGFLOW_CX_AGENT_ID_GLOBAL", "b8d0e85d-0741-4e6d-a66a-3671184b7b93");
-  private static String AUDIO_FILE_NAME = "resources/book_a_room.wav";
-  private static int SAMPLE_RATE_HERTZ = 16000;
   private static String SESSION_ID = UUID.randomUUID().toString();
-  private static String LANGUAGE_CODE = "en";
+  private static String LANGUAGE_CODE = "en-US";
+  private static List<String> TEXTS = Arrays.asList("hello", "unhappy");
 
   private ByteArrayOutputStream stdOut;
+  private PrintStream originalOut;
 
   @Before
   public void setUp() throws IOException {
-
+    originalOut = System.out;
     stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
   }
 
   @After
   public void tearDown() throws IOException {
+    System.setOut(originalOut);
     stdOut = null;
-    System.setOut(null);
   }
 
   @Test
-  public void testDetectIntentAudioInput() throws Exception {
+  public void testDetectIntentDisableWebhook() throws Exception {
+    Map<String, QueryResult> queryResults =
+        DetectIntentDisableWebhook.detectIntent(
+            PROJECT_ID, LOCATION, AGENT_ID, SESSION_ID, TEXTS, LANGUAGE_CODE);
 
-    DetectIntentAudioInput.detectIntent(
-        PROJECT_ID,
-        LOCATION,
-        AGENT_ID,
-        AUDIO_FILE_NAME,
-        SAMPLE_RATE_HERTZ,
-        SESSION_ID,
-        LANGUAGE_CODE);
-    System.out.println(stdOut.toString());
-    assertThat(stdOut.toString()).contains("Detected Intent:");
+    for (int i = 0; i < TEXTS.size(); i++) {
+      String text = TEXTS.get(i);
+      float score = queryResults.get(text).getSentimentAnalysisResult().getScore();
+      System.out.println(stdOut.toString());
+      assertThat(stdOut.toString()).contains("disable_webhook");
+    }
   }
 }

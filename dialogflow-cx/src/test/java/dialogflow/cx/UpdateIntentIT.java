@@ -32,7 +32,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class UpdateIntentTest {
+public class UpdateIntentIT {
 
   private static String PROJECT_ID = System.getenv().get("GOOGLE_CLOUD_PROJECT");
   private static String parent = "";
@@ -41,10 +41,11 @@ public class UpdateIntentTest {
   private static String agentID = "";
 
   private ByteArrayOutputStream stdOut;
+  private PrintStream originalOut;
 
   @Before
   public void setUp() throws IOException {
-
+    originalOut = System.out;
     stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
 
@@ -64,22 +65,22 @@ public class UpdateIntentTest {
 
       parent = agentsClient.createAgent(parentPath, agent).getName();
 
-      UpdateIntentTest.agentID = parent.split("/")[5];
+      agentID = parent.split("/")[5];
     }
 
     try (IntentsClient intentsClient = IntentsClient.create()) {
       com.google.cloud.dialogflow.cx.v3.Intent.Builder intent = Intent.newBuilder();
       intent.setDisplayName("temp_intent_" + UUID.randomUUID().toString());
 
-      UpdateIntentTest.intentPath = intentsClient.createIntent(parent, intent.build()).getName();
-      UpdateIntentTest.intentID = UpdateIntentTest.intentPath.split("/")[7];
+      intentPath = intentsClient.createIntent(parent, intent.build()).getName();
+      intentID = intentPath.split("/")[7];
     }
   }
 
   @After
   public void tearDown() throws IOException, InterruptedException {
+    System.setOut(originalOut);
     stdOut = null;
-    System.setOut(null);
 
     String apiEndpoint = "global-dialogflow.googleapis.com:443";
 
@@ -98,8 +99,7 @@ public class UpdateIntentTest {
 
     String fakeIntent = "fake_intent_" + UUID.randomUUID().toString();
 
-    UpdateIntent.updateIntent(
-        PROJECT_ID, UpdateIntentTest.agentID, UpdateIntentTest.intentID, "global", fakeIntent);
+    UpdateIntent.updateIntent(PROJECT_ID, agentID, intentID, "global", fakeIntent);
 
     assertThat(stdOut.toString()).contains(fakeIntent);
   }

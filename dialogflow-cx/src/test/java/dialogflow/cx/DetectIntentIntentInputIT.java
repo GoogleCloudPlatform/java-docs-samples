@@ -28,7 +28,7 @@ import org.junit.Test;
 
 /** Unit test for {@link DetectIntentIntentInput}. */
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class DetectIntentIntentInputTest {
+public class DetectIntentIntentInputIT {
 
   private static String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static String LOCATION = "global";
@@ -49,18 +49,19 @@ public class DetectIntentIntentInputTest {
           + INTENT_ID;
 
   private ByteArrayOutputStream stdOut;
+  private PrintStream originalOut;
 
   @Before
   public void setUp() throws IOException {
-
+    originalOut = System.out;
     stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
   }
 
   @After
   public void tearDown() throws IOException {
+    System.setOut(originalOut);
     stdOut = null;
-    System.setOut(null);
   }
 
   @Test

@@ -40,6 +40,7 @@ public class ExportAgentIT {
   private static String agentID = "";
 
   private ByteArrayOutputStream stdOut;
+  private PrintStream originalOut;
 
   @BeforeClass
   public static void beforeAll() {
@@ -48,6 +49,7 @@ public class ExportAgentIT {
 
   @Before
   public void setUp() throws IOException {
+    originalOut = System.out;
     stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
 
@@ -72,8 +74,8 @@ public class ExportAgentIT {
 
   @After
   public void tearDown() throws IOException, InterruptedException {
+    System.setOut(originalOut);
     stdOut = null;
-    System.setOut(null);
     String apiEndpoint = "global-dialogflow.googleapis.com:443";
 
     AgentsSettings agentsSettings = AgentsSettings.newBuilder().setEndpoint(apiEndpoint).build();

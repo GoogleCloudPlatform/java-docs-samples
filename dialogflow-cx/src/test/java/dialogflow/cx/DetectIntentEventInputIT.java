@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Google LLC
+ * Copyright 2022 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,44 +25,43 @@ import java.util.UUID;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
-/** Integration (system) tests for {@link DetectIntentStream}. */
-@RunWith(JUnit4.class)
+/** Unit test for {@link DetectIntentEventInput}. */
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class DetectIntentStreamingPartialResponseTest {
+public class DetectIntentEventInputIT {
 
-  private static String AUDIO_FILE_PATH = "resources/book_a_room.wav";
   private static String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static String LOCATION = "global";
   private static String AGENT_ID =
       System.getenv()
           .getOrDefault("DIALOGFLOW_CX_AGENT_ID_GLOBAL", "b8d0e85d-0741-4e6d-a66a-3671184b7b93");
+  private static String EVENT = "sys.no-match-default";
   private static String SESSION_ID = UUID.randomUUID().toString();
-  private ByteArrayOutputStream bout;
-  private PrintStream original;
+  private static String LANGUAGE_CODE = "en-US";
+
+  private ByteArrayOutputStream stdOut;
+  private PrintStream originalOut;
 
   @Before
-  public void setUp() {
-    original = System.out;
-    bout = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(bout));
+  public void setUp() throws IOException {
+    originalOut = System.out;
+    stdOut = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(stdOut));
   }
 
   @After
-  public void tearDown() {
-    System.setOut(original);
-    bout.reset();
+  public void tearDown() throws IOException {
+    System.setOut(originalOut);
+    stdOut = null;
   }
 
   @Test
-  public void testDetectIntentStreamingPartialResponse() throws IOException {
-    DetectIntentStreamingPartialResponse.detectIntentStreamingPartialResponse(
-        PROJECT_ID, LOCATION, AGENT_ID, SESSION_ID, AUDIO_FILE_PATH);
+  public void testDetectIntentEventInput() throws Exception {
+    String triggeringEvent = "sys.no-match-default";
 
-    String output = bout.toString();
-
-    assertThat(output).contains("enable_partial_response");
+    DetectIntentEventInput.detectIntent(
+        PROJECT_ID, LOCATION, AGENT_ID, SESSION_ID, EVENT, LANGUAGE_CODE);
+    System.out.println(stdOut.toString());
+    assertThat(stdOut.toString()).contains(triggeringEvent);
   }
 }

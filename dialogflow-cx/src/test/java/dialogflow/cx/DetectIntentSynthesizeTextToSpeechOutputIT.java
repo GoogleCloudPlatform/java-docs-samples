@@ -28,7 +28,7 @@ import org.junit.Test;
 
 /** Unit test for {@link DetectIntentSynthesizeTtSOutput}. */
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class DetectIntentSynthesizeTextToSpeechOutputTest {
+public class DetectIntentSynthesizeTextToSpeechOutputIT {
 
   private static String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
   private static String LOCATION = "global";
@@ -41,18 +41,19 @@ public class DetectIntentSynthesizeTextToSpeechOutputTest {
   private static String LANGUAGE_CODE = "en";
 
   private ByteArrayOutputStream stdOut;
+  private PrintStream originalOut;
 
   @Before
   public void setUp() throws IOException {
-
+    originalOut = System.out;
     stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
   }
 
   @After
   public void tearDown() throws IOException {
+    System.setOut(originalOut);
     stdOut = null;
-    System.setOut(null);
   }
 
   @Test
