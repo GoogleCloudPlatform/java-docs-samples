@@ -166,4 +166,19 @@ public class RecognizeIT {
     String got = bout.toString();
     assertThat(got).contains("Channel Tag : 1");
   }
+
+  @Test
+  public void testTranscribeMultiLanguage() throws Exception {
+    Recognize.transcribeMultiLanguage(videoFileName);
+    String got = bout.toString();
+    assertThat(got.toLowerCase()).contains("google");
+  }
+
+  @Test
+  public void testTranscribeMultiLanguageGcs() throws Exception {
+    Recognize.transcribeMultiLanguageGcs(gcsVideoPath);
+    String got = bout.toString();
+    assertThat(got.toLowerCase()).contains("google");
+  }
 }
+

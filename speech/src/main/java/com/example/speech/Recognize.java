@@ -67,7 +67,7 @@ public class Recognize {
               + "Commands:\n"
               + "\tsyncrecognize | asyncrecognize | streamrecognize | micstreamrecognize \n"
               + "\t| wordoffsets | auto-punctuation | stream-punctuation \n"
-              + "\t| enhanced-model | model-selection | multi-channel\n"
+              + "\t| enhanced-model | model-selection | multi-channel | multi-language\n"
               + "Path:\n\tA file path (ex: ./resources/audio.raw) or a URI "
               + "for a Cloud Storage resource (gs://...)\n",
           Recognize.class.getCanonicalName());
@@ -120,6 +120,12 @@ public class Recognize {
         transcribeMultiChannelGcs(path);
       } else {
         transcribeMultiChannel(path);
+      }
+    } else if (command.equals("multi-language")) {
+      if (path.startsWith("gs://")) {
+        transcribeMultiLanguageGcs(path);
+      } else {
+        transcribeMultiLanguage(path);
       }
     }
   }
@@ -938,4 +944,86 @@ public class Recognize {
     }
   }
   // [END speech_transcribe_multichannel_gcs]
+
+  // [START speech_transcribe_multilanguage]
+  /**
+   * Transcribe a local audio file with multi-language recognition
+   *
+   * @param fileName the path to the audio file
+   */
+  public static void transcribeMultiLanguage(String fileName) throws Exception {
+    Path path = Paths.get(fileName);
+    byte[] content = Files.readAllBytes(path);
+
+    try (SpeechClient speechClient = SpeechClient.create()) {
+
+      RecognitionAudio recognitionAudio = RecognitionAudio.newBuilder()
+          .setContent(ByteString.copyFrom(content))
+          .build();
+      ArrayList<String> languageList = new ArrayList<>();
+      languageList.add("es-ES");
+      languageList.add("en-US");
+
+      RecognitionConfig config = RecognitionConfig.newBuilder()
+          .setEncoding(AudioEncoding.LINEAR16)
+          .setSampleRateHertz(16000)
+          .setLanguageCode("ja-JP")
+          .addAllAlternativeLanguageCodes(languageList)
+          .build();
+      RecognizeResponse recognizeResponse = speechClient.recognize(config, recognitionAudio);
+
+      for (SpeechRecognitionResult result : recognizeResponse.getResultsList()) {
+        // There can be several alternative transcripts for a given chunk of speech.
+        // Just use the first (most likely) one here.
+        SpeechRecognitionAlternative alternative = result.getAlternatives(0);
+        System.out.format("Transcript : %s\n\n", alternative.getTranscript());
+      }
+    }
+  }
+  // [END speech_transcribe_multilanguage]
+
+  // [START speech_transcribe_multilanguage_gcs]
+  /**
+   * Transcribe a remote audio file with multi-language recognition
+   *
+   * @param gcsUri the path to the remote audio file
+   */
+  public static void transcribeMultiLanguageGcs(String gcsUri) throws Exception {
+    try (SpeechClient speechClient = SpeechClient.create()) {
+
+      ArrayList<String> languageList = new ArrayList<>();
+      languageList.add("es-ES");
+      languageList.add("en-US");
+
+      RecognitionConfig config = RecognitionConfig.newBuilder()
+          .setEncoding(AudioEncoding.LINEAR16)
+          .setSampleRateHertz(16000)
+          .setLanguageCode("ja-JP")
+          .addAllAlternativeLanguageCodes(languageList)
+          .build();
+
+      RecognitionAudio audio = RecognitionAudio.newBuilder()
+          .setUri(gcsUri)
+          .build();
+
+      // Use non-blocking call for getting file transcription
+      OperationFuture<LongRunningRecognizeResponse, LongRunningRecognizeMetadata> response =
+          speechClient.longRunningRecognizeAsync(config, audio);
+
+      while (!response.isDone()) {
+        System.out.println("Waiting for response...");
+        Thread.sleep(10000);
+      }
+
+      for (SpeechRecognitionResult result : response.get().getResultsList()) {
+
+        // There can be several alternative transcripts for a given chunk of speech.
+        // Just use the first (most likely) one here.
+        SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
+
+        System.out.printf("Transcript : %s\n\n", alternative.getTranscript());
+      }
+    }
+  }
+  // [END speech_transcribe_multilanguage_gcs]
 }
