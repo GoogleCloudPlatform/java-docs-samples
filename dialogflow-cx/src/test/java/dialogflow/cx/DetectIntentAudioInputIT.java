@@ -41,18 +41,19 @@ public class DetectIntentAudioInputIT {
   private static String LANGUAGE_CODE = "en";
 
   private ByteArrayOutputStream stdOut;
+  private PrintStream originalOut;
 
   @Before
   public void setUp() throws IOException {
-
+    originalOut = System.out;
     stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
   }
 
   @After
   public void tearDown() throws IOException {
+    System.setOut(originalOut);
     stdOut = null;
-    System.setOut(null);
   }
 
   @Test
