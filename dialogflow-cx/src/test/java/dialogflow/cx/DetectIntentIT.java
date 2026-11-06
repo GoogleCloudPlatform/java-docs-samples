@@ -18,7 +18,7 @@ package dialogflow.cx;
 
 import static org.junit.Assert.assertEquals;
 
-import com.google.cloud.dialogflow.cx.v3beta1.QueryResult;
+import com.google.cloud.dialogflow.cx.v3.QueryResult;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
