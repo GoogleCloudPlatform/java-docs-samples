@@ -41,10 +41,11 @@ public class UpdateIntentIT {
   private static String agentID = "";
 
   private ByteArrayOutputStream stdOut;
+  private PrintStream originalOut;
 
   @Before
   public void setUp() throws IOException {
-
+    originalOut = System.out;
     stdOut = new ByteArrayOutputStream();
     System.setOut(new PrintStream(stdOut));
 
@@ -78,8 +79,8 @@ public class UpdateIntentIT {
 
   @After
   public void tearDown() throws IOException, InterruptedException {
+    System.setOut(originalOut);
     stdOut = null;
-    System.setOut(null);
 
     String apiEndpoint = "global-dialogflow.googleapis.com:443";
 
