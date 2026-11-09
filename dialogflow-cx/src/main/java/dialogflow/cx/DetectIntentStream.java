@@ -20,21 +20,21 @@ package dialogflow.cx;
 
 import com.google.api.gax.rpc.ApiException;
 import com.google.api.gax.rpc.BidiStream;
-import com.google.cloud.dialogflow.cx.v3beta1.AudioEncoding;
-import com.google.cloud.dialogflow.cx.v3beta1.AudioInput;
-import com.google.cloud.dialogflow.cx.v3beta1.InputAudioConfig;
-import com.google.cloud.dialogflow.cx.v3beta1.OutputAudioConfig;
-import com.google.cloud.dialogflow.cx.v3beta1.OutputAudioEncoding;
-import com.google.cloud.dialogflow.cx.v3beta1.QueryInput;
-import com.google.cloud.dialogflow.cx.v3beta1.QueryResult;
-import com.google.cloud.dialogflow.cx.v3beta1.SessionName;
-import com.google.cloud.dialogflow.cx.v3beta1.SessionsClient;
-import com.google.cloud.dialogflow.cx.v3beta1.SessionsSettings;
-import com.google.cloud.dialogflow.cx.v3beta1.SsmlVoiceGender;
-import com.google.cloud.dialogflow.cx.v3beta1.StreamingDetectIntentRequest;
-import com.google.cloud.dialogflow.cx.v3beta1.StreamingDetectIntentResponse;
-import com.google.cloud.dialogflow.cx.v3beta1.SynthesizeSpeechConfig;
-import com.google.cloud.dialogflow.cx.v3beta1.VoiceSelectionParams;
+import com.google.cloud.dialogflow.cx.v3.AudioEncoding;
+import com.google.cloud.dialogflow.cx.v3.AudioInput;
+import com.google.cloud.dialogflow.cx.v3.InputAudioConfig;
+import com.google.cloud.dialogflow.cx.v3.OutputAudioConfig;
+import com.google.cloud.dialogflow.cx.v3.OutputAudioEncoding;
+import com.google.cloud.dialogflow.cx.v3.QueryInput;
+import com.google.cloud.dialogflow.cx.v3.QueryResult;
+import com.google.cloud.dialogflow.cx.v3.SessionName;
+import com.google.cloud.dialogflow.cx.v3.SessionsClient;
+import com.google.cloud.dialogflow.cx.v3.SessionsSettings;
+import com.google.cloud.dialogflow.cx.v3.SsmlVoiceGender;
+import com.google.cloud.dialogflow.cx.v3.StreamingDetectIntentRequest;
+import com.google.cloud.dialogflow.cx.v3.StreamingDetectIntentResponse;
+import com.google.cloud.dialogflow.cx.v3.SynthesizeSpeechConfig;
+import com.google.cloud.dialogflow.cx.v3.VoiceSelectionParams;
 import com.google.protobuf.ByteString;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -61,7 +61,8 @@ public abstract class DetectIntentStream {
     // such as threads. In the example below, try-with-resources is used,
     // which automatically calls close().
     try (SessionsClient sessionsClient = SessionsClient.create(sessionsSettings)) {
-      SessionName session = SessionName.of(projectId, locationId, agentId, sessionId);
+      SessionName session =
+          SessionName.ofProjectLocationAgentSessionName(projectId, locationId, agentId, sessionId);
 
       // Instructs the speech recognizer how to process the audio content.
       // Note: hard coding audioEncoding and sampleRateHertz for simplicity.
