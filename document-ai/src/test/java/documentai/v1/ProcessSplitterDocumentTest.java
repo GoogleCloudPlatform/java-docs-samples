@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package documentai.v1beta3;
+package documentai.v1;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertNotNull;
@@ -26,12 +26,15 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
-public class ProcessFormDocumentTest {
+public class ProcessSplitterDocumentTest {
   private static final String PROJECT_ID = System.getenv("GOOGLE_CLOUD_PROJECT");
-  private static final String PROCESSOR_ID = "88541adc6eeec481";
-  private static final String FILE_PATH = "resources/invoice.pdf";
+  private static final String PROCESSOR_ID = System.getenv("DOCAI_SPLITTER_PROCESSOR_ID") != null
+      ? System.getenv("DOCAI_SPLITTER_PROCESSOR_ID")
+      : "7cb010d65184a4d";
+  private static final String FILE_PATH = "resources/multi_document.pdf";
 
   private ByteArrayOutputStream bout;
   private PrintStream out;
@@ -46,7 +49,7 @@ public class ProcessFormDocumentTest {
   @Before
   public void checkRequirements() {
     requireEnvVar("GOOGLE_CLOUD_PROJECT");
-    requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
+    // requireEnvVar("GOOGLE_APPLICATION_CREDENTIALS");
   }
 
   @Before
@@ -58,16 +61,16 @@ public class ProcessFormDocumentTest {
   }
 
   @Test
-  public void testProcessFormDocument()
+  @Ignore("ProcessorType DOCUMENT_SPLIT_PROCESSOR is deprecated by Google Cloud.")
+  public void testProcessSplitterDocument()
       throws InterruptedException, ExecutionException, IOException, TimeoutException {
-    // parse the GCS invoice as a form.
-    ProcessFormDocument.processFormDocument(PROJECT_ID, "us", PROCESSOR_ID, FILE_PATH);
+    // parse the multi-document with splitter processor.
+    ProcessSplitterDocument.processSplitterDocument(PROJECT_ID, "us", PROCESSOR_ID, FILE_PATH);
     String got = bout.toString();
 
-    assertThat(got).contains("There are 1 page(s) in this document.");
-    assertThat(got).contains("Table with 4 columns and 6 rows");
-    assertThat(got).contains("Found 13 form fields");
-    assertThat(got).contains("'BALANCE DUE': '$2140.00'");
+    assertThat(got).contains("Found 8 subdocuments");
+    assertThat(got).contains("confident that pages 1 to 2 are a subdocument");
+    assertThat(got).contains("confident that page 10 is a subdocument");
   }
 
   @After
