@@ -180,5 +180,18 @@ public class RecognizeIT {
     String got = bout.toString();
     assertThat(got.toLowerCase()).contains("google");
   }
-}
 
+  @Test
+  public void testTranscribeWordLevelConfidence() throws Exception {
+    Recognize.transcribeWordLevelConfidence(audioFileName);
+    String got = bout.toString();
+    assertThat(got).contains("First Word and Confidence :");
+  }
+
+  @Test
+  public void testTranscribeWordLevelConfidenceGcs() throws Exception {
+    Recognize.transcribeWordLevelConfidenceGcs(gcsAudioPath);
+    String got = bout.toString();
+    assertThat(got).contains("First Word and Confidence :");
+  }
+}
