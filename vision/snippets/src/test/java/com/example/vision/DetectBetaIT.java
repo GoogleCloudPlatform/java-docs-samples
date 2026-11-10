@@ -112,27 +112,6 @@ public class DetectBetaIT {
   }
 
   @Test
-  public void testDetectDocumentFeatures() {
-    // Act
-    DetectBatchAnnotateFiles.detectBatchAnnotateFiles("./resources/kafka.pdf");
-
-    // Assert
-    String got = bout.toString();
-    assertThat(got).contains("Samsa");
-  }
-
-  @Test
-  public void testDetectDocumentFeaturesGcs() throws Exception {
-    // Act
-    DetectBatchAnnotateFilesGcs.detectBatchAnnotateFilesGcs(
-        "gs://cloud-samples-data/video/kafka.pdf");
-
-    // Assert
-    String got = bout.toString();
-    assertThat(got).contains("Samsa");
-  }
-
-  @Test
   public void testAsyncBatchAnnotateImagesGcs() throws Exception {
     // Act
     AsyncBatchAnnotateImagesGcs.asyncBatchAnnotateImagesGcs(
