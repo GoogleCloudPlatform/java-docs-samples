@@ -68,6 +68,7 @@ public class Recognize {
               + "\tsyncrecognize | asyncrecognize | streamrecognize | micstreamrecognize \n"
               + "\t| wordoffsets | auto-punctuation | stream-punctuation \n"
               + "\t| enhanced-model | model-selection | multi-channel | multi-language\n"
+              + "\t| word-level-confidence\n"
               + "Path:\n\tA file path (ex: ./resources/audio.raw) or a URI "
               + "for a Cloud Storage resource (gs://...)\n",
           Recognize.class.getCanonicalName());
@@ -126,6 +127,12 @@ public class Recognize {
         transcribeMultiLanguageGcs(path);
       } else {
         transcribeMultiLanguage(path);
+      }
+    } else if (command.equals("word-level-confidence")) {
+      if (path.startsWith("gs://")) {
+        transcribeWordLevelConfidenceGcs(path);
+      } else {
+        transcribeWordLevelConfidence(path);
       }
     }
   }
@@ -1026,4 +1033,85 @@ public class Recognize {
     }
   }
   // [END speech_transcribe_multilanguage_gcs]
+
+  // [START speech_transcribe_word_level_confidence]
+  /**
+   * Transcribe a local audio file with word level confidence
+   *
+   * @param fileName the path to the local audio file
+   */
+  public static void transcribeWordLevelConfidence(String fileName) throws Exception {
+    Path path = Paths.get(fileName);
+    byte[] content = Files.readAllBytes(path);
+
+    try (SpeechClient speechClient = SpeechClient.create()) {
+      RecognitionAudio recognitionAudio = RecognitionAudio.newBuilder()
+          .setContent(ByteString.copyFrom(content))
+          .build();
+
+      RecognitionConfig config = RecognitionConfig.newBuilder()
+          .setEncoding(AudioEncoding.LINEAR16)
+          .setSampleRateHertz(16000)
+          .setLanguageCode("en-US")
+          .setEnableWordConfidence(true)
+          .build();
+
+      RecognizeResponse recognizeResponse = speechClient.recognize(config, recognitionAudio);
+
+      for (SpeechRecognitionResult result : recognizeResponse.getResultsList()) {
+        // There can be several alternative transcripts for a given chunk of speech.
+        // Just use the first (most likely) one here.
+        SpeechRecognitionAlternative alternative = result.getAlternatives(0);
+        System.out.format("Transcript : %s\n", alternative.getTranscript());
+        System.out.format(
+            "First Word and Confidence : %s %s \n",
+            alternative.getWords(0).getWord(), alternative.getWords(0).getConfidence());
+      }
+    }
+  }
+  // [END speech_transcribe_word_level_confidence]
+
+  // [START speech_transcribe_word_level_confidence_gcs]
+  /**
+   * Transcribe a remote audio file with word level confidence
+   *
+   * @param gcsUri path to the remote audio file
+   */
+  public static void transcribeWordLevelConfidenceGcs(String gcsUri) throws Exception {
+    try (SpeechClient speechClient = SpeechClient.create()) {
+
+      RecognitionConfig config = RecognitionConfig.newBuilder()
+          .setEncoding(AudioEncoding.FLAC)
+          .setSampleRateHertz(16000)
+          .setLanguageCode("en-US")
+          .setEnableWordConfidence(true)
+          .build();
+
+      // Set the remote path for the audio file
+      RecognitionAudio audio = RecognitionAudio.newBuilder()
+          .setUri(gcsUri)
+          .build();
+
+      // Use non-blocking call for getting file transcription
+      OperationFuture<LongRunningRecognizeResponse, LongRunningRecognizeMetadata> response =
+          speechClient.longRunningRecognizeAsync(config, audio);
+
+      while (!response.isDone()) {
+        System.out.println("Waiting for response...");
+        Thread.sleep(10000);
+      }
+
+      SpeechRecognitionResult result = response.get().getResultsList().get(0);
+
+      // There can be several alternative transcripts for a given chunk of speech.
+      // Just use the first (most likely) one here.
+      SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
+
+      System.out.printf("Transcript : %s\n", alternative.getTranscript());
+      System.out.format(
+          "First Word and Confidence : %s %s \n",
+          alternative.getWords(0).getWord(), alternative.getWords(0).getConfidence());
+    }
+  }
+  // [END speech_transcribe_word_level_confidence_gcs]
 }
