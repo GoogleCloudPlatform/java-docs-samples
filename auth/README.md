@@ -1,7 +1,7 @@
 # Getting Started with Google Cloud Authentication
 
 <a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/java-docs-samples&page=editor&open_in_editor=auth/README.md">
-<img alt="Open in Cloud Shell" src ="http://gstatic.com/cloudssh/images/open-btn.png"></a>
+<img alt="Open in Cloud Shell" src="https://gstatic.com/cloudssh/images/open-btn.png"></a>
 
 See the [documentation][auth-docs] for more information about authenticating for Google Cloud APIs.
 
@@ -15,11 +15,10 @@ Build your project with:
 
 	mvn clean package -DskipTests
 
-You can then run a given `ClassName` via:
+You can then run a given class via:
 
-	mvn exec:java -Dexec.mainClass=com.example.storage.ClassName \
-	    -DpropertyName=propertyValue \
-		-Dexec.args="any arguments to the app"
+	mvn exec:java -Dexec.mainClass=com.google.cloud.auth.samples.ClassName \
+	    -Dexec.args="any arguments to the app"
 
 ### Listing buckets with default credentials
 
