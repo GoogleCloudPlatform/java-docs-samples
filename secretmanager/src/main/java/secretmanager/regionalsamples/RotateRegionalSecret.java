@@ -41,7 +41,7 @@ public class RotateRegionalSecret {
   public static SecretVersion rotateRegionalSecret(
       String projectId, String locationId, String secretId) throws IOException {
 
-    // Endpoint to call the regional secret manager sever
+    // Endpoint to call the regional secret manager server
     String apiEndpoint = String.format("secretmanager.%s.rep.googleapis.com:443", locationId);
     SecretManagerServiceSettings secretManagerServiceSettings =
         SecretManagerServiceSettings.newBuilder().setEndpoint(apiEndpoint).build();

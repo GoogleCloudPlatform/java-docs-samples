@@ -42,7 +42,7 @@ public class CreateRegionalSecretWithCloudSqlCredentials {
   public static Secret createRegionalSecretWithCloudSqlCredentials(
       String projectId, String locationId, String secretId) throws IOException {
 
-    // Endpoint to call the regional secret manager sever
+    // Endpoint to call the regional secret manager server
     String apiEndpoint = String.format("secretmanager.%s.rep.googleapis.com:443", locationId);
     SecretManagerServiceSettings secretManagerServiceSettings =
         SecretManagerServiceSettings.newBuilder().setEndpoint(apiEndpoint).build();
@@ -59,11 +59,11 @@ public class CreateRegionalSecretWithCloudSqlCredentials {
           Secret.newBuilder().setSecretType(SecretType.CLOUD_SQL_DB_CREDENTIALS).build();
 
       // Create the regional secret.
-      Secret createdSecret = client.createSecret(location.toString(), secretId, secret);
+      Secret createdSecret = client.createSecret(location, secretId, secret);
       System.out.printf("Created secret: %s\n", createdSecret.getName());
 
       System.out.printf(
-          "Grant the Cloud SQL User rotate IAM permissions to enable managed rotation: %s\n",
+          "Grant the Cloud SQL User rotate IAM permissions to enable managed rotation to: %s\n",
           createdSecret.getPolicyMember().getIamPolicyUidPrincipal());
 
       return createdSecret;

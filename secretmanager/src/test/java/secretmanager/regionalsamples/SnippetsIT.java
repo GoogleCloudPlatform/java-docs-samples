@@ -67,6 +67,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.lang.Exception;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -91,7 +92,11 @@ public class SnippetsIT {
   private static final String LABEL_VALUE = "examplelabelvalue";
   private static final String UPDATED_LABEL_KEY = "updatedlabelkey";
   private static final String UPDATED_LABEL_VALUE = "updatedlabelvalue";
-  private static final String LOCATION_ID = "us-east1";
+  private static final String LOCATION_ID =
+      Optional.ofNullable(System.getenv("GOOGLE_CLOUD_PROJECT_LOCATION")).orElse("us-central1");
+  // Region of the Cloud SQL test instance; Cloud SQL secrets must be in the instance's region.
+  private static final String CLOUD_SQL_LOCATION_ID =
+      Optional.ofNullable(System.getenv("CLOUD_SQL_LOCATION")).orElse("us-east1");
   private static final String REGIONAL_ENDPOINT = 
       String.format("secretmanager.%s.rep.googleapis.com:443", LOCATION_ID);
   private static final String ANNOTATION_KEY = "exampleannotationkey";
@@ -178,7 +183,7 @@ public class SnippetsIT {
     createTags();
 
     TEST_REGIONAL_SECRET_WITH_CLOUD_SQL_CREDENTIALS_TO_CREATE_NAME =
-        SecretName.ofProjectLocationSecretName(PROJECT_ID, LOCATION_ID, randomSecretId());
+        SecretName.ofProjectLocationSecretName(PROJECT_ID, CLOUD_SQL_LOCATION_ID, randomSecretId());
 
     TEST_CLOUD_SQL_SECRET_FOR_ENABLE_ROTATION = randomSecretId();
     TEST_CLOUD_SQL_SECRET_FOR_ENABLE_ROTATION_MEMBER =
@@ -227,15 +232,15 @@ public class SnippetsIT {
 
     revokeCloudSqlRole(TEST_CLOUD_SQL_SECRET_FOR_ENABLE_ROTATION_MEMBER);
     deleteRegionalSecret(SecretName.ofProjectLocationSecretName(
-        PROJECT_ID, LOCATION_ID, TEST_CLOUD_SQL_SECRET_FOR_ENABLE_ROTATION).toString());
+        PROJECT_ID, CLOUD_SQL_LOCATION_ID, TEST_CLOUD_SQL_SECRET_FOR_ENABLE_ROTATION).toString());
 
     revokeCloudSqlRole(TEST_CLOUD_SQL_SECRET_FOR_ROTATE_MEMBER);
     deleteRegionalSecret(SecretName.ofProjectLocationSecretName(
-        PROJECT_ID, LOCATION_ID, TEST_CLOUD_SQL_SECRET_FOR_ROTATE).toString());
+        PROJECT_ID, CLOUD_SQL_LOCATION_ID, TEST_CLOUD_SQL_SECRET_FOR_ROTATE).toString());
 
     revokeCloudSqlRole(TEST_CLOUD_SQL_SECRET_FOR_SCHEDULE_MEMBER);
     deleteRegionalSecret(SecretName.ofProjectLocationSecretName(
-        PROJECT_ID, LOCATION_ID, TEST_CLOUD_SQL_SECRET_FOR_SCHEDULE).toString());
+        PROJECT_ID, CLOUD_SQL_LOCATION_ID, TEST_CLOUD_SQL_SECRET_FOR_SCHEDULE).toString());
   }
 
   private static String randomSecretId() {
@@ -248,7 +253,7 @@ public class SnippetsIT {
       throws IOException, InterruptedException {
     Secret secret =
         CreateRegionalSecretWithCloudSqlCredentials.createRegionalSecretWithCloudSqlCredentials(
-            PROJECT_ID, LOCATION_ID, secretId);
+            PROJECT_ID, CLOUD_SQL_LOCATION_ID, secretId);
 
     String member = secret.getPolicyMember().getIamPolicyUidPrincipal();
     grantCloudSqlRole(member);
@@ -452,8 +457,11 @@ public class SnippetsIT {
 
   private static void deleteRegionalSecret(String secretId) throws IOException {
     DeleteSecretRequest request = DeleteSecretRequest.newBuilder().setName(secretId).build();
+    // Use the endpoint of the secret's own region (Cloud SQL secrets may differ from LOCATION_ID).
+    String endpoint = String.format(
+        "secretmanager.%s.rep.googleapis.com:443", SecretName.parse(secretId).getLocation());
     SecretManagerServiceSettings secretManagerServiceSettings =
-        SecretManagerServiceSettings.newBuilder().setEndpoint(REGIONAL_ENDPOINT).build();
+        SecretManagerServiceSettings.newBuilder().setEndpoint(endpoint).build();
     try (SecretManagerServiceClient client = 
         SecretManagerServiceClient.create(secretManagerServiceSettings)) {
       try {
@@ -551,7 +559,7 @@ public class SnippetsIT {
     SecretVersion version =
         EnableRegionalSecretManagedRotation.enableRegionalSecretManagedRotation(
             PROJECT_ID,
-            LOCATION_ID,
+            CLOUD_SQL_LOCATION_ID,
             TEST_CLOUD_SQL_SECRET_FOR_ENABLE_ROTATION,
             CLOUD_SQL_INSTANCE_ID,
             CLOUD_SQL_USERNAME);
@@ -565,13 +573,13 @@ public class SnippetsIT {
     SecretVersion firstVersion =
         EnableRegionalSecretManagedRotation.enableRegionalSecretManagedRotation(
             PROJECT_ID,
-            LOCATION_ID,
+            CLOUD_SQL_LOCATION_ID,
             TEST_CLOUD_SQL_SECRET_FOR_ROTATE,
             CLOUD_SQL_INSTANCE_ID,
             CLOUD_SQL_USERNAME);
 
     SecretVersion rotatedVersion = RotateRegionalSecret.rotateRegionalSecret(
-        PROJECT_ID, LOCATION_ID, TEST_CLOUD_SQL_SECRET_FOR_ROTATE);
+        PROJECT_ID, CLOUD_SQL_LOCATION_ID, TEST_CLOUD_SQL_SECRET_FOR_ROTATE);
 
     assertThat(rotatedVersion.getName()).contains(TEST_CLOUD_SQL_SECRET_FOR_ROTATE);
     assertNotEquals(firstVersion.getName(), rotatedVersion.getName());
@@ -582,7 +590,7 @@ public class SnippetsIT {
   public void testUpdateRegionalSecretWithManagedRotationSchedule() throws IOException {
     EnableRegionalSecretManagedRotation.enableRegionalSecretManagedRotation(
         PROJECT_ID,
-        LOCATION_ID,
+        CLOUD_SQL_LOCATION_ID,
         TEST_CLOUD_SQL_SECRET_FOR_SCHEDULE,
         CLOUD_SQL_INSTANCE_ID,
         CLOUD_SQL_USERNAME);
@@ -590,7 +598,7 @@ public class SnippetsIT {
     Secret updatedSecret =
         UpdateRegionalSecretWithManagedRotationSchedule
             .updateRegionalSecretWithManagedRotationSchedule(
-                PROJECT_ID, LOCATION_ID, TEST_CLOUD_SQL_SECRET_FOR_SCHEDULE, 86400);
+                PROJECT_ID, CLOUD_SQL_LOCATION_ID, TEST_CLOUD_SQL_SECRET_FOR_SCHEDULE, 86400);
 
     assertThat(updatedSecret.getName()).contains(TEST_CLOUD_SQL_SECRET_FOR_SCHEDULE);
     assertTrue(updatedSecret.getRotation().hasNextRotationTime());

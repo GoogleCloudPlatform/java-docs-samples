@@ -43,14 +43,16 @@ public class EnableRegionalSecretManagedRotation {
   }
 
   // Enables managed rotation of a CLOUD_SQL_DB_CREDENTIALS typed secret. It validates and
-  // enables the rotation, adding a version and sets the passed password (optional).
+  // enables the rotation and adds a version. No password is passed here, so Secret Manager
+  // generates a new random password for the database user; a password can optionally be set
+  // on CloudSQLSingleUserCredentials.
   // Note: AddSecretVersion is disabled on the CLOUD_SQL_DB_CREDENTIALS currently and for any
   // necessary manual rotations please trigger rotateRegionalSecret.
   public static SecretVersion enableRegionalSecretManagedRotation(
       String projectId, String locationId, String secretId, String instanceId, String username)
       throws IOException {
 
-    // Endpoint to call the regional secret manager sever
+    // Endpoint to call the regional secret manager server
     String apiEndpoint = String.format("secretmanager.%s.rep.googleapis.com:443", locationId);
     SecretManagerServiceSettings secretManagerServiceSettings =
         SecretManagerServiceSettings.newBuilder().setEndpoint(apiEndpoint).build();
