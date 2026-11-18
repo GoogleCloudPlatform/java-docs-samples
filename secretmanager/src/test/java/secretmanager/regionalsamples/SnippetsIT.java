@@ -72,6 +72,7 @@ import java.util.Random;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -145,8 +146,6 @@ public class SnippetsIT {
     Assert.assertFalse("missing GOOGLE_CLOUD_PROJECT", Strings.isNullOrEmpty(PROJECT_ID));
     Assert.assertFalse("missing GOOGLE_CLOUD_PROJECT_LOCATION",
         Strings.isNullOrEmpty(LOCATION_ID));
-    Assert.assertFalse("missing CLOUD_SQL_INSTANCE", Strings.isNullOrEmpty(CLOUD_SQL_INSTANCE_ID));
-    Assert.assertFalse("missing CLOUD_SQL_USER", Strings.isNullOrEmpty(CLOUD_SQL_USERNAME));
 
     TEST_REGIONAL_SECRET = createRegionalSecret();
     TEST_REGIONAL_SECRET_TO_DELETE = createRegionalSecret();
@@ -185,18 +184,26 @@ public class SnippetsIT {
     TEST_REGIONAL_SECRET_WITH_CLOUD_SQL_CREDENTIALS_TO_CREATE_NAME =
         SecretName.ofProjectLocationSecretName(PROJECT_ID, CLOUD_SQL_LOCATION_ID, randomSecretId());
 
-    TEST_CLOUD_SQL_SECRET_FOR_ENABLE_ROTATION = randomSecretId();
-    TEST_CLOUD_SQL_SECRET_FOR_ENABLE_ROTATION_MEMBER =
-        createRegionalSecretWithCloudSqlCredentialsAndGrant(
-            TEST_CLOUD_SQL_SECRET_FOR_ENABLE_ROTATION);
+    // Managed-rotation tests need a Cloud SQL instance and user; skip setup when absent.
+    if (hasCloudSqlConfig()) {
+      TEST_CLOUD_SQL_SECRET_FOR_ENABLE_ROTATION = randomSecretId();
+      TEST_CLOUD_SQL_SECRET_FOR_ENABLE_ROTATION_MEMBER =
+          createRegionalSecretWithCloudSqlCredentialsAndGrant(
+              TEST_CLOUD_SQL_SECRET_FOR_ENABLE_ROTATION);
 
-    TEST_CLOUD_SQL_SECRET_FOR_ROTATE = randomSecretId();
-    TEST_CLOUD_SQL_SECRET_FOR_ROTATE_MEMBER =
-        createRegionalSecretWithCloudSqlCredentialsAndGrant(TEST_CLOUD_SQL_SECRET_FOR_ROTATE);
+      TEST_CLOUD_SQL_SECRET_FOR_ROTATE = randomSecretId();
+      TEST_CLOUD_SQL_SECRET_FOR_ROTATE_MEMBER =
+          createRegionalSecretWithCloudSqlCredentialsAndGrant(TEST_CLOUD_SQL_SECRET_FOR_ROTATE);
 
-    TEST_CLOUD_SQL_SECRET_FOR_SCHEDULE = randomSecretId();
-    TEST_CLOUD_SQL_SECRET_FOR_SCHEDULE_MEMBER =
-        createRegionalSecretWithCloudSqlCredentialsAndGrant(TEST_CLOUD_SQL_SECRET_FOR_SCHEDULE);
+      TEST_CLOUD_SQL_SECRET_FOR_SCHEDULE = randomSecretId();
+      TEST_CLOUD_SQL_SECRET_FOR_SCHEDULE_MEMBER =
+          createRegionalSecretWithCloudSqlCredentialsAndGrant(TEST_CLOUD_SQL_SECRET_FOR_SCHEDULE);
+    }
+  }
+
+  private static boolean hasCloudSqlConfig() {
+    return !Strings.isNullOrEmpty(CLOUD_SQL_INSTANCE_ID)
+        && !Strings.isNullOrEmpty(CLOUD_SQL_USERNAME);
   }
 
   @Before
@@ -230,17 +237,30 @@ public class SnippetsIT {
     deleteRegionalSecret(TEST_REGIONAL_SECRET_WITH_CLOUD_SQL_CREDENTIALS_TO_CREATE_NAME
         .toString());
 
-    revokeCloudSqlRole(TEST_CLOUD_SQL_SECRET_FOR_ENABLE_ROTATION_MEMBER);
-    deleteRegionalSecret(SecretName.ofProjectLocationSecretName(
-        PROJECT_ID, CLOUD_SQL_LOCATION_ID, TEST_CLOUD_SQL_SECRET_FOR_ENABLE_ROTATION).toString());
+    if (TEST_CLOUD_SQL_SECRET_FOR_ENABLE_ROTATION != null) {
+      if (TEST_CLOUD_SQL_SECRET_FOR_ENABLE_ROTATION_MEMBER != null) {
+        revokeCloudSqlRole(TEST_CLOUD_SQL_SECRET_FOR_ENABLE_ROTATION_MEMBER);
+      }
+      deleteRegionalSecret(SecretName.ofProjectLocationSecretName(
+          PROJECT_ID, CLOUD_SQL_LOCATION_ID, TEST_CLOUD_SQL_SECRET_FOR_ENABLE_ROTATION)
+          .toString());
+    }
 
-    revokeCloudSqlRole(TEST_CLOUD_SQL_SECRET_FOR_ROTATE_MEMBER);
-    deleteRegionalSecret(SecretName.ofProjectLocationSecretName(
-        PROJECT_ID, CLOUD_SQL_LOCATION_ID, TEST_CLOUD_SQL_SECRET_FOR_ROTATE).toString());
+    if (TEST_CLOUD_SQL_SECRET_FOR_ROTATE != null) {
+      if (TEST_CLOUD_SQL_SECRET_FOR_ROTATE_MEMBER != null) {
+        revokeCloudSqlRole(TEST_CLOUD_SQL_SECRET_FOR_ROTATE_MEMBER);
+      }
+      deleteRegionalSecret(SecretName.ofProjectLocationSecretName(
+          PROJECT_ID, CLOUD_SQL_LOCATION_ID, TEST_CLOUD_SQL_SECRET_FOR_ROTATE).toString());
+    }
 
-    revokeCloudSqlRole(TEST_CLOUD_SQL_SECRET_FOR_SCHEDULE_MEMBER);
-    deleteRegionalSecret(SecretName.ofProjectLocationSecretName(
-        PROJECT_ID, CLOUD_SQL_LOCATION_ID, TEST_CLOUD_SQL_SECRET_FOR_SCHEDULE).toString());
+    if (TEST_CLOUD_SQL_SECRET_FOR_SCHEDULE != null) {
+      if (TEST_CLOUD_SQL_SECRET_FOR_SCHEDULE_MEMBER != null) {
+        revokeCloudSqlRole(TEST_CLOUD_SQL_SECRET_FOR_SCHEDULE_MEMBER);
+      }
+      deleteRegionalSecret(SecretName.ofProjectLocationSecretName(
+          PROJECT_ID, CLOUD_SQL_LOCATION_ID, TEST_CLOUD_SQL_SECRET_FOR_SCHEDULE).toString());
+    }
   }
 
   private static String randomSecretId() {
@@ -556,6 +576,7 @@ public class SnippetsIT {
 
   @Test
   public void testEnableRegionalSecretManagedRotation() throws IOException {
+    Assume.assumeTrue("CLOUD_SQL_INSTANCE or CLOUD_SQL_USER not set", hasCloudSqlConfig());
     SecretVersion version =
         EnableRegionalSecretManagedRotation.enableRegionalSecretManagedRotation(
             PROJECT_ID,
@@ -570,6 +591,7 @@ public class SnippetsIT {
 
   @Test
   public void testRotateRegionalSecret() throws IOException {
+    Assume.assumeTrue("CLOUD_SQL_INSTANCE or CLOUD_SQL_USER not set", hasCloudSqlConfig());
     SecretVersion firstVersion =
         EnableRegionalSecretManagedRotation.enableRegionalSecretManagedRotation(
             PROJECT_ID,
@@ -588,6 +610,7 @@ public class SnippetsIT {
 
   @Test
   public void testUpdateRegionalSecretWithManagedRotationSchedule() throws IOException {
+    Assume.assumeTrue("CLOUD_SQL_INSTANCE or CLOUD_SQL_USER not set", hasCloudSqlConfig());
     EnableRegionalSecretManagedRotation.enableRegionalSecretManagedRotation(
         PROJECT_ID,
         CLOUD_SQL_LOCATION_ID,
