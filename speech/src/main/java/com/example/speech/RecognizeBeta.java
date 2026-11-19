@@ -87,7 +87,6 @@ public class RecognizeBeta {
     }
   }
 
-  // [START speech_transcribe_recognition_metadata_beta]
   /**
    * Transcribe the given audio file and include recognition metadata in the request.
    *
@@ -137,9 +136,7 @@ public class RecognizeBeta {
       }
     }
   }
-  // [END speech_transcribe_recognition_metadata_beta]
 
-  // [START speech_transcribe_diarization_beta]
   /**
    * Transcribe the given audio file using speaker diarization.
    *
@@ -202,9 +199,7 @@ public class RecognizeBeta {
       System.out.println(speakerWords.toString());
     }
   }
-  // [END speech_transcribe_diarization_beta]
 
-  // [START speech_transcribe_diarization_gcs_beta]
   /**
    * Transcribe a remote audio file using speaker diarization.
    *
@@ -272,9 +267,7 @@ public class RecognizeBeta {
       System.out.println(speakerWords.toString());
     }
   }
-  // [END speech_transcribe_diarization_gcs_beta]
 
-  // [START speech_transcribe_multichannel_beta]
   /**
    * Transcribe a local audio file with multi-channel recognition
    *
@@ -312,9 +305,7 @@ public class RecognizeBeta {
       }
     }
   }
-  // [END speech_transcribe_multichannel_beta]
 
-  // [START speech_transcribe_multichannel_gcs_beta]
   /**
    * Transcribe a remote audio file with multi-channel recognition
    *
@@ -358,9 +349,7 @@ public class RecognizeBeta {
       }
     }
   }
-  // [END speech_transcribe_multichannel_gcs_beta]
 
-  // [START speech_transcribe_multilanguage_beta]
   /**
    * Transcribe a local audio file with multi-language recognition
    *
@@ -399,9 +388,7 @@ public class RecognizeBeta {
       }
     }
   }
-  // [END speech_transcribe_multilanguage_beta]
 
-  // [START speech_transcribe_multilanguage_gcs_beta]
   /**
    * Transcribe a remote audio file with multi-language recognition
    *
@@ -446,9 +433,7 @@ public class RecognizeBeta {
       }
     }
   }
-  // [END speech_transcribe_multilanguage_gcs_beta]
 
-  // [START speech_transcribe_word_level_confidence_beta]
   /**
    * Transcribe a local audio file with word level confidence
    *
@@ -484,9 +469,7 @@ public class RecognizeBeta {
       }
     }
   }
-  // [END speech_transcribe_word_level_confidence_beta]
 
-  // [START speech_transcribe_word_level_confidence_gcs_beta]
   /**
    * Transcribe a remote audio file with word level confidence
    *
@@ -528,5 +511,4 @@ public class RecognizeBeta {
           alternative.getWords(0).getWord(), alternative.getWords(0).getConfidence());
     }
   }
-  // [END speech_transcribe_word_level_confidence_gcs_beta]
 }
