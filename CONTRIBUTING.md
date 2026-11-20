@@ -24,6 +24,28 @@ again.
 
 All code should follow the [Sample Format Guidelines](SAMPLE_FORMAT.md)
 
+## Documentation-only contributions
+
+If you are contributing documentation such as a README, keep the change small
+and reviewable.
+
+For missing product-level READMEs:
+
+- Use an existing product README in the repo as a template, such as
+  `secretmanager/README.md`, when one exists.
+- Do not invent sample entrypoints, class names, or product descriptions that
+  are not supported by the actual folder contents.
+- Prefer to add one product README at a time, or a small set of related ones,
+  rather than creating READMEs for every missing directory at once.
+- When a product folder already has good subdirectory READMEs, decide whether
+  a top-level README adds value before creating one.
+
+Before opening a pull request:
+
+- Verify the README matches the repo's current style.
+- If the repo has a docs or lint check, run it on the affected directories.
+- Make sure any links, badges, and exec examples are accurate.
+
 ## Code reviews
 
 Change to samples should be reviewed by both a product stakeholder for accuracy as well as a member
