@@ -19,15 +19,19 @@ package com.example.vision;
 import com.google.cloud.vision.v1.AnnotateImageResponse;
 import com.google.cloud.vision.v1.EntityAnnotation;
 import com.google.cloud.vision.v1.Feature.Type;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gcp.vision.CloudVisionTemplate;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.http.HttpStatus;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
@@ -44,6 +48,37 @@ public class VisionController {
   @Autowired private CloudVisionTemplate cloudVisionTemplate;
   // [END vision_spring_autowire]
 
+  private static final String ALLOWED_IMAGE_HOST = "storage.googleapis.com";
+
+  /**
+   * Restrict user-supplied image URLs to HTTPS URLs on {@link #ALLOWED_IMAGE_HOST}. Passing an
+   * arbitrary URI to {@link ResourceLoader#getResource(String)} allows callers to make the server
+   * open local files ({@code file:}) or issue SSRF requests to internal endpoints.
+   */
+  static void requireAllowedImageUrl(String imageUrl) {
+    if (imageUrl == null || imageUrl.trim().isEmpty()) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "imageUrl is required");
+    }
+    URI uri;
+    try {
+      uri = new URI(imageUrl);
+    } catch (URISyntaxException e) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid imageUrl", e);
+    }
+    String rawPath = uri.getRawPath();
+    if (!"https".equalsIgnoreCase(uri.getScheme())
+        || !ALLOWED_IMAGE_HOST.equalsIgnoreCase(uri.getHost())
+        || uri.getPort() != -1
+        || uri.getUserInfo() != null
+        || rawPath == null
+        || rawPath.length() <= 1
+        || !rawPath.startsWith("/")
+        || rawPath.contains("..")) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, "imageUrl must be an https://" + ALLOWED_IMAGE_HOST + "/... URL");
+    }
+  }
+
   /**
    * This method downloads an image from a URL and sends its contents to the Vision API for label
    * detection.
@@ -54,6 +89,7 @@ public class VisionController {
    */
   @GetMapping("/extractLabels")
   public ModelAndView extractLabels(String imageUrl, ModelMap map) {
+    requireAllowedImageUrl(imageUrl);
     // [START vision_spring_image_labelling]
     AnnotateImageResponse response =
         this.cloudVisionTemplate.analyzeImage(
@@ -79,6 +115,7 @@ public class VisionController {
 
   @GetMapping("/extractText")
   public String extractText(String imageUrl) {
+    requireAllowedImageUrl(imageUrl);
     // [START vision_spring_text_extraction]
     String textFromImage =
         this.cloudVisionTemplate.extractTextFromImage(this.resourceLoader.getResource(imageUrl));
