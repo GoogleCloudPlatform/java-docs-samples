@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * https://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,6 +17,8 @@
 package com.example.vision;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -172,6 +174,37 @@ public class VisionControllerTest {
   }
 
   @Test
+  public void isAllowedImageHost_rejectsNonAsciiLookalikesThatEqualsIgnoreCaseWouldAccept() {
+    // Exercises the ASCII guard directly: java.net.URI currently returns a null host for these
+    // authorities, so the URL-level test above would pass even without the guard.
+    String[] lookalikes = {
+      "ſtorage.googleapis.com", // U+017F long s folds to 's'
+      "storage.googleapıs.com", // U+0131 dotless i folds to 'i'
+      "ſtorage.googleapıs.com", // both
+    };
+    for (String host : lookalikes) {
+      assertTrue(
+          "precondition: equalsIgnoreCase matches " + host,
+          "storage.googleapis.com".equalsIgnoreCase(host));
+      assertFalse(
+          "Expected host to be rejected: " + host, VisionController.isAllowedImageHost(host));
+    }
+    // U+212A Kelvin sign folds to 'k'. The allowed host has no 'k', so it cannot produce a
+    // case-insensitive match here, but any non-ASCII host must still be rejected.
+    assertFalse(VisionController.isAllowedImageHost("storage.googKeapis.com")); // U+212A
+    assertFalse(VisionController.isAllowedImageHost("Kstorage.googleapis.com")); // U+212A
+  }
+
+  @Test
+  public void isAllowedImageHost_acceptsAsciiHostInAnyCase() {
+    assertTrue(VisionController.isAllowedImageHost("storage.googleapis.com"));
+    assertTrue(VisionController.isAllowedImageHost("STORAGE.GOOGLEAPIS.COM"));
+    assertTrue(VisionController.isAllowedImageHost("Storage.GoogleApis.Com"));
+    assertFalse(VisionController.isAllowedImageHost(null));
+    assertFalse(VisionController.isAllowedImageHost(""));
+  }
+
+  @Test
   public void requireAllowedImageUrl_rejectsUserInfo() {
     assertRejected("https://storage.googleapis.com@evil.example/b/o");
     assertRejected("https://user:password@storage.googleapis.com/b/o");
@@ -200,6 +233,26 @@ public class VisionControllerTest {
   public void requireAllowedImageUrl_rejectsDotDotSegments() {
     assertRejected("https://storage.googleapis.com/b/../../x");
     assertRejected("https://storage.googleapis.com/../computeMetadata");
+    assertRejected("https://storage.googleapis.com/b/../x");
+  }
+
+  @Test
+  public void requireAllowedImageUrl_rejectsPercentEncodedDotDotSegments() {
+    // getRawPath() keeps these encoded, so only the decoded-path check catches them.
+    assertRejected("https://storage.googleapis.com/b/%2e%2e/x");
+    assertRejected("https://storage.googleapis.com/b/%2e%2e/%2e%2e/x");
+    assertRejected("https://storage.googleapis.com/b/%2E%2e/x");
+    assertRejected("https://storage.googleapis.com/b/%2e%2E/x");
+    assertRejected("https://storage.googleapis.com/b/%2E%2E/x");
+    assertRejected("https://storage.googleapis.com/b/.%2e/x");
+    assertRejected("https://storage.googleapis.com/b/%2e./x");
+    assertRejected("https://storage.googleapis.com/%2e%2e/computeMetadata");
+  }
+
+  @Test
+  public void requireAllowedImageUrl_acceptsSingleEncodedDot() {
+    assertAccepted("https://storage.googleapis.com/b/%2e/x.jpg");
+    assertAccepted("https://storage.googleapis.com/b/file%2ejpg");
   }
 
   // Endpoint behavior.
@@ -218,6 +271,17 @@ public class VisionControllerTest {
     mvc.perform(
             get("/extractLabels")
                 .param("imageUrl", "https://169.254.169.254/computeMetadata/v1/"))
+        .andExpect(status().isBadRequest());
+
+    verifyNoInteractions(resourceLoader, cloudVisionTemplate);
+  }
+
+  @Test
+  public void extractText_encodedTraversal_returnsBadRequestWithoutLoadingResource()
+      throws Exception {
+    mvc.perform(
+            get("/extractText")
+                .param("imageUrl", "https://storage.googleapis.com/b/%2e%2e/%2e%2e/x"))
         .andExpect(status().isBadRequest());
 
     verifyNoInteractions(resourceLoader, cloudVisionTemplate);
