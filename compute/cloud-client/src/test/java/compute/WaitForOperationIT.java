@@ -32,6 +32,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -75,14 +77,14 @@ public class WaitForOperationIT {
     private final String projectId;
     private final String zone;
     private final String diskName;
-    private Operation latestOperation;
+    private final Operation initialOperation;
 
     private TempZonalDisk(
         String projectId, String zone, String diskName, Operation initialOperation) {
       this.projectId = projectId;
       this.zone = zone;
       this.diskName = diskName;
-      this.latestOperation = initialOperation;
+      this.initialOperation = initialOperation;
     }
 
     /**
@@ -116,38 +118,72 @@ public class WaitForOperationIT {
     }
 
     Operation operation() {
-      return latestOperation;
+      return initialOperation;
     }
 
-    /**
-     * Polls Compute Engine until the disk creation operation reaches {@link Status#DONE}.
-     *
-     * @return the completed {@link Operation}.
-     */
-    Operation waitUntilDone() throws IOException {
-      if (latestOperation.getStatus() == Status.DONE) {
-        return latestOperation;
+    private void waitUntilDone(Duration timeout)
+        throws IOException, InterruptedException, TimeoutException {
+      Operation current = initialOperation;
+      if (current.getStatus() == Status.DONE) {
+        return;
       }
+      Instant deadline = Instant.now().plus(timeout);
       try (ZoneOperationsClient zoneOperationsClient = ZoneOperationsClient.create()) {
-        while (latestOperation.getStatus() != Status.DONE) {
-          latestOperation =
-              zoneOperationsClient.wait(projectId, zone, latestOperation.getName());
+        while (current.getStatus() != Status.DONE) {
+          if (Instant.now().isAfter(deadline)) {
+            throw new TimeoutException(
+                "Timed out waiting for disk operation " + current.getName());
+          }
+          current = zoneOperationsClient.wait(projectId, zone, current.getName());
+          if (current.getStatus() != Status.DONE) {
+            TimeUnit.SECONDS.sleep(1);
+          }
         }
       }
-      return latestOperation;
     }
 
     /** Waits for disk creation to finish if still in progress, then deletes the temporary disk. */
     @Override
-    public void close()
-        throws IOException, ExecutionException, InterruptedException, TimeoutException {
-      waitUntilDone();
+    public void close() throws Exception {
+      Exception waitError = null;
+      boolean interrupted = false;
+      try {
+        waitUntilDone(Duration.ofMinutes(3));
+      } catch (InterruptedException e) {
+        interrupted = true;
+        waitError = e;
+      } catch (Exception e) {
+        waitError = e;
+      }
+
       try (DisksClient disksClient = DisksClient.create()) {
         disksClient.deleteAsync(projectId, zone, diskName).get(3, TimeUnit.MINUTES);
       } catch (ExecutionException e) {
         if (!(e.getCause() instanceof NotFoundException)) {
+          if (waitError != null) {
+            e.addSuppressed(waitError);
+          }
           throw e;
         }
+      } catch (InterruptedException e) {
+        interrupted = true;
+        if (waitError != null) {
+          e.addSuppressed(waitError);
+        }
+        throw e;
+      } catch (Exception e) {
+        if (waitError != null) {
+          e.addSuppressed(waitError);
+        }
+        throw e;
+      } finally {
+        if (interrupted) {
+          Thread.currentThread().interrupt();
+        }
+      }
+
+      if (waitError != null) {
+        throw waitError;
       }
     }
   }
@@ -191,18 +227,22 @@ public class WaitForOperationIT {
 
   /** Verifies passing an already-completed zonal operation prints DONE without re-waiting. */
   @Test
-  public void testWaitForOperationAlreadyDone() throws Exception {
-    try (TempZonalDisk disk = TempZonalDisk.create(PROJECT_ID, ZONE)) {
-      Operation doneOperation = disk.waitUntilDone();
-      assertThat(doneOperation.getStatus()).isEqualTo(Status.DONE);
+  public void testWaitForOperationAlreadyDone() throws IOException {
+    Operation doneOperation =
+        Operation.newBuilder()
+            .setName("non-existent-done-operation-" + UUID.randomUUID())
+            .setZone(
+                String.format(
+                    "https://www.googleapis.com/compute/v1/projects/%s/zones/%s",
+                    PROJECT_ID, ZONE))
+            .setStatus(Status.DONE)
+            .build();
 
-      stdOut.reset();
-      WaitForOperation.waitForOperation(PROJECT_ID, doneOperation);
+    WaitForOperation.waitForOperation(PROJECT_ID, doneOperation);
 
-      String output = stdOut.toString(StandardCharsets.UTF_8);
-      assertThat(output).contains("Operation Status: DONE");
-      assertThat(output).doesNotContain("Error");
-    }
+    String output = stdOut.toString(StandardCharsets.UTF_8);
+    assertThat(output).contains("Operation Status: DONE");
+    assertThat(output).doesNotContain("Error");
   }
 
   /** Verifies waiting on a non-existent zonal operation raises {@link NotFoundException}. */
@@ -215,6 +255,7 @@ public class WaitForOperationIT {
                 String.format(
                     "https://www.googleapis.com/compute/v1/projects/%s/zones/%s",
                     PROJECT_ID, ZONE))
+            .setStatus(Status.RUNNING)
             .build();
 
     assertThrows(
