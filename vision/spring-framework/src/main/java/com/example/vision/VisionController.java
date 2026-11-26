@@ -65,15 +65,24 @@ public class VisionController {
     } catch (URISyntaxException e) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid imageUrl", e);
     }
+    String host = uri.getHost();
     String rawPath = uri.getRawPath();
+    String path = uri.getPath();
+    int port = uri.getPort();
     if (!"https".equalsIgnoreCase(uri.getScheme())
-        || !ALLOWED_IMAGE_HOST.equalsIgnoreCase(uri.getHost())
-        || uri.getPort() != -1
+        || host == null
+        || !host.chars().allMatch(c -> c < 0x80)
+        || !ALLOWED_IMAGE_HOST.equalsIgnoreCase(host)
+        || (port != -1 && port != 443)
         || uri.getUserInfo() != null
         || rawPath == null
         || rawPath.length() <= 1
         || !rawPath.startsWith("/")
-        || rawPath.contains("..")) {
+        || rawPath.contains("..")
+        || path == null
+        || path.length() <= 1
+        || !path.startsWith("/")
+        || path.contains("..")) {
       throw new ResponseStatusException(
           HttpStatus.BAD_REQUEST, "imageUrl must be an https://" + ALLOWED_IMAGE_HOST + "/... URL");
     }
