@@ -123,6 +123,8 @@ public class IndexServlet extends HttpServlet {
           .write(
               "Unable to successfully cast vote! Please check the application "
                   + "logs for more details.");
+      // Without this return the success response below overwrites the 500 and the error text.
+      return;
       // [END_EXCLUDE]
     }
     // [END cloud_sql_postgres_servlet_connection]
