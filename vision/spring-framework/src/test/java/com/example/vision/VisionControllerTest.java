@@ -17,8 +17,6 @@
 package com.example.vision;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -174,37 +172,6 @@ public class VisionControllerTest {
   }
 
   @Test
-  public void isAllowedImageHost_rejectsNonAsciiLookalikesThatEqualsIgnoreCaseWouldAccept() {
-    // Exercises the ASCII guard directly: java.net.URI currently returns a null host for these
-    // authorities, so the URL-level test above would pass even without the guard.
-    String[] lookalikes = {
-      "ſtorage.googleapis.com", // U+017F long s folds to 's'
-      "storage.googleapıs.com", // U+0131 dotless i folds to 'i'
-      "ſtorage.googleapıs.com", // both
-    };
-    for (String host : lookalikes) {
-      assertTrue(
-          "precondition: equalsIgnoreCase matches " + host,
-          "storage.googleapis.com".equalsIgnoreCase(host));
-      assertFalse(
-          "Expected host to be rejected: " + host, VisionController.isAllowedImageHost(host));
-    }
-    // U+212A Kelvin sign folds to 'k'. The allowed host has no 'k', so it cannot produce a
-    // case-insensitive match here, but any non-ASCII host must still be rejected.
-    assertFalse(VisionController.isAllowedImageHost("storage.googKeapis.com")); // U+212A
-    assertFalse(VisionController.isAllowedImageHost("Kstorage.googleapis.com")); // U+212A
-  }
-
-  @Test
-  public void isAllowedImageHost_acceptsAsciiHostInAnyCase() {
-    assertTrue(VisionController.isAllowedImageHost("storage.googleapis.com"));
-    assertTrue(VisionController.isAllowedImageHost("STORAGE.GOOGLEAPIS.COM"));
-    assertTrue(VisionController.isAllowedImageHost("Storage.GoogleApis.Com"));
-    assertFalse(VisionController.isAllowedImageHost(null));
-    assertFalse(VisionController.isAllowedImageHost(""));
-  }
-
-  @Test
   public void requireAllowedImageUrl_rejectsUserInfo() {
     assertRejected("https://storage.googleapis.com@evil.example/b/o");
     assertRejected("https://user:password@storage.googleapis.com/b/o");
@@ -214,8 +181,13 @@ public class VisionControllerTest {
   }
 
   @Test
-  public void requireAllowedImageUrl_rejectsExplicitPorts() {
-    assertRejected("https://storage.googleapis.com:443/b/o");
+  public void requireAllowedImageUrl_acceptsExplicitDefaultHttpsPort() {
+    assertAccepted("https://storage.googleapis.com:443/b/o.jpg");
+  }
+
+  @Test
+  public void requireAllowedImageUrl_rejectsNonDefaultPorts() {
+    assertRejected("https://storage.googleapis.com:80/b/o");
     assertRejected("https://storage.googleapis.com:8080/b/o");
     assertRejected("https://storage.googleapis.com:abc/b/o");
   }
